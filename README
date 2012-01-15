@@ -6,6 +6,6 @@ FOLDER STRUCTURE :
 	
 
 	
-ECLIPSE USAGE :
+CREATED WITH ECLIPSE IDE :
 To test the tutorials, copy or link the "rosick" package into an existing project (in the "src" folder).
-If you haven't already done, in the project build path add and configure the lwjgl library.
+If you haven't already done, in the project build path add and configure the lwjgl library (visit http://www.lwjgl.org/).

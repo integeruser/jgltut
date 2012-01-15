@@ -1,4 +1,9 @@
-package utils;
+package rosick.common;
+
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -23,7 +28,7 @@ public class GLWindow {
 			System.exit(0);
 		}
 		
-		initGL();
+		init();
 
 		while (true) {
 			elapsedTime = (System.currentTimeMillis() - startTime) / 1000f;
@@ -49,11 +54,16 @@ public class GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	protected void initGL() {};
+	protected void init() {};
 	
 	
-	protected void render(float elapsedTime) {};
+	protected void render(float elapsedTime) {
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+	};
 	
 	
-	protected void reshape(int width, int height) {};
+	protected void reshape(int width, int height) {
+		glViewport(0, 0, width, height);
+	}
 }

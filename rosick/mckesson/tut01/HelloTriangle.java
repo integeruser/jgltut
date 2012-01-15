@@ -1,17 +1,16 @@
-package mckesson.chapter01;
-
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
-
-import utils.GLWindow;
-import utils.IOUtils;
-import utils.ShaderUtils;
-
+package rosick.mckesson.tut01;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+
+import rosick.common.GLWindow;
+import rosick.common.IOUtils;
+import rosick.common.ShaderUtils;
 
 
 /**
@@ -30,15 +29,13 @@ public class HelloTriangle extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	final float vertexPositions[] = {
+	float vertexPositions[] = {
 		 0.75f,  0.75f, 0.0f, 1.0f,
 		 0.75f, -0.75f, 0.0f, 1.0f,
 		-0.75f, -0.75f, 0.0f, 1.0f,
 	};
 	
-	int theProgram, positionBufferObject;
-	
-	private String strVertexShader = 
+	String strVertexShader = 
 		"#version 330 \n" +
 		"\n" +
 		"layout(location = 0) in vec4 position;\n" +
@@ -46,8 +43,8 @@ public class HelloTriangle extends GLWindow {
 		"{\n" +
 		"    gl_Position = position;\n" +
 		"}";
-	
-	private String strFragmentShader = 
+		
+	String strFragmentShader = 
 		"#version 330\n" +
 		"\n" +
 		"out vec4 outputColor;\n" +
@@ -56,16 +53,22 @@ public class HelloTriangle extends GLWindow {
 		"   outputColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n" +
 		"}";
 	
+	int theProgram;
+	int positionBufferObject;
+	int vao;
+
 	
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	@Override
-	protected void initGL() {
+	protected void init() {
 		initializeProgram();
 		initializeVertexBuffer(); 
-		initializeVertexArrayObjects();
+
+		vao = glGenVertexArrays();
+		glBindVertexArray(vao);
 	}
 	
 	private void initializeProgram() {			
@@ -77,10 +80,6 @@ public class HelloTriangle extends GLWindow {
 		shaderList.add(fragmentShader);
 
 		theProgram = ShaderUtils.createProgram(shaderList);
-		
-	    for (Integer integer : shaderList) {
-			glDeleteShader(integer);
-		}
 	}
 	
 	private void initializeVertexBuffer() {
@@ -90,11 +89,6 @@ public class HelloTriangle extends GLWindow {
 		glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
 	    glBufferData(GL_ARRAY_BUFFER, positionBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-
-	private void initializeVertexArrayObjects() {
-		int vao = glGenVertexArrays();
-		glBindVertexArray(vao);
 	}
 
 		

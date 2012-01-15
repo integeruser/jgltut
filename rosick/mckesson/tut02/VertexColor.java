@@ -1,17 +1,16 @@
-package mckesson.chapter02;
-
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
-
-import utils.GLWindow;
-import utils.IOUtils;
-import utils.ShaderUtils;
-
+package rosick.mckesson.tut02;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+
+import rosick.common.GLWindow;
+import rosick.common.IOUtils;
+import rosick.common.ShaderUtils;
 
 
 /**
@@ -30,7 +29,7 @@ public class VertexColor extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	final float vertexData[] = {													// 3 positions and 3 colors
+	float vertexData[] = {													// 3 positions and 3 colors
 		 0.0f,    0.5f, 0.0f, 1.0f,
 		 0.5f, -0.366f, 0.0f, 1.0f,
 		-0.5f, -0.366f, 0.0f, 1.0f,
@@ -39,33 +38,33 @@ public class VertexColor extends GLWindow {
 		 0.0f,    0.0f, 1.0f, 1.0f,
 	};
 	
-	int theProgram, vertexBufferObject;
-	
+	int theProgram; 
+	int vertexBufferObject;
+	int vao;
+
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	@Override
-	protected void initGL() {
+	protected void init() {
 		initializeProgram();
 		initializeVertexBuffer(); 
-		initializeVertexArrayObjects();
+
+		vao = glGenVertexArrays();
+		glBindVertexArray(vao);
 	}
 	
 	private void initializeProgram() {			
-		int vertexShader =		ShaderUtils.loadShaderFromFile(GL_VERTEX_SHADER, 	"src/mckesson/chapter02/data/VertexColors.vert");
-		int fragmentShader = 	ShaderUtils.loadShaderFromFile(GL_FRAGMENT_SHADER, 	"src/mckesson/chapter02/data/VertexColors.frag");
+		int vertexShader =		ShaderUtils.loadShaderFromFile(GL_VERTEX_SHADER, 	"/rosick/mckesson/shaders/tut02/VertexColors.vert");
+		int fragmentShader = 	ShaderUtils.loadShaderFromFile(GL_FRAGMENT_SHADER, 	"/rosick/mckesson/shaders/tut02/VertexColors.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
 		shaderList.add(fragmentShader);
 
 		theProgram = ShaderUtils.createProgram(shaderList);
-		
-	    for (Integer integer : shaderList) {
-			glDeleteShader(integer);
-		}
 	}
 	
 	private void initializeVertexBuffer() {
@@ -75,11 +74,6 @@ public class VertexColor extends GLWindow {
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 	    glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-
-	private void initializeVertexArrayObjects() {
-		int vao = glGenVertexArrays();
-		glBindVertexArray(vao);
 	}
 	
 		

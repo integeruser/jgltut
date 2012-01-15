@@ -1,7 +1,6 @@
-package utils;
-
+package rosick.common;
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
@@ -46,7 +45,7 @@ public class IOUtils {
         StringBuilder text = new StringBuilder();
         
         try {
-        	BufferedReader reader = new BufferedReader(new FileReader(filepath));
+        	BufferedReader reader = new BufferedReader(new InputStreamReader(ClassLoader.class.getResourceAsStream(filepath)));
         	String line;
         	
         	while ((line = reader.readLine()) != null) {
@@ -55,7 +54,7 @@ public class IOUtils {
         	
         	reader.close();
         } catch (Exception e){
-        	System.out.println("Fail reading " + filepath);
+        	System.err.println("Fail reading " + filepath + ": " + e.getMessage());
         }
         
         return text.toString();

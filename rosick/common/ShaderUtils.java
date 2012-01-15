@@ -1,6 +1,6 @@
-package utils;
-
+package rosick.common;
 import java.util.ArrayList;
+
 
 import static org.lwjgl.opengl.GL20.*;
 
@@ -33,8 +33,8 @@ public class ShaderUtils {
     
 	/**
 	 * Create and compile a vertex / fragment shader.
-	 * @param filepath the filepath of the shader
 	 * @param shaderType can assume two possible values: GL_VERTEX_SHADER to create a vertex shader, GL_FRAGMENT_SHADER to create a fragment shader
+	 * @param shaderCode the shader code
 	 * @return the created shader
 	 */
     public static int loadShader(int shaderType, String shaderCode){

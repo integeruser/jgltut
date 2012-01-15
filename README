@@ -1,6 +1,6 @@
 FOLDER STRUCTURE :
 
-	- "rosick/common" 	: package with common files used by all the tutorials.
+	- "rosick/common" : package with common files used by all the tutorials.
 	
 	- "rosick/mckesson" : package with java porting of McKesson OpenGL tutorials.
 	

@@ -1,0 +1,11 @@
+FOLDER STRUCTURE :
+
+	- "rosick/common" 	: package with common files used by all the tutorials.
+	
+	- "rosick/mckesson" : package with java porting of McKesson OpenGL tutorials.
+	
+
+	
+ECLIPSE USAGE :
+To test the tutorials, copy or link the "rosick" package into an existing project (in the "src" folder).
+If you haven't already done, in the project build path add and configure the lwjgl library.

@@ -1,11 +1,16 @@
-FOLDER STRUCTURE :
-
+FOLDERS STRUCTURE :
 	- "rosick/common" : package with common files used by all the tutorials.
-	
-	- "rosick/mckesson" : package with java porting of McKesson OpenGL tutorials.
+	- "rosick/mckesson" : package with Java porting of Jason McKesson OpenGL tutorials.
 	
 
 	
-CREATED WITH ECLIPSE IDE :
+USAGE WITH ECLIPSE IDE :
 To test the tutorials, copy or link the "rosick" package into an existing project (in the "src" folder).
-If you haven't already done, in the project build path add and configure the lwjgl library (visit http://www.lwjgl.org/).
+If you haven't already done, in the project build path add and configure the lwjgl library (visit http://www.lwjgl.org/ for further information).
+
+
+
+LICENSE :
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. 
+To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/ 
+or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.

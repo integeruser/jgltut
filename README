@@ -9,22 +9,27 @@ Best regards,
 Francesco & Marco
 
 
+PROJECT INFORMATION :
+The project is developed with Java 1.7 and LWJGL 2.8.2, and may not work with older versions.
+We decided to port the tutorials in a manner as similar as possible to the original, so some tutorials arent't written in 'Java-style' but this isn't a big problem :)
+
+	- "rosick/framework" : package with common classes.
+	- "rosick/glm" : package with math classes.
+	- "rosick/glutil" : package with opengl-related classes.
+	- "rosick/mckesson" : package with LWJGL porting of Jason McKesson's tutorials.
+		
+		
+USAGE IN ECLIPSE IDE :
+To test the tutorials, copy or link the "rosick" package into an existing project (in the "src" folder).
+If you haven't already done, in the project build path add and configure the LWJGL library (visit http://www.lwjgl.org/ for further information).
+
+
 GITHUB USERS :
 I kindly ask github users not to pull requests at this time.
 We want to develop this project with our hands and if possibly to translate every tutorial of the book.
 If we are not be able to continue working on this project, then we will be happy to let each user contributes with their code.
 On the other hand, we ask you to communicate us every issue or difficulty that you have found in this project.
 Thanks in advance.
-
-
-FOLDERS STRUCTURE :
-	- "rosick/common" : package with common files used by all the tutorials.
-	- "rosick/mckesson" : package with LWJGL porting of Jason McKesson OpenGL tutorials.
-		
-		
-USAGE WITH ECLIPSE IDE :
-To test the tutorials, copy or link the "rosick" package into an existing project (in the "src" folder).
-If you haven't already done, in the project build path add and configure the lwjgl library (visit http://www.lwjgl.org/ for further information).
 
 
 LICENSE :

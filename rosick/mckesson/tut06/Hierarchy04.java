@@ -7,9 +7,7 @@ import static org.lwjgl.opengl.GL30.*;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 
 import org.lwjgl.input.Keyboard;
 
@@ -410,73 +408,97 @@ public class Hierarchy04 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private static class MatrixStack {
-		private Mat4 m_currMat;
-		private Deque<Mat4> m_matrices;
+	private class MatrixStack {	
+		
+		private Mat4 currentMatrix;
+		private float matrices[];
+		private int firstIndexUsable;
+		
+		private Mat4 tempMat;
+		
 		
 		
 		public MatrixStack() {
-			m_matrices = new ArrayDeque<>();
-			m_currMat = new Mat4(1);
+			matrices = new float[160];														
+			currentMatrix = new Mat4(1);
+			
+			tempMat = new Mat4();
+			
+			firstIndexUsable = 0;
+		}
+
+		
+		
+		public void push() {
+			if (firstIndexUsable == matrices.length) {
+				// Double the size of matrices[]
+				float temp[] = new float[matrices.length * 2];
+				System.arraycopy(matrices, 0, temp, 0, matrices.length);
+				matrices = temp;
+			}
+			
+			// Store the currentMatrix in the buffer
+			System.arraycopy(currentMatrix.m, 0, matrices, firstIndexUsable, 16);		
+			firstIndexUsable += 16;
+		}
+
+		
+		public void pop() {
+			// Pop the last matrix pushed in the buffer and set it as currentMatrix
+			firstIndexUsable -= 16;
+			System.arraycopy(matrices, firstIndexUsable, currentMatrix.m, 0, 16);		
+		}
+
+		public Mat4 top() {		
+			return currentMatrix;
 		}
 		
 		
-		void push() {
-			m_matrices.push(m_currMat);
-			m_currMat = new Mat4(m_currMat);
-		}
-		
-		void pop() {
-			m_currMat = m_matrices.pop();
-		}
-		
-		Mat4 top() {
-			return m_currMat;
+		public void clear() {
+			currentMatrix.set(1);
+
+			firstIndexUsable = 0;
 		}
 		
 		
+
 		public void rotateX(float fAngDeg) {
-			m_currMat.mul(getRotateX(fAngDeg));
+			currentMatrix.mul(Mat4.getRotateX(fAngDeg));
 		}
 
 		public void rotateY(float fAngDeg) {
-			m_currMat.mul(getRotateY(fAngDeg));
+			currentMatrix.mul(Mat4.getRotateY(fAngDeg));
 		}
 
 		public void rotateZ(float fAngDeg) {
-			m_currMat.mul(getRotateZ(fAngDeg));
+			currentMatrix.mul(Mat4.getRotateZ(fAngDeg));
 		}
-		
+
 		
 		public void scale(float x, float y, float z) {
-			Mat4 m = new Mat4();
-			m.put(0, x);
-			m.put(5, y);
-			m.put(10, z);
-			m.put(15, 1);
-			
-			m_currMat.mul(m);
+			tempMat.set(0);
+			tempMat.put(0, x);
+			tempMat.put(5, y);
+			tempMat.put(10, z);
+			tempMat.put(15, 1);
+
+			currentMatrix.mul(tempMat);
 		}
-		
+
 		
 		public void translate(float x, float y, float z) {
-			Mat4 m = new Mat4(1.0f);
-			m.put(12, x);
-			m.put(13, y);
-			m.put(14, z);
+			tempMat.set(1);
+			tempMat.put(12, x);
+			tempMat.put(13, y);
+			tempMat.put(14, z);
 
-			m_currMat.mul(m);
+			currentMatrix.mul(tempMat);
 		}
-		
-		public void translate(Vec3 offsetVec) {
-			Mat4 m = new Mat4(1.0f);
-			m.put(12, offsetVec.x);
-			m.put(13, offsetVec.y);
-			m.put(14, offsetVec.z);
 
-			m_currMat.mul(m);
+		public void translate(Vec3 offset) {
+			translate(offset.x, offset.y, offset.z);
 		}
-	}
+	}	
 	
 	
 	
@@ -484,17 +506,18 @@ public class Hierarchy04 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	private class Hierarchy {
+		
 		private Vec3 posBase = new Vec3(3.0f, -5.0f, -40.0f);
 		private float angBase = -45.0f;
 
-		private Vec3	posBaseLeft = new Vec3(2.0f, 0.0f, 0.0f);
-		private Vec3	posBaseRight = new Vec3(-2.0f, 0.0f, 0.0f);
+		private Vec3 posBaseLeft = new Vec3(2.0f, 0.0f, 0.0f);
+		private Vec3 posBaseRight = new Vec3(-2.0f, 0.0f, 0.0f);
 		private float scaleBaseZ = 3.0f;
 
 		private float angUpperArm = -70.75f;
 		private float sizeUpperArm = 9;
 
-		private Vec3	posLowerArm = new Vec3(0.0f, 0.0f, 8.0f);
+		private Vec3 posLowerArm = new Vec3(0.0f, 0.0f, 8.0f);
 		private float angLowerArm = 60.25f;
 		private float lenLowerArm = 5.0f;
 		private float widthLowerArm = 1.5f;
@@ -512,9 +535,11 @@ public class Hierarchy04 extends GLWindow {
 		private float widthFinger = 0.5f;
 		private float angLowerFinger = 45;
 		
+		private MatrixStack modelToCameraStack = new MatrixStack();
+		
 		
 		void draw() {
-			MatrixStack modelToCameraStack = new MatrixStack();
+			modelToCameraStack.clear();
 
 			glUseProgram(theProgram);
 			glBindVertexArray(vao);
@@ -548,6 +573,7 @@ public class Hierarchy04 extends GLWindow {
 			glBindVertexArray(0);
 			glUseProgram(0);
 		}
+		
 		
 		void drawUpperArm(MatrixStack modelToCameraStack) {
 			modelToCameraStack.push();
@@ -617,6 +643,7 @@ public class Hierarchy04 extends GLWindow {
 			{
 				// Draw left lower finger
 				modelToCameraStack.push();
+				
 				modelToCameraStack.translate(0.0f, 0.0f, lenFinger);
 				modelToCameraStack.rotateY(-angLowerFinger);
 
@@ -662,6 +689,7 @@ public class Hierarchy04 extends GLWindow {
 
 			modelToCameraStack.pop();
 		}
+		
 		
 		void adjBase(boolean bIncrement) {
 			angBase += bIncrement ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;

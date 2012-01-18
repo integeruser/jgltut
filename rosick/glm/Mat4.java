@@ -2,46 +2,44 @@ package rosick.glm;
 
 import java.nio.FloatBuffer;
 
-import org.lwjgl.BufferUtils;
-
 
 /**
  * @author xire-
  */
 public class Mat4 {
 	
-	public float[] m;
+	private static final float fDegToRad = 3.14159f * 2.0f / 360.0f;
 	
-	private FloatBuffer buf;
+	private static float fAngRad, fCos, fSin;
+	private static Mat4 tempMat = new Mat4();
+
+	public float[] matrix;
+	
 
 	
-
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	public Mat4() {
-		m = new float[16];
-		buf = BufferUtils.createFloatBuffer(16);
+		matrix = new float[16];
 	}
 
 	public Mat4(float diagonal) {
-		m = new float[16];
-		buf = BufferUtils.createFloatBuffer(16);
-
-		m[0] = diagonal;
-		m[5] = diagonal;
-		m[10] = diagonal;
-		m[15] = diagonal;
+		matrix = new float[16];
+		matrix[0] = diagonal;
+		matrix[5] = diagonal;
+		matrix[10] = diagonal;
+		matrix[15] = diagonal;
 	}
 
 	public Mat4(float m[]) {
-		System.arraycopy(m, 0, this.m, 0, 16);
+		matrix = new float[16];
+		System.arraycopy(m, 0, matrix, 0, 16);
 	}
 	
 	public Mat4(Mat4 mat) {
-		m = new float[16];
-		System.arraycopy(mat.m, 0, m, 0, 16);
-		buf = BufferUtils.createFloatBuffer(16);
+		matrix = new float[16];
+		System.arraycopy(mat.matrix, 0, matrix, 0, 16);
 	}
 
 
@@ -49,23 +47,10 @@ public class Mat4 {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	public void put(int index, float val) {
-		m[index] = val;
-	}
-	
-	public void putColumn(int columnIndex, Vec4 vec4) {
-		int offset = (columnIndex * 4);
-		m[offset]     = vec4.x;
-		m[offset + 1] = vec4.y;
-		m[offset + 2] = vec4.z;
-		m[offset + 3] = vec4.w;
-	}
-
-
 	public void mul(Mat4 mat) {
 		float[] res = new float[16];
-		float[] m1 = m;
-		float[] m2 = mat.m;
+		float[] m1 = matrix;
+		float[] m2 = mat.matrix;
 
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) { 
@@ -79,15 +64,58 @@ public class Mat4 {
 			}
 		}
 
-		System.arraycopy(res, 0, m, 0, 16);
+		System.arraycopy(res, 0, matrix, 0, 16);
 	}
 	
 	
+	public void put(int index, float val) {
+		matrix[index] = val;
+	}
+	
+	public void putColumn(int columnIndex, Vec4 vec4) {
+		int offset = (columnIndex * 4);
+		
+		matrix[offset]     = vec4.x;
+		matrix[offset + 1] = vec4.y;
+		matrix[offset + 2] = vec4.z;
+		matrix[offset + 3] = vec4.w;
+	}
 
-	public FloatBuffer getBuffer() {
-		buf.put(m);
-		buf.flip();
-		return buf;
+	
+	public void clear(float diagonal) {
+		matrix[1] = 0;
+		matrix[2] = 0;
+		matrix[3] = 0;
+		matrix[4] = 0;
+		matrix[6] = 0;
+		matrix[7] = 0;
+		matrix[8] = 0;
+		matrix[9] = 0;
+		matrix[11] = 0;
+		matrix[12] = 0;
+		matrix[13] = 0;
+		matrix[14] = 0;
+		
+		matrix[0] = diagonal;
+		matrix[5] = diagonal;
+		matrix[10] = diagonal;
+		matrix[15] = diagonal;
+	}
+	
+	public void clear(float[] array) {
+		System.arraycopy(array, 0, matrix, 0, 16);		
+	}
+	
+	public void clear(Mat4 mat) {
+		clear(mat.matrix);
+	}
+	
+
+	public FloatBuffer fillBuffer(FloatBuffer buffer) {
+		buffer.put(matrix);
+		buffer.flip();
+		
+		return buffer;
 	}
 
 
@@ -95,7 +123,7 @@ public class Mat4 {
 		String ris = "";
 
 		for (int i = 0; i < 4; i++) {
-			ris += m[i*4] + " " + m[i*4+1] + " " + m[i*4+2] + " " + m[i*4+3] + "\n";
+			ris += matrix[i * 4] + " " + matrix[i * 4 + 1] + " " + matrix[i * 4 + 2] + " " + matrix[i * 4 + 3] + "\n";
 		}
 
 		return ris;
@@ -105,8 +133,9 @@ public class Mat4 {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
 	public static Mat4 transpose(Mat4 mat) {
-		float source[] = mat.m;
+		float source[] = mat.matrix;
 		float destination[] = new float[16];
 
 		for( int i = 0; i < 16; i++ )
@@ -117,95 +146,92 @@ public class Mat4 {
 	}
 	
 	
-	
-	public static Mat4 getRotateX(float angoloDeg) {
-		float fAngRad = degToRad(angoloDeg);
-		float fCos = (float) Math.cos(fAngRad);
-		float fSin = (float) Math.sin(fAngRad);
+	public static Mat4 getRotateX(float angDeg) {
+		fAngRad = degToRad(angDeg);
+		fCos = (float) Math.cos(fAngRad);
+		fSin = (float) Math.sin(fAngRad);
 
-		Mat4 mat = new Mat4();
+		tempMat.clear(0);
 
 		// X column
-		mat.put(0, 1); 															// x
-		mat.put(1, 0); 															// y
-		mat.put(2, 0); 															// z
+		tempMat.put(0, 1); 															// x
+		tempMat.put(1, 0); 															// y
+		tempMat.put(2, 0); 															// z
 
 		// Y column
-		mat.put(4, 0); 															// x
-		mat.put(5, fCos); 														// y
-		mat.put(6, fSin); 														// z
+		tempMat.put(4, 0); 															// x
+		tempMat.put(5, fCos); 														// y
+		tempMat.put(6, fSin); 														// z
 
 		// Z column
-		mat.put(8, 0); 															// x
-		mat.put(9, -fSin); 														// y
-		mat.put(10, fCos); 														// z
+		tempMat.put(8, 0); 															// x
+		tempMat.put(9, -fSin); 														// y
+		tempMat.put(10, fCos); 														// z
 
 		// Last
-		mat.put(15, 1); 
+		tempMat.put(15, 1); 
 
-		return mat;
+		return tempMat;
 	}
 
-	public static Mat4 getRotateY(float angoloDeg) {
-		float fAngRad = degToRad(angoloDeg);
-		float fCos = (float) Math.cos(fAngRad);
-		float fSin = (float) Math.sin(fAngRad);
+	public static Mat4 getRotateY(float angDeg) {
+		fAngRad = degToRad(angDeg);
+		fCos = (float) Math.cos(fAngRad);
+		fSin = (float) Math.sin(fAngRad);
 
-		Mat4 mat = new Mat4();
+		tempMat.clear(0);
 
 		// X column
-		mat.put(0, fCos); 
-		mat.put(1, 0); 
-		mat.put(2, -fSin);
+		tempMat.put(0, fCos); 
+		tempMat.put(1, 0); 
+		tempMat.put(2, -fSin);
 
 		// Y column
-		mat.put(4, 0); 
-		mat.put(5, 1); 
-		mat.put(6, 0); 
+		tempMat.put(4, 0); 
+		tempMat.put(5, 1); 
+		tempMat.put(6, 0); 
 
 		// Z column
-		mat.put(8, fSin); 
-		mat.put(9, 0);
-		mat.put(10, fCos); 
+		tempMat.put(8, fSin); 
+		tempMat.put(9, 0);
+		tempMat.put(10, fCos); 
 
 		// Last
-		mat.put(15, 1); 
+		tempMat.put(15, 1); 
 
-		return mat;
+		return tempMat;
 	}
 
-	public static Mat4 getRotateZ(float angoloDeg) {
-		float fAngRad = degToRad(angoloDeg);
-		float fCos = (float) Math.cos(fAngRad);
-		float fSin = (float) Math.sin(fAngRad);
+	public static Mat4 getRotateZ(float angDeg) {
+		fAngRad = degToRad(angDeg);
+		fCos = (float) Math.cos(fAngRad);
+		fSin = (float) Math.sin(fAngRad);
 
-		Mat4 mat = new Mat4();
+		tempMat.clear(0);
 
 		// X column
-		mat.put(0, fCos); 
-		mat.put(1, fSin); 
-		mat.put(2, 0);
+		tempMat.put(0, fCos); 
+		tempMat.put(1, fSin); 
+		tempMat.put(2, 0);
 
 		// Y column
-		mat.put(4, -fSin);
-		mat.put(5, fCos); 
-		mat.put(6, 0); 
+		tempMat.put(4, -fSin);
+		tempMat.put(5, fCos); 
+		tempMat.put(6, 0); 
 
 		// Z column
-		mat.put(8, 0); 
-		mat.put(9, 0); 
-		mat.put(10, 1); 
+		tempMat.put(8, 0); 
+		tempMat.put(9, 0); 
+		tempMat.put(10, 1); 
 
 		// Last
-		mat.put(15, 1); 
+		tempMat.put(15, 1); 
 
-		return mat;
+		return tempMat;
 	}
 
 
 	private static float degToRad(float fAngDeg) {
-		final float fDegToRad = 3.14159f * 2.0f / 360.0f;
-
 		return fAngDeg * fDegToRad;
 	}
 }

@@ -43,7 +43,7 @@ public class MatrixStack {
 		}
 		
 		// Store the currentMatrix in the buffer
-		System.arraycopy(currentMatrix.m, 0, matrices, firstIndexUsable, 16);		
+		System.arraycopy(currentMatrix.matrix, 0, matrices, firstIndexUsable, 16);		
 		firstIndexUsable += 16;
 	}
 
@@ -51,7 +51,7 @@ public class MatrixStack {
 	public void pop() {
 		// Pop the last matrix pushed in the buffer and set it as currentMatrix
 		firstIndexUsable -= 16;
-		System.arraycopy(matrices, firstIndexUsable, currentMatrix.m, 0, 16);		
+		System.arraycopy(matrices, firstIndexUsable, currentMatrix.matrix, 0, 16);		
 	}
 
 	public Mat4 top() {		
@@ -60,7 +60,7 @@ public class MatrixStack {
 	
 	
 	public void clear() {
-		currentMatrix.set(1);
+		currentMatrix.clear(1);
 
 		firstIndexUsable = 0;
 	}
@@ -84,7 +84,7 @@ public class MatrixStack {
 
 	
 	public void scale(float x, float y, float z) {
-		tempMat.set(0);
+		tempMat.clear(0);
 		tempMat.put(0, x);
 		tempMat.put(5, y);
 		tempMat.put(10, z);
@@ -99,7 +99,7 @@ public class MatrixStack {
 
 	
 	public void translate(float x, float y, float z) {
-		tempMat.set(1);
+		tempMat.clear(1);
 		tempMat.put(12, x);
 		tempMat.put(13, y);
 		tempMat.put(14, z);

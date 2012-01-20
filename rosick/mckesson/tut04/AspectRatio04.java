@@ -8,6 +8,8 @@ import static org.lwjgl.opengl.GL30.*;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import org.lwjgl.BufferUtils;
+
 import rosick.GLWindow;
 import rosick.framework.Framework;
 import rosick.framework.IOUtils;
@@ -28,9 +30,18 @@ public class AspectRatio04 extends GLWindow {
 	}
 	
 	
+	private static final String BASEPATH = "/rosick/mckesson/tut04/data/";
+
+	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private int theProgram;
+	private int offsetUniform, perspectiveMatrixUnif;
+	private FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer(16);
+	private int vertexBufferObject;
+	private int vao;
 	
 	private final float vertexData[] = {
 		 0.25f,  0.25f, -1.25f, 1.0f,
@@ -135,13 +146,7 @@ public class AspectRatio04 extends GLWindow {
 
 	private final float fFrustumScale = 1.0f;
 
-	private int theProgram;
-	private int offsetUniform, perspectiveMatrixUnif;
-	private FloatBuffer perspectiveMatrixBuffer;
-	private int vertexBufferObject;
-	private int vao;
-	
-	
+
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -160,8 +165,8 @@ public class AspectRatio04 extends GLWindow {
 	}
 	
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		"/rosick/mckesson/tut04/data/matrixPerspective.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	"/rosick/mckesson/tut04/data/standardColors.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "matrixPerspective.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "standardColors.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
@@ -174,16 +179,13 @@ public class AspectRatio04 extends GLWindow {
 		perspectiveMatrixUnif = glGetUniformLocation(theProgram, "perspectiveMatrix");
 		
 		float fzNear = 0.5f; float fzFar = 3.0f;
-		
-		float perspectiveMatrix[] = new float[16];
-		perspectiveMatrix[0] = fFrustumScale;
-		perspectiveMatrix[5] = fFrustumScale;
-		perspectiveMatrix[10] = (fzFar + fzNear) / (fzNear - fzFar);
-		perspectiveMatrix[14] = (2 * fzFar * fzNear) / (fzNear - fzFar);
-		perspectiveMatrix[11] = -1.0f;
-		
-		perspectiveMatrixBuffer = IOUtils.allocFloats(perspectiveMatrix);
-		
+				
+		perspectiveMatrixBuffer.put(0, 	fFrustumScale);
+		perspectiveMatrixBuffer.put(5, 	fFrustumScale);
+		perspectiveMatrixBuffer.put(10, (fzFar + fzNear) / (fzNear - fzFar));
+		perspectiveMatrixBuffer.put(11, -1.0f);
+		perspectiveMatrixBuffer.put(14, (2 * fzFar * fzNear) / (fzNear - fzFar));
+
 		glUseProgram(theProgram);
 		glUniformMatrix4(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);
 		glUseProgram(0);

@@ -10,6 +10,7 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
 import rosick.GLWindow;
@@ -32,9 +33,18 @@ public class DepthClamping05 extends GLWindow {
 	}
 	
 	
+	private static final String BASEPATH = "/rosick/mckesson/tut05/data/";
+
+	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private int theProgram;
+	private int offsetUniform, perspectiveMatrixUnif;
+	private FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer(16);
+	private int vertexBufferObject, indexBufferObject;
+	private int vao;
 	
 	private final float RIGHT_EXTENT 	=	0.8f;
 	private final float LEFT_EXTENT  	=  -RIGHT_EXTENT;
@@ -159,11 +169,6 @@ public class DepthClamping05 extends GLWindow {
 	private final int numberOfVertices = 36;
 	private final float fFrustumScale = 1.0f;
 	
-	private int theProgram;
-	private int offsetUniform, perspectiveMatrixUnif;
-	private FloatBuffer perspectiveMatrixBuffer;
-	private int vertexBufferObject, indexBufferObject;
-	private int vao;
 	private boolean bDepthClampingActive;
 	
 	
@@ -200,8 +205,8 @@ public class DepthClamping05 extends GLWindow {
 	}
 	
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		"/rosick/mckesson/tut05/data/standard.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	"/rosick/mckesson/tut05/data/standard.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "standard.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "standard.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
@@ -216,14 +221,11 @@ public class DepthClamping05 extends GLWindow {
 
 		float fzNear = 1.0f; float fzFar = 3.0f;
 		
-		float perspectiveMatrix[] = new float[16];
-		perspectiveMatrix[0] = fFrustumScale;
-		perspectiveMatrix[5] = fFrustumScale;
-		perspectiveMatrix[10] = (fzFar + fzNear) / (fzNear - fzFar);
-		perspectiveMatrix[14] = (2 * fzFar * fzNear) / (fzNear - fzFar);
-		perspectiveMatrix[11] = -1.0f;
-		
-		perspectiveMatrixBuffer = IOUtils.allocFloats(perspectiveMatrix);
+		perspectiveMatrixBuffer.put(0, 	fFrustumScale);
+		perspectiveMatrixBuffer.put(5, 	fFrustumScale);
+		perspectiveMatrixBuffer.put(10, (fzFar + fzNear) / (fzNear - fzFar));
+		perspectiveMatrixBuffer.put(11, -1.0f);
+		perspectiveMatrixBuffer.put(14, (2 * fzFar * fzNear) / (fzNear - fzFar));
 		
 		glUseProgram(theProgram);
 		glUniformMatrix4(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);

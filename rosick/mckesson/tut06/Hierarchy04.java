@@ -20,6 +20,8 @@ import rosick.glm.Vec3;
 
 
 /**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
  * II. Positioning
  * 6. Objects in Motion
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2006.html
@@ -32,10 +34,20 @@ public class Hierarchy04 extends GLWindow {
 	}
 	
 	
+	private static final String BASEPATH = "/rosick/mckesson/tut06/data/";
+
+	
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
+	private int theProgram;
+	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
+	private FloatBuffer cameraToClipMatrixBuffer = IOUtils.allocFloats(new float[16]);
+	private FloatBuffer modelToCameraMatrixBuffer = IOUtils.allocFloats(new float[16]); 
+	private int vertexBufferObject, indexBufferObject;
+	private int vao;
+	
 	private final float vertexData[] = {
 		// Front
 		+1.0f, +1.0f, +1.0f,
@@ -128,19 +140,8 @@ public class Hierarchy04 extends GLWindow {
 	private final int numberOfVertices = 24;
 	private final float fFrustumScale = calcFrustumScale(45.0f);
 	
-	private int theProgram;
-	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
-	private FloatBuffer cameraToClipMatrix = IOUtils.allocFloats(new float[16]);
-	private FloatBuffer modelToCameraMatrix = IOUtils.allocFloats(new float[16]); 
-	private int vertexBufferObject, indexBufferObject;
-	private int vao;
-	
-	private Hierarchy g_armature = new Hierarchy();
-	private final float STANDARD_ANGLE_INCREMENT = 11.25f;
-	private final float SMALL_ANGLE_INCREMENT = 9.0f;
-	
-	
 
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
@@ -173,8 +174,8 @@ public class Hierarchy04 extends GLWindow {
 	}
 	
 	private void initializeProgram() {	
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		"/rosick/mckesson/tut06/data/posColorLocalTransform.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	"/rosick/mckesson/tut06/data/colorPassthrough.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "posColorLocalTransform.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "colorPassthrough.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
@@ -187,19 +188,20 @@ public class Hierarchy04 extends GLWindow {
 		cameraToClipMatrixUnif = glGetUniformLocation(theProgram, "cameraToClipMatrix");
 		
 		float fzNear = 1.0f; float fzFar = 100.0f;
-		cameraToClipMatrix.put(0, fFrustumScale);
-		cameraToClipMatrix.put(5, fFrustumScale);
-		cameraToClipMatrix.put(10, (fzFar + fzNear) / (fzNear - fzFar));
-		cameraToClipMatrix.put(11, -1.0f);
-		cameraToClipMatrix.put(14, (2 * fzFar * fzNear) / (fzNear - fzFar));
 		
-		modelToCameraMatrix.put(0, 1);
-		modelToCameraMatrix.put(5, 1);
-		modelToCameraMatrix.put(10, 1);
-		modelToCameraMatrix.put(15, 1);
+		cameraToClipMatrixBuffer.put(0, 	fFrustumScale);
+		cameraToClipMatrixBuffer.put(5, 	fFrustumScale);
+		cameraToClipMatrixBuffer.put(10, 	(fzFar + fzNear) / (fzNear - fzFar));
+		cameraToClipMatrixBuffer.put(11, 	-1.0f);
+		cameraToClipMatrixBuffer.put(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
+		
+		modelToCameraMatrixBuffer.put(0, 	1.0f);
+		modelToCameraMatrixBuffer.put(5, 	1.0f);
+		modelToCameraMatrixBuffer.put(10, 	1.0f);
+		modelToCameraMatrixBuffer.put(15, 	1.0f);
 		
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix);
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrixBuffer);
 		glUseProgram(0);
 	}
 	
@@ -269,7 +271,7 @@ public class Hierarchy04 extends GLWindow {
 	
 	
 	@Override
-	protected void render() {
+	protected void display() {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -280,14 +282,385 @@ public class Hierarchy04 extends GLWindow {
 	
 	@Override
 	protected void reshape(int width, int height) {
-		cameraToClipMatrix.put(0, fFrustumScale / (width / (float) height));
-		cameraToClipMatrix.put(5, fFrustumScale);
+		cameraToClipMatrixBuffer.put(0, fFrustumScale / (width / (float) height));
+		cameraToClipMatrixBuffer.put(5, fFrustumScale);
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix);
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrixBuffer);
 		glUseProgram(0);
 
 		glViewport(0, 0, width, height);
+	}
+
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private class MatrixStack {	
+		
+		private Mat4 currentMatrix;
+		private float matrices[];
+		private int firstIndexUsable;
+		
+		private Mat4 tempMat;
+		
+		
+		
+		public MatrixStack() {
+			matrices = new float[160];														
+			currentMatrix = new Mat4(1);
+			
+			tempMat = new Mat4();
+			
+			firstIndexUsable = 0;
+		}
+
+		
+		
+		public void push() {
+			if (firstIndexUsable == matrices.length) {
+				// Double the size of matrices[]
+				float temp[] = new float[matrices.length * 2];
+				System.arraycopy(matrices, 0, temp, 0, matrices.length);
+				matrices = temp;
+			}
+			
+			// Store the currentMatrix in the buffer
+			System.arraycopy(currentMatrix.matrix, 0, matrices, firstIndexUsable, 16);		
+			firstIndexUsable += 16;
+		}
+
+		
+		public void pop() {
+			// Pop the last matrix pushed in the buffer and set it as currentMatrix
+			firstIndexUsable -= 16;
+			System.arraycopy(matrices, firstIndexUsable, currentMatrix.matrix, 0, 16);		
+		}
+
+		public Mat4 top() {		
+			return currentMatrix;
+		}
+		
+		
+		public void clear() {
+			currentMatrix.clear(1);
+
+			firstIndexUsable = 0;
+		}
+		
+		
+		public void rotateX(float fAngDeg) {
+			currentMatrix.mul(Mat4.getRotateX(fAngDeg));
+		}
+
+		public void rotateY(float fAngDeg) {
+			currentMatrix.mul(Mat4.getRotateY(fAngDeg));
+		}
+
+		public void rotateZ(float fAngDeg) {
+			currentMatrix.mul(Mat4.getRotateZ(fAngDeg));
+		}
+
+		
+		public void scale(float x, float y, float z) {
+			tempMat.clear(0);
+			tempMat.put(0, x);
+			tempMat.put(5, y);
+			tempMat.put(10, z);
+			tempMat.put(15, 1);
+
+			currentMatrix.mul(tempMat);
+		}
+
+		
+		public void translate(float x, float y, float z) {
+			tempMat.clear(1);
+			tempMat.put(12, x);
+			tempMat.put(13, y);
+			tempMat.put(14, z);
+
+			currentMatrix.mul(tempMat);
+		}
+
+		public void translate(Vec3 offset) {
+			translate(offset.x, offset.y, offset.z);
+		}
+	}	
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final float STANDARD_ANGLE_INCREMENT = 11.25f;
+	private final float SMALL_ANGLE_INCREMENT = 9.0f;
+	
+	private Hierarchy g_armature = new Hierarchy();
+	
+	
+	private class Hierarchy {
+		
+		private Vec3 posBase = new Vec3(3.0f, -5.0f, -40.0f);
+		private float angBase = -45.0f;
+
+		private Vec3 posBaseLeft = new Vec3(2.0f, 0.0f, 0.0f);
+		private Vec3 posBaseRight = new Vec3(-2.0f, 0.0f, 0.0f);
+		private float scaleBaseZ = 3.0f;
+
+		private float angUpperArm = -70.75f;
+		private float sizeUpperArm = 9;
+
+		private Vec3 posLowerArm = new Vec3(0.0f, 0.0f, 8.0f);
+		private float angLowerArm = 60.25f;
+		private float lenLowerArm = 5.0f;
+		private float widthLowerArm = 1.5f;
+
+		private Vec3 posWrist = new Vec3(0.0f, 0.0f, 5.0f);
+		private float angWristRoll = 0;
+		private float angWristPitch = 67.5f;
+		private float lenWrist = 2;
+		private float widthWrist = 2;
+
+		private Vec3 posLeftFinger = new Vec3(1.0f, 0.0f, 1.0f);
+		private Vec3 posRightFinger = new Vec3(-1.0f, 0.0f, 1.0f);
+		private float angFingerOpen = 45;
+		private float lenFinger = 2;
+		private float widthFinger = 0.5f;
+		private float angLowerFinger = 45;
+		
+		private MatrixStack modelToCameraStack = new MatrixStack();
+		private FloatBuffer tempSharedUniformMatrixBuffer = BufferUtils.createFloatBuffer(16);
+		
+		
+		public void draw() {
+			modelToCameraStack.clear();
+
+			glUseProgram(theProgram);
+			glBindVertexArray(vao);
+
+			modelToCameraStack.translate(posBase);
+			modelToCameraStack.rotateY(angBase);
+
+			// Draw left base.
+			{
+				modelToCameraStack.push();
+				
+				modelToCameraStack.translate(posBaseLeft);
+				modelToCameraStack.scale(1.0f, 1.0f, scaleBaseZ);
+				
+				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
+				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
+				
+				modelToCameraStack.pop();
+			}
+
+			// Draw right base.
+			{
+				modelToCameraStack.push();
+				
+				modelToCameraStack.translate(posBaseRight);
+				modelToCameraStack.scale(1.0f, 1.0f, scaleBaseZ);
+				
+				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
+				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
+				
+				modelToCameraStack.pop();
+			}
+
+			// Draw main arm.
+			drawUpperArm(modelToCameraStack);
+
+			glBindVertexArray(0);
+			glUseProgram(0);
+		}
+		
+		
+		public void drawUpperArm(MatrixStack modelToCameraStack) {
+			modelToCameraStack.push();
+			modelToCameraStack.rotateX(angUpperArm);
+
+			{
+				modelToCameraStack.push();
+				
+				modelToCameraStack.translate(0.0f, 0.0f, (sizeUpperArm / 2.0f) - 1.0f);
+				modelToCameraStack.scale(1.0f, 1.0f, sizeUpperArm / 2.0f);
+				
+				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
+				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
+				
+				modelToCameraStack.pop();
+			}
+
+			drawLowerArm(modelToCameraStack);
+
+			modelToCameraStack.pop();
+		}
+		
+		public void drawLowerArm(MatrixStack modelToCameraStack) {
+			modelToCameraStack.push();
+			
+			modelToCameraStack.translate(posLowerArm);
+			modelToCameraStack.rotateX(angLowerArm);
+
+			{
+				modelToCameraStack.push();
+				
+				modelToCameraStack.translate(0.0f, 0.0f, lenLowerArm / 2.0f);
+				modelToCameraStack.scale(widthLowerArm / 2.0f, widthLowerArm / 2.0f, lenLowerArm / 2.0f);
+				
+				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
+				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
+				
+				modelToCameraStack.pop();
+			}
+
+			drawWrist(modelToCameraStack);
+
+			modelToCameraStack.pop();
+		}
+		
+		public void drawWrist(MatrixStack modelToCameraStack) {
+			modelToCameraStack.push();
+			
+			modelToCameraStack.translate(posWrist);
+			modelToCameraStack.rotateZ(angWristRoll);
+			modelToCameraStack.rotateX(angWristPitch);
+
+			{
+				modelToCameraStack.push();
+				
+				modelToCameraStack.scale(widthWrist / 2.0f, widthWrist/ 2.0f, lenWrist / 2.0f);
+				
+				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
+				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
+				
+				modelToCameraStack.pop();
+			}
+
+			drawFingers(modelToCameraStack);
+
+			modelToCameraStack.pop();
+		}
+		
+		public void drawFingers(MatrixStack modelToCameraStack) {
+			// Draw left finger
+			modelToCameraStack.push();
+			
+			modelToCameraStack.translate(posLeftFinger);
+			modelToCameraStack.rotateY(angFingerOpen);
+
+			{
+				modelToCameraStack.push();
+				
+				modelToCameraStack.translate(0.0f, 0.0f, lenFinger / 2.0f);
+				modelToCameraStack.scale(widthFinger / 2.0f, widthFinger/ 2.0f, lenFinger / 2.0f);
+				
+				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
+				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
+				
+				modelToCameraStack.pop();
+			}
+
+			{
+				// Draw left lower finger
+				modelToCameraStack.push();
+				
+				modelToCameraStack.translate(0.0f, 0.0f, lenFinger);
+				modelToCameraStack.rotateY(-angLowerFinger);
+
+				{
+					modelToCameraStack.push();
+					
+					modelToCameraStack.translate(0.0f, 0.0f, lenFinger / 2.0f);
+					modelToCameraStack.scale(widthFinger / 2.0f, widthFinger/ 2.0f, lenFinger / 2.0f);
+					
+					glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
+					glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
+					
+					modelToCameraStack.pop();
+				}
+
+				modelToCameraStack.pop();
+			}
+
+			modelToCameraStack.pop();
+
+			// Draw right finger
+			{
+				modelToCameraStack.push();
+				
+				modelToCameraStack.translate(posRightFinger);
+				modelToCameraStack.rotateY(-angFingerOpen);
+	
+				{
+					modelToCameraStack.push();
+					
+					modelToCameraStack.translate(0.0f, 0.0f, lenFinger / 2.0f);
+					modelToCameraStack.scale(widthFinger / 2.0f, widthFinger/ 2.0f, lenFinger / 2.0f);
+					
+					glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
+					glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
+					
+					modelToCameraStack.pop();
+				}
+	
+				{
+					// Draw right lower finger
+					modelToCameraStack.push();
+					
+					modelToCameraStack.translate(0.0f, 0.0f, lenFinger);
+					modelToCameraStack.rotateY(angLowerFinger);
+	
+					{
+						modelToCameraStack.push();
+						
+						modelToCameraStack.translate(0.0f, 0.0f, lenFinger / 2.0f);
+						modelToCameraStack.scale(widthFinger / 2.0f, widthFinger/ 2.0f, lenFinger / 2.0f);
+						
+						glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
+						glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
+						
+						modelToCameraStack.pop();
+					}
+	
+					modelToCameraStack.pop();
+				}
+	
+				modelToCameraStack.pop();
+			}
+		}
+		
+		
+		public void adjBase(boolean bIncrement) {
+			angBase += bIncrement ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+			angBase = angBase % 360.0f;
+		}
+
+		public void adjUpperArm(boolean bIncrement) {
+			angUpperArm += bIncrement ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+			angUpperArm = clamp(angUpperArm, -90.0f, 0.0f);
+		}
+
+		public void adjLowerArm(boolean bIncrement) {
+			angLowerArm += bIncrement ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+			angLowerArm = clamp(angLowerArm, 0.0f, 146.25f);
+		}
+
+		public void adjWristPitch(boolean bIncrement) {
+			angWristPitch += bIncrement ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+			angWristPitch = clamp(angWristPitch, 0.0f, 90.0f);
+		}
+
+		public void adjWristRoll(boolean bIncrement) {
+			angWristRoll += bIncrement ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+			angWristRoll = angWristRoll % 360.0f;
+		}
+
+		public void adjFingerOpen(boolean bIncrement) {
+			angFingerOpen += bIncrement ? SMALL_ANGLE_INCREMENT * lastFrameDuration : -SMALL_ANGLE_INCREMENT * lastFrameDuration;
+			angFingerOpen = clamp(angFingerOpen, 9.0f, 90.0f);
+		}
 	}
 	
 	
@@ -403,371 +776,5 @@ public class Hierarchy04 extends GLWindow {
 		mat.put(15, 1); 
 
 		return mat;
-	}
-	
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	private class MatrixStack {	
-		
-		private Mat4 currentMatrix;
-		private float matrices[];
-		private int firstIndexUsable;
-		
-		private Mat4 tempMat;
-		
-		
-		
-		public MatrixStack() {
-			matrices = new float[160];														
-			currentMatrix = new Mat4(1);
-			
-			tempMat = new Mat4();
-			
-			firstIndexUsable = 0;
-		}
-
-		
-		
-		public void push() {
-			if (firstIndexUsable == matrices.length) {
-				// Double the size of matrices[]
-				float temp[] = new float[matrices.length * 2];
-				System.arraycopy(matrices, 0, temp, 0, matrices.length);
-				matrices = temp;
-			}
-			
-			// Store the currentMatrix in the buffer
-			System.arraycopy(currentMatrix.matrix, 0, matrices, firstIndexUsable, 16);		
-			firstIndexUsable += 16;
-		}
-
-		
-		public void pop() {
-			// Pop the last matrix pushed in the buffer and set it as currentMatrix
-			firstIndexUsable -= 16;
-			System.arraycopy(matrices, firstIndexUsable, currentMatrix.matrix, 0, 16);		
-		}
-
-		public Mat4 top() {		
-			return currentMatrix;
-		}
-		
-		
-		public void clear() {
-			currentMatrix.clear(1);
-
-			firstIndexUsable = 0;
-		}
-		
-		
-
-		public void rotateX(float fAngDeg) {
-			currentMatrix.mul(Mat4.getRotateX(fAngDeg));
-		}
-
-		public void rotateY(float fAngDeg) {
-			currentMatrix.mul(Mat4.getRotateY(fAngDeg));
-		}
-
-		public void rotateZ(float fAngDeg) {
-			currentMatrix.mul(Mat4.getRotateZ(fAngDeg));
-		}
-
-		
-		public void scale(float x, float y, float z) {
-			tempMat.clear(0);
-			tempMat.put(0, x);
-			tempMat.put(5, y);
-			tempMat.put(10, z);
-			tempMat.put(15, 1);
-
-			currentMatrix.mul(tempMat);
-		}
-
-		
-		public void translate(float x, float y, float z) {
-			tempMat.clear(1);
-			tempMat.put(12, x);
-			tempMat.put(13, y);
-			tempMat.put(14, z);
-
-			currentMatrix.mul(tempMat);
-		}
-
-		public void translate(Vec3 offset) {
-			translate(offset.x, offset.y, offset.z);
-		}
-	}	
-	
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	private class Hierarchy {
-		
-		private Vec3 posBase = new Vec3(3.0f, -5.0f, -40.0f);
-		private float angBase = -45.0f;
-
-		private Vec3 posBaseLeft = new Vec3(2.0f, 0.0f, 0.0f);
-		private Vec3 posBaseRight = new Vec3(-2.0f, 0.0f, 0.0f);
-		private float scaleBaseZ = 3.0f;
-
-		private float angUpperArm = -70.75f;
-		private float sizeUpperArm = 9;
-
-		private Vec3 posLowerArm = new Vec3(0.0f, 0.0f, 8.0f);
-		private float angLowerArm = 60.25f;
-		private float lenLowerArm = 5.0f;
-		private float widthLowerArm = 1.5f;
-
-		private Vec3 posWrist = new Vec3(0.0f, 0.0f, 5.0f);
-		private float angWristRoll = 0;
-		private float angWristPitch = 67.5f;
-		private float lenWrist = 2;
-		private float widthWrist = 2;
-
-		private Vec3 posLeftFinger = new Vec3(1.0f, 0.0f, 1.0f);
-		private Vec3 posRightFinger = new Vec3(-1.0f, 0.0f, 1.0f);
-		private float angFingerOpen = 45;
-		private float lenFinger = 2;
-		private float widthFinger = 0.5f;
-		private float angLowerFinger = 45;
-		
-		private MatrixStack modelToCameraStack = new MatrixStack();
-		private FloatBuffer tempSharedUniformMatrixBuffer = BufferUtils.createFloatBuffer(16);
-		
-		
-		void draw() {
-			modelToCameraStack.clear();
-
-			glUseProgram(theProgram);
-			glBindVertexArray(vao);
-
-			modelToCameraStack.translate(posBase);
-			modelToCameraStack.rotateY(angBase);
-
-			// Draw left base.
-			{
-				modelToCameraStack.push();
-				
-				modelToCameraStack.translate(posBaseLeft);
-				modelToCameraStack.scale(1.0f, 1.0f, scaleBaseZ);
-				
-				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
-				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
-				
-				modelToCameraStack.pop();
-			}
-
-			// Draw right base.
-			{
-				modelToCameraStack.push();
-				
-				modelToCameraStack.translate(posBaseRight);
-				modelToCameraStack.scale(1.0f, 1.0f, scaleBaseZ);
-				
-				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
-				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
-				
-				modelToCameraStack.pop();
-			}
-
-			// Draw main arm.
-			drawUpperArm(modelToCameraStack);
-
-			glBindVertexArray(0);
-			glUseProgram(0);
-		}
-		
-		
-		void drawUpperArm(MatrixStack modelToCameraStack) {
-			modelToCameraStack.push();
-			modelToCameraStack.rotateX(angUpperArm);
-
-			{
-				modelToCameraStack.push();
-				
-				modelToCameraStack.translate(0.0f, 0.0f, (sizeUpperArm / 2.0f) - 1.0f);
-				modelToCameraStack.scale(1.0f, 1.0f, sizeUpperArm / 2.0f);
-				
-				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
-				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
-				
-				modelToCameraStack.pop();
-			}
-
-			drawLowerArm(modelToCameraStack);
-
-			modelToCameraStack.pop();
-		}
-		
-		void drawLowerArm(MatrixStack modelToCameraStack) {
-			modelToCameraStack.push();
-			
-			modelToCameraStack.translate(posLowerArm);
-			modelToCameraStack.rotateX(angLowerArm);
-
-			{
-				modelToCameraStack.push();
-				
-				modelToCameraStack.translate(0.0f, 0.0f, lenLowerArm / 2.0f);
-				modelToCameraStack.scale(widthLowerArm / 2.0f, widthLowerArm / 2.0f, lenLowerArm / 2.0f);
-				
-				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
-				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
-				
-				modelToCameraStack.pop();
-			}
-
-			drawWrist(modelToCameraStack);
-
-			modelToCameraStack.pop();
-		}
-		
-		void drawWrist(MatrixStack modelToCameraStack) {
-			modelToCameraStack.push();
-			
-			modelToCameraStack.translate(posWrist);
-			modelToCameraStack.rotateZ(angWristRoll);
-			modelToCameraStack.rotateX(angWristPitch);
-
-			{
-				modelToCameraStack.push();
-				
-				modelToCameraStack.scale(widthWrist / 2.0f, widthWrist/ 2.0f, lenWrist / 2.0f);
-				
-				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
-				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
-				
-				modelToCameraStack.pop();
-			}
-
-			drawFingers(modelToCameraStack);
-
-			modelToCameraStack.pop();
-		}
-		
-		void drawFingers(MatrixStack modelToCameraStack) {
-			// Draw left finger
-			modelToCameraStack.push();
-			
-			modelToCameraStack.translate(posLeftFinger);
-			modelToCameraStack.rotateY(angFingerOpen);
-
-			{
-				modelToCameraStack.push();
-				
-				modelToCameraStack.translate(0.0f, 0.0f, lenFinger / 2.0f);
-				modelToCameraStack.scale(widthFinger / 2.0f, widthFinger/ 2.0f, lenFinger / 2.0f);
-				
-				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
-				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
-				
-				modelToCameraStack.pop();
-			}
-
-			{
-				// Draw left lower finger
-				modelToCameraStack.push();
-				
-				modelToCameraStack.translate(0.0f, 0.0f, lenFinger);
-				modelToCameraStack.rotateY(-angLowerFinger);
-
-				{
-					modelToCameraStack.push();
-					
-					modelToCameraStack.translate(0.0f, 0.0f, lenFinger / 2.0f);
-					modelToCameraStack.scale(widthFinger / 2.0f, widthFinger/ 2.0f, lenFinger / 2.0f);
-					
-					glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
-					glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
-					
-					modelToCameraStack.pop();
-				}
-
-				modelToCameraStack.pop();
-			}
-
-			modelToCameraStack.pop();
-
-			// Draw right finger
-			{
-				modelToCameraStack.push();
-				
-				modelToCameraStack.translate(posRightFinger);
-				modelToCameraStack.rotateY(-angFingerOpen);
-	
-				{
-					modelToCameraStack.push();
-					
-					modelToCameraStack.translate(0.0f, 0.0f, lenFinger / 2.0f);
-					modelToCameraStack.scale(widthFinger / 2.0f, widthFinger/ 2.0f, lenFinger / 2.0f);
-					
-					glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
-					glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
-					
-					modelToCameraStack.pop();
-				}
-	
-				{
-					// Draw right lower finger
-					modelToCameraStack.push();
-					
-					modelToCameraStack.translate(0.0f, 0.0f, lenFinger);
-					modelToCameraStack.rotateY(angLowerFinger);
-	
-					{
-						modelToCameraStack.push();
-						
-						modelToCameraStack.translate(0.0f, 0.0f, lenFinger / 2.0f);
-						modelToCameraStack.scale(widthFinger / 2.0f, widthFinger/ 2.0f, lenFinger / 2.0f);
-						
-						glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedUniformMatrixBuffer));
-						glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
-						
-						modelToCameraStack.pop();
-					}
-	
-					modelToCameraStack.pop();
-				}
-	
-				modelToCameraStack.pop();
-			}
-		}
-		
-		
-		void adjBase(boolean bIncrement) {
-			angBase += bIncrement ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
-			angBase = angBase % 360.0f;
-		}
-
-		void adjUpperArm(boolean bIncrement) {
-			angUpperArm += bIncrement ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
-			angUpperArm = clamp(angUpperArm, -90.0f, 0.0f);
-		}
-
-		void adjLowerArm(boolean bIncrement) {
-			angLowerArm += bIncrement ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
-			angLowerArm = clamp(angLowerArm, 0.0f, 146.25f);
-		}
-
-		void adjWristPitch(boolean bIncrement) {
-			angWristPitch += bIncrement ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
-			angWristPitch = clamp(angWristPitch, 0.0f, 90.0f);
-		}
-
-		void adjWristRoll(boolean bIncrement) {
-			angWristRoll += bIncrement ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
-			angWristRoll = angWristRoll % 360.0f;
-		}
-
-		void adjFingerOpen(boolean bIncrement) {
-			angFingerOpen += bIncrement ? SMALL_ANGLE_INCREMENT * lastFrameDuration : -SMALL_ANGLE_INCREMENT * lastFrameDuration;
-			angFingerOpen = clamp(angFingerOpen, 9.0f, 90.0f);
-		}
 	}
 }

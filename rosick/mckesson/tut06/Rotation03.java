@@ -27,14 +27,24 @@ import rosick.glm.Vec3;
 public class Rotation03 extends GLWindow {
 	
 	public static void main(String[] args) {		
-		new Rotation03().start(600, 600);
+		new Rotation03().start(800, 800);
 	}
 	
 	
+	private static final String BASEPATH = "/rosick/mckesson/tut06/data/";
 
+	
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
+	private int theProgram;
+	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
+	private FloatBuffer cameraToClipMatrixBuffer = IOUtils.allocFloats(new float[16]);
+	private FloatBuffer modelToCameraMatrixBuffer = IOUtils.allocFloats(new float[16]); 
+	private int vertexBufferObject, indexBufferObject;
+	private int vao;
+	
 	private final float vertexData[] = {
 		+1.0f, +1.0f, +1.0f,
 		-1.0f, -1.0f, +1.0f,
@@ -72,13 +82,7 @@ public class Rotation03 extends GLWindow {
 	private final int numberOfVertices = 8;
 	private final float fFrustumScale = calcFrustumScale(45.0f);
 	
-	private int theProgram;
-	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
-	private FloatBuffer cameraToClipMatrix, modelToCameraMatrix;	
-	private int vertexBufferObject, indexBufferObject;
-	private int vao;
-	
-	
+
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
@@ -112,8 +116,8 @@ public class Rotation03 extends GLWindow {
 	}
 	
 	private void initializeProgram() {	
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		"/rosick/mckesson/tut06/data/posColorLocalTransform.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	"/rosick/mckesson/tut06/data/colorPassthrough.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "posColorLocalTransform.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "colorPassthrough.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
@@ -126,21 +130,20 @@ public class Rotation03 extends GLWindow {
 		cameraToClipMatrixUnif = glGetUniformLocation(theProgram, "cameraToClipMatrix");
 		
 		float fzNear = 1.0f; float fzFar = 45.0f;
-		cameraToClipMatrix = IOUtils.allocFloats(new float[16]); 
-		cameraToClipMatrix.put(0, fFrustumScale);
-		cameraToClipMatrix.put(5, fFrustumScale);
-		cameraToClipMatrix.put(10, (fzFar + fzNear) / (fzNear - fzFar));
-		cameraToClipMatrix.put(11, -1.0f);
-		cameraToClipMatrix.put(14, (2 * fzFar * fzNear) / (fzNear - fzFar));
+
+		cameraToClipMatrixBuffer.put(0, 	fFrustumScale);
+		cameraToClipMatrixBuffer.put(5, 	fFrustumScale);
+		cameraToClipMatrixBuffer.put(10, 	(fzFar + fzNear) / (fzNear - fzFar));
+		cameraToClipMatrixBuffer.put(11, 	-1.0f);
+		cameraToClipMatrixBuffer.put(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
 		
-		modelToCameraMatrix = IOUtils.allocFloats(new float[16]); 
-		modelToCameraMatrix.put(0, 1);
-		modelToCameraMatrix.put(5, 1);
-		modelToCameraMatrix.put(10, 1);
-		modelToCameraMatrix.put(15, 1);
+		modelToCameraMatrixBuffer.put(0,	1.0f);
+		modelToCameraMatrixBuffer.put(5, 	1.0f);
+		modelToCameraMatrixBuffer.put(10, 	1.0f);
+		modelToCameraMatrixBuffer.put(15, 	1.0f);
 		
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix);
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrixBuffer);
 		glUseProgram(0);
 	}
 	
@@ -172,23 +175,23 @@ public class Rotation03 extends GLWindow {
 		glBindVertexArray(vao);
 		
 		nullRotation();
-		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrix);
+		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
 		rotateX((float) elapsedTimeSeconds);
-		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrix);
+		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
 		rotateY((float) elapsedTimeSeconds);
-		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrix);
+		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
 		rotateZ((float) elapsedTimeSeconds);
-		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrix);
+		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
 		rotateAxis((float) elapsedTimeSeconds);
-		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrix);
+		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
 		glBindVertexArray(0);
@@ -198,11 +201,11 @@ public class Rotation03 extends GLWindow {
 	
 	@Override
 	protected void reshape(int width, int height) {
-		cameraToClipMatrix.put(0, fFrustumScale / (width / (float) height));
-		cameraToClipMatrix.put(5, fFrustumScale);
+		cameraToClipMatrixBuffer.put(0, fFrustumScale / (width / (float) height));
+		cameraToClipMatrixBuffer.put(5, fFrustumScale);
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix);
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrixBuffer);
 		glUseProgram(0);
 
 		glViewport(0, 0, width, height);
@@ -231,25 +234,25 @@ public class Rotation03 extends GLWindow {
 	
 	private void nullRotation() {
 		// X coloumn
-		modelToCameraMatrix.put(0, 1); 												// x
-		modelToCameraMatrix.put(1, 0); 												// y
-		modelToCameraMatrix.put(2, 0); 												// z
+		modelToCameraMatrixBuffer.put(0, 1); 												// x
+		modelToCameraMatrixBuffer.put(1, 0); 												// y
+		modelToCameraMatrixBuffer.put(2, 0); 												// z
 		
 		// Y coloumn
-		modelToCameraMatrix.put(4, 0); 												// x
-		modelToCameraMatrix.put(5, 1);												// y
-		modelToCameraMatrix.put(6, 0); 												// z
+		modelToCameraMatrixBuffer.put(4, 0); 												// x
+		modelToCameraMatrixBuffer.put(5, 1);												// y
+		modelToCameraMatrixBuffer.put(6, 0); 												// z
 		
 		// Z coloumn
-		modelToCameraMatrix.put(8, 0); 												// x
-		modelToCameraMatrix.put(9, 0); 												// y
-		modelToCameraMatrix.put(10, 1); 											// z
+		modelToCameraMatrixBuffer.put(8, 0); 												// x
+		modelToCameraMatrixBuffer.put(9, 0); 												// y
+		modelToCameraMatrixBuffer.put(10, 1); 											// z
 		
 		
 		// Offset
-		modelToCameraMatrix.put(12, 0); 											// x
-		modelToCameraMatrix.put(13, 0); 											// y
-		modelToCameraMatrix.put(14, -25.0f); 										// z
+		modelToCameraMatrixBuffer.put(12, 0); 											// x
+		modelToCameraMatrixBuffer.put(13, 0); 											// y
+		modelToCameraMatrixBuffer.put(14, -25.0f); 										// z
 	}
 
 	
@@ -259,25 +262,25 @@ public class Rotation03 extends GLWindow {
 		float fSin = (float) Math.sin(fAngRad);
 		
 		// X coloumn
-		modelToCameraMatrix.put(0, 1); 
-		modelToCameraMatrix.put(1, 0); 
-		modelToCameraMatrix.put(2, 0); 
+		modelToCameraMatrixBuffer.put(0, 1); 
+		modelToCameraMatrixBuffer.put(1, 0); 
+		modelToCameraMatrixBuffer.put(2, 0); 
 		
 		// Y coloumn
-		modelToCameraMatrix.put(4, 0); 
-		modelToCameraMatrix.put(5, fCos); 
-		modelToCameraMatrix.put(6, fSin); 
+		modelToCameraMatrixBuffer.put(4, 0); 
+		modelToCameraMatrixBuffer.put(5, fCos); 
+		modelToCameraMatrixBuffer.put(6, fSin); 
 		
 		// Z coloumn
-		modelToCameraMatrix.put(8, 0); 
-		modelToCameraMatrix.put(9, -fSin); 
-		modelToCameraMatrix.put(10, fCos); 
+		modelToCameraMatrixBuffer.put(8, 0); 
+		modelToCameraMatrixBuffer.put(9, -fSin); 
+		modelToCameraMatrixBuffer.put(10, fCos); 
 		
 		
 		// Offset
-		modelToCameraMatrix.put(12, -5.0f); 
-		modelToCameraMatrix.put(13, -5.0f); 
-		modelToCameraMatrix.put(14, -25.0f); 
+		modelToCameraMatrixBuffer.put(12, -5.0f); 
+		modelToCameraMatrixBuffer.put(13, -5.0f); 
+		modelToCameraMatrixBuffer.put(14, -25.0f); 
 	}
 
 	
@@ -287,25 +290,25 @@ public class Rotation03 extends GLWindow {
 		float fSin = (float) Math.sin(fAngRad);
 		
 		// X column
-		modelToCameraMatrix.put(0, fCos); 
-		modelToCameraMatrix.put(1, 0); 
-		modelToCameraMatrix.put(2, -fSin); 
+		modelToCameraMatrixBuffer.put(0, fCos); 
+		modelToCameraMatrixBuffer.put(1, 0); 
+		modelToCameraMatrixBuffer.put(2, -fSin); 
 		
 		// Y column
-		modelToCameraMatrix.put(4, 0);
-		modelToCameraMatrix.put(5, 1); 
-		modelToCameraMatrix.put(6, 0);
+		modelToCameraMatrixBuffer.put(4, 0);
+		modelToCameraMatrixBuffer.put(5, 1); 
+		modelToCameraMatrixBuffer.put(6, 0);
 		
 		// Z column
-		modelToCameraMatrix.put(8, fSin); 
-		modelToCameraMatrix.put(9, 0); 
-		modelToCameraMatrix.put(10, fCos); 
+		modelToCameraMatrixBuffer.put(8, fSin); 
+		modelToCameraMatrixBuffer.put(9, 0); 
+		modelToCameraMatrixBuffer.put(10, fCos); 
 		
 		
 		// Offset
-		modelToCameraMatrix.put(12, -5.0f);
-		modelToCameraMatrix.put(13, 5.0f); 
-		modelToCameraMatrix.put(14, -25.0f); 
+		modelToCameraMatrixBuffer.put(12, -5.0f);
+		modelToCameraMatrixBuffer.put(13, 5.0f); 
+		modelToCameraMatrixBuffer.put(14, -25.0f); 
 	}
 	
 
@@ -315,25 +318,25 @@ public class Rotation03 extends GLWindow {
 		float fSin = (float) Math.sin(fAngRad);
 		
 		// X column
-		modelToCameraMatrix.put(0, fCos); 																
-		modelToCameraMatrix.put(1, fSin); 																
-		modelToCameraMatrix.put(2, 0); 																	
+		modelToCameraMatrixBuffer.put(0, fCos); 																
+		modelToCameraMatrixBuffer.put(1, fSin); 																
+		modelToCameraMatrixBuffer.put(2, 0); 																	
 		
 		// Y column
-		modelToCameraMatrix.put(4, -fSin); 																
-		modelToCameraMatrix.put(5, fCos); 																
-		modelToCameraMatrix.put(6, 0); 																	
+		modelToCameraMatrixBuffer.put(4, -fSin); 																
+		modelToCameraMatrixBuffer.put(5, fCos); 																
+		modelToCameraMatrixBuffer.put(6, 0); 																	
 		
 		// Z column
-		modelToCameraMatrix.put(8, 0);																	
-		modelToCameraMatrix.put(9, 0);																	
-		modelToCameraMatrix.put(10, 1); 																
+		modelToCameraMatrixBuffer.put(8, 0);																	
+		modelToCameraMatrixBuffer.put(9, 0);																	
+		modelToCameraMatrixBuffer.put(10, 1); 																
 		
 		
 		// Offset
-		modelToCameraMatrix.put(12, 5.0f); 																
-		modelToCameraMatrix.put(13, 5.0f); 																
-		modelToCameraMatrix.put(14, -25.0f); 															
+		modelToCameraMatrixBuffer.put(12, 5.0f); 																
+		modelToCameraMatrixBuffer.put(13, 5.0f); 																
+		modelToCameraMatrixBuffer.put(14, -25.0f); 															
 	}
 
 	
@@ -345,24 +348,24 @@ public class Rotation03 extends GLWindow {
 		Vec3 axis = Glm.normalize(new Vec3(1, 1, 1));
 		
 		// X column
-		modelToCameraMatrix.put(0, (axis.x * axis.x) + ((1 - axis.x * axis.x) * fCos)); 				
-		modelToCameraMatrix.put(1, axis.x * axis.y * (fInvCos) + (axis.z * fSin)); 						
-		modelToCameraMatrix.put(2, axis.x * axis.z * (fInvCos) - (axis.y * fSin)); 						
+		modelToCameraMatrixBuffer.put(0, (axis.x * axis.x) + ((1 - axis.x * axis.x) * fCos)); 				
+		modelToCameraMatrixBuffer.put(1, axis.x * axis.y * (fInvCos) + (axis.z * fSin)); 						
+		modelToCameraMatrixBuffer.put(2, axis.x * axis.z * (fInvCos) - (axis.y * fSin)); 						
 		
 		// Y column
-		modelToCameraMatrix.put(4, axis.x * axis.y * (fInvCos) - (axis.z * fSin)); 						
-		modelToCameraMatrix.put(5, (axis.y * axis.y) + ((1 - axis.y * axis.y) * fCos));					
-		modelToCameraMatrix.put(6, axis.y * axis.z * (fInvCos) + (axis.x * fSin)); 						
+		modelToCameraMatrixBuffer.put(4, axis.x * axis.y * (fInvCos) - (axis.z * fSin)); 						
+		modelToCameraMatrixBuffer.put(5, (axis.y * axis.y) + ((1 - axis.y * axis.y) * fCos));					
+		modelToCameraMatrixBuffer.put(6, axis.y * axis.z * (fInvCos) + (axis.x * fSin)); 						
 		
 		// Z column
-		modelToCameraMatrix.put(8, axis.x * axis.z * (fInvCos) + (axis.y * fSin)); 						
-		modelToCameraMatrix.put(9, axis.y * axis.z * (fInvCos) - (axis.x * fSin)); 						
-		modelToCameraMatrix.put(10, (axis.z * axis.z) + ((1 - axis.z * axis.z) * fCos)); 				
+		modelToCameraMatrixBuffer.put(8, axis.x * axis.z * (fInvCos) + (axis.y * fSin)); 						
+		modelToCameraMatrixBuffer.put(9, axis.y * axis.z * (fInvCos) - (axis.x * fSin)); 						
+		modelToCameraMatrixBuffer.put(10, (axis.z * axis.z) + ((1 - axis.z * axis.z) * fCos)); 				
 		
 		
 		// Offset
-		modelToCameraMatrix.put(12, 5.0f); 																
-		modelToCameraMatrix.put(13, -5.0f); 															
-		modelToCameraMatrix.put(14, -25.0f); 															
+		modelToCameraMatrixBuffer.put(12, 5.0f); 																
+		modelToCameraMatrixBuffer.put(13, -5.0f); 															
+		modelToCameraMatrixBuffer.put(14, -25.0f); 															
 	}
 }

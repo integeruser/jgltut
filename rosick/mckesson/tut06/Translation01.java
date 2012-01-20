@@ -25,14 +25,24 @@ import rosick.framework.IOUtils;
 public class Translation01 extends GLWindow {
 	
 	public static void main(String[] args) {		
-		new Translation01().start(600, 600);
+		new Translation01().start(800, 800);
 	}
 	
 	
+	private static final String BASEPATH = "/rosick/mckesson/tut06/data/";
 
+	
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
+	private int theProgram;
+	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
+	private FloatBuffer cameraToClipMatrixBuffer = IOUtils.allocFloats(new float[16]);
+	private FloatBuffer modelToCameraMatrixBuffer = IOUtils.allocFloats(new float[16]); 
+	private int vertexBufferObject, indexBufferObject;
+	private int vao;
+	
 	private final float vertexData[] = {
 		+1.0f, +1.0f, +1.0f,
 		-1.0f, -1.0f, +1.0f,
@@ -69,16 +79,9 @@ public class Translation01 extends GLWindow {
 	
 	private final int numberOfVertices = 8;
 	private final float fFrustumScale = calcFrustumScale(45.0f);
-	
-	private int theProgram;
-	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
-	private FloatBuffer cameraToClipMatrix = IOUtils.allocFloats(new float[16]);
-	private FloatBuffer modelToCameraMatrix = IOUtils.allocFloats(new float[16]); 
-	private int vertexBufferObject, indexBufferObject;
-	private int vao;
-	
-	
 
+
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
@@ -111,8 +114,8 @@ public class Translation01 extends GLWindow {
 	}
 	
 	private void initializeProgram() {	
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		"/rosick/mckesson/tut06/data/posColorLocalTransform.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	"/rosick/mckesson/tut06/data/colorPassthrough.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "posColorLocalTransform.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "colorPassthrough.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
@@ -125,19 +128,20 @@ public class Translation01 extends GLWindow {
 		cameraToClipMatrixUnif = glGetUniformLocation(theProgram, "cameraToClipMatrix");
 		
 		float fzNear = 1.0f; float fzFar = 45.0f;
-		cameraToClipMatrix.put(0, fFrustumScale);
-		cameraToClipMatrix.put(5, fFrustumScale);
-		cameraToClipMatrix.put(10, (fzFar + fzNear) / (fzNear - fzFar));
-		cameraToClipMatrix.put(11, -1.0f);
-		cameraToClipMatrix.put(14, (2 * fzFar * fzNear) / (fzNear - fzFar));
 		
-		modelToCameraMatrix.put(0, 1);
-		modelToCameraMatrix.put(5, 1);
-		modelToCameraMatrix.put(10, 1);
-		modelToCameraMatrix.put(15, 1);
+		cameraToClipMatrixBuffer.put(0, 	fFrustumScale);
+		cameraToClipMatrixBuffer.put(5, 	fFrustumScale);
+		cameraToClipMatrixBuffer.put(10, 	(fzFar + fzNear) / (fzNear - fzFar));
+		cameraToClipMatrixBuffer.put(11, 	-1.0f);
+		cameraToClipMatrixBuffer.put(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
+		
+		modelToCameraMatrixBuffer.put(0, 	1.0f);
+		modelToCameraMatrixBuffer.put(5, 	1.0f);
+		modelToCameraMatrixBuffer.put(10, 	1.0f);
+		modelToCameraMatrixBuffer.put(15, 	1.0f);
 		
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix);
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrixBuffer);
 		glUseProgram(0);
 	}
 	
@@ -169,15 +173,15 @@ public class Translation01 extends GLWindow {
 		glBindVertexArray(vao);
 		
 		stationaryOffset();
-		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrix);
+		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
 		ovalOffset((float) elapsedTimeSeconds);
-		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrix);
+		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
 		bottomCircleOffset((float) elapsedTimeSeconds);
-		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrix);
+		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
 		glBindVertexArray(0);
@@ -187,11 +191,11 @@ public class Translation01 extends GLWindow {
 	
 	@Override
 	protected void reshape(int width, int height) {
-		cameraToClipMatrix.put(0, fFrustumScale / (width / (float) height));
-		cameraToClipMatrix.put(5, fFrustumScale);
+		cameraToClipMatrixBuffer.put(0, fFrustumScale / (width / (float) height));
+		cameraToClipMatrixBuffer.put(5, fFrustumScale);
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix);
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrixBuffer);
 		glUseProgram(0);
 
 		glViewport(0, 0, width, height);
@@ -211,9 +215,9 @@ public class Translation01 extends GLWindow {
 	
 	
 	private void stationaryOffset() {
-		modelToCameraMatrix.put(12, 0);  																// x
-		modelToCameraMatrix.put(13, 0); 																// y
-		modelToCameraMatrix.put(14, -20); 																// z
+		modelToCameraMatrixBuffer.put(12, 0);  																// x
+		modelToCameraMatrixBuffer.put(13, 0); 																// y
+		modelToCameraMatrixBuffer.put(14, -20); 																// z
 	}
 
 	
@@ -222,9 +226,9 @@ public class Translation01 extends GLWindow {
 		final float fScale = 3.14159f * 2.0f / fLoopDuration;
 		float fCurrTimeThroughLoop = fElapsedTime % fLoopDuration;
 		
-		modelToCameraMatrix.put(12, (float) (Math.cos(fCurrTimeThroughLoop * fScale) * 4.f)); 			
-		modelToCameraMatrix.put(13, (float) (Math.sin(fCurrTimeThroughLoop * fScale) * 6.f)); 			
-		modelToCameraMatrix.put(14, -20); 																
+		modelToCameraMatrixBuffer.put(12, (float) (Math.cos(fCurrTimeThroughLoop * fScale) * 4.f)); 			
+		modelToCameraMatrixBuffer.put(13, (float) (Math.sin(fCurrTimeThroughLoop * fScale) * 6.f)); 			
+		modelToCameraMatrixBuffer.put(14, -20); 																
 	}
 
 	
@@ -233,8 +237,8 @@ public class Translation01 extends GLWindow {
 		final float fScale = 3.14159f * 2.0f / fLoopDuration;
 		float fCurrTimeThroughLoop = fElapsedTime % fLoopDuration;
 
-		modelToCameraMatrix.put(12, (float) (Math.cos(fCurrTimeThroughLoop * fScale) * 5.f)); 			
-		modelToCameraMatrix.put(13, -3.5f); 															
-		modelToCameraMatrix.put(14, (float) (Math.sin(fCurrTimeThroughLoop * fScale) * 5.f -20.f)); 	
+		modelToCameraMatrixBuffer.put(12, (float) (Math.cos(fCurrTimeThroughLoop * fScale) * 5.f)); 			
+		modelToCameraMatrixBuffer.put(13, -3.5f); 															
+		modelToCameraMatrixBuffer.put(14, (float) (Math.sin(fCurrTimeThroughLoop * fScale) * 5.f -20.f)); 	
 	}
 }

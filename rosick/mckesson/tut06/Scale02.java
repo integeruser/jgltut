@@ -25,14 +25,24 @@ import rosick.framework.IOUtils;
 public class Scale02 extends GLWindow {
 	
 	public static void main(String[] args) {		
-		new Scale02().start(600, 600);
+		new Scale02().start(800, 800);
 	}
 	
 	
+	private static final String BASEPATH = "/rosick/mckesson/tut06/data/";
 
+	
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
+	private int theProgram;
+	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
+	private FloatBuffer cameraToClipMatrixBuffer = IOUtils.allocFloats(new float[16]);
+	private FloatBuffer modelToCameraMatrixBuffer = IOUtils.allocFloats(new float[16]);  
+	private int vertexBufferObject, indexBufferObject;
+	private int vao;
+	
 	private final float vertexData[] = {
 		+1.0f, +1.0f, +1.0f,
 		-1.0f, -1.0f, +1.0f,
@@ -70,13 +80,7 @@ public class Scale02 extends GLWindow {
 	private final int numberOfVertices = 8;
 	private final float fFrustumScale = calcFrustumScale(45.0f);
 	
-	private int theProgram;
-	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
-	private FloatBuffer cameraToClipMatrix, modelToCameraMatrix; 
-	private int vertexBufferObject, indexBufferObject;
-	private int vao;
-	
-	
+
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
@@ -110,8 +114,8 @@ public class Scale02 extends GLWindow {
 	}
 	
 	private void initializeProgram() {	
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		"/rosick/mckesson/tut06/data/posColorLocalTransform.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	"/rosick/mckesson/tut06/data/colorPassthrough.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "posColorLocalTransform.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "colorPassthrough.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
@@ -124,21 +128,20 @@ public class Scale02 extends GLWindow {
 		cameraToClipMatrixUnif = glGetUniformLocation(theProgram, "cameraToClipMatrix");
 		
 		float fzNear = 1.0f; float fzFar = 45.0f;
-		cameraToClipMatrix = IOUtils.allocFloats(new float[16]);
-		cameraToClipMatrix.put(0, fFrustumScale);
-		cameraToClipMatrix.put(5, fFrustumScale);
-		cameraToClipMatrix.put(10, (fzFar + fzNear) / (fzNear - fzFar));
-		cameraToClipMatrix.put(11, -1.0f);
-		cameraToClipMatrix.put(14, (2 * fzFar * fzNear) / (fzNear - fzFar));
+
+		cameraToClipMatrixBuffer.put(0, 	fFrustumScale);
+		cameraToClipMatrixBuffer.put(5, 	fFrustumScale);
+		cameraToClipMatrixBuffer.put(10, 	(fzFar + fzNear) / (fzNear - fzFar));
+		cameraToClipMatrixBuffer.put(11, 	-1.0f);
+		cameraToClipMatrixBuffer.put(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
 		
-		modelToCameraMatrix = IOUtils.allocFloats(new float[16]); 
-		modelToCameraMatrix.put(0, 1);
-		modelToCameraMatrix.put(5, 1);
-		modelToCameraMatrix.put(10, 1);
-		modelToCameraMatrix.put(15, 1);
+		modelToCameraMatrixBuffer.put(0, 	1.0f);
+		modelToCameraMatrixBuffer.put(5, 	1.0f);
+		modelToCameraMatrixBuffer.put(10, 	1.0f);
+		modelToCameraMatrixBuffer.put(15, 	1.0f);
 		
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix);
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrixBuffer);
 		glUseProgram(0);
 	}
 	
@@ -170,23 +173,23 @@ public class Scale02 extends GLWindow {
 		glBindVertexArray(vao);
 		
 		nullScale();
-		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrix);
+		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
 		staticUniformScale();
-		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrix);
+		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
 		staticNonUniformScale();
-		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrix);
+		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
 		dynamicUniformScale((float) elapsedTimeSeconds);
-		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrix);
+		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
 		dynamicNonUniformScale((float) elapsedTimeSeconds);
-		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrix);
+		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
 		glBindVertexArray(0);
@@ -196,11 +199,11 @@ public class Scale02 extends GLWindow {
 	
 	@Override
 	protected void reshape(int width, int height) {
-		cameraToClipMatrix.put(0, fFrustumScale / (width / (float) height));
-		cameraToClipMatrix.put(5, fFrustumScale);
+		cameraToClipMatrixBuffer.put(0, fFrustumScale / (width / (float) height));
+		cameraToClipMatrixBuffer.put(5, fFrustumScale);
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix);
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrixBuffer);
 		glUseProgram(0);
 
 		glViewport(0, 0, width, height);
@@ -230,40 +233,40 @@ public class Scale02 extends GLWindow {
 	
 	private void nullScale() {
 		// Scale
-		modelToCameraMatrix.put(0, 1); 												// x
-		modelToCameraMatrix.put(5, 1); 												// y
-		modelToCameraMatrix.put(10, 1); 											// z
+		modelToCameraMatrixBuffer.put(0, 1); 												// x
+		modelToCameraMatrixBuffer.put(5, 1); 												// y
+		modelToCameraMatrixBuffer.put(10, 1); 											// z
 		
 		// Offset
-		modelToCameraMatrix.put(12, 0); 											// x
-		modelToCameraMatrix.put(13, 0); 											// y
-		modelToCameraMatrix.put(14, -45.0f); 										// z
+		modelToCameraMatrixBuffer.put(12, 0); 											// x
+		modelToCameraMatrixBuffer.put(13, 0); 											// y
+		modelToCameraMatrixBuffer.put(14, -45.0f); 										// z
 	}
 
 	
 	private void staticUniformScale() {
 		// Scale
-		modelToCameraMatrix.put(0, 4); 												
-		modelToCameraMatrix.put(5, 4); 												
-		modelToCameraMatrix.put(10, 4); 											
+		modelToCameraMatrixBuffer.put(0, 4); 												
+		modelToCameraMatrixBuffer.put(5, 4); 												
+		modelToCameraMatrixBuffer.put(10, 4); 											
 		
 		// Offset
-		modelToCameraMatrix.put(12, -10.0f); 									
-		modelToCameraMatrix.put(13, -10.0f); 										
-		modelToCameraMatrix.put(14, -45.0f); 										
+		modelToCameraMatrixBuffer.put(12, -10.0f); 									
+		modelToCameraMatrixBuffer.put(13, -10.0f); 										
+		modelToCameraMatrixBuffer.put(14, -45.0f); 										
 	}
 
 	
 	private void staticNonUniformScale() {
 		// Scale
-		modelToCameraMatrix.put(0, 0.5f);											
-		modelToCameraMatrix.put(5, 1); 												
-		modelToCameraMatrix.put(10, 10); 										
+		modelToCameraMatrixBuffer.put(0, 0.5f);											
+		modelToCameraMatrixBuffer.put(5, 1); 												
+		modelToCameraMatrixBuffer.put(10, 10); 										
 		
 		// Offset
-		modelToCameraMatrix.put(12, -10.0f); 										
-		modelToCameraMatrix.put(13, 10.0f); 										
-		modelToCameraMatrix.put(14, -45.0f); 										
+		modelToCameraMatrixBuffer.put(12, -10.0f); 										
+		modelToCameraMatrixBuffer.put(13, 10.0f); 										
+		modelToCameraMatrixBuffer.put(14, -45.0f); 										
 	}
 
 	
@@ -272,14 +275,14 @@ public class Scale02 extends GLWindow {
 		float val = 1.0f + 3.0f * calcLerpFactor(fElapsedTime, fLoopDuration);
 		
 		// Scale
-		modelToCameraMatrix.put(0, val);											
-		modelToCameraMatrix.put(5, val); 											
-		modelToCameraMatrix.put(10, val); 											
+		modelToCameraMatrixBuffer.put(0, val);											
+		modelToCameraMatrixBuffer.put(5, val); 											
+		modelToCameraMatrixBuffer.put(10, val); 											
 		
 		// Offset
-		modelToCameraMatrix.put(12, 10.0f);											
-		modelToCameraMatrix.put(13, 10.0f); 										
-		modelToCameraMatrix.put(14, -45.0f); 										
+		modelToCameraMatrixBuffer.put(12, 10.0f);											
+		modelToCameraMatrixBuffer.put(13, 10.0f); 										
+		modelToCameraMatrixBuffer.put(14, -45.0f); 										
 	}
 
 	
@@ -291,13 +294,13 @@ public class Scale02 extends GLWindow {
 		float valZ = 1.0f + 9.0f * calcLerpFactor(fElapsedTime, fZLoopDuration);
 		
 		// Scale
-		modelToCameraMatrix.put(0, valX); 											
-		modelToCameraMatrix.put(5, 1); 												
-		modelToCameraMatrix.put(10, valZ); 											
+		modelToCameraMatrixBuffer.put(0, valX); 											
+		modelToCameraMatrixBuffer.put(5, 1); 												
+		modelToCameraMatrixBuffer.put(10, valZ); 											
 		
 		// Offset
-		modelToCameraMatrix.put(12, 10.0f); 										
-		modelToCameraMatrix.put(13, -10.0f); 										
-		modelToCameraMatrix.put(14, -45.0f); 										
+		modelToCameraMatrixBuffer.put(12, 10.0f); 										
+		modelToCameraMatrixBuffer.put(13, -10.0f); 										
+		modelToCameraMatrixBuffer.put(14, -45.0f); 										
 	}
 }

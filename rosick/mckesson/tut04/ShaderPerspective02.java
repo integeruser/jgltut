@@ -28,9 +28,17 @@ public class ShaderPerspective02 extends GLWindow {
 	}
 	
 	
+	private static final String BASEPATH = "/rosick/mckesson/tut04/data/";
+
+	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private int theProgram;
+	private int offsetUniform;
+	private int vertexBufferObject;
+	private int vao;
 	
 	private final float vertexData[] = {
 		 0.25f,  0.25f, -1.25f, 1.0f,
@@ -133,10 +141,6 @@ public class ShaderPerspective02 extends GLWindow {
 		0.0f, 1.0f, 1.0f, 1.0f,
 	};
 	
-	private int theProgram;
-	private int offsetUniform;
-	private int vertexBufferObject;
-	private int vao;
 	private int frustumScaleUnif;
 	private int zNearUnif, zFarUnif;
 	
@@ -159,8 +163,8 @@ public class ShaderPerspective02 extends GLWindow {
 	}
 	
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		"/rosick/mckesson/tut04/data/manualPerspective.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	"/rosick/mckesson/tut04/data/standardColors.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "manualPerspective.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "standardColors.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);

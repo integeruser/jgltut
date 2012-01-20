@@ -13,11 +13,6 @@ import org.lwjgl.BufferUtils;
  */
 public class IOUtils {
 
-	/**
-	 * Create and fill a ShortBuffer given a short array.
-	 * @param shorts
-	 * @return the created ShortBuffer
-	 */
 	public static ShortBuffer allocShorts(short[] shorts) {
 		ShortBuffer sb = BufferUtils.createShortBuffer(shorts.length);
 		sb.put(shorts);
@@ -26,11 +21,6 @@ public class IOUtils {
     	return sb;
     }
 
-	/**
-	 * Create and fill a FloatBuffer given a float array.
-	 * @param floats
-	 * @return the created FloatBuffer
-	 */
 	public static FloatBuffer allocFloats(float[] floats) {
 		FloatBuffer fb = BufferUtils.createFloatBuffer(floats.length);
 		fb.put(floats);
@@ -40,11 +30,6 @@ public class IOUtils {
     }
   	
     
-    /**
-     * Load a file and return its content as a string.
-     * @param filepath the filepath of the file to load
-     * @return the content of the file
-     */
 	public static String loadFileAsString(String filepath) {
         StringBuilder text = new StringBuilder();
         

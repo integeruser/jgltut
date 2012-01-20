@@ -1,6 +1,11 @@
 package rosick.glm;
 
 
+/**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
+ * @author integeruser
+ */
 public class Glm {
 	
 	public static float clamp(float x, float minVal, float maxVal) {

@@ -6,6 +6,8 @@ import rosick.glm.Vec3;
 
 
 /**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
  * @author integeruser, xire-
  */
 public class MatrixStack {	

@@ -4,6 +4,8 @@ import java.nio.FloatBuffer;
 
 
 /**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
  * @author xire-
  */
 public class Mat4 {

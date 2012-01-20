@@ -59,7 +59,6 @@ import org.xml.sax.SAXException;
 
 /* * * *
  * TEMPORARY CLASS !!
- * It will be changed
  */
 
 
@@ -214,7 +213,7 @@ public class Mesh {
 	}
 	
 	public void render(String strMeshName) {
-		//TODO ha a che fare con i named vaos
+		//TODO da fare con i named VAOs
 	}
 	
 	public void deleteObjects() {

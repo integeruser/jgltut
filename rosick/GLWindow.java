@@ -43,8 +43,8 @@ public class GLWindow {
 		continueMainLoop = true;
 		
 		init();	
-
-
+		reshape(width, height);
+		
 		while (continueMainLoop) {
 			elapsedTimeSeconds = (System.nanoTime() - startTime) / 1000000000.0;
 					
@@ -54,7 +54,7 @@ public class GLWindow {
 			
 			update();
 			render();
-			
+
 			Display.update();
 			
 			if (Display.isCloseRequested()) {

@@ -73,11 +73,11 @@ public class WorldScene01 extends GLWindow {
 		initializeProgram();
 
 		try {
-			g_pConeMesh 		= new Mesh("/rosick/mckesson/data/tut07/UnitConeTint.xml");
-			g_pCylinderMesh 	= new Mesh("/rosick/mckesson/data/tut07/UnitCylinderTint.xml");
-			g_pCubeTintMesh 	= new Mesh("/rosick/mckesson/data/tut07/UnitCubeTint.xml");
-			g_pCubeColorMesh 	= new Mesh("/rosick/mckesson/data/tut07/UnitCubeColor.xml");
-			g_pPlaneMesh 		= new Mesh("/rosick/mckesson/data/tut07/UnitPlane.xml");
+			g_pConeMesh 		= new Mesh("/rosick/mckesson/tut07/data/UnitConeTint.xml");
+			g_pCylinderMesh 	= new Mesh("/rosick/mckesson/tut07/data/UnitCylinderTint.xml");
+			g_pCubeTintMesh 	= new Mesh("/rosick/mckesson/tut07/data/UnitCubeTint.xml");
+			g_pCubeColorMesh 	= new Mesh("/rosick/mckesson/tut07/data/UnitCubeColor.xml");
+			g_pPlaneMesh 		= new Mesh("/rosick/mckesson/tut07/data/UnitPlane.xml");
 		} catch (Exception exception) {
 			System.err.println(exception.getMessage());
 			System.exit(0);
@@ -113,9 +113,9 @@ public class WorldScene01 extends GLWindow {
 	}
 
 	private void initializeProgram() {
-		uniformColor = 		loadProgram("/rosick/mckesson/data/tut07/posOnlyWorldTransform.vert", 	"/rosick/mckesson/data/tut07/colorUniform.frag");
-		objectColor = 		loadProgram("/rosick/mckesson/data/tut07/posColorWorldTransform.vert", 	"/rosick/mckesson/data/tut07/colorPassthrough.frag");
-		uniformColorTint = 	loadProgram("/rosick/mckesson/data/tut07/posColorWorldTransform.vert", 	"/rosick/mckesson/data/tut07/colorMultUniform.frag");
+		uniformColor = 		loadProgram("/rosick/mckesson/tut07/data/posOnlyWorldTransform.vert", 	"/rosick/mckesson/tut07/data/colorUniform.frag");
+		objectColor = 		loadProgram("/rosick/mckesson/tut07/data/posColorWorldTransform.vert", 	"/rosick/mckesson/tut07/data/colorPassthrough.frag");
+		uniformColorTint = 	loadProgram("/rosick/mckesson/tut07/data/posColorWorldTransform.vert", 	"/rosick/mckesson/tut07/data/colorMultUniform.frag");
 	}
 
 

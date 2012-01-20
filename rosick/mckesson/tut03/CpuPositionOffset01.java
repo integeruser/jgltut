@@ -28,9 +28,16 @@ public class CpuPositionOffset01 extends GLWindow {
 	}
 	
 	
+	private static final String BASEPATH = "/rosick/mckesson/tut03/data/";
+
+	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private int theProgram;
+	private int positionBufferObject;
+	private int vao;
 	
 	private final float vertexPositions[] = {
 		0.25f, 0.25f, 0.0f, 1.0f,
@@ -38,9 +45,6 @@ public class CpuPositionOffset01 extends GLWindow {
 		-0.25f, -0.25f, 0.0f, 1.0f,
 	};
 	
-	private int theProgram;
-	private int positionBufferObject;
-	private int vao;
 	private float fXOffset, fYOffset;
 
 	
@@ -58,8 +62,8 @@ public class CpuPositionOffset01 extends GLWindow {
 	}
 	
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		"/rosick/mckesson/tut03/data/standard.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	"/rosick/mckesson/tut03/data/standard.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "standard.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "standard.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);

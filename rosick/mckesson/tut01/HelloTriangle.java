@@ -31,6 +31,10 @@ public class HelloTriangle extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
+	private int theProgram;
+	private int positionBufferObject;
+	private int vao;
+	
 	private final float vertexPositions[] = {
 		 0.75f,  0.75f, 0.0f, 1.0f,
 		 0.75f, -0.75f, 0.0f, 1.0f,
@@ -54,10 +58,6 @@ public class HelloTriangle extends GLWindow {
 		"{\n" +
 		"   outputColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n" +
 		"}";
-	
-	private int theProgram;
-	private int positionBufferObject;
-	private int vao;
 
 	
 

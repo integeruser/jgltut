@@ -28,19 +28,22 @@ public class FragPosition01 extends GLWindow {
 	}
 	
 	
+	private static final String BASEPATH = "/rosick/mckesson/tut02/data/";
+
+	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+	private int theProgram; 
+	private int vertexBufferObject;
+	private int vao;
+	
 	private final float vertexData[] = {											// 3 positions and 3 colors
 	    0.75f, 0.75f, 0.0f, 1.0f,
 	    0.75f, -0.75f, 0.0f, 1.0f,
 	    -0.75f, -0.75f, 0.0f, 1.0f,
 	};
-	
-	private int theProgram; 
-	private int vertexBufferObject;
-	private int vao;
 
 	
 	
@@ -57,8 +60,8 @@ public class FragPosition01 extends GLWindow {
 	}
 	
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER,		"/rosick/mckesson/tut02/data/fragPosition.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	"/rosick/mckesson/tut02/data/fragPosition.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER,		BASEPATH + "fragPosition.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "fragPosition.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);

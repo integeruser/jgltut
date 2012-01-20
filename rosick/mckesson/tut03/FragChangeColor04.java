@@ -28,20 +28,23 @@ public class FragChangeColor04 extends GLWindow {
 	}
 	
 	
+	private static final String BASEPATH = "/rosick/mckesson/tut03/data/";
+
+	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private int theProgram;
+	private int elapsedTimeUniform;
+	private int positionBufferObject;
+	private int vao;
 	
 	private final float vertexPositions[] = {
 		 0.25f,  0.25f, 0.0f, 1.0f,
 		 0.25f, -0.25f, 0.0f, 1.0f,
 		-0.25f, -0.25f, 0.0f, 1.0f,
 	};
-	
-	private int theProgram;
-	private int elapsedTimeUniform;
-	private int positionBufferObject;
-	private int vao;
 
 	
 	
@@ -58,8 +61,8 @@ public class FragChangeColor04 extends GLWindow {
 	}
 	
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		"/rosick/mckesson/tut03/data/calcOffset.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	"/rosick/mckesson/tut03/data/calcColor.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "calcOffset.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "calcColor.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);

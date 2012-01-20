@@ -4,8 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
-import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
+import static org.lwjgl.opengl.GL32.*;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -253,6 +252,7 @@ public class DepthClamping05 extends GLWindow {
 		} else {
 			glDisable(GL_DEPTH_CLAMP);
 		}
+		
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			leaveMainLoop();

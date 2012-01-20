@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
+import static org.lwjgl.opengl.GL32.*;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;

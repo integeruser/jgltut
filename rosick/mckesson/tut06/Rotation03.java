@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import rosick.GLWindow;
 import rosick.framework.Framework;
 import rosick.framework.IOUtils;
+import rosick.glm.Glm;
 import rosick.glm.Vec3;
 
 
@@ -339,7 +340,7 @@ public class Rotation03 extends GLWindow {
 		float fCos = (float) Math.cos(fAngRad);
 		float fInvCos = 1.0f - fCos;
 		float fSin = (float) Math.sin(fAngRad);
-		Vec3 axis = new Vec3(1, 1, 1).normalize();
+		Vec3 axis = Glm.normalize(new Vec3(1, 1, 1));
 		
 		// X column
 		modelToCameraMatrix.put(0, (axis.x * axis.x) + ((1 - axis.x * axis.x) * fCos)); 				

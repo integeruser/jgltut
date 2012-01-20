@@ -92,40 +92,9 @@ public class Vec3 {
 	}
 	
 	
-	public Vec3 normalize() {
-		if (x == 0 && y == 0 && z == 0) return this;
-		
-		float magnitude = length();
-		x = x / magnitude;
-		y = y / magnitude;
-		z = z / magnitude;
-		
-		return this;
-	}
-	
-	
-	public float length() {
-		return (float) Math.sqrt(x * x + y * y + z * z);
-	}
-	
-	public float squaredLength() {
-		return x * x + y * y + z * z;
-	}
-	
-
-	public float dot(Vec3 vec) {
-		return x * vec.x + y * vec.y + z * vec.z;
-	}
-	
-
-	public Vec3 cross(Vec3 vec) {
-		Vec3 res = cross(this, vec);
-
-		x = res.x;
-		y = res.y;
-		z = res.z;
-		
-		return this;
+	@Override
+	public String toString() {
+		return "X: " + x + ", Y: " + y + ", Z: " + z;
 	}
 
 	
@@ -134,56 +103,34 @@ public class Vec3 {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
 	public static Vec3 add(Vec3 a, Vec3 b) {
-		return new Vec3(a.x + b.x, a.y + b.y, a.z + b.z);
+		Vec3 vec = new Vec3(a);
+		
+		return vec.add(b);
 	}
 	
 	public static Vec3 sub(Vec3 a, Vec3 b) {
-		return new Vec3(a.x - b.x, a.y - b.y, a.z - b.z);
+		Vec3 vec = new Vec3(a);
+
+		return vec.sub(b);
 	}	
 	
-	
-	public static Vec3 scale(Vec3 vec, float scalar) {
-		return new Vec3(scalar * vec.x, scalar * vec.y, scalar * vec.z);
-	}
-	
-
-	public static Vec3 negate(Vec3 vec) {
-		return new Vec3(-vec.x, -vec.y, -vec.z);
-	}
-	
-
-	public static float dot(Vec3 a, Vec3 b) {
-		return a.x * b.x + a.y * b.y + a.z * b.z;
-	}
-	
-	
-	public static Vec3 cross(Vec3 a, Vec3 b) {
-		Vec3 res = new Vec3();
-		res.x = a.y * b.z - a.z * b.y;
-		res.y = a.z * b.x - a.x * b.z;
-		res.z = a.x * b.y - a.y * b.x;
-
-		return res;
-	}
-
-	public static Vec3 cross(Vec3 a, Vec3 b, Vec3 c) {
-		return cross(sub(b, a), sub(c, a));
-	}
-	
+	public static Vec3 mul(Vec3 a, Vec3 b) {	
+		Vec3 vec = new Vec3(a);
 		
-	public static Vec3 getNormal(Vec3 a, Vec3 b) {
-		return cross(a,b).normalize();
-	}
-	
-	public static Vec3 getNormal(Vec3 a, Vec3 b, Vec3 c) {
-		return cross(a,b).normalize();
+		return vec.mul(b);
 	}
 	
 	
-	public static float getAngle(Vec3 a, Vec3 b) {
-		a.normalize();
-		b.normalize();
+	public static Vec3 scale(Vec3 a, float scalar) {
+		Vec3 vec = new Vec3(a);
 		
-		return (a.x * b.x + a.y * b.y + a.z * b.z);
+		return vec.scale(scalar);
+	}
+	
+
+	public static Vec3 negate(Vec3 a) {
+		Vec3 vec = new Vec3(a);
+		
+		return vec.negate();
 	}
 }

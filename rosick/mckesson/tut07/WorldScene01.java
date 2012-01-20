@@ -21,6 +21,8 @@ import rosick.glutil.MatrixStack;
 
 
 /**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
  * II. Positioning
  * 7. World in Motion
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2007.html
@@ -33,7 +35,10 @@ public class WorldScene01 extends GLWindow {
 	}
 
 
+	private static final String BASEPATH = "/rosick/mckesson/tut07/data/";
 
+	
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -45,23 +50,23 @@ public class WorldScene01 extends GLWindow {
 		int baseColorUnif;
 	}
 	
-	private float g_fzNear = 1.0f;
-	private float g_fzFar = 1000.0f;
-
 	private ProgramData uniformColor;
 	private ProgramData objectColor;
 	private ProgramData uniformColorTint;
+	private FloatBuffer tempSharedBuffer = BufferUtils.createFloatBuffer(16);
+
+	private float g_fzNear = 1.0f;
+	private float g_fzFar = 1000.0f;
+	
+	private MatrixStack camMatrix = new MatrixStack(); 
+	private MatrixStack	modelMatrix = new MatrixStack();
+	private MatrixStack	persMatrix = new MatrixStack();
 	
 	private Mesh g_pConeMesh;
 	private Mesh g_pCylinderMesh;
 	private Mesh g_pCubeTintMesh;
 	private Mesh g_pCubeColorMesh;
 	private Mesh g_pPlaneMesh;
-
-	private MatrixStack camMatrix = new MatrixStack(); 
-	private MatrixStack	modelMatrix = new MatrixStack();
-	private MatrixStack	persMatrix = new MatrixStack();
-	private FloatBuffer tempSharedBuffer = BufferUtils.createFloatBuffer(16);
 
 
 
@@ -73,11 +78,11 @@ public class WorldScene01 extends GLWindow {
 		initializeProgram();
 
 		try {
-			g_pConeMesh 		= new Mesh("/rosick/mckesson/tut07/data/UnitConeTint.xml");
-			g_pCylinderMesh 	= new Mesh("/rosick/mckesson/tut07/data/UnitCylinderTint.xml");
-			g_pCubeTintMesh 	= new Mesh("/rosick/mckesson/tut07/data/UnitCubeTint.xml");
-			g_pCubeColorMesh 	= new Mesh("/rosick/mckesson/tut07/data/UnitCubeColor.xml");
-			g_pPlaneMesh 		= new Mesh("/rosick/mckesson/tut07/data/UnitPlane.xml");
+			g_pConeMesh 		= new Mesh(BASEPATH + "UnitConeTint.xml");
+			g_pCylinderMesh 	= new Mesh(BASEPATH + "UnitCylinderTint.xml");
+			g_pCubeTintMesh 	= new Mesh(BASEPATH + "UnitCubeTint.xml");
+			g_pCubeColorMesh 	= new Mesh(BASEPATH + "UnitCubeColor.xml");
+			g_pPlaneMesh 		= new Mesh(BASEPATH + "UnitPlane.xml");
 		} catch (Exception exception) {
 			System.err.println(exception.getMessage());
 			System.exit(0);
@@ -113,9 +118,9 @@ public class WorldScene01 extends GLWindow {
 	}
 
 	private void initializeProgram() {
-		uniformColor = 		loadProgram("/rosick/mckesson/tut07/data/posOnlyWorldTransform.vert", 	"/rosick/mckesson/tut07/data/colorUniform.frag");
-		objectColor = 		loadProgram("/rosick/mckesson/tut07/data/posColorWorldTransform.vert", 	"/rosick/mckesson/tut07/data/colorPassthrough.frag");
-		uniformColorTint = 	loadProgram("/rosick/mckesson/tut07/data/posColorWorldTransform.vert", 	"/rosick/mckesson/tut07/data/colorMultUniform.frag");
+		uniformColor = 		loadProgram(BASEPATH + "posOnlyWorldTransform.vert",	BASEPATH + "colorUniform.frag");
+		objectColor = 		loadProgram(BASEPATH + "posColorWorldTransform.vert", 	BASEPATH + "colorPassthrough.frag");
+		uniformColorTint = 	loadProgram(BASEPATH + "posColorWorldTransform.vert", 	BASEPATH + "colorMultUniform.frag");
 	}
 
 
@@ -182,7 +187,7 @@ public class WorldScene01 extends GLWindow {
 
 
 	@Override
-	protected void render() {
+	protected void display() {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

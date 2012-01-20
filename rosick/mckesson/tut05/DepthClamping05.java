@@ -162,6 +162,7 @@ public class DepthClamping05 extends GLWindow {
 	private FloatBuffer perspectiveMatrixBuffer;
 	private int vertexBufferObject, indexBufferObject;
 	private int vao;
+	private boolean bDepthClampingActive;
 	
 	
 
@@ -247,10 +248,17 @@ public class DepthClamping05 extends GLWindow {
 		
 	@Override
 	protected void update() {
-		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-			glEnable(GL_DEPTH_CLAMP);
-		} else {
-			glDisable(GL_DEPTH_CLAMP);
+		while (Keyboard.next()) {
+			if (Keyboard.getEventKeyState()) {
+				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+					if(bDepthClampingActive)
+						glDisable(GL_DEPTH_CLAMP);
+					else
+						glEnable(GL_DEPTH_CLAMP);
+					
+					bDepthClampingActive = !bDepthClampingActive;	
+				}
+			}
 		}
 		
 		

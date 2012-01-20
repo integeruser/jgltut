@@ -14,6 +14,8 @@ import rosick.framework.IOUtils;
 
 
 /**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
  * II. Positioning
  * Chapter 3. OpenGL's Moving Triangle
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2003.html
@@ -77,7 +79,7 @@ public class CpuPositionOffset01 extends GLWindow {
 	
 		
 	@Override
-	protected void render() {	
+	protected void display() {	
 		computePositionOffsets();
 	    adjustVertexData();
 		

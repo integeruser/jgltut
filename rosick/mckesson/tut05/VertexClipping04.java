@@ -16,6 +16,8 @@ import rosick.framework.IOUtils;
 
 
 /**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
  * II. Positioning
  * 5. Objects in Depth
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2005.html
@@ -244,7 +246,7 @@ public class VertexClipping04 extends GLWindow {
 	
 		
 	@Override
-	protected void render() {
+	protected void display() {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

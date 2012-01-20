@@ -14,6 +14,8 @@ import rosick.framework.IOUtils;
 
 
 /**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
  * II. Positioning
  * 4. Objects at Rest 
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2004.html
@@ -179,7 +181,7 @@ public class OrthoCube01 extends GLWindow {
 	
 
 	@Override
-	protected void render() {		
+	protected void display() {		
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 

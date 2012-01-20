@@ -13,6 +13,8 @@ import rosick.framework.IOUtils;
 
 
 /**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
  * I. The Basics
  * Chapter 1. Hello, Triangle! 
  * http://www.arcsynthesis.org/gltut/Basics/Tutorial%2001.html
@@ -97,7 +99,7 @@ public class HelloTriangle extends GLWindow {
 
 		
 	@Override
-	protected void render() {	
+	protected void display() {	
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 

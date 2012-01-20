@@ -14,6 +14,8 @@ import rosick.framework.IOUtils;
 
 
 /**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
  * I. The Basics
  * Chapter 2. Playing with Colors
  * http://www.arcsynthesis.org/gltut/Basics/Tutorial%2002.html
@@ -79,7 +81,7 @@ public class VertexColor02 extends GLWindow {
 	
 		
 	@Override
-	protected void render() {	
+	protected void display() {	
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 

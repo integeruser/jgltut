@@ -14,6 +14,8 @@ import rosick.framework.IOUtils;
 
 
 /**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
  * II. Positioning
  * Chapter 3. OpenGL's Moving Triangle
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2003.html
@@ -85,7 +87,7 @@ public class VertCalcOffset03 extends GLWindow {
 	
 		
 	@Override
-	protected void render() {			
+	protected void display() {			
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 

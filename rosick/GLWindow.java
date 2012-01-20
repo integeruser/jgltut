@@ -12,6 +12,8 @@ import org.lwjgl.opengl.DisplayMode;
 
 
 /**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
  * @author integeruser
  */
 public class GLWindow {
@@ -53,7 +55,7 @@ public class GLWindow {
 		    lastFrameTimestamp = now;
 			
 			update();
-			render();
+			display();
 
 			Display.update();
 			
@@ -78,7 +80,8 @@ public class GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	protected void init() {};
+	protected void init() {
+	};
 	
 	
 	protected void update() {
@@ -88,7 +91,7 @@ public class GLWindow {
 	};
 	
 	
-	protected void render() {
+	protected void display() {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 	};

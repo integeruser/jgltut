@@ -1,5 +1,6 @@
 package rosick.glutil;
 
+import rosick.glm.Glm;
 import rosick.glm.Mat4;
 import rosick.glm.Vec3;
 
@@ -12,9 +13,7 @@ public class MatrixStack {
 	private Mat4 currentMatrix;
 	private float matrices[];
 	private int firstIndexUsable;
-	
-	private Mat4 tempMat;
-	
+		
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -23,9 +22,7 @@ public class MatrixStack {
 	public MatrixStack() {
 		matrices = new float[1600];													// 100 matrices		
 		currentMatrix = new Mat4(1);
-		
-		tempMat = new Mat4();
-		
+				
 		firstIndexUsable = 0;
 	}
 
@@ -65,6 +62,12 @@ public class MatrixStack {
 		firstIndexUsable = 0;
 	}
 	
+	public void clear(Mat4 mat) {
+		currentMatrix = new Mat4(mat);
+
+		firstIndexUsable = 0;
+	}
+	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -84,30 +87,39 @@ public class MatrixStack {
 
 	
 	public void scale(float x, float y, float z) {
-		tempMat.clear(0);
-		tempMat.put(0, x);
-		tempMat.put(5, y);
-		tempMat.put(10, z);
-		tempMat.put(15, 1);
+		Mat4 mat = new Mat4();
+		
+		mat.clear(0);
+		mat.put(0, x);
+		mat.put(5, y);
+		mat.put(10, z);
+		mat.put(15, 1);
 
-		currentMatrix.mul(tempMat);
+		currentMatrix.mul(mat);
 	}
 
-	public void scale(Vec3 scale) {
-		scale(scale.x, scale.y, scale.z);
+	public void scale(Vec3 vec) {
+		scale(vec.x, vec.y, vec.z);
 	}
 
 	
 	public void translate(float x, float y, float z) {
-		tempMat.clear(1);
-		tempMat.put(12, x);
-		tempMat.put(13, y);
-		tempMat.put(14, z);
+		Mat4 mat = new Mat4();
 
-		currentMatrix.mul(tempMat);
+		mat.clear(1);
+		mat.put(12, x);
+		mat.put(13, y);
+		mat.put(14, z);
+
+		currentMatrix.mul(mat);
 	}
 
-	public void translate(Vec3 offset) {
-		translate(offset.x, offset.y, offset.z);
+	public void translate(Vec3 vec) {
+		translate(vec.x, vec.y, vec.z);
+	}
+	
+	
+	public void perspective(float fovy, float aspect, float zNear, float zFar) {
+		currentMatrix.mul(Glm.perspective(fovy, aspect, zNear, zFar));
 	}
 }

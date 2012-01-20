@@ -10,9 +10,6 @@ public class Mat4 {
 	
 	private static final float fDegToRad = 3.14159f * 2.0f / 360.0f;
 	
-	private static float fAngRad, fCos, fSin;
-	private static Mat4 tempMat = new Mat4();
-
 	public float[] matrix;
 	
 
@@ -32,9 +29,9 @@ public class Mat4 {
 		matrix[15] = diagonal;
 	}
 
-	public Mat4(float m[]) {
-		matrix = new float[16];
-		System.arraycopy(m, 0, matrix, 0, 16);
+	public Mat4(float matrix[]) {
+		this.matrix = new float[16];
+		System.arraycopy(matrix, 0, this.matrix, 0, 16);
 	}
 	
 	public Mat4(Mat4 mat) {
@@ -83,18 +80,9 @@ public class Mat4 {
 
 	
 	public void clear(float diagonal) {
-		matrix[1] = 0;
-		matrix[2] = 0;
-		matrix[3] = 0;
-		matrix[4] = 0;
-		matrix[6] = 0;
-		matrix[7] = 0;
-		matrix[8] = 0;
-		matrix[9] = 0;
-		matrix[11] = 0;
-		matrix[12] = 0;
-		matrix[13] = 0;
-		matrix[14] = 0;
+		for (int i = 0; i < 16; i++) {
+			matrix[i] = 0.0f;
+		}
 		
 		matrix[0] = diagonal;
 		matrix[5] = diagonal;
@@ -119,6 +107,7 @@ public class Mat4 {
 	}
 
 
+	@Override
 	public String toString() {
 		String ris = "";
 
@@ -133,101 +122,89 @@ public class Mat4 {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	public static Mat4 transpose(Mat4 mat) {
-		float source[] = mat.matrix;
-		float destination[] = new float[16];
 
-		for( int i = 0; i < 16; i++ )
-			for( int j = 0; j < 16; j++ )
-				destination[j+i*16] = source[i+j*16];
-		
-		return new Mat4(destination);
-	}
-	
-	
 	public static Mat4 getRotateX(float angDeg) {
-		fAngRad = degToRad(angDeg);
-		fCos = (float) Math.cos(fAngRad);
-		fSin = (float) Math.sin(fAngRad);
+		float fAngRad = degToRad(angDeg);
+		float fCos = (float) Math.cos(fAngRad);
+		float fSin = (float) Math.sin(fAngRad);
 
-		tempMat.clear(0);
+		Mat4 mat = new Mat4();
 
 		// X column
-		tempMat.put(0, 1); 															// x
-		tempMat.put(1, 0); 															// y
-		tempMat.put(2, 0); 															// z
+		mat.put(0, 1); 															// x
+		mat.put(1, 0); 															// y
+		mat.put(2, 0); 															// z
 
 		// Y column
-		tempMat.put(4, 0); 															// x
-		tempMat.put(5, fCos); 														// y
-		tempMat.put(6, fSin); 														// z
+		mat.put(4, 0); 															// x
+		mat.put(5, fCos); 														// y
+		mat.put(6, fSin); 														// z
 
 		// Z column
-		tempMat.put(8, 0); 															// x
-		tempMat.put(9, -fSin); 														// y
-		tempMat.put(10, fCos); 														// z
+		mat.put(8, 0); 															// x
+		mat.put(9, -fSin); 														// y
+		mat.put(10, fCos); 														// z
 
 		// Last
-		tempMat.put(15, 1); 
+		mat.put(15, 1); 
 
-		return tempMat;
+		return mat;
 	}
 
 	public static Mat4 getRotateY(float angDeg) {
-		fAngRad = degToRad(angDeg);
-		fCos = (float) Math.cos(fAngRad);
-		fSin = (float) Math.sin(fAngRad);
+		float fAngRad = degToRad(angDeg);
+		float fCos = (float) Math.cos(fAngRad);
+		float fSin = (float) Math.sin(fAngRad);
 
-		tempMat.clear(0);
+		Mat4 mat = new Mat4();
 
 		// X column
-		tempMat.put(0, fCos); 
-		tempMat.put(1, 0); 
-		tempMat.put(2, -fSin);
+		mat.put(0, fCos); 
+		mat.put(1, 0); 
+		mat.put(2, -fSin);
 
 		// Y column
-		tempMat.put(4, 0); 
-		tempMat.put(5, 1); 
-		tempMat.put(6, 0); 
+		mat.put(4, 0); 
+		mat.put(5, 1); 
+		mat.put(6, 0); 
 
 		// Z column
-		tempMat.put(8, fSin); 
-		tempMat.put(9, 0);
-		tempMat.put(10, fCos); 
+		mat.put(8, fSin); 
+		mat.put(9, 0);
+		mat.put(10, fCos); 
 
 		// Last
-		tempMat.put(15, 1); 
+		mat.put(15, 1); 
 
-		return tempMat;
+		return mat;
 	}
 
 	public static Mat4 getRotateZ(float angDeg) {
-		fAngRad = degToRad(angDeg);
-		fCos = (float) Math.cos(fAngRad);
-		fSin = (float) Math.sin(fAngRad);
+		float fAngRad = degToRad(angDeg);
+		float fCos = (float) Math.cos(fAngRad);
+		float fSin = (float) Math.sin(fAngRad);
 
-		tempMat.clear(0);
+		Mat4 mat = new Mat4();
 
 		// X column
-		tempMat.put(0, fCos); 
-		tempMat.put(1, fSin); 
-		tempMat.put(2, 0);
+		mat.put(0, fCos); 
+		mat.put(1, fSin); 
+		mat.put(2, 0);
 
 		// Y column
-		tempMat.put(4, -fSin);
-		tempMat.put(5, fCos); 
-		tempMat.put(6, 0); 
+		mat.put(4, -fSin);
+		mat.put(5, fCos); 
+		mat.put(6, 0); 
 
 		// Z column
-		tempMat.put(8, 0); 
-		tempMat.put(9, 0); 
-		tempMat.put(10, 1); 
+		mat.put(8, 0); 
+		mat.put(9, 0); 
+		mat.put(10, 1); 
 
 		// Last
-		tempMat.put(15, 1); 
+		mat.put(15, 1); 
 
-		return tempMat;
+		return mat;
 	}
 
 

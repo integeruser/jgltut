@@ -4,7 +4,7 @@ OpenGL tutorials with LWJGL
 Hi all!
 We are right OpenGL beginners like a lot of you, and we know how frustrating is not find any good resources on modern OpenGL programming techniques, so
 we are proud to start this project for porting McKesson's tutorials to Java with LWJGL.
-This is the book where to start: http://www.arcsynthesis.org/gltut/index.html
+[Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html) is the book where to start. 
 We decided to put online our work, although it is far from complete, to give to all LWJGL users a nice starting point for the understanding of OpenGL 3.3.
 We are dedicating to this project most of our free time and it will update frequently.
 Best regards,
@@ -25,7 +25,7 @@ We decided to port the tutorials in a manner as similar as possible to the origi
 * "rosick/mckesson"  : package with LWJGL porting of Jason McKesson's tutorials.
 
 To try our work, we recommend using Eclipse ide. Open Eclipse, copy or link the "rosick" package into an existing project (in the "src" folder) and, if you haven't already done, 
-add and configure the LWJGL library (visit http://www.lwjgl.org/ for further information) in the project build path. Open any tutorial and just click the play button.
+add and configure the LWJGL library (visit [LWJGL home](http://www.lwjgl.org/) for further information) in the project build path. Open any tutorial and just click the play button.
 
 
 Github users

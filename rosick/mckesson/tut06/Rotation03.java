@@ -80,7 +80,6 @@ public class Rotation03 extends GLWindow {
 	};
 	
 	private final int numberOfVertices = 8;
-	private final float fFrustumScale = calcFrustumScale(45.0f);
 	
 
 
@@ -178,19 +177,19 @@ public class Rotation03 extends GLWindow {
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
-		rotateX((float) elapsedTimeSeconds);
+		rotateX((float) elapsedTime);
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
-		rotateY((float) elapsedTimeSeconds);
+		rotateY((float) elapsedTime);
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
-		rotateZ((float) elapsedTimeSeconds);
+		rotateZ((float) elapsedTime);
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
-		rotateAxis((float) elapsedTimeSeconds);
+		rotateAxis((float) elapsedTime);
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
@@ -215,6 +214,9 @@ public class Rotation03 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final float fFrustumScale = calcFrustumScale(45.0f);
+
 	
 	private float calcFrustumScale(float fFovDeg) {
 		final float degToRad = 3.14159f * 2.0f / 360.0f;

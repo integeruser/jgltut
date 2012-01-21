@@ -78,7 +78,6 @@ public class Scale02 extends GLWindow {
 	};
 	
 	private final int numberOfVertices = 8;
-	private final float fFrustumScale = calcFrustumScale(45.0f);
 	
 
 
@@ -184,11 +183,11 @@ public class Scale02 extends GLWindow {
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
-		dynamicUniformScale((float) elapsedTimeSeconds);
+		dynamicUniformScale((float) elapsedTime);
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
-		dynamicNonUniformScale((float) elapsedTimeSeconds);
+		dynamicNonUniformScale((float) elapsedTime);
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
@@ -213,6 +212,9 @@ public class Scale02 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final float fFrustumScale = calcFrustumScale(45.0f);
+
 	
 	private float calcFrustumScale(float fFovDeg) {
 		final float degToRad = 3.14159f * 2.0f / 360.0f;

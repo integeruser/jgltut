@@ -98,7 +98,7 @@ public class FragChangeColor04 extends GLWindow {
 
 		glUseProgram(theProgram);
 		
-		glUniform1f(elapsedTimeUniform, (float) elapsedTimeSeconds);
+		glUniform1f(elapsedTimeUniform, (float) elapsedTime);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
 		glEnableVertexAttribArray(0);

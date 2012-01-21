@@ -15,7 +15,8 @@ import org.lwjgl.opengl.DisplayMode;
  */
 public class GLWindow {
 	
-	protected double elapsedTimeSeconds; 
+	// Measured in seconds
+	protected double elapsedTime; 
 	protected double lastFrameDuration;
 	
 	private double lastFrameTimestamp, now;
@@ -45,7 +46,7 @@ public class GLWindow {
 		reshape(width, height);
 		
 		while (continueMainLoop) {
-			elapsedTimeSeconds = (System.nanoTime() - startTime) / 1000000000.0;
+			elapsedTime = (System.nanoTime() - startTime) / 1000000000.0;
 					
 			now = System.nanoTime();
 		    lastFrameDuration = (now - lastFrameTimestamp) / 1000000000.0;

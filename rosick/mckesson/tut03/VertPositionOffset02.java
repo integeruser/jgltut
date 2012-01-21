@@ -46,10 +46,8 @@ public class VertPositionOffset02 extends GLWindow {
 		-0.25f, -0.25f, 0.0f, 1.0f,
 	};
 	
-	private float fXOffset, fYOffset;
 
-	
-	
+		
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -112,6 +110,9 @@ public class VertPositionOffset02 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private float fXOffset, fYOffset;
+
 	
 	private void computePositionOffsets() {
 		final float fLoopDuration = 5.0f;

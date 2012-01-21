@@ -138,7 +138,6 @@ public class Hierarchy04 extends GLWindow {
 	};
 	
 	private final int numberOfVertices = 24;
-	private final float fFrustumScale = calcFrustumScale(45.0f);
 	
 
 	
@@ -667,6 +666,9 @@ public class Hierarchy04 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final float fFrustumScale = calcFrustumScale(45.0f);
+
 	
 	private float calcFrustumScale(float fFovDeg) {
 		final float degToRad = 3.14159f * 2.0f / 360.0f;

@@ -17,10 +17,12 @@ Francesco & Marco
 Project information
 -------------------
 The project is developed with Java 1.7 and LWJGL 2.8.2, and may not work with older versions.
+
 * "rosick/framework" : package with common classes.
 * "rosick/glm"       : package with math classes.
 * "rosick/glutil"    : package with opengl-related classes.
 * "rosick/mckesson"  : package with LWJGL porting of Jason McKesson's tutorials.
+
 To try our work, we recommend using Eclipse ide. Open Eclipse, copy or link the "rosick" package into an existing project (in the "src" folder) and, if you haven't already done, 
 add and configure the LWJGL library (visit [LWJGL home](http://www.lwjgl.org/) for further information) in the project build path. Open any tutorial and just click the play button.
 

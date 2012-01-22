@@ -41,6 +41,7 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -55,24 +56,34 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-
-/* * * *
- * TEMPORARY CLASS !!
- */
-
-
+/*
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.*;
+import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL14.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL21.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL31.*;
+import static org.lwjgl.opengl.GL32.*;
+import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.opengl.GL40.*;
+import static org.lwjgl.opengl.GL41.*;
+import static org.lwjgl.opengl.GL42.*;
+*/
 public class Mesh {
-	int oAttribArraysBuffer = 0;
-	int oIndexBuffer = 0;
-	int oVAO = 0;
+	private int oAttribArraysBuffer = 0;
+	private int oIndexBuffer = 0;
+	private int oVAO = 0;
 	
-	ArrayList<RenderCmd> primitives = new ArrayList<>();
+	private ArrayList<RenderCmd> primitives = new ArrayList<>();
+	private Map<String, Integer> namedVAOs = new HashMap<>();
 	
 	public Mesh(String filePath) {
 		ArrayList<Attribute> attribs = new ArrayList<>(16);
 		ArrayList<IndexData> indexData = new ArrayList<>();
-		//ArrayList<NamedVAO> namedVaoList = new ArrayList<>();
+		ArrayList<NamedVAO> namedVaoList = new ArrayList<>();
 		
 	
 		//crea il parser e ci associa il file di input
@@ -81,9 +92,9 @@ public class Mesh {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(ClassLoader.class.getResourceAsStream(filePath));
-			//doc = dBuilder.parse(filePath);
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();
+			System.exit(123);
 		}
 		
 		Element meshElement = doc.getDocumentElement();
@@ -98,12 +109,11 @@ public class Mesh {
 		NodeList vaos = meshElement.getElementsByTagName("vao");
 		for (int i = 0; i < vaos.getLength(); i++) {
 			//crea un NamedVAO con ProcessVAO e lo aggiunge a namedVaoList
-			//TODO per ora non serve implementarlo
-			System.out.println(vaos.item(i));
+			NamedVAO namedVao = new NamedVAO(vaos.item(i));
+			namedVaoList.add(namedVao);
 		}
 		
-		//per i restanti nodi
-		//TODO cercare anche i nodi array
+		//per ogni nodo indices
 		NodeList cmds = meshElement.getElementsByTagName("indices");
 		for (int i = 0; i < cmds.getLength(); i++) {
 			//aggiunge a primitives il risultato di ProcessRenderCmd
@@ -112,6 +122,12 @@ public class Mesh {
 				//se il nodo è di tipo "indices" aggiunge a indexData il risultato di IndexData
 				indexData.add(new IndexData(cmds.item(i)));
 			}
+		}
+		//per ogni nodo arrays
+		NodeList arrays = meshElement.getElementsByTagName("arrays");
+		for (int i = 0; i < arrays.getLength(); i++) {
+			//aggiunge a primitives il risultato di ProcessRenderCmd
+			primitives.add(new RenderCmd(arrays.item(i)));
 		}
 		
 		//calcola la lunghezza del buffer controllando che tutti gli array di attributi abbiano la stessa lunghezza
@@ -150,7 +166,30 @@ public class Mesh {
 			attrib.setupAttributeArray(attribStartLocs.get(i));
 		}
 		
-		//TODO implementare parte che riempie i vari VAOs
+		// riempie i vari VAOs
+		for (int i = 0; i < namedVaoList.size(); i++) {
+			NamedVAO namedVao = namedVaoList.get(i);
+			
+			int vao = glGenVertexArrays();
+			glBindVertexArray(vao);
+			
+			List<Integer> attributeArray = namedVao.attributes;
+			for (int j = 0; j < attributeArray.size(); j++) {
+				int idAttrib = attributeArray.get(i);
+				int iAttribOffset = -1;
+				for(int iCount = 0; iCount < attribs.size(); iCount++) {
+					if(attribs.get(iCount).iAttribIx == idAttrib) {
+						iAttribOffset = iCount;
+						break;
+					}
+				}
+				
+				Attribute attrib = attribs.get(iAttribOffset);
+				attrib.setupAttributeArray(attribStartLocs.get(iAttribOffset));
+			}
+			
+			namedVAOs.put(namedVao.name, vao);
+		}
 		
 		glBindVertexArray(0);
 		
@@ -192,7 +231,10 @@ public class Mesh {
 				}
 			}
 			
-			//TODO parte con i named vaos
+			for (Integer idVAO : namedVAOs.values()) {
+				glBindVertexArray(idVAO);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oIndexBuffer);
+			}
 			
 			glBindVertexArray(0);
 		}
@@ -213,7 +255,19 @@ public class Mesh {
 	}
 	
 	public void render(String strMeshName) {
-		//TODO da fare con i named VAOs
+		Integer vao = namedVAOs.get(strMeshName);
+		//se il named vao non esiste, esce
+		if(vao == null) {
+			return;
+		}
+
+		glBindVertexArray(vao);
+		
+		for (RenderCmd cmd : primitives) {
+			cmd.render();
+		}
+		
+		glBindVertexArray(0);
 	}
 	
 	public void deleteObjects() {
@@ -221,8 +275,10 @@ public class Mesh {
 		glDeleteBuffers(oIndexBuffer);
 		glDeleteVertexArrays(oVAO);
 
-		//TODO cancella i named VAOs
-		
+		//cancella i named VAOs
+		for (Integer idVAO : namedVAOs.values()) {
+			glDeleteVertexArrays(idVAO);
+		}
 	}
 	
 	
@@ -520,7 +576,29 @@ public class Mesh {
 				bIsIndexedCmd = true;
 			}else if (cmdNode.getNodeName().equals("arrays")) {
 				bIsIndexedCmd = false;
-				//TODO implementare se usato
+
+				{
+					Node nodeStart = cmdNode.getAttributes().getNamedItem("start");
+					if (nodeStart == null) {
+						throw new RuntimeException("Missing 'start' attribute in an 'arrays' element.");
+					}
+					int iStart = Integer.parseInt(nodeStart.getNodeValue());
+					if(iStart < 0) {
+						throw new RuntimeException("Attribute 'start' must be between 0 or greater.");
+					}
+					start = iStart;
+				}
+				{
+					Node nodeCount = cmdNode.getAttributes().getNamedItem("count");
+					if (nodeCount == null) {
+						throw new RuntimeException("Missing 'count' attribute in an 'arrays' element.");
+					}
+					int iCount = Integer.parseInt(nodeCount.getNodeValue());
+					if(iCount <= 0) {
+						throw new RuntimeException("Attribute 'count' must be greater than 0.");
+					}
+					elemCount = iCount;
+				}
 			}else {
 				throw new RuntimeException("Bad element. Must be 'indices' or 'arrays'.");
 			}
@@ -574,6 +652,34 @@ public class Mesh {
 		}
 		public int calcByteSize() {
 			return getDataNumElem() * pAttribType.iNumBytes;
+		}
+	}
+	
+	private static class NamedVAO {
+		String name;
+		ArrayList<Integer> attributes;
+
+		public NamedVAO(Node itemVao) {
+			attributes = new ArrayList<>();
+			
+			NamedNodeMap attrs = itemVao.getAttributes();
+			{
+				Node nameAttr = attrs.getNamedItem("name");
+				if (nameAttr == null) {
+					throw new RuntimeException("Missing 'name' attribute in an 'vao' element.");
+				}
+				name = nameAttr.getNodeValue();
+			}
+			
+			Element elemVao = (Element)itemVao;
+			NodeList sources = elemVao.getElementsByTagName("source");
+			for (int i = 0; i < sources.getLength(); i++) {
+				Node attrib = sources.item(i).getAttributes().getNamedItem("attrib");
+				if (attrib == null) {
+					throw new RuntimeException("Missing 'attrib' attribute in an 'source' element.");
+				}
+				attributes.add(Integer.parseInt(attrib.getNodeValue()));
+			}
 		}
 	}
 }

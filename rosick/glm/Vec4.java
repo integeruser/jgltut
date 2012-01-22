@@ -15,6 +15,9 @@ public class Vec4 {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
+	public Vec4() {
+	}
+	
 	public Vec4(float x, float y, float z, float w) {
 		this.x = x;
 		this.y = y;
@@ -27,5 +30,62 @@ public class Vec4 {
 		y = vec3.y;
 		z = vec3.z;
 		this.w = w;
+	}
+	
+	public Vec4(Vec4 vec) {
+		x = vec.x;
+		y = vec.y;
+		z = vec.z;
+		w = vec.w;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	public Vec4 add(Vec4 vec) {
+		x += vec.x;
+		y += vec.y;
+		z += vec.z;
+		w += vec.w;
+
+		return this;
+	}
+	
+	public Vec4 sub(Vec4 vec) {
+		x -= vec.x;
+		y -= vec.y;
+		z -= vec.z;
+		w -= vec.w;
+
+		return this;
+	}
+	
+	
+	public Vec4 scale(float scalar) {
+		x *= scalar;
+		y *= scalar;
+		z *= scalar;
+		w *= scalar;
+
+		return this;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	public static Vec4 add(Vec4 a, Vec4 b) {
+		Vec4 vec = new Vec4(a);
+		
+		return vec.add(b);
+	}
+	
+	public static Vec4 sub(Vec4 a, Vec4 b) {
+		Vec4 vec = new Vec4(a);
+
+		return vec.sub(b);
 	}
 }

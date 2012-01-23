@@ -118,9 +118,9 @@ public class WorldScene01 extends GLWindow {
 	}
 
 	private void initializeProgram() {
-		uniformColor = 		loadProgram(BASEPATH + "posOnlyWorldTransform.vert",	BASEPATH + "colorUniform.frag");
-		objectColor = 		loadProgram(BASEPATH + "posColorWorldTransform.vert", 	BASEPATH + "colorPassthrough.frag");
-		uniformColorTint = 	loadProgram(BASEPATH + "posColorWorldTransform.vert", 	BASEPATH + "colorMultUniform.frag");
+		uniformColor = 		loadProgram(BASEPATH + "PosOnlyWorldTransform.vert",	BASEPATH + "ColorUniform.frag");
+		objectColor = 		loadProgram(BASEPATH + "PosColorWorldTransform.vert", 	BASEPATH + "ColorPassthrough.frag");
+		uniformColorTint = 	loadProgram(BASEPATH + "PosColorWorldTransform.vert", 	BASEPATH + "ColorMultUniform.frag");
 	}
 
 

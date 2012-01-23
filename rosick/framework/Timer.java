@@ -55,10 +55,10 @@ public class Timer {
 	/**
 	 * Updates the time for the timer. Returns true if the timer has reached the end.
 	 * Will only return true for SINGLE timers that have reached their duration.
-	 * @param elapsedTime the time passed since the application start (in seconds)
+	 * @param elapsedTime the time passed since the application start (in milliseconds)
 	 */
 	public boolean update(double elapsedTime) {
-		float absCurrTime = (float) (elapsedTime);
+		float absCurrTime = (float) (elapsedTime / 1000.0);
 		
 		if (!m_hasUpdated) {
 			m_absPrevTime = absCurrTime;

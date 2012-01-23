@@ -224,7 +224,7 @@ public class Hierarchy04 extends GLWindow {
 	
 	@Override
 	protected void update() {
-		lastFrameDuration *= 5;
+		lastFrameDuration *= 5 / 1000.0f;
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
 			g_armature.adjBase(false);

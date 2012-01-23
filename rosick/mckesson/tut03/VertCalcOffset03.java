@@ -96,7 +96,7 @@ public class VertCalcOffset03 extends GLWindow {
 
 		glUseProgram(theProgram);
 
-		glUniform1f(uniformTime, (float) elapsedTime);
+		glUniform1f(uniformTime, (float) (elapsedTime / 1000.0));
 		
 		glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
 		

@@ -177,19 +177,19 @@ public class Rotation03 extends GLWindow {
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
-		rotateX((float) elapsedTime);
+		rotateX((float) (elapsedTime / 1000.0));
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
-		rotateY((float) elapsedTime);
+		rotateY((float) (elapsedTime / 1000.0));
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
-		rotateZ((float) elapsedTime);
+		rotateZ((float) (elapsedTime / 1000.0));
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
-		rotateAxis((float) elapsedTime);
+		rotateAxis((float) (elapsedTime / 1000.0));
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 

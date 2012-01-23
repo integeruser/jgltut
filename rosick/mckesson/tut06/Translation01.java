@@ -175,11 +175,11 @@ public class Translation01 extends GLWindow {
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
-		ovalOffset((float) elapsedTime);
+		ovalOffset((float) (elapsedTime / 1000.0));
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
-		bottomCircleOffset((float) elapsedTime);
+		bottomCircleOffset((float) (elapsedTime / 1000.0));
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 

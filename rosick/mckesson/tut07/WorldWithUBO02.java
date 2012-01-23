@@ -125,9 +125,9 @@ public class WorldWithUBO02 extends GLWindow {
 	}
 
 	private void initializeProgram() {
-		uniformColor = 		loadProgram(BASEPATH + "posOnlyWorldTransformUBO.vert",		BASEPATH + "colorUniform.frag");
-		objectColor = 		loadProgram(BASEPATH + "posColorWorldTransformUBO.vert", 	BASEPATH + "colorPassthrough.frag");
-		uniformColorTint = 	loadProgram(BASEPATH + "posColorWorldTransformUBO.vert", 	BASEPATH + "colorMultUniform.frag");
+		uniformColor = 		loadProgram(BASEPATH + "PosOnlyWorldTransformUBO.vert",		BASEPATH + "ColorUniform.frag");
+		objectColor = 		loadProgram(BASEPATH + "PosColorWorldTransformUBO.vert", 	BASEPATH + "ColorPassthrough.frag");
+		uniformColorTint = 	loadProgram(BASEPATH + "PosColorWorldTransformUBO.vert", 	BASEPATH + "ColorMultUniform.frag");
 		
 		g_GlobalMatricesUBO = glGenBuffers();	       
 		glBindBuffer(GL_UNIFORM_BUFFER, g_GlobalMatricesUBO);
@@ -139,7 +139,7 @@ public class WorldWithUBO02 extends GLWindow {
 
 	@Override
 	protected void update() {
-		lastFrameDuration *= 5;
+		lastFrameDuration *= 5 / 1000.0f;
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
 			g_camTarget.x -= 11.25f * lastFrameDuration;

@@ -113,8 +113,8 @@ public class Translation01 extends GLWindow {
 	}
 	
 	private void initializeProgram() {	
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "posColorLocalTransform.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "colorPassthrough.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "PosColorLocalTransform.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "ColorPassthrough.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
@@ -175,11 +175,11 @@ public class Translation01 extends GLWindow {
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
-		ovalOffset((float) elapsedTime);
+		ovalOffset((float) (elapsedTime / 1000.0));
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
-		bottomCircleOffset((float) elapsedTime);
+		bottomCircleOffset((float) (elapsedTime / 1000.0));
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 

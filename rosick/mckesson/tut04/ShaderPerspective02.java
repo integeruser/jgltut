@@ -163,8 +163,8 @@ public class ShaderPerspective02 extends GLWindow {
 	}
 	
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "manualPerspective.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "standardColors.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "ManualPerspective.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "StandardColors.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);

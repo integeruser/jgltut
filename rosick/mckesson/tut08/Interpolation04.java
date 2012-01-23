@@ -304,8 +304,10 @@ public class Interpolation04 extends GLWindow {
 			private Timer m_currTimer;
 			
 			
+			/**
+			 * @return true if the animation is over
+			 */
 			public boolean updateTime() {
-				// Returns true if the animation is over.
 				return m_currTimer.update(elapsedTime);
 			}
 			

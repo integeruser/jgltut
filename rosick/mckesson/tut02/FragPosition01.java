@@ -60,8 +60,8 @@ public class FragPosition01 extends GLWindow {
 	}
 	
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER,		BASEPATH + "fragPosition.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "fragPosition.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER,		BASEPATH + "FragPosition.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "FragPosition.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);

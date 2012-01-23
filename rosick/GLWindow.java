@@ -15,7 +15,7 @@ import org.lwjgl.opengl.DisplayMode;
  */
 public class GLWindow {
 	
-	// Measured in seconds
+	// Measured in milliseconds
 	protected double elapsedTime; 
 	protected double lastFrameDuration;
 	
@@ -29,11 +29,11 @@ public class GLWindow {
 	
 	public final void start(int width, int height) {		
 		try {
-			Display.setTitle("Test");
+			Display.setTitle("Tutorials by rosickteam");
 			Display.setDisplayMode(new DisplayMode(width, height));
-			Display.create();
-			Display.setVSyncEnabled(true);
 			Display.setResizable(true);
+			Display.setVSyncEnabled(true);
+			Display.create();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -46,10 +46,10 @@ public class GLWindow {
 		reshape(width, height);
 		
 		while (continueMainLoop) {
-			elapsedTime = (System.nanoTime() - startTime) / 1000000000.0;
+			elapsedTime = (System.nanoTime() - startTime) / 1000000.0;
 					
 			now = System.nanoTime();
-		    lastFrameDuration = (now - lastFrameTimestamp) / 1000000000.0;
+		    lastFrameDuration = (now - lastFrameTimestamp) / 1000000.0;
 		    lastFrameTimestamp = now;
 			
 			update();

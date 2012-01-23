@@ -160,8 +160,8 @@ public class OrthoCube01 extends GLWindow {
 	}
 	
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "orthoWithOffset.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "standardColors.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "OrthoWithOffset.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "StandardColors.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);

@@ -255,10 +255,13 @@ public class DepthClamping05 extends GLWindow {
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
 				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
-					if(bDepthClampingActive)
+					if (bDepthClampingActive) {
 						glDisable(GL_DEPTH_CLAMP);
-					else
+						System.out.println("GL_DEPTH_CLAMP disabled");
+					} else {
 						glEnable(GL_DEPTH_CLAMP);
+						System.out.println("GL_DEPTH_CLAMP enabled");
+					}
 					
 					bDepthClampingActive = !bDepthClampingActive;	
 				}

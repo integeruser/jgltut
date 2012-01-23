@@ -45,8 +45,6 @@ public class CpuPositionOffset01 extends GLWindow {
 		-0.25f, -0.25f, 0.0f, 1.0f,
 	};
 	
-	private float fXOffset, fYOffset;
-
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -62,8 +60,8 @@ public class CpuPositionOffset01 extends GLWindow {
 	}
 	
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "standard.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "standard.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "Standard.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "Standard.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
@@ -107,6 +105,9 @@ public class CpuPositionOffset01 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private float fXOffset, fYOffset;
+
 	
 	private void computePositionOffsets() {
 		final float fLoopDuration = 5.0f;

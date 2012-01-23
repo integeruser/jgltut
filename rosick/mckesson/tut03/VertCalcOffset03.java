@@ -61,8 +61,8 @@ public class VertCalcOffset03 extends GLWindow {
 	}
 	
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "calcOffset.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "standard.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "CalcOffset.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "Standard.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
@@ -96,7 +96,7 @@ public class VertCalcOffset03 extends GLWindow {
 
 		glUseProgram(theProgram);
 
-		glUniform1f(uniformTime, (float) elapsedTimeSeconds);
+		glUniform1f(uniformTime, (float) (elapsedTime / 1000.0));
 		
 		glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
 		

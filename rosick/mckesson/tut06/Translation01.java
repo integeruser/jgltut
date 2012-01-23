@@ -78,7 +78,6 @@ public class Translation01 extends GLWindow {
 	};
 	
 	private final int numberOfVertices = 8;
-	private final float fFrustumScale = calcFrustumScale(45.0f);
 
 
 	
@@ -114,8 +113,8 @@ public class Translation01 extends GLWindow {
 	}
 	
 	private void initializeProgram() {	
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "posColorLocalTransform.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "colorPassthrough.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "PosColorLocalTransform.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "ColorPassthrough.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
@@ -176,11 +175,11 @@ public class Translation01 extends GLWindow {
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
-		ovalOffset((float) elapsedTimeSeconds);
+		ovalOffset((float) (elapsedTime / 1000.0));
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		
-		bottomCircleOffset((float) elapsedTimeSeconds);
+		bottomCircleOffset((float) (elapsedTime / 1000.0));
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
@@ -206,6 +205,9 @@ public class Translation01 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
+	private final float fFrustumScale = calcFrustumScale(45.0f);
+
+	
 	private float calcFrustumScale(float fFovDeg) {
 		final float degToRad = 3.14159f * 2.0f / 360.0f;
 		float fFovRad = fFovDeg * degToRad;
@@ -215,9 +217,9 @@ public class Translation01 extends GLWindow {
 	
 	
 	private void stationaryOffset() {
-		modelToCameraMatrixBuffer.put(12, 0);  																// x
-		modelToCameraMatrixBuffer.put(13, 0); 																// y
-		modelToCameraMatrixBuffer.put(14, -20); 																// z
+		modelToCameraMatrixBuffer.put(12, 0);  															// x
+		modelToCameraMatrixBuffer.put(13, 0); 															// y
+		modelToCameraMatrixBuffer.put(14, -20); 														// z
 	}
 
 	

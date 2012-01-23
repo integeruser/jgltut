@@ -58,6 +58,15 @@ public class MatrixStack {
 	}
 	
 	
+	public void applyMatrix(Mat4 mat) {
+		currentMatrix.mul(mat);
+	}
+		
+	public void setMatrix(Mat4 mat) {
+		currentMatrix = new Mat4(mat);
+	}
+	
+	
 	public void clear() {
 		currentMatrix.clear(1);
 

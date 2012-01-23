@@ -138,7 +138,6 @@ public class Hierarchy04 extends GLWindow {
 	};
 	
 	private final int numberOfVertices = 24;
-	private final float fFrustumScale = calcFrustumScale(45.0f);
 	
 
 	
@@ -174,8 +173,8 @@ public class Hierarchy04 extends GLWindow {
 	}
 	
 	private void initializeProgram() {	
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "posColorLocalTransform.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "colorPassthrough.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "PosColorLocalTransform.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "ColorPassthrough.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
@@ -225,7 +224,7 @@ public class Hierarchy04 extends GLWindow {
 	
 	@Override
 	protected void update() {
-		lastFrameDuration *= 5;
+		lastFrameDuration *= 5 / 1000.0f;
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
 			g_armature.adjBase(false);
@@ -667,6 +666,9 @@ public class Hierarchy04 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final float fFrustumScale = calcFrustumScale(45.0f);
+
 	
 	private float calcFrustumScale(float fFovDeg) {
 		final float degToRad = 3.14159f * 2.0f / 360.0f;

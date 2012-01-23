@@ -55,12 +55,12 @@ public class WorldScene01 extends GLWindow {
 	private ProgramData uniformColorTint;
 	private FloatBuffer tempSharedBuffer = BufferUtils.createFloatBuffer(16);
 
-	private float g_fzNear = 1.0f;
-	private float g_fzFar = 1000.0f;
-	
 	private MatrixStack camMatrix = new MatrixStack(); 
 	private MatrixStack	modelMatrix = new MatrixStack();
 	private MatrixStack	persMatrix = new MatrixStack();
+	
+	private float g_fzNear = 1.0f;
+	private float g_fzFar = 1000.0f;
 	
 	private Mesh g_pConeMesh;
 	private Mesh g_pCylinderMesh;
@@ -84,7 +84,7 @@ public class WorldScene01 extends GLWindow {
 			g_pCubeColorMesh 	= new Mesh(BASEPATH + "UnitCubeColor.xml");
 			g_pPlaneMesh 		= new Mesh(BASEPATH + "UnitPlane.xml");
 		} catch (Exception exception) {
-			System.err.println(exception.getMessage());
+			exception.printStackTrace();
 			System.exit(0);
 		}
 
@@ -118,15 +118,15 @@ public class WorldScene01 extends GLWindow {
 	}
 
 	private void initializeProgram() {
-		uniformColor = 		loadProgram(BASEPATH + "posOnlyWorldTransform.vert",	BASEPATH + "colorUniform.frag");
-		objectColor = 		loadProgram(BASEPATH + "posColorWorldTransform.vert", 	BASEPATH + "colorPassthrough.frag");
-		uniformColorTint = 	loadProgram(BASEPATH + "posColorWorldTransform.vert", 	BASEPATH + "colorMultUniform.frag");
+		uniformColor = 		loadProgram(BASEPATH + "PosOnlyWorldTransform.vert",	BASEPATH + "ColorUniform.frag");
+		objectColor = 		loadProgram(BASEPATH + "PosColorWorldTransform.vert", 	BASEPATH + "ColorPassthrough.frag");
+		uniformColorTint = 	loadProgram(BASEPATH + "PosColorWorldTransform.vert", 	BASEPATH + "ColorMultUniform.frag");
 	}
 
 
 	@Override
 	protected void update() {
-		lastFrameDuration *= 5;
+		lastFrameDuration *= 5 / 1000.0f;
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
 			g_camTarget.x -= 11.25f * lastFrameDuration;
@@ -651,12 +651,11 @@ public class WorldScene01 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 
-	private static boolean g_bDrawLookatPoint = false;
 	private static Vec3 g_camTarget = new Vec3(0.0f, 0.4f, 0.0f);
-
 	// In spherical coordinates.
 	private static Vec3 g_sphereCamRelPos = new Vec3(67.5f, -46.0f, 150.0f);
-	
+	private static boolean g_bDrawLookatPoint = false;
+
 	
 	private Vec3 resolveCamPosition() {
 		float phi = Framework.degToRad(g_sphereCamRelPos.x);

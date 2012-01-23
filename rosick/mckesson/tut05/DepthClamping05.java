@@ -205,8 +205,8 @@ public class DepthClamping05 extends GLWindow {
 	}
 	
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "standard.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "standard.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "Standard.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "Standard.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
@@ -255,10 +255,13 @@ public class DepthClamping05 extends GLWindow {
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
 				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
-					if(bDepthClampingActive)
+					if (bDepthClampingActive) {
 						glDisable(GL_DEPTH_CLAMP);
-					else
+						System.out.println("GL_DEPTH_CLAMP disabled");
+					} else {
 						glEnable(GL_DEPTH_CLAMP);
+						System.out.println("GL_DEPTH_CLAMP enabled");
+					}
 					
 					bDepthClampingActive = !bDepthClampingActive;	
 				}

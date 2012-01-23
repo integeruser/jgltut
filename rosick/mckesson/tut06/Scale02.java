@@ -78,7 +78,6 @@ public class Scale02 extends GLWindow {
 	};
 	
 	private final int numberOfVertices = 8;
-	private final float fFrustumScale = calcFrustumScale(45.0f);
 	
 
 
@@ -114,8 +113,8 @@ public class Scale02 extends GLWindow {
 	}
 	
 	private void initializeProgram() {	
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "posColorLocalTransform.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "colorPassthrough.frag");
+		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "PosColorLocalTransform.vert");
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "ColorPassthrough.frag");
         
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(vertexShader);
@@ -184,11 +183,11 @@ public class Scale02 extends GLWindow {
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
-		dynamicUniformScale((float) elapsedTimeSeconds);
+		dynamicUniformScale((float) (elapsedTime / 1000.0));
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
-		dynamicNonUniformScale((float) elapsedTimeSeconds);
+		dynamicNonUniformScale((float) (elapsedTime / 1000.0));
 		glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraMatrixBuffer);
 		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
@@ -213,6 +212,9 @@ public class Scale02 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final float fFrustumScale = calcFrustumScale(45.0f);
+
 	
 	private float calcFrustumScale(float fFovDeg) {
 		final float degToRad = 3.14159f * 2.0f / 360.0f;

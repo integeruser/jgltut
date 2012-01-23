@@ -41,6 +41,7 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -56,65 +57,83 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-
-/* * * *
- * TEMPORARY CLASS !!
+/*
+ import static org.lwjgl.opengl.GL11.*;
+ import static org.lwjgl.opengl.GL12.*;
+ import static org.lwjgl.opengl.GL13.*;
+ import static org.lwjgl.opengl.GL14.*;
+ import static org.lwjgl.opengl.GL15.*;
+ import static org.lwjgl.opengl.GL20.*;
+ import static org.lwjgl.opengl.GL21.*;
+ import static org.lwjgl.opengl.GL30.*;
+ import static org.lwjgl.opengl.GL31.*;
+ import static org.lwjgl.opengl.GL32.*;
+ import static org.lwjgl.opengl.GL33.*;
+ import static org.lwjgl.opengl.GL40.*;
+ import static org.lwjgl.opengl.GL41.*;
+ import static org.lwjgl.opengl.GL42.*;
  */
-
-
 public class Mesh {
-	int oAttribArraysBuffer = 0;
-	int oIndexBuffer = 0;
-	int oVAO = 0;
+	private int oAttribArraysBuffer = 0;
+	private int oIndexBuffer = 0;
+	private int oVAO = 0;
 	
-	ArrayList<RenderCmd> primitives = new ArrayList<>();
+	private ArrayList<RenderCmd> primitives = new ArrayList<>();
+	private Map<String, Integer> namedVAOs = new HashMap<>();
 	
 	public Mesh(String filePath) {
 		ArrayList<Attribute> attribs = new ArrayList<>(16);
 		ArrayList<IndexData> indexData = new ArrayList<>();
-		//ArrayList<NamedVAO> namedVaoList = new ArrayList<>();
+		ArrayList<NamedVAO> namedVaoList = new ArrayList<>();
 		
-	
-		//crea il parser e ci associa il file di input
+		// crea il parser e ci associa il file di input
 		Document doc = null;
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(ClassLoader.class.getResourceAsStream(filePath));
-			//doc = dBuilder.parse(filePath);
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();
+			System.exit(123);
 		}
 		
 		Element meshElement = doc.getDocumentElement();
-		//per ogni nodo "attribute"
+		// per ogni nodo "attribute"
 		NodeList attrs = meshElement.getElementsByTagName("attribute");
 		for (int i = 0; i < attrs.getLength(); i++) {
-			//crea un Attribute e lo aggiunge a attribs
-			attribs.add(new Attribute(attrs.item(i)));
+			// crea un Attribute e lo aggiunge a attribs
+			Attribute a = new Attribute(attrs.item(i));
+			attribs.add(a);
 		}
 		
-		//per ogni nodo "vao"
+		// per ogni nodo "vao"
 		NodeList vaos = meshElement.getElementsByTagName("vao");
 		for (int i = 0; i < vaos.getLength(); i++) {
-			//crea un NamedVAO con ProcessVAO e lo aggiunge a namedVaoList
-			//TODO per ora non serve implementarlo
-			System.out.println(vaos.item(i));
+			// crea un NamedVAO con ProcessVAO e lo aggiunge a namedVaoList
+			NamedVAO namedVao = new NamedVAO(vaos.item(i));
+			namedVaoList.add(namedVao);
 		}
 		
-		//per i restanti nodi
-		//TODO cercare anche i nodi array
+		// per ogni nodo indices
 		NodeList cmds = meshElement.getElementsByTagName("indices");
 		for (int i = 0; i < cmds.getLength(); i++) {
-			//aggiunge a primitives il risultato di ProcessRenderCmd
-			primitives.add(new RenderCmd(cmds.item(i)));
-			if (cmds.item(i).getNodeName() == "indices") {
-				//se il nodo è di tipo "indices" aggiunge a indexData il risultato di IndexData
-				indexData.add(new IndexData(cmds.item(i)));
-			}
+			// aggiunge a primitives il risultato di ProcessRenderCmd
+			RenderCmd r = new RenderCmd(cmds.item(i));
+			primitives.add(r);
+			// aggiunge a indexData il risultato di IndexData
+			IndexData in = new IndexData(cmds.item(i));
+			indexData.add(in);
+		}
+		// per ogni nodo arrays
+		NodeList arrays = meshElement.getElementsByTagName("arrays");
+		for (int i = 0; i < arrays.getLength(); i++) {
+			// aggiunge a primitives il risultato di ProcessRenderCmd
+			RenderCmd r = new RenderCmd(arrays.item(i));
+			primitives.add(r);
 		}
 		
-		//calcola la lunghezza del buffer controllando che tutti gli array di attributi abbiano la stessa lunghezza
+		// calcola la lunghezza del buffer controllando che tutti gli array di
+		// attributi abbiano la stessa lunghezza
 		int iAttrbBufferSize = 0;
 		ArrayList<Integer> attribStartLocs = new ArrayList<>(attribs.size());
 		int iNumElements = 0;
@@ -125,8 +144,8 @@ public class Mesh {
 			
 			iAttrbBufferSize += attrib.calcByteSize();
 			
-			if(iNumElements != 0) {
-				if(iNumElements != attrib.numElements()) {
+			if (iNumElements != 0) {
+				if (iNumElements != attrib.numElements()) {
 					throw new RuntimeException("Some of the attribute arrays have different element counts.");
 				}
 			} else {
@@ -134,39 +153,62 @@ public class Mesh {
 			}
 		}
 		
-		//crea e binda il VAO
+		// crea e binda il VAO
 		oVAO = glGenVertexArrays();
 		glBindVertexArray(oVAO);
 		
-		//Crea i buffer object
+		// Crea i buffer object
 		oAttribArraysBuffer = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, oAttribArraysBuffer);
 		glBufferData(GL_ARRAY_BUFFER, iAttrbBufferSize, GL_STATIC_DRAW);
 		
-		//Inserisce i dati degli attributi nel buffer object
+		// Inserisce i dati degli attributi nel buffer object
 		for (int i = 0; i < attribs.size(); i++) {
 			Attribute attrib = attribs.get(i);
 			attrib.fillBoundBufferObject(attribStartLocs.get(i));
 			attrib.setupAttributeArray(attribStartLocs.get(i));
 		}
 		
-		//TODO implementare parte che riempie i vari VAOs
+		// riempie i vari VAOs
+		for (int i = 0; i < namedVaoList.size(); i++) {
+			NamedVAO namedVao = namedVaoList.get(i);
+			
+			int vao = glGenVertexArrays();
+			glBindVertexArray(vao);
+			
+			List<Integer> attributeArray = namedVao.attributes;
+			for (int j = 0; j < attributeArray.size(); j++) {
+				int idAttrib = attributeArray.get(j);
+				int iAttribOffset = -1;
+				for (int iCount = 0; iCount < attribs.size(); iCount++) {
+					if (attribs.get(iCount).iAttribIx == idAttrib) {
+						iAttribOffset = iCount;
+						break;
+					}
+				}
+				
+				Attribute attrib = attribs.get(iAttribOffset);
+				attrib.setupAttributeArray(attribStartLocs.get(iAttribOffset));
+			}
+			
+			namedVAOs.put(namedVao.name, vao);
+		}
 		
 		glBindVertexArray(0);
 		
-		//Calcola la lunghezza dell'index buffer
+		// Calcola la lunghezza dell'index buffer
 		int iIndexBufferSize = 0;
 		ArrayList<Integer> indexStartLocs = new ArrayList<>(indexData.size());
-		for(int i = 0; i < indexData.size(); i++) {
+		for (int i = 0; i < indexData.size(); i++) {
 			iIndexBufferSize = iIndexBufferSize % 16 != 0 ? (iIndexBufferSize + (16 - iIndexBufferSize % 16)) : iIndexBufferSize;
-
+			
 			indexStartLocs.add(iIndexBufferSize);
 			IndexData currData = indexData.get(i);
-
+			
 			iIndexBufferSize += currData.calcByteSize();
 		}
 		
-		//Crea l'index buffer object
+		// Crea l'index buffer object
 		if (iIndexBufferSize > 0) {
 			glBindVertexArray(oVAO);
 			
@@ -174,17 +216,17 @@ public class Mesh {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oIndexBuffer);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, iIndexBufferSize, GL_STATIC_DRAW);
 			
-			//gli inserisce i dati
+			// gli inserisce i dati
 			for (int i = 0; i < indexData.size(); i++) {
 				IndexData currData = indexData.get(i);
 				currData.fillBoundBufferObject(indexStartLocs.get(i));
 			}
 			
-			//crea i RenderCmd
+			// crea i RenderCmd
 			int iCurrIndexed = 0;
-			for(int i = 0; i < primitives.size(); i++) {
+			for (int i = 0; i < primitives.size(); i++) {
 				RenderCmd prim = primitives.get(i);
-				if(prim.bIsIndexedCmd) {
+				if (prim.bIsIndexedCmd) {
 					prim.start = indexStartLocs.get(iCurrIndexed);
 					prim.elemCount = indexData.get(iCurrIndexed).getDataNumElem();
 					prim.eIndexDataType = indexData.get(iCurrIndexed).pAttribType.eGLType;
@@ -192,17 +234,20 @@ public class Mesh {
 				}
 			}
 			
-			//TODO parte con i named vaos
+			for (Integer idVAO : namedVAOs.values()) {
+				glBindVertexArray(idVAO);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oIndexBuffer);
+			}
 			
 			glBindVertexArray(0);
 		}
 	}
 	
 	public void render() {
-		if(oVAO == 0) {
+		if (oVAO == 0) {
 			return;
 		}
-
+		
 		glBindVertexArray(oVAO);
 		
 		for (RenderCmd cmd : primitives) {
@@ -213,19 +258,31 @@ public class Mesh {
 	}
 	
 	public void render(String strMeshName) {
-		//TODO da fare con i named VAOs
+		Integer vao = namedVAOs.get(strMeshName);
+		// se il named vao non esiste, esce
+		if (vao == null) {
+			return;
+		}
+		
+		glBindVertexArray(vao);
+		
+		for (RenderCmd cmd : primitives) {
+			cmd.render();
+		}
+		
+		glBindVertexArray(0);
 	}
 	
 	public void deleteObjects() {
 		glDeleteBuffers(oAttribArraysBuffer);
 		glDeleteBuffers(oIndexBuffer);
 		glDeleteVertexArrays(oVAO);
-
-		//TODO cancella i named VAOs
 		
+		// cancella i named VAOs
+		for (Integer idVAO : namedVAOs.values()) {
+			glDeleteVertexArrays(idVAO);
+		}
 	}
-	
-	
 	
 	private static class Attribute {
 		int iAttribIx = 0xFFFFFFFF;
@@ -238,31 +295,31 @@ public class Mesh {
 			NamedNodeMap attrs = attributeNode.getAttributes();
 			
 			{
-				//ricava l'index
+				// ricava l'index
 				Node indexNode = attrs.getNamedItem("index");
 				if (indexNode == null) {
 					throw new RuntimeException("Missing 'index' attribute in an 'attribute' element.");
 				}
 				int index = Integer.parseInt(indexNode.getNodeValue());
-				if(!((0 <= index) && (index < 16)))
+				if (!((0 <= index) && (index < 16)))
 					throw new RuntimeException("Attribute index must be between 0 and 16.");
 				iAttribIx = index;
 			}
 			
 			{
-				//ricava il size
+				// ricava il size
 				Node sizeNode = attrs.getNamedItem("size");
 				if (sizeNode == null) {
 					throw new RuntimeException("Missing 'size' attribute in an 'attribute' element.");
 				}
 				int size = Integer.parseInt(sizeNode.getNodeValue());
-				if(!((1 <= size) && (size < 5)))
+				if (!((1 <= size) && (size < 5)))
 					throw new RuntimeException("Attribute size must be between 1 and 4.");
 				iSize = size;
 			}
-		
-			{	
-				//ricava il type
+			
+			{
+				// ricava il type
 				String strType;
 				Node typeNode = attrs.getNamedItem("type");
 				if (typeNode == null) {
@@ -273,7 +330,7 @@ public class Mesh {
 			}
 			
 			{
-				//ricava l' integral
+				// ricava l' integral
 				Node integralNode = attrs.getNamedItem("integral");
 				if (integralNode == null) {
 					bIsIntegral = false;
@@ -281,24 +338,25 @@ public class Mesh {
 					String strIntegral = integralNode.getNodeValue();
 					if (strIntegral.equals("true")) {
 						bIsIntegral = true;
-					} else if(strIntegral == "false") {
+					} else if (strIntegral == "false") {
 						bIsIntegral = false;
 					} else {
 						throw new RuntimeException("Incorrect 'integral' value for the 'attribute'.");
 					}
 					
-					//l'attributo non può essere integral e normalized o floating point allo stesso tempo
-					if(pAttribType.bNormalized) {
+					// l'attributo non può essere integral e normalized o
+					// floating point allo stesso tempo
+					if (pAttribType.bNormalized) {
 						throw new RuntimeException("Attribute cannot be both 'integral' and a normalized 'type'.");
 					}
 					
-					if(pAttribType.eGLType == GL_FLOAT || pAttribType.eGLType == GL_HALF_FLOAT || pAttribType.eGLType == GL_DOUBLE) {
+					if (pAttribType.eGLType == GL_FLOAT || pAttribType.eGLType == GL_HALF_FLOAT || pAttribType.eGLType == GL_DOUBLE) {
 						throw new RuntimeException("Attribute cannot be both 'integral' and a floating-point 'type'.");
 					}
 				}
 			}
 			
-			//legge il testo contenente i dati, fa il parse e mette i dati 
+			// legge il testo contenente i dati, fa il parse e mette i dati
 			{
 				String strData = attributeNode.getChildNodes().item(0).getNodeValue();
 				dataArray = pAttribType.parse(strData);
@@ -310,7 +368,7 @@ public class Mesh {
 		}
 		
 		public int numElements() {
-			return getDataNumElem()/iSize;
+			return getDataNumElem() / iSize;
 		}
 		
 		public int calcByteSize() {
@@ -323,7 +381,7 @@ public class Mesh {
 		
 		public void setupAttributeArray(int iOffset) {
 			glEnableVertexAttribArray(iAttribIx);
-			if(bIsIntegral) {
+			if (bIsIntegral) {
 				glVertexAttribIPointer(iAttribIx, iSize, pAttribType.eGLType, 0, iOffset);
 			} else {
 				glVertexAttribPointer(iAttribIx, iSize, pAttribType.eGLType, pAttribType.bNormalized, 0, iOffset);
@@ -332,6 +390,7 @@ public class Mesh {
 	}
 	
 	private static class AttribType {
+		
 		boolean bNormalized;
 		int eGLType;
 		int iNumBytes;
@@ -353,8 +412,8 @@ public class Mesh {
 		public void writeToBuffer(int eBuffer, Buffer theData, int iOffset) {
 			write.writeToBuffer(eBuffer, theData, iOffset);
 		}
-
-		//varie funzioni di parse
+		
+		// varie funzioni di parse
 		private static ParseFunc parseFloats = new ParseFunc() {
 			public Buffer parse(String strToParse) {
 				Scanner scn = new Scanner(strToParse);
@@ -380,7 +439,7 @@ public class Mesh {
 				ArrayList<Integer> array = new ArrayList<>();
 				
 				while (scn.hasNext()) {
-					array.add((int)Long.parseLong(scn.next()));
+					array.add((int) Long.parseLong(scn.next()));
 				}
 				
 				IntBuffer buff = BufferUtils.createIntBuffer(array.size());
@@ -398,7 +457,7 @@ public class Mesh {
 				ArrayList<Short> array = new ArrayList<>();
 				
 				while (scn.hasNext()) {
-					array.add((short)Integer.parseInt(scn.next()));
+					array.add((short) Integer.parseInt(scn.next()));
 				}
 				
 				ShortBuffer buff = BufferUtils.createShortBuffer(array.size());
@@ -416,7 +475,7 @@ public class Mesh {
 				ArrayList<Byte> array = new ArrayList<>();
 				
 				while (scn.hasNext()) {
-					array.add((byte)Short.parseShort(scn.next()));
+					array.add((byte) Short.parseShort(scn.next()));
 				}
 				
 				ByteBuffer buff = BufferUtils.createByteBuffer(array.size());
@@ -428,45 +487,51 @@ public class Mesh {
 			}
 		};
 		
-		//varie funzioni di write
+		// varie funzioni di write
 		private static WriteFunc writeFloats = new WriteFunc() {
 			public void writeToBuffer(int eBuffer, Buffer theData, int iOffset) {
-				glBufferSubData(eBuffer, iOffset, (FloatBuffer)theData);
+				glBufferSubData(eBuffer, iOffset, (FloatBuffer) theData);
 			}
 		};
 		private static WriteFunc writeInts = new WriteFunc() {
 			public void writeToBuffer(int eBuffer, Buffer theData, int iOffset) {
-				glBufferSubData(eBuffer, iOffset, (IntBuffer)theData);
+				glBufferSubData(eBuffer, iOffset, (IntBuffer) theData);
 			}
 		};
 		private static WriteFunc writeShorts = new WriteFunc() {
 			public void writeToBuffer(int eBuffer, Buffer theData, int iOffset) {
-				glBufferSubData(eBuffer, iOffset, (ShortBuffer)theData);
+				glBufferSubData(eBuffer, iOffset, (ShortBuffer) theData);
 			}
 		};
 		private static WriteFunc writeBytes = new WriteFunc() {
 			public void writeToBuffer(int eBuffer, Buffer theData, int iOffset) {
-				glBufferSubData(eBuffer, iOffset, (ByteBuffer)theData);
+				glBufferSubData(eBuffer, iOffset, (ByteBuffer) theData);
 			}
 		};
-
+		
 		private static final Map<String, AttribType> allAttribType = new HashMap<>();
 		private static final Map<String, Integer> allPrimitiveType = new HashMap<>();
 		static {
-			allAttribType.put("float",	new AttribType(false,	GL_FLOAT,			Float.SIZE/8,		parseFloats,	writeFloats));
-			//{"half",		false,	GL_HALF_FLOAT,		sizeof(GLhalfARB),	ParseFloats,	WriteFloats},
-			allAttribType.put("int",	new AttribType(false,	GL_INT,				Integer.SIZE/8,		parseInts,		writeInts));
-			allAttribType.put("uint",	new AttribType(false,	GL_UNSIGNED_INT,	Integer.SIZE/8,		parseInts,		writeInts));
-			//{"norm-int",	true,	GL_INT,				sizeof(GLint),		ParseInts,		WriteInts},
-			//{"norm-uint",	true,	GL_UNSIGNED_INT,	sizeof(GLuint),		ParseUInts,		WriteUInts},
-			allAttribType.put("short",	new AttribType(false,	GL_SHORT,			Short.SIZE/8,		parseShorts,	writeShorts));
-			allAttribType.put("ushort",	new AttribType(false,	GL_UNSIGNED_SHORT,	Short.SIZE/8,		parseShorts,	writeShorts));
-			//{"norm-short",	true,	GL_SHORT,			sizeof(GLshort),	ParseShorts,	WriteShorts},
-			//{"norm-ushort",	true,	GL_UNSIGNED_SHORT,	sizeof(GLushort),	ParseUShorts,	WriteUShorts},
-			allAttribType.put("byte",	new AttribType(false,	GL_BYTE,			Byte.SIZE/8,		parseBytes,		writeBytes));
-			allAttribType.put("ubyte",	new AttribType(false,	GL_UNSIGNED_BYTE,	Byte.SIZE/8,		parseBytes,		writeBytes));
-			//{"norm-byte",	true,	GL_BYTE,			sizeof(GLbyte),		ParseBytes,		WriteBytes},
-			//{"norm-ubyte",	true,	GL_UNSIGNED_BYTE,	sizeof(GLubyte),	ParseUBytes,	WriteUBytes},
+			allAttribType.put("float", new AttribType(false, GL_FLOAT, Float.SIZE / 8, parseFloats, writeFloats));
+			// {"half", false, GL_HALF_FLOAT, sizeof(GLhalfARB), ParseFloats,
+			// WriteFloats},
+			allAttribType.put("int", new AttribType(false, GL_INT, Integer.SIZE / 8, parseInts, writeInts));
+			allAttribType.put("uint", new AttribType(false, GL_UNSIGNED_INT, Integer.SIZE / 8, parseInts, writeInts));
+			// {"norm-int", true, GL_INT, sizeof(GLint), ParseInts, WriteInts},
+			// {"norm-uint", true, GL_UNSIGNED_INT, sizeof(GLuint), ParseUInts,
+			// WriteUInts},
+			allAttribType.put("short", new AttribType(false, GL_SHORT, Short.SIZE / 8, parseShorts, writeShorts));
+			allAttribType.put("ushort", new AttribType(false, GL_UNSIGNED_SHORT, Short.SIZE / 8, parseShorts, writeShorts));
+			// {"norm-short", true, GL_SHORT, sizeof(GLshort), ParseShorts,
+			// WriteShorts},
+			// {"norm-ushort", true, GL_UNSIGNED_SHORT, sizeof(GLushort),
+			// ParseUShorts, WriteUShorts},
+			allAttribType.put("byte", new AttribType(false, GL_BYTE, Byte.SIZE / 8, parseBytes, writeBytes));
+			allAttribType.put("ubyte", new AttribType(false, GL_UNSIGNED_BYTE, Byte.SIZE / 8, parseBytes, writeBytes));
+			// {"norm-byte", true, GL_BYTE, sizeof(GLbyte), ParseBytes,
+			// WriteBytes},
+			// {"norm-ubyte", true, GL_UNSIGNED_BYTE, sizeof(GLubyte),
+			// ParseUBytes, WriteUBytes},
 			
 			allPrimitiveType.put("triangles", GL_TRIANGLES);
 			allPrimitiveType.put("tri-strip", GL_TRIANGLE_STRIP);
@@ -489,6 +554,7 @@ public class Mesh {
 	public abstract static class ParseFunc {
 		abstract public Buffer parse(String strToParse);
 	}
+	
 	public abstract static class WriteFunc {
 		abstract public void writeToBuffer(int eBuffer, Buffer theData, int iOffset);
 	}
@@ -498,12 +564,13 @@ public class Mesh {
 		int ePrimType;
 		int start;
 		int elemCount;
-		int eIndexDataType;	//Only if bIsIndexedCmd is true.
+		int eIndexDataType; // Only if bIsIndexedCmd is true.
+		
 		public RenderCmd(Node cmdNode) {
 			NamedNodeMap attrs = cmdNode.getAttributes();
 			
 			{
-				//ricava cmd
+				// ricava cmd
 				Node cmdAttr = attrs.getNamedItem("cmd");
 				if (cmdAttr == null) {
 					throw new RuntimeException("Missing 'cmd' attribute in an 'arrays' or 'indices' element.");
@@ -518,16 +585,38 @@ public class Mesh {
 			
 			if (cmdNode.getNodeName().equals("indices")) {
 				bIsIndexedCmd = true;
-			}else if (cmdNode.getNodeName().equals("arrays")) {
+			} else if (cmdNode.getNodeName().equals("arrays")) {
 				bIsIndexedCmd = false;
-				//TODO implementare se usato
-			}else {
+				
+				{
+					Node nodeStart = cmdNode.getAttributes().getNamedItem("start");
+					if (nodeStart == null) {
+						throw new RuntimeException("Missing 'start' attribute in an 'arrays' element.");
+					}
+					int iStart = Integer.parseInt(nodeStart.getNodeValue());
+					if (iStart < 0) {
+						throw new RuntimeException("Attribute 'start' must be between 0 or greater.");
+					}
+					start = iStart;
+				}
+				{
+					Node nodeCount = cmdNode.getAttributes().getNamedItem("count");
+					if (nodeCount == null) {
+						throw new RuntimeException("Missing 'count' attribute in an 'arrays' element.");
+					}
+					int iCount = Integer.parseInt(nodeCount.getNodeValue());
+					if (iCount <= 0) {
+						throw new RuntimeException("Attribute 'count' must be greater than 0.");
+					}
+					elemCount = iCount;
+				}
+			} else {
 				throw new RuntimeException("Bad element. Must be 'indices' or 'arrays'.");
 			}
 		}
 		
 		public void render() {
-			if(bIsIndexedCmd)
+			if (bIsIndexedCmd)
 				glDrawElements(ePrimType, elemCount, eIndexDataType, start);
 			else
 				glDrawArrays(ePrimType, start, elemCount);
@@ -541,7 +630,7 @@ public class Mesh {
 		
 		public IndexData(Node indexElem) {
 			NamedNodeMap attrs = indexElem.getAttributes();
-			//controlla che type sia valido
+			// controlla che type sia valido
 			{
 				Node typeAttr = attrs.getNamedItem("type");
 				if (typeAttr == null) {
@@ -555,7 +644,7 @@ public class Mesh {
 				pAttribType = AttribType.get(strType);
 			}
 			
-			//legge gli indici
+			// legge gli indici
 			{
 				String strIndex = indexElem.getChildNodes().item(0).getNodeValue();
 				dataArray = pAttribType.parse(strIndex);
@@ -572,8 +661,37 @@ public class Mesh {
 		public int getDataNumElem() {
 			return dataArray.limit();
 		}
+		
 		public int calcByteSize() {
 			return getDataNumElem() * pAttribType.iNumBytes;
+		}
+	}
+	
+	private static class NamedVAO {
+		String name;
+		ArrayList<Integer> attributes;
+		
+		public NamedVAO(Node itemVao) {
+			attributes = new ArrayList<>();
+			
+			NamedNodeMap attrs = itemVao.getAttributes();
+			{
+				Node nameAttr = attrs.getNamedItem("name");
+				if (nameAttr == null) {
+					throw new RuntimeException("Missing 'name' attribute in an 'vao' element.");
+				}
+				name = nameAttr.getNodeValue();
+			}
+			
+			Element elemVao = (Element) itemVao;
+			NodeList sources = elemVao.getElementsByTagName("source");
+			for (int i = 0; i < sources.getLength(); i++) {
+				Node attrib = sources.item(i).getAttributes().getNamedItem("attrib");
+				if (attrib == null) {
+					throw new RuntimeException("Missing 'attrib' attribute in an 'source' element.");
+				}
+				attributes.add(Integer.parseInt(attrib.getNodeValue()));
+			}
 		}
 	}
 }

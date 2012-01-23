@@ -30,18 +30,22 @@ add and configure the LWJGL library (visit [LWJGL home](http://www.lwjgl.org/) f
 
 Porting notes
 -------------
-We decided to port the tutorials in a manner as similar as possible to the original, but not all c++ features are implemented in Java (eg. function pointers). 
+In our project each tutorial class inherits from the base class GLWindow: in this class the main loop is executed (in c++ this is managed by Glut), 
+which in order updates the values of "elapsedTime" and "lastFrameDuration", call update() and display(). The function reshape() is called once before the main loop starts and 
+everytime the window get resized. The two variables "elapsedTime" and "lastFrameDuration" are declared as protected so every subclass can use their value; 
+update(),display() and reshape() are overrided in every tutorial class. 
+
+We decided to port the tutorials in a manner as similar as possible to the original, but not all c++ features are implemented in Java (eg. function pointers).
 This is the changes list:
 
-* Main consideration : in our project each tutorial class inherits from the base class GLWindow: in this class is executed the main loop (in c++ this is managed by Glut), 
-which in order updates the values of "elapsedTime" and "lastFrameDuration", call update() and display(). When the window get resized the main loop call reshape().
-The two variables "elapsedTime" and "lastFrameDuration" are declared as protected so every subclass can use their value; update(),display() and reshape() are 
-overrided in every tutorial class.
-* In addition to the original tutorials, to obtain a more accurate input method (eg. the camera movement controlled with the keyboard) we computed the simplest 
+* In the original tutorials, Glut manage keyboard inputs by calling keyboard(char c). We choose to create a general purpose method called update(), which is executed 
+once per loop, and here check if the keyboard keys that we need are pressed or not.
+* In addition, to obtain a more accurate movement (eg. the camera controlled with the keyboard) we computed the simplest 
 possible integration by multiplying the deltaMovement by "lastFrameDuration".
 * "PushStack" : the author decided to implement a MatrixStack with a push/pop organization based on PushStack's constructor and destructor. 
-Unfortunately, in Java objects destructor aren't called at the end of the object's scope, and the destruction is decided by the garbage collector.
+Unfortunately, in Java objects destructor aren't called at the end of the object's scope, but the destruction is decided by the garbage collector.
 We choose to create the push() and pop() methods in MatrixStack.java, and call them manually when needed.
+
 
 
 Github users

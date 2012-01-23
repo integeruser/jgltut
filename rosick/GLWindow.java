@@ -29,7 +29,7 @@ public class GLWindow {
 	
 	public final void start(int width, int height) {		
 		try {
-			Display.setTitle("Test");
+			Display.setTitle("Tutorials by rosickteam");
 			Display.setDisplayMode(new DisplayMode(width, height));
 			Display.setResizable(true);
 			Display.setVSyncEnabled(true);

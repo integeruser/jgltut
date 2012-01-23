@@ -31,9 +31,9 @@ public class GLWindow {
 		try {
 			Display.setTitle("Test");
 			Display.setDisplayMode(new DisplayMode(width, height));
-			Display.create();
-			Display.setVSyncEnabled(true);
 			Display.setResizable(true);
+			Display.setVSyncEnabled(true);
+			Display.create();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 			System.exit(0);

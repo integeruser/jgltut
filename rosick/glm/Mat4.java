@@ -21,6 +21,10 @@ public class Mat4 {
 	
 	public Mat4() {
 		matrix = new float[16];
+		matrix[0] = 1.0f;
+		matrix[5] = 1.0f;
+		matrix[10] = 1.0f;
+		matrix[15] = 1.0f;
 	}
 
 	public Mat4(float diagonal) {
@@ -31,9 +35,9 @@ public class Mat4 {
 		matrix[15] = diagonal;
 	}
 
-	public Mat4(float matrix[]) {
-		this.matrix = new float[16];
-		System.arraycopy(matrix, 0, this.matrix, 0, 16);
+	public Mat4(float mat[]) {
+		matrix = new float[16];
+		System.arraycopy(mat, 0, matrix, 0, 16);
 	}
 	
 	public Mat4(Mat4 mat) {
@@ -46,7 +50,7 @@ public class Mat4 {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	public void mul(Mat4 mat) {
+	public Mat4 mul(Mat4 mat) {
 		float[] res = new float[16];
 		float[] m1 = matrix;
 		float[] m2 = mat.matrix;
@@ -64,6 +68,8 @@ public class Mat4 {
 		}
 
 		System.arraycopy(res, 0, matrix, 0, 16);
+		
+		return this;
 	}
 	
 	
@@ -71,13 +77,13 @@ public class Mat4 {
 		matrix[index] = val;
 	}
 	
-	public void putColumn(int columnIndex, Vec4 vec4) {
+	public void putColumn(int columnIndex, Vec4 vec) {
 		int offset = (columnIndex * 4);
 		
-		matrix[offset]     = vec4.x;
-		matrix[offset + 1] = vec4.y;
-		matrix[offset + 2] = vec4.z;
-		matrix[offset + 3] = vec4.w;
+		matrix[offset]     = vec.x;
+		matrix[offset + 1] = vec.y;
+		matrix[offset + 2] = vec.z;
+		matrix[offset + 3] = vec.w;
 	}
 
 	
@@ -125,6 +131,17 @@ public class Mat4 {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+	public static Vec4 mul(Mat4 mat, Vec4 vec) {
+		Vec4 firstColumn = new Vec4(
+				mat.matrix[0],
+				mat.matrix[1],
+				mat.matrix[2],
+				mat.matrix[3]);
+		
+		return firstColumn.mul(vec);
+	}
+	
+	
 	public static Mat4 getRotateX(float angDeg) {
 		float fAngRad = degToRad(angDeg);
 		float fCos = (float) Math.cos(fAngRad);

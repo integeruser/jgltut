@@ -83,10 +83,25 @@ public class Glm {
 
 		return vec;
 	}
-	
+		
 	
 	public static Vec4 mix(Vec4 x, Vec4 y, float a) {
 		return Vec4.add(x, Vec4.sub(y, x).scale(a));
+	}
+	
+	
+	public static Quaternion angleAxis(float angle, Vec3 v) {
+		Quaternion result = new Quaternion();
+
+		float a = (float) Math.toRadians(angle);
+        float s = (float) Math.sin(a * 0.5);
+
+        result.w = (float) Math.cos(a * 0.5);
+        result.x = v.x * s;
+        result.y = v.y * s;
+        result.z = v.z * s;
+        
+        return result;
 	}
 	
 	
@@ -152,6 +167,17 @@ public class Glm {
 	
 	public static Quaternion conjugate(Quaternion quat) {
         return new Quaternion(quat.w, -quat.x, -quat.y, -quat.z);
+	}
+	
+	
+	public static Mat4 translate(Mat4 mat, Vec3 vec) {
+		Mat4 result = new Mat4(mat);
+
+		mat.matrix[3] = mat.matrix[3] * vec.x;
+		mat.matrix[7] = mat.matrix[7] * vec.y;
+		mat.matrix[11] = mat.matrix[11] * vec.z;
+
+		return result;
 	}
 	
 	

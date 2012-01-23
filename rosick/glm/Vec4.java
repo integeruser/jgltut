@@ -1,5 +1,7 @@
 package rosick.glm;
 
+import java.nio.FloatBuffer;
+
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
@@ -62,6 +64,15 @@ public class Vec4 {
 		return this;
 	}
 	
+	public Vec4 mul(Vec4 vec) {
+		x *= vec.x;
+		y *= vec.y;
+		z *= vec.z;
+		w *= vec.w;
+
+		return this;
+	}
+	
 	
 	public Vec4 scale(float scalar) {
 		x *= scalar;
@@ -72,6 +83,13 @@ public class Vec4 {
 		return this;
 	}
 	
+	
+	public FloatBuffer fillBuffer(FloatBuffer buffer) {
+		buffer.put(new float[] {x, y, z, w});
+		buffer.flip();
+		
+		return buffer;
+	}
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -87,5 +105,11 @@ public class Vec4 {
 		Vec4 vec = new Vec4(a);
 
 		return vec.sub(b);
+	}
+	
+	public static Vec4 mul(Vec4 a, Vec4 b) {
+		Vec4 vec = new Vec4(a);
+
+		return vec.mul(b);
 	}
 }

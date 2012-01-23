@@ -167,7 +167,7 @@ public class GimbalLock01 extends GLWindow {
 		glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
 		glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillBuffer(tempSharedBuffer));
 
-		g_pObject.render(/*"tint"*/);
+		g_pObject.render("tint");
 
 		glUseProgram(0);
 	}

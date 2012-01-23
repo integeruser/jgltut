@@ -159,7 +159,7 @@ public class QuaternionYPR02 extends GLWindow {
 		glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
 		glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillBuffer(tempSharedBuffer));
 
-		g_pShip.render(/*"tint"*/);
+		g_pShip.render("tint");
 
 		glUseProgram(0);
 	}

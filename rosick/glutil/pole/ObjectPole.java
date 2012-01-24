@@ -38,9 +38,11 @@ public class ObjectPole {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	public Mat4 calcMatrix() {
-		Mat4 translateMat = new Mat4(); 
-		translateMat.putColumn(3, new Vec4(m_po.position, 1.0f));
+		//Mat4 translateMat = new Mat4(); 
+		//translateMat.putColumn(3, new Vec4(m_po.position, 1.0f));
 
+		Mat4 translateMat = Glm.translate(new Mat4(), m_po.position); 
+		
 		return translateMat.mul(Glm.matCast(m_po.orientation));
 	}
 }

@@ -79,20 +79,8 @@ public class BasicLighting01 extends GLWindow {
 	private FloatBuffer tempSharedBuffer9 = BufferUtils.createFloatBuffer(9);
 	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
 
-	private MatrixStack modelMatrix = new MatrixStack(); 
-
+	private MatrixStack modelMatrix = new MatrixStack();
 	
-	private static boolean g_bDrawColoredCyl = true;
-
-	private float g_fzNear = 1.0f;
-	private float g_fzFar = 1000.0f;
-	
-	private Mesh g_pCylinderMesh;
-	private Mesh g_pPlaneMesh;
-	
-	private Vec4 g_lightDirection = new Vec4(0.866f, 0.5f, 0.0f, 0.0f);
-	private int g_projectionUniformBuffer = 0;
-
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -175,7 +163,7 @@ public class BasicLighting01 extends GLWindow {
 	
 
 	@Override
-	protected void display() {	
+	protected void display() {		
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -187,10 +175,10 @@ public class BasicLighting01 extends GLWindow {
 
 		glUseProgram(g_WhiteDiffuseColor.theProgram);
 		glUniform3(g_WhiteDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillBuffer(tempSharedBuffer4));
-		// oppure glUniform3f(g_WhiteDiffuseColor.dirToLightUnif, lightDirCameraSpace.x, lightDirCameraSpace.y, lightDirCameraSpace.z);
+		//glUniform3f(g_WhiteDiffuseColor.dirToLightUnif, lightDirCameraSpace.x, lightDirCameraSpace.y, lightDirCameraSpace.z);
 		glUseProgram(g_VertexDiffuseColor.theProgram);
 		glUniform3(g_VertexDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillBuffer(tempSharedBuffer4));
-		// oppure glUniform3f(g_VertexDiffuseColor.dirToLightUnif, lightDirCameraSpace.x, lightDirCameraSpace.y, lightDirCameraSpace.z);
+		//glUniform3f(g_VertexDiffuseColor.dirToLightUnif, lightDirCameraSpace.x, lightDirCameraSpace.y, lightDirCameraSpace.z);
 		glUseProgram(0);
 
 		{
@@ -212,7 +200,6 @@ public class BasicLighting01 extends GLWindow {
 				modelMatrix.pop();
 			}
 
-			/*
 			// Render the Cylinder
 			{
 				modelMatrix.push();
@@ -241,7 +228,6 @@ public class BasicLighting01 extends GLWindow {
 				
 				modelMatrix.pop();
 			}
-			*/
 			
 			modelMatrix.pop();
 		}
@@ -289,4 +275,16 @@ public class BasicLighting01 extends GLWindow {
 
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);
 	private ObjectPole g_objtPole = new ObjectPole(g_initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, g_viewPole);
+	
+	
+	private static boolean g_bDrawColoredCyl = true;
+
+	private float g_fzNear = 1.0f;
+	private float g_fzFar = 1000.0f;
+	
+	private Mesh g_pCylinderMesh;
+	private Mesh g_pPlaneMesh;
+	
+	private Vec4 g_lightDirection = new Vec4(0.866f, 0.5f, 0.0f, 0.0f);
+	private int g_projectionUniformBuffer;
 }

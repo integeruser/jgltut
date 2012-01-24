@@ -5,6 +5,8 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
+import static rosick.glm.Vec.*;
+
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
@@ -326,7 +328,7 @@ public class Hierarchy04 extends GLWindow {
 			}
 			
 			// Store the currentMatrix in the buffer
-			System.arraycopy(currentMatrix.matrix, 0, matrices, firstIndexUsable, 16);		
+			System.arraycopy(currentMatrix.get(), 0, matrices, firstIndexUsable, 16);		
 			firstIndexUsable += 16;
 		}
 
@@ -334,7 +336,7 @@ public class Hierarchy04 extends GLWindow {
 		public void pop() {
 			// Pop the last matrix pushed in the buffer and set it as currentMatrix
 			firstIndexUsable -= 16;
-			System.arraycopy(matrices, firstIndexUsable, currentMatrix.matrix, 0, 16);		
+			System.arraycopy(matrices, firstIndexUsable, currentMatrix.get(), 0, 16);		
 		}
 
 		public Mat4 top() {		
@@ -364,10 +366,10 @@ public class Hierarchy04 extends GLWindow {
 		
 		public void scale(float x, float y, float z) {
 			tempMat.clear(0);
-			tempMat.put(0, x);
-			tempMat.put(5, y);
-			tempMat.put(10, z);
-			tempMat.put(15, 1);
+			tempMat.set(0, x);
+			tempMat.set(5, y);
+			tempMat.set(10, z);
+			tempMat.set(15, 1);
 
 			currentMatrix.mul(tempMat);
 		}
@@ -375,15 +377,15 @@ public class Hierarchy04 extends GLWindow {
 		
 		public void translate(float x, float y, float z) {
 			tempMat.clear(1);
-			tempMat.put(12, x);
-			tempMat.put(13, y);
-			tempMat.put(14, z);
+			tempMat.set(12, x);
+			tempMat.set(13, y);
+			tempMat.set(14, z);
 
 			currentMatrix.mul(tempMat);
 		}
 
 		public void translate(Vec3 offset) {
-			translate(offset.x, offset.y, offset.z);
+			translate(offset.get(X), offset.get(Y), offset.get(Z));
 		}
 	}	
 	
@@ -704,22 +706,22 @@ public class Hierarchy04 extends GLWindow {
 		Mat4 mat = new Mat4();
 
 		// X column
-		mat.put(0, 1); 															// x
-		mat.put(1, 0); 															// y
-		mat.put(2, 0); 															// z
+		mat.set(0, 1); 																// x
+		mat.set(1, 0); 																// y
+		mat.set(2, 0); 																// z
 
 		// Y column
-		mat.put(4, 0); 															// x
-		mat.put(5, fCos); 														// y
-		mat.put(6, fSin); 														// z
+		mat.set(4, 0); 																// x
+		mat.set(5, fCos); 															// y
+		mat.set(6, fSin); 															// z
 
 		// Z column
-		mat.put(8, 0); 															// x
-		mat.put(9, -fSin); 														// y
-		mat.put(10, fCos); 														// z
+		mat.set(8, 0); 																// x
+		mat.set(9, -fSin); 															// y
+		mat.set(10, fCos); 															// z
 
 		// Last
-		mat.put(15, 1); 
+		mat.set(15, 1); 
 
 		return mat;
 	}
@@ -732,22 +734,22 @@ public class Hierarchy04 extends GLWindow {
 		Mat4 mat = new Mat4();
 
 		// X column
-		mat.put(0, fCos); 
-		mat.put(1, 0); 
-		mat.put(2, -fSin);
+		mat.set(0, fCos); 
+		mat.set(1, 0); 
+		mat.set(2, -fSin);
 
 		// Y column
-		mat.put(4, 0); 
-		mat.put(5, 1); 
-		mat.put(6, 0); 
+		mat.set(4, 0); 
+		mat.set(5, 1); 
+		mat.set(6, 0); 
 
 		// Z column
-		mat.put(8, fSin); 
-		mat.put(9, 0);
-		mat.put(10, fCos); 
+		mat.set(8, fSin); 
+		mat.set(9, 0);
+		mat.set(10, fCos); 
 
 		// Last
-		mat.put(15, 1); 
+		mat.set(15, 1); 
 
 		return mat;
 	}
@@ -760,22 +762,22 @@ public class Hierarchy04 extends GLWindow {
 		Mat4 mat = new Mat4();
 
 		// X column
-		mat.put(0, fCos); 
-		mat.put(1, fSin); 
-		mat.put(2, 0);
+		mat.set(0, fCos); 
+		mat.set(1, fSin); 
+		mat.set(2, 0);
 
 		// Y column
-		mat.put(4, -fSin);
-		mat.put(5, fCos); 
-		mat.put(6, 0); 
+		mat.set(4, -fSin);
+		mat.set(5, fCos); 
+		mat.set(6, 0); 
 
 		// Z column
-		mat.put(8, 0); 
-		mat.put(9, 0); 
-		mat.put(10, 1); 
+		mat.set(8, 0); 
+		mat.set(9, 0); 
+		mat.set(10, 1); 
 
 		// Last
-		mat.put(15, 1); 
+		mat.set(15, 1); 
 
 		return mat;
 	}

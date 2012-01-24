@@ -3,6 +3,8 @@ package rosick.mckesson.tut08;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
+import static rosick.glm.Vec4.*;
+
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -92,11 +94,11 @@ public class Interpolation04 extends GLWindow {
 
 		float fzNear = 1.0f; float fzFar = 600.0f;
 		
-		cameraToClipMatrix.put(0,	fFrustumScale);
-		cameraToClipMatrix.put(5, 	fFrustumScale);
-		cameraToClipMatrix.put(10, 	(fzFar + fzNear) / (fzNear - fzFar));
-		cameraToClipMatrix.put(11, 	-1.0f);
-		cameraToClipMatrix.put(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
+		cameraToClipMatrix.set(0,	fFrustumScale);
+		cameraToClipMatrix.set(5, 	fFrustumScale);
+		cameraToClipMatrix.set(10, 	(fzFar + fzNear) / (fzNear - fzFar));
+		cameraToClipMatrix.set(11, 	-1.0f);
+		cameraToClipMatrix.set(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
 
 		glUseProgram(theProgram);
 		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer));
@@ -156,8 +158,8 @@ public class Interpolation04 extends GLWindow {
 	
 	@Override
 	protected void reshape(int width, int height) {	
-		cameraToClipMatrix.put(0, fFrustumScale / (width / (float) height));
-		cameraToClipMatrix.put(5, fFrustumScale);
+		cameraToClipMatrix.set(0, fFrustumScale / (width / (float) height));
+		cameraToClipMatrix.set(5, fFrustumScale);
 
 		glUseProgram(theProgram);
 		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer));
@@ -199,10 +201,10 @@ public class Interpolation04 extends GLWindow {
 	private Vec4 vectorize(Quaternion theQuat) {
 		Vec4 ret = new Vec4();
 
-		ret.x = theQuat.x;
-		ret.y = theQuat.y;
-		ret.z = theQuat.z;
-		ret.w = theQuat.w;
+		ret.set(X, theQuat.get(X));
+		ret.set(Y, theQuat.get(Y));
+		ret.set(Z, theQuat.get(Z));
+		ret.set(W, theQuat.get(W));
 
 		return ret;
 	}
@@ -215,7 +217,7 @@ public class Interpolation04 extends GLWindow {
 
 		interp = Glm.normalize(interp);
 		
-		return new Quaternion(interp.w, interp.x, interp.y, interp.z);
+		return new Quaternion(interp.get(W), interp.get(X), interp.get(Y), interp.get(Z));
 	}
 	
 	

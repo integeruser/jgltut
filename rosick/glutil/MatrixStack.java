@@ -1,5 +1,7 @@
 package rosick.glutil;
 
+import static rosick.glm.Vec.*;
+
 import rosick.glm.Glm;
 import rosick.glm.Mat4;
 import rosick.glm.Vec3;
@@ -42,7 +44,7 @@ public class MatrixStack {
 		}
 		
 		// Store the currentMatrix in the buffer
-		System.arraycopy(currentMatrix.matrix, 0, matrices, firstIndexUsable, 16);		
+		System.arraycopy(currentMatrix.get(), 0, matrices, firstIndexUsable, 16);		
 		firstIndexUsable += 16;
 	}
 
@@ -50,7 +52,7 @@ public class MatrixStack {
 	public void pop() {
 		// Pop the last matrix pushed in the buffer and set it as currentMatrix
 		firstIndexUsable -= 16;
-		System.arraycopy(matrices, firstIndexUsable, currentMatrix.matrix, 0, 16);		
+		System.arraycopy(matrices, firstIndexUsable, currentMatrix.get(), 0, 16);		
 	}
 
 	public Mat4 top() {		
@@ -101,16 +103,16 @@ public class MatrixStack {
 		Mat4 mat = new Mat4();
 		
 		mat.clear(0);
-		mat.put(0, x);
-		mat.put(5, y);
-		mat.put(10, z);
-		mat.put(15, 1);
+		mat.set(0, x);
+		mat.set(5, y);
+		mat.set(10, z);
+		mat.set(15, 1);
 
 		currentMatrix.mul(mat);
 	}
 
 	public void scale(Vec3 vec) {
-		scale(vec.x, vec.y, vec.z);
+		scale(vec.get(X), vec.get(Y), vec.get(Z));
 	}
 
 	
@@ -118,15 +120,15 @@ public class MatrixStack {
 		Mat4 mat = new Mat4();
 
 		mat.clear(1);
-		mat.put(12, x);
-		mat.put(13, y);
-		mat.put(14, z);
+		mat.set(12, x);
+		mat.set(13, y);
+		mat.set(14, z);
 
 		currentMatrix.mul(mat);
 	}
 
 	public void translate(Vec3 vec) {
-		translate(vec.x, vec.y, vec.z);
+		translate(vec.get(X), vec.get(Y), vec.get(Z));
 	}
 	
 	

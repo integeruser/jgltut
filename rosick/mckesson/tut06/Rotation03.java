@@ -5,6 +5,8 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
+import static rosick.glm.Vec.*;
+
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
@@ -350,19 +352,19 @@ public class Rotation03 extends GLWindow {
 		Vec3 axis = Glm.normalize(new Vec3(1, 1, 1));
 		
 		// X column
-		modelToCameraMatrixBuffer.put(0, (axis.x * axis.x) + ((1 - axis.x * axis.x) * fCos)); 				
-		modelToCameraMatrixBuffer.put(1, axis.x * axis.y * (fInvCos) + (axis.z * fSin)); 						
-		modelToCameraMatrixBuffer.put(2, axis.x * axis.z * (fInvCos) - (axis.y * fSin)); 						
+		modelToCameraMatrixBuffer.put(0, (axis.get(X) * axis.get(X)) + ((1 - axis.get(X) * axis.get(X)) * fCos)); 				
+		modelToCameraMatrixBuffer.put(1, axis.get(X) * axis.get(Y) * (fInvCos) + (axis.get(Z) * fSin)); 						
+		modelToCameraMatrixBuffer.put(2, axis.get(X) * axis.get(Z) * (fInvCos) - (axis.get(Y) * fSin)); 						
 		
 		// Y column
-		modelToCameraMatrixBuffer.put(4, axis.x * axis.y * (fInvCos) - (axis.z * fSin)); 						
-		modelToCameraMatrixBuffer.put(5, (axis.y * axis.y) + ((1 - axis.y * axis.y) * fCos));					
-		modelToCameraMatrixBuffer.put(6, axis.y * axis.z * (fInvCos) + (axis.x * fSin)); 						
+		modelToCameraMatrixBuffer.put(4, axis.get(X) * axis.get(Y) * (fInvCos) - (axis.get(Z) * fSin)); 						
+		modelToCameraMatrixBuffer.put(5, (axis.get(Y) * axis.get(Y)) + ((1 - axis.get(Y) * axis.get(Y)) * fCos));					
+		modelToCameraMatrixBuffer.put(6, axis.get(Y) * axis.get(Z) * (fInvCos) + (axis.get(X) * fSin)); 						
 		
 		// Z column
-		modelToCameraMatrixBuffer.put(8, axis.x * axis.z * (fInvCos) + (axis.y * fSin)); 						
-		modelToCameraMatrixBuffer.put(9, axis.y * axis.z * (fInvCos) - (axis.x * fSin)); 						
-		modelToCameraMatrixBuffer.put(10, (axis.z * axis.z) + ((1 - axis.z * axis.z) * fCos)); 				
+		modelToCameraMatrixBuffer.put(8, axis.get(X) * axis.get(Z) * (fInvCos) + (axis.get(Y) * fSin)); 						
+		modelToCameraMatrixBuffer.put(9, axis.get(Y) * axis.get(Z) * (fInvCos) - (axis.get(X) * fSin)); 						
+		modelToCameraMatrixBuffer.put(10, (axis.get(Z) * axis.get(Z)) + ((1 - axis.get(Z) * axis.get(Z)) * fCos)); 				
 		
 		
 		// Offset

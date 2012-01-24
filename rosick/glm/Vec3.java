@@ -4,33 +4,26 @@ package rosick.glm;
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
- * @author integeruser
+ * @author integeruser, xire-
  */
-public class Vec3 {
-	
-	public float x, y, z;
-	
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+public class Vec3 extends Vec {
 
 	public Vec3() {
-		x = 0;
-		y = 0;
-		z = 0;
+		vector = new float[3];
 	}
 	
 	public Vec3(float x, float y, float z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		vector = new float[3];
+		vector[X] = x;
+		vector[Y] = y;
+		vector[Z] = z;
 	}
 	
 	public Vec3(Vec3 vec) {
-		x = vec.x;
-		y = vec.y;
-		z = vec.z;
+		vector = new float[3];
+		vector[X] = vec.vector[X];
+		vector[Y] = vec.vector[Y];
+		vector[Z] = vec.vector[Z];
 	}
 	
 	
@@ -39,64 +32,51 @@ public class Vec3 {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
 	public Vec3 add(Vec3 vec) {
-		x += vec.x;
-		y += vec.y;
-		z += vec.z;
+		vector[X] += vec.vector[X];
+		vector[Y] += vec.vector[Y];
+		vector[Z] += vec.vector[Z];
 		
 		return this;
 	}
 	
 	public Vec3 sub(Vec3 vec) {
-		x -= vec.x;
-		y -= vec.y;
-		z -= vec.z;
+		vector[X] -= vec.vector[X];
+		vector[Y] -= vec.vector[Y];
+		vector[Z] -= vec.vector[Z];
 		
 		return this;
 	}
 	
 	public Vec3 mul(Vec3 vec) {
-		x *= vec.x;
-		y *= vec.y;
-		z *= vec.z;
+		vector[X] *= vec.vector[X];
+		vector[Y] *= vec.vector[Y];
+		vector[Z] *= vec.vector[Z];
 		
 		return this;
 	}
 	
 	
 	public Vec3 scale(float scalar) {
-		x *= scalar;
-		y *= scalar;
-		z *= scalar;
+		vector[X] *= scalar;
+		vector[Y] *= scalar;
+		vector[Z] *= scalar;
 		
 		return this;
 	}
 	
 
 	public Vec3 negate() {
-		x = -x;
-		y = -y;
-		z = -z;
-		
+		vector[X] = -vector[X];
+		vector[Y] = -vector[Y];
+		vector[Z] = -vector[Z];
+
 		return this;
-	}
-	
-
-	public void set(float x, float y, float z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-
-	public void set(Vec3 vec) {
-		x = vec.x;
-		y = vec.y;
-		z = vec.z;
 	}
 	
 	
 	@Override
 	public String toString() {
-		return "X: " + x + ", Y: " + y + ", Z: " + z;
+		return "X: " + vector[X] + ", Y: " + vector[Y] + ", Z: " + vector[Z];
 	}
 
 	

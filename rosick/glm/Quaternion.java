@@ -59,39 +59,37 @@ public class Quaternion extends Vec {
 		return this;
 	}
 	
-	public Quaternion mul(Quaternion quat) {
-		Quaternion copy = new Quaternion(this);
+	public Quaternion mul(Quaternion quat) {	
+		float x = (vector[X] * quat.vector[W]) + (vector[W] * quat.vector[X]) + (vector[Y] * quat.vector[Z]) - (vector[Z] * quat.vector[Y]);
+		float y = (vector[Y] * quat.vector[W]) + (vector[W] * quat.vector[Y]) + (vector[Z] * quat.vector[X]) - (vector[X] * quat.vector[Z]);
+		float z = (vector[Z] * quat.vector[W]) + (vector[W] * quat.vector[Z]) + (vector[X] * quat.vector[Y]) - (vector[Y] * quat.vector[X]);
+		float w = (vector[W] * quat.vector[W]) - (vector[X] * quat.vector[X]) - (vector[Y] * quat.vector[Y]) - (vector[Z] * quat.vector[Z]);
+		
+		vector[X] = x;
+		vector[Y] = y;
+		vector[Z] = z;
+		vector[W] = w;
 
-		copy.vector[W] = (vector[W] * quat.vector[W]) - (vector[X] * quat.vector[X]) - (vector[Y] * quat.vector[Y]) - (vector[Z] * quat.vector[Z]);
-		copy.vector[X] = (vector[W] * quat.vector[X]) + (vector[X] * quat.vector[W]) - (vector[Y] * quat.vector[Z]) + (vector[Z] * quat.vector[Y]);
-		copy.vector[Y] = (vector[W] * quat.vector[Y]) + (vector[X] * quat.vector[Z]) + (vector[Y] * quat.vector[W]) - (vector[Z] * quat.vector[X]);
-		copy.vector[Z] = (vector[W] * quat.vector[Z]) - (vector[X] * quat.vector[Y]) + (vector[Y] * quat.vector[X]) + (vector[Z] * quat.vector[W]);
-		
-		vector[W] = copy.vector[W];
-		vector[X] = copy.vector[X];
-		vector[Y] = copy.vector[Y];
-		vector[Z] = copy.vector[Z];
-		
 		return this;
 	}
 	
 	
 	public Quaternion scale(float scalar) {
-		vector[W] *= scalar;
 		vector[X] *= scalar;
 		vector[Y] *= scalar;
 		vector[Z] *= scalar;
-		
+		vector[W] *= scalar;
+
 		return this;
 	}
 	
 	
 	public Quaternion negate() {
-		vector[W] = -vector[W];
 		vector[X] = -vector[X];
 		vector[Y] = -vector[Y];
 		vector[Z] = -vector[Z];
-		
+		vector[W] = -vector[W];
+
 		return this;
 	}
 	

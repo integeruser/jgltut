@@ -29,38 +29,38 @@ public class Glm {
 	
 	
 	public static Vec3 normalize(Vec3 a) {
-		Vec3 vec = new Vec3();
+		Vec3 res = new Vec3();
 		
-		float length = length(a);
-		vec.vector[X] = a.vector[X] / length;
-		vec.vector[Y] = a.vector[Y] / length;
-		vec.vector[Z] = a.vector[Z] / length;
+		float invLength = 1.0f / length(a);
+		res.vector[X] = a.vector[X] * invLength;
+		res.vector[Y] = a.vector[Y] * invLength;
+		res.vector[Z] = a.vector[Z] * invLength;
 		
-		return vec;
+		return res;
 	}
 	
 	public static Vec4 normalize(Vec4 a) {
-		Vec4 vec = new Vec4();
+		Vec4 res = new Vec4();
 		
-		float length = length(a);
-		vec.vector[X] = a.vector[X] / length;
-		vec.vector[Y] = a.vector[Y] / length;
-		vec.vector[Z] = a.vector[Z] / length;
-		vec.vector[W] = a.vector[W] / length;
+		float invLength = 1.0f / length(a);
+		res.vector[X] = a.vector[X] * invLength;
+		res.vector[Y] = a.vector[Y] * invLength;
+		res.vector[Z] = a.vector[Z] * invLength;
+		res.vector[W] = a.vector[W] * invLength;
 
-		return vec;
+		return res;
 	}
 	
 	public static Quaternion normalize(Quaternion a) {		
-		Quaternion quat = new Quaternion();
+		Quaternion res = new Quaternion();
 		
-		float length = length(a);
-		quat.vector[W] = a.vector[W] / length;
-		quat.vector[X] = a.vector[X] / length;
-		quat.vector[Y] = a.vector[Y] / length;
-		quat.vector[Z] = a.vector[Z] / length;
-		
-		return quat;
+		float invLength = 1.0f / length(a);
+		res.vector[X] = a.vector[X] * invLength;
+		res.vector[Y] = a.vector[Y] * invLength;
+		res.vector[Z] = a.vector[Z] * invLength;
+		res.vector[W] = a.vector[W] * invLength;
+
+		return res;
 	}
 	
 	
@@ -78,13 +78,13 @@ public class Glm {
 	
 	
 	public static Vec3 cross(Vec3 a, Vec3 b) {
-		Vec3 vec = new Vec3();
+		Vec3 res = new Vec3();
 
-		vec.vector[X] = a.vector[Y] * b.vector[Z] - a.vector[Z] * b.vector[Y];
-		vec.vector[Y] = a.vector[Z] * b.vector[X] - a.vector[X] * b.vector[Z];
-		vec.vector[Z] = a.vector[X] * b.vector[Y] - a.vector[Y] * b.vector[X];
+		res.vector[X] = a.vector[Y] * b.vector[Z] - a.vector[Z] * b.vector[Y];
+		res.vector[Y] = a.vector[Z] * b.vector[X] - a.vector[X] * b.vector[Z];
+		res.vector[Z] = a.vector[X] * b.vector[Y] - a.vector[Y] * b.vector[X];
 
-		return vec;
+		return res;
 	}
 		
 	
@@ -94,17 +94,17 @@ public class Glm {
 	
 	
 	public static Quaternion angleAxis(float angle, Vec3 v) {
-		Quaternion result = new Quaternion();
+		Quaternion res = new Quaternion();
 
 		float a = (float) Math.toRadians(angle);
         float s = (float) Math.sin(a * 0.5);
 
-        result.vector[W] = (float) Math.cos(a * 0.5);
-        result.vector[X] = v.vector[X] * s;
-        result.vector[Y] = v.vector[Y] * s;
-        result.vector[Z] = v.vector[Z] * s;
-        
-        return result;
+        res.vector[X] = v.vector[X] * s;
+        res.vector[Y] = v.vector[Y] * s;
+        res.vector[Z] = v.vector[Z] * s;
+        res.vector[W] = (float) Math.cos(a * 0.5);
+
+        return res;
 	}
 	
 	
@@ -135,62 +135,51 @@ public class Glm {
 	    float biggestVal = (float) (Math.sqrt(fourBiggestSquaredMinus1 + 1) * 0.5f);
 	    float mult = 0.25f / biggestVal;
 
-		Quaternion quat = new Quaternion();
+		Quaternion res = new Quaternion();
 
 		switch (biggestIndex) {
 			case 0:
-				quat.vector[W] = biggestVal; 
-				quat.vector[X] = (mat.matrix[6] - mat.matrix[9]) * mult;
-				quat.vector[Y] = (mat.matrix[8] - mat.matrix[2]) * mult;
-				quat.vector[Z] = (mat.matrix[1] - mat.matrix[4]) * mult;
+				res.vector[W] = biggestVal; 
+				res.vector[X] = (mat.matrix[6] - mat.matrix[9]) * mult;
+				res.vector[Y] = (mat.matrix[8] - mat.matrix[2]) * mult;
+				res.vector[Z] = (mat.matrix[1] - mat.matrix[4]) * mult;
 				break;
 			case 1:
-				quat.vector[W] = (mat.matrix[6] - mat.matrix[9]) * mult;
-				quat.vector[X] = biggestVal;
-				quat.vector[Y] = (mat.matrix[1] + mat.matrix[4]) * mult;
-				quat.vector[Z] = (mat.matrix[8] + mat.matrix[2]) * mult;
+				res.vector[W] = (mat.matrix[6] - mat.matrix[9]) * mult;
+				res.vector[X] = biggestVal;
+				res.vector[Y] = (mat.matrix[1] + mat.matrix[4]) * mult;
+				res.vector[Z] = (mat.matrix[8] + mat.matrix[2]) * mult;
 				break;
 			case 2:
-				quat.vector[W] = (mat.matrix[8] - mat.matrix[2]) * mult;
-				quat.vector[X] = (mat.matrix[1] + mat.matrix[4]) * mult;
-				quat.vector[Y] = biggestVal;
-				quat.vector[Z] = (mat.matrix[6] + mat.matrix[9]) * mult;
+				res.vector[W] = (mat.matrix[8] - mat.matrix[2]) * mult;
+				res.vector[X] = (mat.matrix[1] + mat.matrix[4]) * mult;
+				res.vector[Y] = biggestVal;
+				res.vector[Z] = (mat.matrix[6] + mat.matrix[9]) * mult;
 				break;
 			case 3:
-				quat.vector[W] = (mat.matrix[1] - mat.matrix[4]) * mult;
-				quat.vector[X] = (mat.matrix[8] + mat.matrix[2]) * mult;
-				quat.vector[Y] = (mat.matrix[6] + mat.matrix[9]) * mult;
-				quat.vector[Z] = biggestVal;
+				res.vector[W] = (mat.matrix[1] - mat.matrix[4]) * mult;
+				res.vector[X] = (mat.matrix[8] + mat.matrix[2]) * mult;
+				res.vector[Y] = (mat.matrix[6] + mat.matrix[9]) * mult;
+				res.vector[Z] = biggestVal;
 				break;
 		}   
 		
-		return quat;
+		return res;
 	}
 	
 	
 	public static Quaternion conjugate(Quaternion quat) {
-        return new Quaternion(quat.vector[W], -quat.vector[X], -quat.vector[Y], -quat.vector[Z]);
+        return Quaternion.negate(quat);
 	}
 	
 	
 	public static Mat4 translate(Mat4 mat, Vec3 vec) {
-		/*
 		Mat4 res = new Mat4(mat);
 
-		res.matrix[12] = mat.matrix[12] + vec.x;
-		res.matrix[13] = mat.matrix[13] + vec.y;
-		res.matrix[14] = mat.matrix[14] + vec.z;
-		*/
-		
-		Mat4 res = new Mat4(mat);
-
-		Vec4 column0 = mat.getColumn(0);
-		Vec4 column1 = mat.getColumn(1);
-		Vec4 column2 = mat.getColumn(2);
-		Vec4 column3 = mat.getColumn(3);
-
-		Vec4 newColumn3 = column0.scale(vec.vector[X]).add(column1.scale(vec.vector[Y])).add(column2.scale(vec.vector[Z])).add(column3);
-		res.setColumn(3, newColumn3);
+		res.matrix[12] = mat.matrix[0] * vec.get(X) + mat.matrix[4] * vec.get(Y) + mat.matrix[8] * vec.get(Z);
+		res.matrix[13] = mat.matrix[1] * vec.get(X) + mat.matrix[5] * vec.get(Y) + mat.matrix[9] * vec.get(Z);
+		res.matrix[14] = mat.matrix[2] * vec.get(X) + mat.matrix[6] * vec.get(Y) + mat.matrix[10] * vec.get(Z);
+		res.matrix[15] = mat.matrix[3] * vec.get(X) + mat.matrix[7] * vec.get(Y) + mat.matrix[11] * vec.get(Z);
 		
 		return res;
 	}
@@ -200,9 +189,9 @@ public class Glm {
 		float source[] = mat.matrix;
 		float destination[] = new float[16];
 
-		for( int i = 0; i < 4; i++)
-			for( int j = 0; j < 4; j++)
-				destination[j+i*4] = source[i+j*4];
+		for (int i = 0; i < 4; i++)
+			for (int j = 0; j < 4; j++)
+				destination[j + i * 4] = source[i + j * 4];
 		
 		return new Mat4(destination);
 	}
@@ -215,15 +204,15 @@ public class Glm {
 		float bottom = -range;
 		float top = range;
 
-		Mat4 mat = new Mat4(0.0f);
+		Mat4 res = new Mat4(0.0f);
 
-		mat.matrix[0] = (2.0f * zNear) / (right - left);
-		mat.matrix[5] = (2.0f * zNear) / (top - bottom);
-		mat.matrix[10] = - (zFar + zNear) / (zFar - zNear);
-		mat.matrix[11] = - 1.0f;
-		mat.matrix[14] = - (2.0f * zFar * zNear) / (zFar - zNear);
+		res.matrix[0] = (2.0f * zNear) / (right - left);
+		res.matrix[5] = (2.0f * zNear) / (top - bottom);
+		res.matrix[10] = - (zFar + zNear) / (zFar - zNear);
+		res.matrix[11] = - 1.0f;
+		res.matrix[14] = - (2.0f * zFar * zNear) / (zFar - zNear);
 
-		return mat;
+		return res;
 	}
 	
 	
@@ -234,25 +223,25 @@ public class Glm {
 	    //  | 2(xz + wy)		2(yz - wx)			1 - 2(x^2 + y^2)	0  |
 	    //  | 0					0					0					1  |
 		
-		Mat4 mat = new Mat4(0.0f);
+		Mat4 res = new Mat4(0.0f);
 
-		mat.matrix[0] = 1 - 2 * quat.vector[Y] * quat.vector[Y] - 2 * quat.vector[Z] * quat.vector[Z];
-		mat.matrix[1] = 2 * quat.vector[X] * quat.vector[Y] + 2 * quat.vector[W] * quat.vector[Z];
-		mat.matrix[2] = 2 * quat.vector[X] * quat.vector[Z] - 2 * quat.vector[W] * quat.vector[Y];
+		res.matrix[0] = 1 - 2 * quat.vector[Y] * quat.vector[Y] - 2 * quat.vector[Z] * quat.vector[Z];
+		res.matrix[1] = 2 * quat.vector[X] * quat.vector[Y] + 2 * quat.vector[W] * quat.vector[Z];
+		res.matrix[2] = 2 * quat.vector[X] * quat.vector[Z] - 2 * quat.vector[W] * quat.vector[Y];
 
-		mat.matrix[4] = 2 * quat.vector[X] * quat.vector[Y] - 2 * quat.vector[W] * quat.vector[Z];
-		mat.matrix[5] = 1 - 2 * quat.vector[X] * quat.vector[X] - 2 * quat.vector[Z] * quat.vector[Z];
-		mat.matrix[6] = 2 * quat.vector[Y] * quat.vector[Z] + 2 * quat.vector[W] * quat.vector[X];
+		res.matrix[4] = 2 * quat.vector[X] * quat.vector[Y] - 2 * quat.vector[W] * quat.vector[Z];
+		res.matrix[5] = 1 - 2 * quat.vector[X] * quat.vector[X] - 2 * quat.vector[Z] * quat.vector[Z];
+		res.matrix[6] = 2 * quat.vector[Y] * quat.vector[Z] + 2 * quat.vector[W] * quat.vector[X];
 
-		mat.matrix[8] = 2 * quat.vector[X] * quat.vector[Z] + 2 * quat.vector[W] * quat.vector[Y];
-		mat.matrix[9] = 2 * quat.vector[Y] * quat.vector[Z] - 2 * quat.vector[W] * quat.vector[X];
-		mat.matrix[10] = 1 - 2 * quat.vector[X] * quat.vector[X] - 2 * quat.vector[Y] * quat.vector[Y];
+		res.matrix[8] = 2 * quat.vector[X] * quat.vector[Z] + 2 * quat.vector[W] * quat.vector[Y];
+		res.matrix[9] = 2 * quat.vector[Y] * quat.vector[Z] - 2 * quat.vector[W] * quat.vector[X];
+		res.matrix[10] = 1 - 2 * quat.vector[X] * quat.vector[X] - 2 * quat.vector[Y] * quat.vector[Y];
 		
-	    mat.matrix[12] = 0.0f;
-	    mat.matrix[13] = 0.0f;
-	    mat.matrix[14] = 0.0f;
-	    mat.matrix[15] = 1.0f;
+	    res.matrix[12] = 0.0f;
+	    res.matrix[13] = 0.0f;
+	    res.matrix[14] = 0.0f;
+	    res.matrix[15] = 1.0f;
 	    
-		return mat;
+		return res;
 	}
 }

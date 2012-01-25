@@ -352,15 +352,15 @@ public class Hierarchy04 extends GLWindow {
 		
 		
 		public void rotateX(float fAngDeg) {
-			currentMatrix.mul(Mat4.getRotateX(fAngDeg));
+			currentMatrix.mul(getRotateX(fAngDeg));
 		}
 
 		public void rotateY(float fAngDeg) {
-			currentMatrix.mul(Mat4.getRotateY(fAngDeg));
+			currentMatrix.mul(getRotateY(fAngDeg));
 		}
 
 		public void rotateZ(float fAngDeg) {
-			currentMatrix.mul(Mat4.getRotateZ(fAngDeg));
+			currentMatrix.mul(getRotateZ(fAngDeg));
 		}
 
 		

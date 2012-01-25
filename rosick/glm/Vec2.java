@@ -4,7 +4,7 @@ package rosick.glm;
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
- * @author integeruser, xire-
+ * @author integeruser
  */
 public class Vec2 extends Vec {
 
@@ -78,34 +78,34 @@ public class Vec2 extends Vec {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
 	public static Vec2 add(Vec2 a, Vec2 b) {
-		Vec2 vec = new Vec2(a);
+		Vec2 res = new Vec2(a);
 		
-		return vec.add(b);
+		return res.add(b);
 	}
 	
 	public static Vec2 sub(Vec2 a, Vec2 b) {
-		Vec2 vec = new Vec2(a);
+		Vec2 res = new Vec2(a);
 
-		return vec.sub(b);
+		return res.sub(b);
 	}	
 	
 	public static Vec2 mul(Vec2 a, Vec2 b) {	
-		Vec2 vec = new Vec2(a);
+		Vec2 res = new Vec2(a);
 		
-		return vec.mul(b);
+		return res.mul(b);
 	}
 	
 	
-	public static Vec2 scale(Vec2 a, float scalar) {
-		Vec2 vec = new Vec2(a);
+	public static Vec2 scale(Vec2 vec, float scalar) {
+		Vec2 res = new Vec2(vec);
 		
-		return vec.scale(scalar);
+		return res.scale(scalar);
 	}
 	
 
-	public static Vec2 negate(Vec2 a) {
-		Vec2 vec = new Vec2(a);
+	public static Vec2 negate(Vec2 vec) {
+		Vec2 res = new Vec2(vec);
 		
-		return vec.negate();
+		return res.negate();
 	}
 }

@@ -84,20 +84,20 @@ public class Vec4 extends Vec {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	public static Vec4 add(Vec4 a, Vec4 b) {
-		Vec4 ris = new Vec4(a);
+		Vec4 res = new Vec4(a);
 		
-		return ris.add(b);
+		return res.add(b);
 	}
 	
 	public static Vec4 sub(Vec4 a, Vec4 b) {
-		Vec4 ris = new Vec4(a);
+		Vec4 res = new Vec4(a);
 
-		return ris.sub(b);
+		return res.sub(b);
 	}
 	
 	public static Vec4 mul(Vec4 a, Vec4 b) {
-		Vec4 ris = new Vec4(a);
+		Vec4 res = new Vec4(a);
 
-		return ris.mul(b);
+		return res.mul(b);
 	}
 }

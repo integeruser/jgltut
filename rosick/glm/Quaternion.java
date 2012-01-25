@@ -107,34 +107,34 @@ public class Quaternion extends Vec {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	public static Quaternion add(Quaternion a, Quaternion b) {
-		Quaternion ris = new Quaternion(a);
+		Quaternion res = new Quaternion(a);
 		
-		return ris.add(b);
+		return res.add(b);
 	}
 	
 	public static Quaternion mul(Quaternion a, Quaternion b) {
-		Quaternion ris = new Quaternion(a);
+		Quaternion res = new Quaternion(a);
 		
-		return ris.mul(b);
+		return res.mul(b);
 	}
 	
 	
 	public static Quaternion scale(Quaternion quat, float scalar) {
-		Quaternion ris = new Quaternion(quat);
+		Quaternion res = new Quaternion(quat);
 		
-		return ris.scale(scalar);
+		return res.scale(scalar);
 	}
 	
 	
 	public static Quaternion negate(Quaternion quat) {
-		Quaternion ris = new Quaternion(quat);
+		Quaternion res = new Quaternion(quat);
 		
-		return ris.negate();
+		return res.negate();
 	}
 
 	public static Quaternion conjugate(Quaternion quat) {
-		Quaternion ris = new Quaternion(quat);
+		Quaternion res = new Quaternion(quat);
 		
-		return ris.conjugate();
+		return res.conjugate();
 	}
 }

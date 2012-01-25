@@ -85,34 +85,34 @@ public class Vec3 extends Vec {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
 	public static Vec3 add(Vec3 a, Vec3 b) {
-		Vec3 vec = new Vec3(a);
+		Vec3 res = new Vec3(a);
 		
-		return vec.add(b);
+		return res.add(b);
 	}
 	
 	public static Vec3 sub(Vec3 a, Vec3 b) {
-		Vec3 vec = new Vec3(a);
+		Vec3 res = new Vec3(a);
 
-		return vec.sub(b);
+		return res.sub(b);
 	}	
 	
 	public static Vec3 mul(Vec3 a, Vec3 b) {	
-		Vec3 vec = new Vec3(a);
+		Vec3 res = new Vec3(a);
 		
-		return vec.mul(b);
+		return res.mul(b);
 	}
 	
 	
-	public static Vec3 scale(Vec3 a, float scalar) {
-		Vec3 vec = new Vec3(a);
+	public static Vec3 scale(Vec3 vec, float scalar) {
+		Vec3 res = new Vec3(vec);
 		
-		return vec.scale(scalar);
+		return res.scale(scalar);
 	}
 	
 
-	public static Vec3 negate(Vec3 a) {
-		Vec3 vec = new Vec3(a);
+	public static Vec3 negate(Vec3 vec) {
+		Vec3 res = new Vec3(vec);
 		
-		return vec.negate();
+		return res.negate();
 	}
 }

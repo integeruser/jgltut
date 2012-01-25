@@ -15,50 +15,50 @@ public class Glm {
 	}
 	
 	
-	public static float length(Vec3 a) {	
-		return (float) Math.sqrt(dot(a, a));
+	public static float length(Vec3 vec) {	
+		return (float) Math.sqrt(dot(vec, vec));
 	}
 	
-	public static float length(Vec4 a) {
-		return (float) Math.sqrt(dot(a, a));
+	public static float length(Vec4 vec) {
+		return (float) Math.sqrt(dot(vec, vec));
 	}
 	
-	public static float length(Quaternion a) {
-		return (float) Math.sqrt(dot(a, a));
+	public static float length(Quaternion quat) {
+		return (float) Math.sqrt(dot(quat, quat));
 	}
 	
 	
-	public static Vec3 normalize(Vec3 a) {
+	public static Vec3 normalize(Vec3 vec) {
 		Vec3 res = new Vec3();
 		
-		float invLength = 1.0f / length(a);
-		res.vector[X] = a.vector[X] * invLength;
-		res.vector[Y] = a.vector[Y] * invLength;
-		res.vector[Z] = a.vector[Z] * invLength;
+		float invLength = 1.0f / length(vec);
+		res.vector[X] = vec.vector[X] * invLength;
+		res.vector[Y] = vec.vector[Y] * invLength;
+		res.vector[Z] = vec.vector[Z] * invLength;
 		
 		return res;
 	}
 	
-	public static Vec4 normalize(Vec4 a) {
+	public static Vec4 normalize(Vec4 vec) {
 		Vec4 res = new Vec4();
 		
-		float invLength = 1.0f / length(a);
-		res.vector[X] = a.vector[X] * invLength;
-		res.vector[Y] = a.vector[Y] * invLength;
-		res.vector[Z] = a.vector[Z] * invLength;
-		res.vector[W] = a.vector[W] * invLength;
+		float invLength = 1.0f / length(vec);
+		res.vector[X] = vec.vector[X] * invLength;
+		res.vector[Y] = vec.vector[Y] * invLength;
+		res.vector[Z] = vec.vector[Z] * invLength;
+		res.vector[W] = vec.vector[W] * invLength;
 
 		return res;
 	}
 	
-	public static Quaternion normalize(Quaternion a) {		
+	public static Quaternion normalize(Quaternion quat) {		
 		Quaternion res = new Quaternion();
 		
-		float invLength = 1.0f / length(a);
-		res.vector[X] = a.vector[X] * invLength;
-		res.vector[Y] = a.vector[Y] * invLength;
-		res.vector[Z] = a.vector[Z] * invLength;
-		res.vector[W] = a.vector[W] * invLength;
+		float invLength = 1.0f / length(quat);
+		res.vector[X] = quat.vector[X] * invLength;
+		res.vector[Y] = quat.vector[Y] * invLength;
+		res.vector[Z] = quat.vector[Z] * invLength;
+		res.vector[W] = quat.vector[W] * invLength;
 
 		return res;
 	}
@@ -90,6 +90,11 @@ public class Glm {
 	
 	public static Vec4 mix(Vec4 x, Vec4 y, float a) {
 		return Vec4.add(x, Vec4.sub(y, x).scale(a));
+	}
+	
+	
+	public static Quaternion conjugate(Quaternion quat) {
+        return Quaternion.conjugate(quat);
 	}
 	
 	
@@ -168,13 +173,30 @@ public class Glm {
 	}
 	
 	
-	public static Quaternion conjugate(Quaternion quat) {
-        return Quaternion.conjugate(quat);
+	public static Mat3 inverse(Mat3 mat) {	
+		Mat3 res = new Mat3();
+		
+		res.matrix[0] = + (mat.matrix[4] * mat.matrix[8] - mat.matrix[7] * mat.matrix[5]);
+		res.matrix[3] = - (mat.matrix[3] * mat.matrix[8] - mat.matrix[6] * mat.matrix[5]);
+		res.matrix[6] = + (mat.matrix[3] * mat.matrix[7] - mat.matrix[6] * mat.matrix[4]);
+		res.matrix[1] = - (mat.matrix[1] * mat.matrix[8] - mat.matrix[7] * mat.matrix[2]);
+		res.matrix[4] = + (mat.matrix[0] * mat.matrix[8] - mat.matrix[6] * mat.matrix[2]);
+		res.matrix[7] = - (mat.matrix[0] * mat.matrix[7] - mat.matrix[6] * mat.matrix[1]);
+		res.matrix[2] = + (mat.matrix[1] * mat.matrix[5] - mat.matrix[4] * mat.matrix[2]);
+		res.matrix[5] = - (mat.matrix[0] * mat.matrix[5] - mat.matrix[3] * mat.matrix[2]);
+		res.matrix[8] = + (mat.matrix[0] * mat.matrix[4] - mat.matrix[3] * mat.matrix[1]);
+		
+		float determinant = mat.matrix[0] * (mat.matrix[4] * mat.matrix[8] - mat.matrix[5] * mat.matrix[7]) 
+				+ mat.matrix[1] * (mat.matrix[5] * mat.matrix[6] - mat.matrix[3] * mat.matrix[8])
+	            + mat.matrix[2] * (mat.matrix[3] * mat.matrix[7] - mat.matrix[4] * mat.matrix[6]);
+		
+		return res.scale(1.0f / determinant);	
 	}
 	
-	
+		
 	public static Mat4 translate(Mat4 mat, Vec3 vec) {
 		Mat4 res = new Mat4(mat);	
+		
 		Vec4 temp = new Vec4();
 		Vec4 temp0 = mat.getColumn(0).scale(vec.get(X));
 		Vec4 temp1 = mat.getColumn(1).scale(vec.get(Y));
@@ -188,6 +210,24 @@ public class Glm {
 		return res;
 	}
 	
+	
+	public static Mat3 transpose(Mat3 mat) {
+		Mat3 res = new Mat3();
+		
+		res.matrix[0] = mat.matrix[0];
+		res.matrix[1] = mat.matrix[3];
+		res.matrix[2] = mat.matrix[6];
+
+		res.matrix[3] = mat.matrix[1];
+		res.matrix[4] = mat.matrix[4];
+		res.matrix[5] = mat.matrix[7];
+
+        res.matrix[6] = mat.matrix[2];
+        res.matrix[7] = mat.matrix[5];
+        res.matrix[8] = mat.matrix[8];
+        
+        return res;
+	}
 	
 	public static Mat4 transpose(Mat4 mat) {
 		float source[] = mat.matrix;

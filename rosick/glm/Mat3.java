@@ -2,8 +2,6 @@ package rosick.glm;
 
 import static rosick.glm.Vec.*;
 
-import java.nio.FloatBuffer;
-
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
@@ -48,20 +46,7 @@ public class Mat3 extends Mat implements Bufferable {
 		matrix[7] = mat.matrix[9];
 		matrix[8] = mat.matrix[10];
 	}
-
 	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	@Override
-	public FloatBuffer fillBuffer(FloatBuffer buffer) {
-		buffer.put(matrix);
-		buffer.flip();
-		
-		return buffer;
-	}
-
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -91,6 +76,15 @@ public class Mat3 extends Mat implements Bufferable {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	public Mat3 scale(float scalar) {
+		for (int i = 0; i < 9; i++) {
+			matrix[i] = matrix[i] * scalar;
+		}
+		
+		return this;
+	}
+	
 	
 	public void clear(float diagonal) {
 		for (int i = 0; i < 9; i++) {

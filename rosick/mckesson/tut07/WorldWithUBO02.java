@@ -48,7 +48,7 @@ public class WorldWithUBO02 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	private static class ProgramData {
+	private class ProgramData {
 		int theProgram;
 		int globalUniformBlockIndex;
 		int modelToWorldMatrixUnif;

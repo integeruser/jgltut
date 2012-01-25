@@ -1,14 +1,12 @@
 package rosick.glm;
 
-import java.nio.FloatBuffer;
-
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
  * @author integeruser, xire-
  */
-public class Vec4 extends Vec implements Bufferable {
+public class Vec4 extends Vec {
 	
 	public Vec4() {
 		vector = new float[4];
@@ -37,20 +35,7 @@ public class Vec4 extends Vec implements Bufferable {
 		vector[Z] = vec.vector[Z];
 		vector[W] = vec.vector[W];
 	}
-	
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	@Override
-	public FloatBuffer fillBuffer(FloatBuffer buffer) {
-		buffer.put(vector);
-		buffer.flip();
-		
-		return buffer;
-	}
-	
+
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

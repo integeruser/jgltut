@@ -93,15 +93,15 @@ public class Glm {
 	}
 	
 	
-	public static Quaternion angleAxis(float angle, Vec3 v) {
+	public static Quaternion angleAxis(float angle, Vec3 vec) {
 		Quaternion res = new Quaternion();
 
 		float a = (float) Math.toRadians(angle);
         float s = (float) Math.sin(a * 0.5);
 
-        res.vector[X] = v.vector[X] * s;
-        res.vector[Y] = v.vector[Y] * s;
-        res.vector[Z] = v.vector[Z] * s;
+        res.vector[X] = vec.vector[X] * s;
+        res.vector[Y] = vec.vector[Y] * s;
+        res.vector[Z] = vec.vector[Z] * s;
         res.vector[W] = (float) Math.cos(a * 0.5);
 
         return res;
@@ -169,17 +169,21 @@ public class Glm {
 	
 	
 	public static Quaternion conjugate(Quaternion quat) {
-        return Quaternion.negate(quat);
+        return Quaternion.conjugate(quat);
 	}
 	
 	
 	public static Mat4 translate(Mat4 mat, Vec3 vec) {
-		Mat4 res = new Mat4(mat);
+		Mat4 res = new Mat4(mat);	
+		Vec4 temp = new Vec4();
+		Vec4 temp0 = mat.getColumn(0).scale(vec.get(X));
+		Vec4 temp1 = mat.getColumn(1).scale(vec.get(Y));
+		Vec4 temp2 = mat.getColumn(2).scale(vec.get(Z));
+		Vec4 temp3 = mat.getColumn(3);
 
-		res.matrix[12] = mat.matrix[0] * vec.get(X) + mat.matrix[4] * vec.get(Y) + mat.matrix[8] * vec.get(Z);
-		res.matrix[13] = mat.matrix[1] * vec.get(X) + mat.matrix[5] * vec.get(Y) + mat.matrix[9] * vec.get(Z);
-		res.matrix[14] = mat.matrix[2] * vec.get(X) + mat.matrix[6] * vec.get(Y) + mat.matrix[10] * vec.get(Z);
-		res.matrix[15] = mat.matrix[3] * vec.get(X) + mat.matrix[7] * vec.get(Y) + mat.matrix[11] * vec.get(Z);
+		temp = temp0.add(temp1).add(temp2).add(temp3);
+		
+		res.setColumn(3, temp);
 		
 		return res;
 	}

@@ -3,7 +3,7 @@ package rosick.mckesson.tut08;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
-import static rosick.glm.Vec4.*;
+import static rosick.glm.Vec.*;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;

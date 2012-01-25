@@ -93,15 +93,23 @@ public class Quaternion extends Vec {
 		return this;
 	}
 	
+	public Quaternion conjugate() {
+		vector[X] = -vector[X];
+		vector[Y] = -vector[Y];
+		vector[Z] = -vector[Z];
+
+		return this;
+	}
+	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	public static Quaternion add(Quaternion a, Quaternion b) {
-		Quaternion quat = new Quaternion(a);
+		Quaternion ris = new Quaternion(a);
 		
-		return quat.add(b);
+		return ris.add(b);
 	}
 	
 	public static Quaternion mul(Quaternion a, Quaternion b) {
@@ -111,16 +119,22 @@ public class Quaternion extends Vec {
 	}
 	
 	
-	public static Quaternion scale(Quaternion a, float scalar) {
-		Quaternion quat = new Quaternion(a);
+	public static Quaternion scale(Quaternion quat, float scalar) {
+		Quaternion ris = new Quaternion(quat);
 		
-		return quat.scale(scalar);
+		return ris.scale(scalar);
 	}
 	
 	
-	public static Quaternion negate(Quaternion a) {
-		Quaternion quat = new Quaternion(a);
+	public static Quaternion negate(Quaternion quat) {
+		Quaternion ris = new Quaternion(quat);
 		
-		return quat.negate();
+		return ris.negate();
+	}
+
+	public static Quaternion conjugate(Quaternion quat) {
+		Quaternion ris = new Quaternion(quat);
+		
+		return ris.conjugate();
 	}
 }

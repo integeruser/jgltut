@@ -4,6 +4,11 @@ import static org.lwjgl.opengl.GL20.*;
 
 import java.util.ArrayList;
 
+import org.lwjgl.input.Keyboard;
+
+import rosick.glm.Vec2;
+import rosick.glutil.pole.MousePole.*;
+
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
@@ -11,13 +16,6 @@ import java.util.ArrayList;
  * @author integeruser
  */
 public class Framework {
-	
-	private static final float fDegToRad = 3.14159f * 2.0f / 360.0f;
-	
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	/**
 	 * Create and compile a vertex / fragment shader from a file.
@@ -62,11 +60,66 @@ public class Framework {
 	    
 	    return program;
 	}
-
-
+	
+	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	public static void forwardMouseMotion(Pole forward, int x, int y) {
+		forward.mouseMove(new Vec2(x, y));		
+	}
+	
+	
+	public static void forwardMouseButton(Pole forward, int button, boolean state, int x, int y) {
+		int modifiers = calc_glut_modifiers();
+		Vec2 mouseLoc = new Vec2(x, y);
+		MouseButtons eButton = null;
+
+		switch (button) {
+			case 0:
+				eButton = MouseButtons.MB_LEFT_BTN;
+				break;
+			case 1:
+				eButton = MouseButtons.MB_RIGHT_BTN;
+				break;
+			case 2:
+				eButton = MouseButtons.MB_MIDDLE_BTN;
+				break;
+		}
+
+		forward.mouseClick(eButton, state, modifiers, mouseLoc);
+	}
+	
+	
+	public static void forwardMouseWheel(Pole forward, int wheel, int direction, int x, int y) {
+		forward.mouseWheel(direction, calc_glut_modifiers(), new Vec2(x, y));
+	}
+	
+	
+	private static int calc_glut_modifiers() {		
+		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			return 0;
+		}
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+			return 1;
+		}
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_LMENU)) {
+			return 2;
+		}
+		
+		return -1;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private static final float fDegToRad = 3.14159f * 2.0f / 360.0f;
+
 	
 	public static float degToRad(float fAngDeg) {
 		return fAngDeg * fDegToRad;

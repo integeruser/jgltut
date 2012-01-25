@@ -1,12 +1,14 @@
 package rosick.glm;
 
+import java.nio.FloatBuffer;
+
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
  * @author integeruser, xire-
  */
-public abstract class Vec {
+public abstract class Vec implements Bufferable {
 	
 	public static final int X = 0;
 	public static final int Y = 1;
@@ -15,6 +17,19 @@ public abstract class Vec {
 	
 	float vector[];
 
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	@Override
+	public FloatBuffer fillBuffer(FloatBuffer buffer) {
+		buffer.put(vector);
+		buffer.flip();
+		
+		return buffer;
+	}
+	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

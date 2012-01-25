@@ -43,10 +43,8 @@ public class GLWindow {
 		long startTime = System.nanoTime();
 		continueMainLoop = true;
 		
-		init();	
-		reshape(width, height);
-		
-		checkForGlErrors();
+		init();						checkForGlErrors("init()"); 
+		reshape(width, height); 	checkForGlErrors("reshape()");	
 		
 		while (continueMainLoop && !Display.isCloseRequested()) {
 			elapsedTime = (System.nanoTime() - startTime) / 1000000.0;
@@ -65,7 +63,7 @@ public class GLWindow {
 			}
 		}
 		
-		checkForGlErrors();
+		checkForGlErrors("display() or update()");
 	}
 	
 	
@@ -104,11 +102,11 @@ public class GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private final void checkForGlErrors() {
+	private final void checkForGlErrors(String method) {
 		int error_code = glGetError();
 		
 		if (error_code != 0) {
-			System.err.println("glGetError() says: " + Util.translateGLErrorString(error_code));
+			System.err.println("Method:\t\t" + method + "\nglGetError():\t" + Util.translateGLErrorString(error_code));
 		}
 	}
 }

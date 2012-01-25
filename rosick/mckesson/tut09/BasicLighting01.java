@@ -71,7 +71,8 @@ public class BasicLighting01 extends GLWindow {
 	
 	private ProgramData g_WhiteDiffuseColor;
 	private ProgramData g_VertexDiffuseColor;
-	
+	private int g_projectionUniformBuffer;
+
 	private FloatBuffer tempSharedBuffer4 = BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempSharedBuffer9 = BufferUtils.createFloatBuffer(9);
 	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
@@ -201,7 +202,6 @@ public class BasicLighting01 extends GLWindow {
 		Vec4 lightDirCameraSpace = Mat4.mul(modelMatrix.top(), g_lightDirection);		
 		glUseProgram(g_WhiteDiffuseColor.theProgram);
 		glUniform3(g_WhiteDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillBuffer(tempSharedBuffer4));
-
 		glUseProgram(g_VertexDiffuseColor.theProgram);
 		glUniform3(g_VertexDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillBuffer(tempSharedBuffer4));
 		glUseProgram(0);
@@ -215,7 +215,6 @@ public class BasicLighting01 extends GLWindow {
 
 				glUseProgram(g_WhiteDiffuseColor.theProgram);
 				glUniformMatrix4(g_WhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
-				
 				Mat3 normMatrix = new Mat3(modelMatrix.top());
 				glUniformMatrix3(g_WhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
 				glUniform4f(g_WhiteDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -277,6 +276,8 @@ public class BasicLighting01 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
+	// View/Object Setup
+
 	private ViewData g_initialViewData = new ViewData(
 		new Vec3(0.0f, 0.5f, 0.0f),
 		new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
@@ -309,5 +310,4 @@ public class BasicLighting01 extends GLWindow {
 	private Mesh g_pPlaneMesh;
 	
 	private Vec4 g_lightDirection = new Vec4(0.866f, 0.5f, 0.0f, 0.0f);
-	private int g_projectionUniformBuffer;
 }

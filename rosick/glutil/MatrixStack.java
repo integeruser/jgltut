@@ -25,7 +25,7 @@ public class MatrixStack {
 	
 	public MatrixStack() {
 		matrices = new float[1600];													// 100 matrices		
-		currentMatrix = new Mat4(1);
+		currentMatrix = new Mat4(1.0f);
 				
 		firstIndexUsable = 0;
 	}

@@ -97,7 +97,7 @@ public class ObjectPole extends Pole {
 				}
 				
 				case RM_SPIN: {
-					rotateViewDegrees(calcRotationQuat(Axis.AXIS_Z.ordinal(), -iDiff.get(X) * m_rotateScale));
+					rotateViewDegrees(calcRotationQuat(Axis.AXIS_Z.ordinal(), - iDiff.get(X) * m_rotateScale));
 					break;
 				}
 			}

@@ -18,6 +18,7 @@ public class Timer {
 		NUM_TIMER_TYPES;
 	};
 	
+	
 	private Type m_eType;
 	private float m_secDuration;
 

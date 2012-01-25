@@ -3,6 +3,8 @@ package rosick.mckesson.tut08;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
+import static rosick.glm.Vec.*;
+
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -91,11 +93,11 @@ public class QuaternionYPR02 extends GLWindow {
 
 		float fzNear = 1.0f; float fzFar = 600.0f;
 		
-		cameraToClipMatrix.put(0,	fFrustumScale);
-		cameraToClipMatrix.put(5, 	fFrustumScale);
-		cameraToClipMatrix.put(10, 	(fzFar + fzNear) / (fzNear - fzFar));
-		cameraToClipMatrix.put(11, 	-1.0f);
-		cameraToClipMatrix.put(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
+		cameraToClipMatrix.set(0,	fFrustumScale);
+		cameraToClipMatrix.set(5, 	fFrustumScale);
+		cameraToClipMatrix.set(10, 	(fzFar + fzNear) / (fzNear - fzFar));
+		cameraToClipMatrix.set(11, 	-1.0f);
+		cameraToClipMatrix.set(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
 
 		glUseProgram(theProgram);
 		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer));
@@ -167,8 +169,8 @@ public class QuaternionYPR02 extends GLWindow {
 	
 	@Override
 	protected void reshape(int width, int height) {	
-		cameraToClipMatrix.put(0, fFrustumScale / (width / (float) height));
-		cameraToClipMatrix.put(5, fFrustumScale);
+		cameraToClipMatrix.set(0, fFrustumScale / (width / (float) height));
+		cameraToClipMatrix.set(5, fFrustumScale);
 
 		glUseProgram(theProgram);
 		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer));
@@ -198,7 +200,7 @@ public class QuaternionYPR02 extends GLWindow {
 		
 		float scalar = (float) Math.cos(fAngRad / 2.0f);
 
-		Quaternion offset = new Quaternion(scalar, axis.x, axis.y, axis.z);
+		Quaternion offset = new Quaternion(scalar, axis.get(X), axis.get(Y), axis.get(Z));
 
 		if(g_bRightMultiply)
 			g_orientation = Quaternion.mul(g_orientation, offset);

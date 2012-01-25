@@ -6,6 +6,9 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
+import static rosick.glm.Vec.X;
+import static rosick.glm.Vec.Y;
+import static rosick.glm.Vec.Z;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -45,7 +48,7 @@ public class WorldWithUBO02 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	private static class ProgramData {
+	private class ProgramData {
 		int theProgram;
 		int globalUniformBlockIndex;
 		int modelToWorldMatrixUnif;
@@ -142,40 +145,40 @@ public class WorldWithUBO02 extends GLWindow {
 		lastFrameDuration *= 5 / 1000.0f;
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-			g_camTarget.x -= 11.25f * lastFrameDuration;
+			g_camTarget.set(X, (float) (g_camTarget.get(X) - 4.0f * lastFrameDuration));
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			g_camTarget.x += 11.25f * lastFrameDuration;
-		}
-
-		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-			g_camTarget.z -= 11.25f * lastFrameDuration;
-		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			g_camTarget.z += 11.25f * lastFrameDuration;
+			g_camTarget.set(X, (float) (g_camTarget.get(X) + 4.0f * lastFrameDuration));
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-			g_camTarget.y += 11.25f * lastFrameDuration;
+			g_camTarget.set(Y, (float) (g_camTarget.get(Y) + 4.0f * lastFrameDuration));
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
-			g_camTarget.y -= 11.25f * lastFrameDuration;
+			g_camTarget.set(Y, (float) (g_camTarget.get(Y) - 4.0f * lastFrameDuration));
+		}
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+			g_camTarget.set(Z, (float) (g_camTarget.get(Z) - 4.0f * lastFrameDuration));
+		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+			g_camTarget.set(Z, (float) (g_camTarget.get(Z) + 4.0f * lastFrameDuration));
 		}
 
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-			g_sphereCamRelPos.x -= 11.25f * lastFrameDuration;
+			g_sphereCamRelPos.set(X, (float) (g_sphereCamRelPos.get(X) - 11.25f * lastFrameDuration));
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			g_sphereCamRelPos.x += 11.25f * lastFrameDuration;
+			g_sphereCamRelPos.set(X, (float) (g_sphereCamRelPos.get(X) + 11.25f * lastFrameDuration));
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-			g_sphereCamRelPos.y -= 11.25f * lastFrameDuration;
+			g_sphereCamRelPos.set(Y, (float) (g_sphereCamRelPos.get(Y) - 11.25f * lastFrameDuration));
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-			g_sphereCamRelPos.y += 11.25f * lastFrameDuration;
+			g_sphereCamRelPos.set(Y, (float) (g_sphereCamRelPos.get(Y) + 11.25f * lastFrameDuration));
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_U)) {
-			g_sphereCamRelPos.z += 11.25f * lastFrameDuration;
+			g_sphereCamRelPos.set(Z, (float) (g_sphereCamRelPos.get(Z) + 5.0f * lastFrameDuration));
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
-			g_sphereCamRelPos.z -= 11.25f * lastFrameDuration;
+			g_sphereCamRelPos.set(Z, (float) (g_sphereCamRelPos.get(Z) - 5.0f * lastFrameDuration));
 		}
 
 		
@@ -193,9 +196,9 @@ public class WorldWithUBO02 extends GLWindow {
 		}
 		
 		
-		g_sphereCamRelPos.y = Glm.clamp(g_sphereCamRelPos.y, -78.75f, -1.0f);
-		g_camTarget.y = g_camTarget.y > 0.0f ? g_camTarget.y : 0.0f;
-		g_sphereCamRelPos.z = g_sphereCamRelPos.z > 5.0f ? g_sphereCamRelPos.z : 5.0f;
+		g_sphereCamRelPos.set(Y, Glm.clamp(g_sphereCamRelPos.get(Y), -78.75f, -1.0f));
+		g_camTarget.set(Y, g_camTarget.get(Y) > 0.0f ? g_camTarget.get(Y) : 0.0f);
+		g_sphereCamRelPos.set(Z, g_sphereCamRelPos.get(Z) > 5.0f ? g_sphereCamRelPos.get(Z) : 5.0f);
 	}
 
 
@@ -659,8 +662,8 @@ public class WorldWithUBO02 extends GLWindow {
 
 	
 	private Vec3 resolveCamPosition() {
-		float phi = Framework.degToRad(g_sphereCamRelPos.x);
-		float theta = Framework.degToRad(g_sphereCamRelPos.y + 90.0f);
+		float phi = Framework.degToRad(g_sphereCamRelPos.get(X));
+		float theta = Framework.degToRad(g_sphereCamRelPos.get(Y) + 90.0f);
 
 		float fSinTheta = (float) Math.sin(theta);
 		float fCosTheta = (float) Math.cos(theta);
@@ -669,7 +672,7 @@ public class WorldWithUBO02 extends GLWindow {
 
 		Vec3 dirToCamera = new Vec3(fSinTheta * fCosPhi, fCosTheta, fSinTheta * fSinPhi);
 		
-		return (dirToCamera.scale(g_sphereCamRelPos.z)).add(g_camTarget);
+		return (dirToCamera.scale(g_sphereCamRelPos.get(Z))).add(g_camTarget);
 	}
 	
 	
@@ -681,14 +684,14 @@ public class WorldWithUBO02 extends GLWindow {
 		Vec3 perpUpDir = Glm.cross(rightDir, lookDir);
 
 		Mat4 rotMat = new Mat4(1.0f);
-		rotMat.putColumn(0, new Vec4(rightDir, 0.0f));
-		rotMat.putColumn(1, new Vec4(perpUpDir, 0.0f));
-		rotMat.putColumn(2, new Vec4(Vec3.negate(lookDir), 0.0f));
+		rotMat.setColumn(0, new Vec4(rightDir, 0.0f));
+		rotMat.setColumn(1, new Vec4(perpUpDir, 0.0f));
+		rotMat.setColumn(2, new Vec4(Vec3.negate(lookDir), 0.0f));
 
 		rotMat = Glm.transpose(rotMat);
 
 		Mat4 transMat = new Mat4(1.0f);
-		transMat.putColumn(3, new Vec4(Vec3.negate(cameraPt), 1.0f));
+		transMat.setColumn(3, new Vec4(Vec3.negate(cameraPt), 1.0f));
 
 		rotMat.mul(transMat);
 		

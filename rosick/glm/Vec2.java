@@ -4,26 +4,24 @@ package rosick.glm;
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
- * @author integeruser, xire-
+ * @author integeruser
  */
-public class Vec3 extends Vec {
+public class Vec2 extends Vec {
 
-	public Vec3() {
-		vector = new float[3];
+	public Vec2() {
+		vector = new float[2];
 	}
 	
-	public Vec3(float x, float y, float z) {
-		vector = new float[3];
+	public Vec2(float x, float y) {
+		vector = new float[2];
 		vector[X] = x;
 		vector[Y] = y;
-		vector[Z] = z;
 	}
 	
-	public Vec3(Vec3 vec) {
-		vector = new float[3];
+	public Vec2(Vec2 vec) {
+		vector = new float[2];
 		vector[X] = vec.vector[X];
 		vector[Y] = vec.vector[Y];
-		vector[Z] = vec.vector[Z];
 	}
 	
 	
@@ -31,44 +29,39 @@ public class Vec3 extends Vec {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
-	public Vec3 add(Vec3 vec) {
+	public Vec2 add(Vec2 vec) {
 		vector[X] += vec.vector[X];
 		vector[Y] += vec.vector[Y];
-		vector[Z] += vec.vector[Z];
 		
 		return this;
 	}
 	
-	public Vec3 sub(Vec3 vec) {
+	public Vec2 sub(Vec2 vec) {
 		vector[X] -= vec.vector[X];
 		vector[Y] -= vec.vector[Y];
-		vector[Z] -= vec.vector[Z];
 		
 		return this;
 	}
 	
-	public Vec3 mul(Vec3 vec) {
+	public Vec2 mul(Vec2 vec) {
 		vector[X] *= vec.vector[X];
 		vector[Y] *= vec.vector[Y];
-		vector[Z] *= vec.vector[Z];
 		
 		return this;
 	}
 	
 	
-	public Vec3 scale(float scalar) {
+	public Vec2 scale(float scalar) {
 		vector[X] *= scalar;
 		vector[Y] *= scalar;
-		vector[Z] *= scalar;
 		
 		return this;
 	}
 	
 
-	public Vec3 negate() {
+	public Vec2 negate() {
 		vector[X] = -vector[X];
 		vector[Y] = -vector[Y];
-		vector[Z] = -vector[Z];
 
 		return this;
 	}
@@ -76,7 +69,7 @@ public class Vec3 extends Vec {
 	
 	@Override
 	public String toString() {
-		return "X: " + vector[X] + ", Y: " + vector[Y] + ", Z: " + vector[Z];
+		return "X: " + vector[X] + ", Y: " + vector[Y];
 	}
 
 	
@@ -84,34 +77,34 @@ public class Vec3 extends Vec {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
-	public static Vec3 add(Vec3 a, Vec3 b) {
-		Vec3 res = new Vec3(a);
+	public static Vec2 add(Vec2 a, Vec2 b) {
+		Vec2 res = new Vec2(a);
 		
 		return res.add(b);
 	}
 	
-	public static Vec3 sub(Vec3 a, Vec3 b) {
-		Vec3 res = new Vec3(a);
+	public static Vec2 sub(Vec2 a, Vec2 b) {
+		Vec2 res = new Vec2(a);
 
 		return res.sub(b);
 	}	
 	
-	public static Vec3 mul(Vec3 a, Vec3 b) {	
-		Vec3 res = new Vec3(a);
+	public static Vec2 mul(Vec2 a, Vec2 b) {	
+		Vec2 res = new Vec2(a);
 		
 		return res.mul(b);
 	}
 	
 	
-	public static Vec3 scale(Vec3 vec, float scalar) {
-		Vec3 res = new Vec3(vec);
+	public static Vec2 scale(Vec2 vec, float scalar) {
+		Vec2 res = new Vec2(vec);
 		
 		return res.scale(scalar);
 	}
 	
 
-	public static Vec3 negate(Vec3 vec) {
-		Vec3 res = new Vec3(vec);
+	public static Vec2 negate(Vec2 vec) {
+		Vec2 res = new Vec2(vec);
 		
 		return res.negate();
 	}

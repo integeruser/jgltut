@@ -16,7 +16,7 @@ Francesco & Marco
 
 Project information
 -------------------
-The project is developed with Java 1.7 and LWJGL 2.8.2, and may not work with older versions.
+The project is being developed with Java 1.7 and LWJGL 2.8.3, and may not work with older versions.
 
 * "rosick/framework" : package with common classes.
 * "rosick/glm"       : package with math classes.

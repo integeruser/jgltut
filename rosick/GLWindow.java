@@ -6,6 +6,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.Util;
 
 
 /**
@@ -42,10 +43,10 @@ public class GLWindow {
 		long startTime = System.nanoTime();
 		continueMainLoop = true;
 		
-		init();	
-		reshape(width, height);
+		init();						checkForGlErrors("init()"); 
+		reshape(width, height); 	checkForGlErrors("reshape()");	
 		
-		while (continueMainLoop) {
+		while (continueMainLoop && !Display.isCloseRequested()) {
 			elapsedTime = (System.nanoTime() - startTime) / 1000000.0;
 					
 			now = System.nanoTime();
@@ -57,15 +58,12 @@ public class GLWindow {
 
 			Display.update();
 			
-			if (Display.isCloseRequested()) {
-				Display.destroy();
-				System.exit(0);
-			}
-			
 			if (Display.wasResized()) {
 				reshape(Display.getWidth(), Display.getHeight());
 			}
 		}
+		
+		checkForGlErrors("display() or update()");
 	}
 	
 	
@@ -97,5 +95,18 @@ public class GLWindow {
 	
 	protected void reshape(int width, int height) {
 		glViewport(0, 0, width, height);
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final void checkForGlErrors(String method) {
+		int error_code = glGetError();
+		
+		if (error_code != 0) {
+			System.err.println("Method:\t\t" + method + "\nglGetError():\t" + Util.translateGLErrorString(error_code));
+		}
 	}
 }

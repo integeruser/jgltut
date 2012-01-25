@@ -3,6 +3,8 @@ package rosick.mckesson.tut08;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
+import static rosick.glm.Vec.*;
+
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -93,11 +95,11 @@ public class CameraRelative03 extends GLWindow {
 
 		float fzNear = 1.0f; float fzFar = 600.0f;
 		
-		cameraToClipMatrix.put(0,	fFrustumScale);
-		cameraToClipMatrix.put(5, 	fFrustumScale);
-		cameraToClipMatrix.put(10, 	(fzFar + fzNear) / (fzNear - fzFar));
-		cameraToClipMatrix.put(11, 	-1.0f);
-		cameraToClipMatrix.put(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
+		cameraToClipMatrix.set(0,	fFrustumScale);
+		cameraToClipMatrix.set(5, 	fFrustumScale);
+		cameraToClipMatrix.set(10, 	(fzFar + fzNear) / (fzNear - fzFar));
+		cameraToClipMatrix.set(11, 	-1.0f);
+		cameraToClipMatrix.set(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
 
 		glUseProgram(theProgram);
 		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer));
@@ -129,15 +131,15 @@ public class CameraRelative03 extends GLWindow {
 		
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-			g_sphereCamRelPos.x -= 11.25f * lastFrameDuration;
+			g_sphereCamRelPos.set(X, (float) (g_sphereCamRelPos.get(X) - 11.25f * lastFrameDuration));
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			g_sphereCamRelPos.x += 11.25f * lastFrameDuration;
+			g_sphereCamRelPos.set(X, (float) (g_sphereCamRelPos.get(X) + 11.25f * lastFrameDuration));
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-			g_sphereCamRelPos.y -= 11.25f * lastFrameDuration;
+			g_sphereCamRelPos.set(Y, (float) (g_sphereCamRelPos.get(Y) + 11.25f * lastFrameDuration));
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-			g_sphereCamRelPos.y += 11.25f * lastFrameDuration;
+			g_sphereCamRelPos.set(Y, (float) (g_sphereCamRelPos.get(Y) - 11.25f * lastFrameDuration));
 		}
 
 		
@@ -171,7 +173,7 @@ public class CameraRelative03 extends GLWindow {
 		}
 
 
-		g_sphereCamRelPos.y = Glm.clamp(g_sphereCamRelPos.y, -78.75f, 10.0f);
+		g_sphereCamRelPos.set(Y, Glm.clamp(g_sphereCamRelPos.get(Y), -78.75f, 10.0f));
 	}
 	
 
@@ -222,8 +224,8 @@ public class CameraRelative03 extends GLWindow {
 	
 	@Override
 	protected void reshape(int width, int height) {	
-		cameraToClipMatrix.put(0, fFrustumScale / (width / (float) height));
-		cameraToClipMatrix.put(5, fFrustumScale);
+		cameraToClipMatrix.set(0, fFrustumScale / (width / (float) height));
+		cameraToClipMatrix.set(5, fFrustumScale);
 
 		glUseProgram(theProgram);
 		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer));
@@ -266,7 +268,7 @@ public class CameraRelative03 extends GLWindow {
 		
 		float scalar = (float) Math.cos(fAngRad / 2.0f);
 
-		Quaternion offset = new Quaternion(scalar, axis.x, axis.y, axis.z);
+		Quaternion offset = new Quaternion(scalar, axis.get(X), axis.get(Y), axis.get(Z));
 
 		switch (g_iOffset) {
 			case MODEL_RELATIVE:
@@ -309,8 +311,8 @@ public class CameraRelative03 extends GLWindow {
 	
 	
 	private Vec3 resolveCamPosition() {
-		float phi = Framework.degToRad(g_sphereCamRelPos.x);
-		float theta = Framework.degToRad(g_sphereCamRelPos.y + 90.0f);
+		float phi = Framework.degToRad(g_sphereCamRelPos.get(X));
+		float theta = Framework.degToRad(g_sphereCamRelPos.get(Y) + 90.0f);
 
 		float fSinTheta = (float) Math.sin(theta);
 		float fCosTheta = (float) Math.cos(theta);
@@ -319,7 +321,7 @@ public class CameraRelative03 extends GLWindow {
 
 		Vec3 dirToCamera = new Vec3(fSinTheta * fCosPhi, fCosTheta, fSinTheta * fSinPhi);
 		
-		return (dirToCamera.scale(g_sphereCamRelPos.z)).add(g_camTarget);
+		return (dirToCamera.scale(g_sphereCamRelPos.get(Z))).add(g_camTarget);
 	}
 	
 	
@@ -331,14 +333,14 @@ public class CameraRelative03 extends GLWindow {
 		Vec3 perpUpDir = Glm.cross(rightDir, lookDir);
 
 		Mat4 rotMat = new Mat4(1.0f);
-		rotMat.putColumn(0, new Vec4(rightDir, 0.0f));
-		rotMat.putColumn(1, new Vec4(perpUpDir, 0.0f));
-		rotMat.putColumn(2, new Vec4(Vec3.negate(lookDir), 0.0f));
+		rotMat.setColumn(0, new Vec4(rightDir, 0.0f));
+		rotMat.setColumn(1, new Vec4(perpUpDir, 0.0f));
+		rotMat.setColumn(2, new Vec4(Vec3.negate(lookDir), 0.0f));
 
 		rotMat = Glm.transpose(rotMat);
 
 		Mat4 transMat = new Mat4(1.0f);
-		transMat.putColumn(3, new Vec4(Vec3.negate(cameraPt), 1.0f));
+		transMat.setColumn(3, new Vec4(Vec3.negate(cameraPt), 1.0f));
 
 		rotMat.mul(transMat);
 		

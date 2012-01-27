@@ -88,6 +88,10 @@ public class Glm {
 	}
 		
 	
+	public static float mix(float x, float y, float a) {
+		return x + a * (y - x);
+	}
+	
 	public static Vec4 mix(Vec4 x, Vec4 y, float a) {
 		return Vec4.add(x, Vec4.sub(y, x).scale(a));
 	}
@@ -191,6 +195,60 @@ public class Glm {
 	            + mat.matrix[2] * (mat.matrix[3] * mat.matrix[7] - mat.matrix[4] * mat.matrix[6]);
 		
 		return res.scale(1.0f / determinant);	
+	}
+	
+	public static Mat4 inverse(Mat4 mat) {
+		float Coef00 = mat.matrix[10] * mat.matrix[15] - mat.matrix[14] * mat.matrix[11];
+		float Coef02 = mat.matrix[6] * mat.matrix[15] - mat.matrix[14] * mat.matrix[7];
+		float Coef03 = mat.matrix[6] * mat.matrix[11] - mat.matrix[10] * mat.matrix[7];
+
+		float Coef04 = mat.matrix[9] * mat.matrix[15] - mat.matrix[13] * mat.matrix[11];
+		float Coef06 = mat.matrix[5] * mat.matrix[15] - mat.matrix[13] * mat.matrix[7];
+		float Coef07 = mat.matrix[5] * mat.matrix[11] - mat.matrix[9] * mat.matrix[7];
+
+		float Coef08 = mat.matrix[9] * mat.matrix[14] - mat.matrix[13] * mat.matrix[10];
+		float Coef10 = mat.matrix[5] * mat.matrix[14] - mat.matrix[13] * mat.matrix[6];
+		float Coef11 = mat.matrix[5] * mat.matrix[10] - mat.matrix[9] * mat.matrix[6];
+
+		float Coef12 = mat.matrix[8] * mat.matrix[15] - mat.matrix[12] * mat.matrix[11];
+		float Coef14 = mat.matrix[4] * mat.matrix[15] - mat.matrix[12] * mat.matrix[7];
+		float Coef15 = mat.matrix[4] * mat.matrix[11] - mat.matrix[8] * mat.matrix[7];
+
+		float Coef16 = mat.matrix[8] * mat.matrix[14] - mat.matrix[12] * mat.matrix[10];
+		float Coef18 = mat.matrix[4] * mat.matrix[14] - mat.matrix[12] * mat.matrix[6];
+		float Coef19 = mat.matrix[4] * mat.matrix[10] - mat.matrix[8] * mat.matrix[6];
+
+		float Coef20 = mat.matrix[8] * mat.matrix[13] - mat.matrix[12] * mat.matrix[9];
+		float Coef22 = mat.matrix[4] * mat.matrix[13] - mat.matrix[12] * mat.matrix[5];
+		float Coef23 = mat.matrix[4] * mat.matrix[9]  - mat.matrix[8] * mat.matrix[5];
+
+		final Vec4 SignA = new Vec4(+1, -1, +1, -1);
+		final Vec4 SignB = new Vec4(-1, +1, -1, +1);
+
+		Vec4 Fac0 = new Vec4(Coef00, Coef00, Coef02, Coef03);
+		Vec4 Fac1 = new Vec4(Coef04, Coef04, Coef06, Coef07);
+		Vec4 Fac2 = new Vec4(Coef08, Coef08, Coef10, Coef11);
+		Vec4 Fac3 = new Vec4(Coef12, Coef12, Coef14, Coef15);
+		Vec4 Fac4 = new Vec4(Coef16, Coef16, Coef18, Coef19);
+		Vec4 Fac5 = new Vec4(Coef20, Coef20, Coef22, Coef23);
+
+		Vec4 Vec0 = new Vec4(mat.matrix[4], mat.matrix[0], mat.matrix[0], mat.matrix[0]);
+		Vec4 Vec1 = new Vec4(mat.matrix[5], mat.matrix[1], mat.matrix[1], mat.matrix[1]);
+		Vec4 Vec2 = new Vec4(mat.matrix[6], mat.matrix[2], mat.matrix[2], mat.matrix[2]);
+		Vec4 Vec3 = new Vec4(mat.matrix[7], mat.matrix[3], mat.matrix[3], mat.matrix[3]);
+
+		Vec4 Inv0 = Vec4.mul(SignA, Vec4.mul(Vec1, Fac0).sub(Vec4.mul(Vec2, Fac1)).add(Vec4.mul(Vec3, Fac2)));
+		Vec4 Inv1 = Vec4.mul(SignB, Vec4.mul(Vec0, Fac0).sub(Vec4.mul(Vec2, Fac3)).add(Vec4.mul(Vec3, Fac4)));
+		Vec4 Inv2 = Vec4.mul(SignA, Vec4.mul(Vec0, Fac1).sub(Vec4.mul(Vec1, Fac3)).add(Vec4.mul(Vec3, Fac5)));
+		Vec4 Inv3 = Vec4.mul(SignB, Vec4.mul(Vec0, Fac2).sub(Vec4.mul(Vec1, Fac4)).add(Vec4.mul(Vec2, Fac5)));
+
+		Mat4 res = new Mat4(Inv0, Inv1, Inv2, Inv3);
+
+		Vec4 Row0 = new Vec4(res.matrix[0], res.matrix[4], res.matrix[8], res.matrix[12]);
+
+		float Determinant = Glm.dot(mat.getColumn(0), Row0);
+
+		return res.scale(1.0f / Determinant);
 	}
 	
 		

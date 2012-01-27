@@ -12,6 +12,7 @@ public class Mat4 extends Mat implements Bufferable {
 	
 	public Mat4() {
 		matrix = new float[16];
+		
 		matrix[0] 	= 1.0f;
 		matrix[5] 	= 1.0f;
 		matrix[10] 	= 1.0f;
@@ -20,6 +21,7 @@ public class Mat4 extends Mat implements Bufferable {
 
 	public Mat4(float diagonal) {
 		matrix = new float[16];
+		
 		matrix[0] 	= diagonal;
 		matrix[5] 	= diagonal;
 		matrix[10] 	= diagonal;
@@ -28,19 +30,69 @@ public class Mat4 extends Mat implements Bufferable {
 
 	public Mat4(float mat[]) {
 		matrix = new float[16];
+		
 		System.arraycopy(mat, 0, matrix, 0, 16);
+	}
+	
+	public Mat4(Mat3 rotMatrix) {
+		matrix = new float[16];
+
+		matrix[0] = rotMatrix.matrix[0];
+		matrix[1] = rotMatrix.matrix[1];
+		matrix[2] = rotMatrix.matrix[2];
+		matrix[3] = 0.0f;
+		
+		matrix[4] = rotMatrix.matrix[3];
+		matrix[5] = rotMatrix.matrix[4];
+		matrix[6] = rotMatrix.matrix[5];
+		matrix[7] = 0.0f;
+		
+		matrix[8] = rotMatrix.matrix[6];
+		matrix[9] = rotMatrix.matrix[7];
+		matrix[10] = rotMatrix.matrix[8];
+		matrix[11] = 0.0f;
+		
+		matrix[12] = 0.0f;
+		matrix[13] = 0.0f;
+		matrix[14] = 0.0f;
+		matrix[15] = 1.0f;
 	}
 	
 	public Mat4(Mat4 mat) {
 		matrix = new float[16];
+		
 		System.arraycopy(mat.matrix, 0, matrix, 0, 16);
+	}
+	
+	public Mat4(Vec4 column0, Vec4 column1, Vec4 column2, Vec4 column3) {
+		matrix = new float[16];
+
+		matrix[0] = column0.vector[X];
+		matrix[1] = column0.vector[Y];
+		matrix[2] = column0.vector[Z];
+		matrix[3] = column0.vector[W];
+		
+		matrix[4] = column1.vector[X];
+		matrix[5] = column1.vector[Y];
+		matrix[6] = column1.vector[Z];
+		matrix[7] = column1.vector[W];
+		
+		matrix[8] = column2.vector[X];
+		matrix[9] = column2.vector[Y];
+		matrix[10] = column2.vector[Z];
+		matrix[11] = column2.vector[W];
+		
+		matrix[12] = column3.vector[X];
+		matrix[13] = column3.vector[Y];
+		matrix[14] = column3.vector[Z];
+		matrix[15] = column3.vector[W];
 	}
 	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	public Vec4 getColumn(int columnIndex) {		
 		int offset = (columnIndex * 4);
 		
@@ -88,6 +140,15 @@ public class Mat4 extends Mat implements Bufferable {
 		}
 
 		System.arraycopy(res, 0, matrix, 0, 16);
+		
+		return this;
+	}
+	
+	
+	public Mat4 scale(float scalar) {
+		for (int i = 0; i < 16; i++) {
+			matrix[i] = matrix[i] * scalar;
+		}
 		
 		return this;
 	}

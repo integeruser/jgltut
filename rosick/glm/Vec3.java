@@ -12,6 +12,13 @@ public class Vec3 extends Vec {
 		vector = new float[3];
 	}
 	
+	public Vec3(float f) {
+		vector = new float[3];
+		vector[X] = f;
+		vector[Y] = f;
+		vector[Z] = f;
+	}
+	
 	public Vec3(float x, float y, float z) {
 		vector = new float[3];
 		vector[X] = x;

@@ -17,8 +17,8 @@ import org.lwjgl.opengl.Util;
 public class GLWindow {
 	
 	// Measured in milliseconds
-	protected double elapsedTime; 
-	protected double lastFrameDuration;
+	private double elapsedTime; 
+	private double lastFrameDuration;
 	
 	private double lastFrameTimestamp, now;
 	private boolean continueMainLoop;
@@ -27,6 +27,10 @@ public class GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	public final void start() {		
+		start(500, 500);
+	}
 	
 	public final void start(int width, int height) {		
 		try {
@@ -72,6 +76,15 @@ public class GLWindow {
 	}
 	
 	
+	public final double getElapsedTime() {
+		return elapsedTime;
+	}
+	
+	public final double getLastFrameDuration() {
+		return lastFrameDuration;
+	}
+	
+	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -81,9 +94,13 @@ public class GLWindow {
 	
 	
 	protected void update() {
-		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-			leaveMainLoop();
-		}		
+		while (Keyboard.next()) {
+			if (Keyboard.getEventKeyState()) {
+				if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+					leaveMainLoop();
+				}
+			}
+		}	
 	};
 	
 	

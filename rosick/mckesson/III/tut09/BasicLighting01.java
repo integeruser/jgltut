@@ -1,4 +1,4 @@
-package rosick.mckesson.tut09;
+package rosick.mckesson.III.tut09;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -33,17 +33,27 @@ import rosick.glutil.pole.ViewPole;
  * 
  * III. Illumination
  * 9. Lights On 
- * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2009.html
+ * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2009.html
  * @author integeruser
+ * 
+ * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
+ *
+ * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING				- rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + LEFT_CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
+ * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
  */
-public class AmbientLighting03 extends GLWindow {
+public class BasicLighting01 extends GLWindow {
 	
 	public static void main(String[] args) {		
-		new AmbientLighting03().start(500, 500);
+		new BasicLighting01().start();
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/tut09/data/";
+	private static final String BASEPATH = "/rosick/mckesson/III/tut09/data/";
 	
 	
 	
@@ -55,8 +65,7 @@ public class AmbientLighting03 extends GLWindow {
 		
 		int dirToLightUnif;
 		int lightIntensityUnif;
-		int ambientIntensityUnif;
-
+		
 		int modelToCameraMatrixUnif;
 		int normalModelToCameraMatrixUnif;
 	}
@@ -64,29 +73,58 @@ public class AmbientLighting03 extends GLWindow {
 	
 	private static class ProjectionBlock {
 		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = 16 * (Float.SIZE / 8);
 	}
 	
 		
-	private final int PROJECTIONBLOCK_SIZE = 16 * 4;
 	private final int g_projectionBlockIndex = 2;
 	
 	private ProgramData g_WhiteDiffuseColor;
 	private ProgramData g_VertexDiffuseColor;
-	private ProgramData g_WhiteAmbDiffuseColor;
-	private ProgramData g_VertexAmbDiffuseColor;
+	
 	private int g_projectionUniformBuffer;
+	private float g_fzNear = 1.0f;
+	private float g_fzFar = 1000.0f;
+
+	private MatrixStack modelMatrix = new MatrixStack();
 
 	private FloatBuffer tempSharedBuffer4 = BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempSharedBuffer9 = BufferUtils.createFloatBuffer(9);
 	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
 
-	private MatrixStack modelMatrix = new MatrixStack();
-	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private ProgramData loadProgram(String strVertexShader, String strFragmentShader) {		
+		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
 
+		ArrayList<Integer> shaderList = new ArrayList<>();
+		shaderList.add(vertexShader);
+		shaderList.add(fragmentShader);
+
+		ProgramData data = new ProgramData();
+		data.theProgram = Framework.createProgram(shaderList);
+		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
+		data.normalModelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "normalModelToCameraMatrix");
+		data.dirToLightUnif = glGetUniformLocation(data.theProgram, "dirToLight");
+		data.lightIntensityUnif = glGetUniformLocation(data.theProgram, "lightIntensity");
+
+		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
+		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
+
+		return data;
+	}
+	
+	private void initializeProgram() {	
+		g_WhiteDiffuseColor =	loadProgram(BASEPATH + "DirVertexLighting_PN.vert",		BASEPATH + "ColorPassthrough.frag");
+		g_VertexDiffuseColor = 	loadProgram(BASEPATH + "DirVertexLighting_PCN.vert", 	BASEPATH + "ColorPassthrough.frag");
+	}
+	
+	
 	@Override
 	protected void init() {
 		initializeProgram();
@@ -111,41 +149,12 @@ public class AmbientLighting03 extends GLWindow {
 		
 		g_projectionUniformBuffer = glGenBuffers();	       
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferData(GL_UNIFORM_BUFFER, PROJECTIONBLOCK_SIZE, GL_DYNAMIC_DRAW);	
+		glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW);	
 		
 		// Bind the static buffers.
-		glBindBufferRange(GL_UNIFORM_BUFFER, g_projectionBlockIndex, g_projectionUniformBuffer, 0, PROJECTIONBLOCK_SIZE);
+		glBindBufferRange(GL_UNIFORM_BUFFER, g_projectionBlockIndex, g_projectionUniformBuffer, 0, ProjectionBlock.SIZE);
 		
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	}
-	
-	private ProgramData loadProgram(String strVertexShader, String strFragmentShader) {		
-		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-
-		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
-
-		ProgramData data = new ProgramData();
-		data.theProgram = Framework.createProgram(shaderList);
-		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
-		data.normalModelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "normalModelToCameraMatrix");
-		data.dirToLightUnif = glGetUniformLocation(data.theProgram, "dirToLight");
-		data.lightIntensityUnif = glGetUniformLocation(data.theProgram, "lightIntensity");
-		data.ambientIntensityUnif = glGetUniformLocation(data.theProgram, "ambientIntensity");
-
-		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
-		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
-
-		return data;
-	}
-	
-	private void initializeProgram() {	
-		g_WhiteDiffuseColor =		loadProgram(BASEPATH + "DirVertexLighting_PN.vert",		BASEPATH + "ColorPassthrough.frag");		
-		g_VertexDiffuseColor = 		loadProgram(BASEPATH + "DirVertexLighting_PCN.vert", 	BASEPATH + "ColorPassthrough.frag");
-		g_WhiteAmbDiffuseColor = 	loadProgram(BASEPATH + "DirAmbVertexLighting_PN.vert", 	BASEPATH + "ColorPassthrough.frag");
-		g_VertexAmbDiffuseColor = 	loadProgram(BASEPATH + "DirAmbVertexLighting_PCN.vert", BASEPATH + "ColorPassthrough.frag");
 	}
 	
 
@@ -179,25 +188,17 @@ public class AmbientLighting03 extends GLWindow {
 				}
 			}
 		}
-		
-		
-		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-			leaveMainLoop();
-		}
-		
+
 
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
 				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
 					g_bDrawColoredCyl = !g_bDrawColoredCyl;
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
-					g_bShowAmbient = !g_bShowAmbient;
-					
-					if (g_bShowAmbient) {
-						System.out.println("Ambient Lighting On.");
-					} else {
-						System.out.println("Ambient Lighting Off.");
-					}
+				}
+				
+				
+				else if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+					leaveMainLoop();
 				}
 			}
 		}
@@ -215,29 +216,12 @@ public class AmbientLighting03 extends GLWindow {
 
 		Vec4 lightDirCameraSpace = Mat4.mul(modelMatrix.top(), g_lightDirection);
 		
-		ProgramData whiteDiffuse = g_bShowAmbient ? g_WhiteAmbDiffuseColor : g_WhiteDiffuseColor;
-		ProgramData vertexDiffuse = g_bShowAmbient ? g_VertexAmbDiffuseColor : g_VertexDiffuseColor;
-
-		if (g_bShowAmbient) {
-			glUseProgram(whiteDiffuse.theProgram);
-			glUniform4f(whiteDiffuse.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
-			glUniform4f(whiteDiffuse.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-			glUseProgram(vertexDiffuse.theProgram);
-			glUniform4f(vertexDiffuse.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
-			glUniform4f(vertexDiffuse.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-		} else {
-			glUseProgram(whiteDiffuse.theProgram);
-			glUniform4f(whiteDiffuse.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-			glUseProgram(vertexDiffuse.theProgram);
-			glUniform4f(vertexDiffuse.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-		}
-		
-		glUseProgram(whiteDiffuse.theProgram);
-		glUniform3(whiteDiffuse.dirToLightUnif, lightDirCameraSpace.fillBuffer(tempSharedBuffer4));
-		glUseProgram(vertexDiffuse.theProgram);
-		glUniform3(vertexDiffuse.dirToLightUnif, lightDirCameraSpace.fillBuffer(tempSharedBuffer4));
+		glUseProgram(g_WhiteDiffuseColor.theProgram);
+		glUniform3(g_WhiteDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillBuffer(tempSharedBuffer4));
+		glUseProgram(g_VertexDiffuseColor.theProgram);
+		glUniform3(g_VertexDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillBuffer(tempSharedBuffer4));
 		glUseProgram(0);
-
+		
 		{
 			modelMatrix.push();
 
@@ -245,10 +229,11 @@ public class AmbientLighting03 extends GLWindow {
 			{
 				modelMatrix.push();
 
-				glUseProgram(whiteDiffuse.theProgram);
-				glUniformMatrix4(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUseProgram(g_WhiteDiffuseColor.theProgram);
+				glUniformMatrix4(g_WhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
 				Mat3 normMatrix = new Mat3(modelMatrix.top());
-				glUniformMatrix3(whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+				glUniformMatrix3(g_WhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+				glUniform4f(g_WhiteDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f);
 				g_pPlaneMesh.render();
 				glUseProgram(0);
 				
@@ -262,18 +247,21 @@ public class AmbientLighting03 extends GLWindow {
 				modelMatrix.applyMatrix(g_objtPole.calcMatrix());
 
 				if (g_bDrawColoredCyl) {
-					glUseProgram(vertexDiffuse.theProgram);
-					glUniformMatrix4(vertexDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+					glUseProgram(g_VertexDiffuseColor.theProgram);
+					glUniformMatrix4(g_VertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
 					Mat3 normMatrix = new Mat3(modelMatrix.top());
-					glUniformMatrix3(vertexDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+					glUniformMatrix3(g_VertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+					glUniform4f(g_VertexDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f);
 					g_pCylinderMesh.render("lit-color");
 				} else {
-					glUseProgram(whiteDiffuse.theProgram);
-					glUniformMatrix4(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+					glUseProgram(g_WhiteDiffuseColor.theProgram);
+					glUniformMatrix4(g_WhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
 					Mat3 normMatrix = new Mat3(modelMatrix.top());
-					glUniformMatrix3(whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+					glUniformMatrix3(g_WhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+					glUniform4f(g_WhiteDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f);
 					g_pCylinderMesh.render("lit");
 				}
+				
 				glUseProgram(0);
 				
 				modelMatrix.pop();
@@ -304,8 +292,16 @@ public class AmbientLighting03 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	// View/Object Setup
+	private static boolean g_bDrawColoredCyl = true;
 	
+	private Mesh g_pCylinderMesh;
+	private Mesh g_pPlaneMesh;
+	
+	private Vec4 g_lightDirection = new Vec4(0.866f, 0.5f, 0.0f, 0.0f);
+	
+	
+	// View/Object Setup
+
 	private ViewData g_initialViewData = new ViewData(
 		new Vec3(0.0f, 0.5f, 0.0f),
 		new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
@@ -327,16 +323,4 @@ public class AmbientLighting03 extends GLWindow {
 
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);
 	private ObjectPole g_objtPole = new ObjectPole(g_initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, g_viewPole);
-	
-
-	private static boolean g_bDrawColoredCyl = true; ;
-	private static boolean g_bShowAmbient = false;
-
-	private float g_fzNear = 1.0f;
-	private float g_fzFar = 1000.0f;
-	
-	private Mesh g_pCylinderMesh;
-	private Mesh g_pPlaneMesh;
-	
-	private Vec4 g_lightDirection = new Vec4(0.866f, 0.5f, 0.0f, 0.0f);
 }

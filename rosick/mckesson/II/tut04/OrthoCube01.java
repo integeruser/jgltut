@@ -202,7 +202,7 @@ public class OrthoCube01 extends GLWindow {
 		glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
 		glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, colorData);
 		
-		glDrawArrays(GL_TRIANGLES, 0, 3 * 12);
+		glDrawArrays(GL_TRIANGLES, 0, 3 * 12);										// 12 = number of triangles we draw
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);

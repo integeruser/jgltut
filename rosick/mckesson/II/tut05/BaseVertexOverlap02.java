@@ -236,7 +236,7 @@ public class BaseVertexOverlap02 extends GLWindow {
 		vao = glGenVertexArrays();
 		glBindVertexArray(vao);
 
-		int colorDataOffset = 4 * 3 * numberOfVertices;
+		int colorDataOffset = (Float.SIZE / 8) * 3 * numberOfVertices;
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

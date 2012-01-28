@@ -230,7 +230,7 @@ public class OverlapNoDepth01 extends GLWindow {
 		vaoObject1 = glGenVertexArrays();
 		glBindVertexArray(vaoObject1);
 
-		int colorDataOffset = 4 * 3 * numberOfVertices;
+		int colorDataOffset = (Float.SIZE / 8) * 3 * numberOfVertices;
 		
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 		glEnableVertexAttribArray(0);

@@ -74,7 +74,7 @@ public class Framework {
 	
 	
 	public static void forwardMouseButton(Pole forward, int button, boolean state, int x, int y) {
-		int modifiers = calc_glut_modifiers();
+		MouseModifiers modifiers = calc_glut_modifiers();
 		Vec2 mouseLoc = new Vec2(x, y);
 		MouseButtons eButton = null;
 
@@ -99,20 +99,20 @@ public class Framework {
 	}
 	
 	
-	private static int calc_glut_modifiers() {		
+	private static MouseModifiers calc_glut_modifiers() {		
 		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-			return 0;
+			return MouseModifiers.MM_KEY_SHIFT;
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
-			return 1;
+			return MouseModifiers.MM_KEY_CTRL;
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_LMENU)) {
-			return 2;
+			return MouseModifiers.MM_KEY_ALT;
 		}
 		
-		return -1;
+		return null;
 	}
 	
 	

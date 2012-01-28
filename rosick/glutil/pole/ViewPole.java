@@ -69,14 +69,14 @@ public class ViewPole extends ViewProvider {
 	}
 	
 	@Override
-	public void mouseClick(MouseButtons button, boolean isPressed, int modifiers, Vec2 position) {
+	public void mouseClick(MouseButtons button, boolean isPressed, MouseModifiers modifiers, Vec2 position) {
 		if (isPressed) {
 			// Ignore all other button presses when dragging.
 			if (!m_bIsDragging) {
 				if (button == m_actionButton) {
-					if (modifiers == MouseModifiers.MM_KEY_CTRL.ordinal())
+					if (modifiers == MouseModifiers.MM_KEY_CTRL)
 						beginDragRotate(position, RotateMode.RM_BIAXIAL_ROTATE);
-					else if (modifiers == MouseModifiers.MM_KEY_ALT.ordinal())
+					else if (modifiers == MouseModifiers.MM_KEY_ALT)
 						beginDragRotate(position, RotateMode.RM_SPIN_VIEW_AXIS);
 					else
 						beginDragRotate(position, RotateMode.RM_DUAL_AXIS_ROTATE);
@@ -97,11 +97,11 @@ public class ViewPole extends ViewProvider {
 	}
 	
 	@Override
-	public void mouseWheel(int direction, int modifiers, Vec2 position) {	
+	public void mouseWheel(int direction, MouseModifiers modifiers, Vec2 position) {	
 		if (direction > 0) {
-			moveCloser(modifiers != MouseModifiers.MM_KEY_SHIFT.ordinal());
+			moveCloser(modifiers != MouseModifiers.MM_KEY_SHIFT);
 		} else {
-			moveAway(modifiers != MouseModifiers.MM_KEY_SHIFT.ordinal());
+			moveAway(modifiers != MouseModifiers.MM_KEY_SHIFT);
 		}
 	}
 

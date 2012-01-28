@@ -12,6 +12,14 @@ public class Vec4 extends Vec {
 		vector = new float[4];
 	}
 	
+	public Vec4(float f) {
+		vector = new float[4];
+		vector[X] = f;
+		vector[Y] = f;
+		vector[Z] = f;
+		vector[W] = f;
+	}
+	
 	public Vec4(float x, float y, float z, float w) {
 		vector = new float[4];
 		vector[X] = x;
@@ -40,7 +48,7 @@ public class Vec4 extends Vec {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+	
 	public Vec4 add(Vec4 vec) {
 		vector[X] += vec.vector[X];
 		vector[Y] += vec.vector[Y];

@@ -73,7 +73,7 @@ public class ScaleAndLighting02 extends GLWindow {
 	}
 	
 	
-	private static class ProjectionBlock {
+	private class ProjectionBlock {
 		Mat4 cameraToClipMatrix;
 		
 		static final int SIZE = 16 * (Float.SIZE / 8);

@@ -321,7 +321,7 @@ public class Hierarchy04 extends GLWindow {
 		private int firstIndexUsable;
 				
 		
-		public MatrixStack() {
+		MatrixStack() {
 			matrices = new float[160];														
 			currentMatrix = new Mat4(1);
 						
@@ -329,7 +329,7 @@ public class Hierarchy04 extends GLWindow {
 		}
 
 		
-		public void push() {
+		void push() {
 			if (firstIndexUsable == matrices.length) {
 				// Double the size of matrices[]
 				float temp[] = new float[matrices.length * 2];
@@ -343,38 +343,38 @@ public class Hierarchy04 extends GLWindow {
 		}
 
 		
-		public void pop() {
+		void pop() {
 			// Pop the last matrix pushed in the buffer and set it as currentMatrix
 			firstIndexUsable -= 16;
 			System.arraycopy(matrices, firstIndexUsable, currentMatrix.get(), 0, 16);		
 		}
 
-		public Mat4 top() {		
+		Mat4 top() {		
 			return currentMatrix;
 		}
 		
 		
-		public void clear() {
+		void clear() {
 			currentMatrix.clear(1);
 
 			firstIndexUsable = 0;
 		}
 		
 		
-		public void rotateX(float fAngDeg) {
+		void rotateX(float fAngDeg) {
 			currentMatrix.mul(new Mat4(Hierarchy04.rotateX(fAngDeg)));
 		}
 
-		public void rotateY(float fAngDeg) {
+		void rotateY(float fAngDeg) {
 			currentMatrix.mul(new Mat4(Hierarchy04.rotateY(fAngDeg)));
 		}
 
-		public void rotateZ(float fAngDeg) {
+		void rotateZ(float fAngDeg) {
 			currentMatrix.mul(new Mat4(Hierarchy04.rotateZ(fAngDeg)));
 		}
 
 		
-		public void scale(Vec3 scaleVec) {
+		void scale(Vec3 scaleVec) {
 			Mat4 scaleMat = new Mat4(1.0f);
 			scaleMat.set(0, scaleVec.get(X));
 			scaleMat.set(5, scaleVec.get(Y));
@@ -384,7 +384,7 @@ public class Hierarchy04 extends GLWindow {
 		}
 
 		
-		public void translate(Vec3 offsetVec) {
+		void translate(Vec3 offsetVec) {
 			Mat4 translateMat = new Mat4(1.0f);
 			translateMat.setColumn(3, new Vec4(offsetVec, 1.0f));
 

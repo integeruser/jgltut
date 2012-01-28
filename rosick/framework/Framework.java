@@ -2,6 +2,8 @@ package rosick.framework;
 
 import static org.lwjgl.opengl.GL20.*;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
@@ -27,7 +29,7 @@ public class Framework {
         int shader = glCreateShader(shaderType);
        
         if (shader != 0) {
-            String shaderCode = IOUtils.loadFileAsString(path);
+            String shaderCode = loadFileAsString(path);
             
             glShaderSource(shader, shaderCode);
             glCompileShader(shader);
@@ -123,5 +125,29 @@ public class Framework {
 	
 	public static float degToRad(float fAngDeg) {
 		return fAngDeg * fDegToRad;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private static String loadFileAsString(String filepath) {
+        StringBuilder text = new StringBuilder();
+        
+        try {
+        	BufferedReader reader = new BufferedReader(new InputStreamReader(ClassLoader.class.getResourceAsStream(filepath)));
+        	String line;
+        	
+        	while ((line = reader.readLine()) != null) {
+        		text.append(line).append("\n");
+        	}
+        	
+        	reader.close();
+        } catch (Exception e){
+        	System.err.println("Fail reading " + filepath + ": " + e.getMessage());
+        }
+        
+        return text.toString();
 	}
 }

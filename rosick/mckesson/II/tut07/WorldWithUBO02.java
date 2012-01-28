@@ -73,6 +73,9 @@ public class WorldWithUBO02 extends GLWindow {
 	private ProgramData objectColor;
 	private ProgramData uniformColorTint;
 	
+	private float g_fzNear = 1.0f;
+	private float g_fzFar = 1000.0f;
+	
 	private MatrixStack camMatrix = new MatrixStack(); 
 	private MatrixStack	modelMatrix = new MatrixStack();
 	
@@ -687,9 +690,6 @@ public class WorldWithUBO02 extends GLWindow {
 	
 	// In spherical coordinates.
 	private static Vec3 g_sphereCamRelPos = new Vec3(67.5f, -46.0f, 150.0f);
-
-	private float g_fzNear = 1.0f;
-	private float g_fzFar = 1000.0f;
 	
 	private int g_GlobalMatricesUBO;
 

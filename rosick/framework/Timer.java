@@ -14,8 +14,6 @@ public class Timer {
 		TT_LOOP,
 		TT_SINGLE,
 		TT_INFINITE,
-
-		NUM_TIMER_TYPES;
 	};
 	
 	
@@ -75,9 +73,10 @@ public class Timer {
 		m_secAccumTime += fDeltaTime;
 
 		m_absPrevTime = absCurrTime;
-		if (m_eType == Type.TT_SINGLE)
+		if (m_eType == Type.TT_SINGLE) {
 			return m_secAccumTime > m_secDuration;
-
+		}
+		
 		return false;
 	}
 	
@@ -96,8 +95,9 @@ public class Timer {
 	public void rewind(float secRewind) {
 		m_secAccumTime -= secRewind;
 		
-		if (m_secAccumTime < 0.0f)
+		if (m_secAccumTime < 0.0f) {
 			m_secAccumTime = 0.0f;
+		}
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public class Timer {
 	 * Only used for SINGLE and LOOP timers.
 	*/
 	public float getAlpha() {
-		switch(m_eType) {
+		switch (m_eType) {
 			case TT_LOOP:
 				return (m_secAccumTime % m_secDuration) / m_secDuration;
 			case TT_SINGLE:
@@ -152,7 +152,7 @@ public class Timer {
 	 * seconds. Only for SINGLE and LOOP timers.
 	 */
 	public float getProgression() {
-		switch(m_eType) {
+		switch (m_eType) {
 			case TT_LOOP:
 				return m_secAccumTime % m_secDuration;
 			case TT_SINGLE:

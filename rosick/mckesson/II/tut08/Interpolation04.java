@@ -122,6 +122,7 @@ public class Interpolation04 extends GLWindow {
 				else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
 					boolean bSlerp = g_orient.toggleSlerp();
 					System.out.println(bSlerp ? "Slerp" : "Lerp");
+					
 				} else {
 					for (int iOrient = 0; iOrient < g_OrientKeys.length; iOrient++) {
 						if (Keyboard.getEventKey() == g_OrientKeys[iOrient]) {

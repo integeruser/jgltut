@@ -201,6 +201,7 @@ public class AmbientLighting03 extends GLWindow {
 			if (Keyboard.getEventKeyState()) {
 				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
 					g_bDrawColoredCyl = !g_bDrawColoredCyl;
+					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
 					g_bShowAmbient = !g_bShowAmbient;
 					

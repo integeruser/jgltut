@@ -196,6 +196,7 @@ public class ScaleAndLighting02 extends GLWindow {
 			if (Keyboard.getEventKeyState()) {
 				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
 					g_bScaleCyl = !g_bScaleCyl;
+					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
 					g_bDoInvTranspose = !g_bDoInvTranspose;
 					

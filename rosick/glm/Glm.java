@@ -361,4 +361,36 @@ public class Glm {
 	    
 		return res;
 	}
+	
+	
+	public static Mat4 rotate(Mat4 m, float angle, Vec3 v) {
+        float a = (float) Math.toRadians(angle);
+        float c = (float) Math.cos(a);
+        float s = (float) Math.sin(a);
+
+        Vec3 axis = normalize(v);
+
+        Vec3 temp = Vec3.scale(axis, 1.0f - c);
+
+        Mat4 rotate = new Mat4();
+		rotate.set(0, c + temp.vector[X] * axis.vector[X]);
+		rotate.set(1, 0 + temp.vector[X] * axis.vector[Y] + s * axis.vector[Z]);
+		rotate.set(2, 0 + 0 + temp.vector[X] * axis.vector[Z] - s * axis.vector[Y]);
+
+		rotate.set(4, 0 + temp.vector[Y] * axis.vector[X] - s * axis.vector[Z]);
+		rotate.set(5, c + temp.vector[Y] * axis.vector[Y]);
+		rotate.set(6, 0 + temp.vector[Y] * axis.vector[Z] + s * axis.vector[X]);
+		
+		rotate.set(8, 0 + temp.vector[Z] * axis.vector[X] + s * axis.vector[Y]);
+		rotate.set(9, 0 + temp.vector[Z] * axis.vector[Y] - s * axis.vector[X]);
+		rotate.set(10, c + temp.vector[Z] * axis.vector[Z]);
+
+	    Mat4 result = new Mat4();
+	    result.setColumn(0, Vec4.scale(m.getColumn(0), rotate.matrix[0]).add(Vec4.scale(m.getColumn(1), rotate.matrix[1])).add(Vec4.scale(m.getColumn(2), rotate.matrix[2])));
+	    result.setColumn(1, Vec4.scale(m.getColumn(0), rotate.matrix[4]).add(Vec4.scale(m.getColumn(1), rotate.matrix[5])).add(Vec4.scale(m.getColumn(2), rotate.matrix[6])));
+	    result.setColumn(2, Vec4.scale(m.getColumn(0), rotate.matrix[8]).add(Vec4.scale(m.getColumn(1), rotate.matrix[9])).add(Vec4.scale(m.getColumn(2), rotate.matrix[10])));
+	    result.setColumn(3, m.getColumn(3));
+		
+		return result;
+	}
 }

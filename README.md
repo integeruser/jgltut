@@ -2,12 +2,13 @@ OpenGL tutorials with LWJGL
 =================
 
 Hi!
+
 We are OpenGL beginners like a lot of you, and we know how frustrating is not find any good resources on modern OpenGL programming techniques, so
 we are proud to start this project for porting McKesson's tutorials to Java with LWJGL.
 
 [Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html) is the book where to start. 
 We decided to put online our work, although it is not complete, to give to all LWJGL users a nice starting point for the understanding of OpenGL 3.3.
-I ame dedicating to this project most of my free time and it will update frequently.
+I am dedicating to this project most of my free time and it will update frequently.
 
 Francesco & Marco
 

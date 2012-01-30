@@ -33,11 +33,17 @@ public class Vec3 extends Vec {
 		vector[Z] = vec.vector[Z];
 	}
 	
+	public Vec3(Vec4 vec) {
+		vector = new float[3];
+		vector[X] = vec.vector[X];
+		vector[Y] = vec.vector[Y];
+		vector[Z] = vec.vector[Z];	
+	}
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
-	
+
 	public Vec3 add(Vec3 vec) {
 		vector[X] += vec.vector[X];
 		vector[Y] += vec.vector[Y];

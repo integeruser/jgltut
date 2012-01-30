@@ -99,7 +99,7 @@ public class VertexColor02 extends GLWindow {
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
-		glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 12 * 4);
+		glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, (Float.SIZE / 8) * 4 * 3);	// 48 = 4 (the size of a float) * 4 (the number of floats in a vec4) * 3 (the number of vec4's in the position data)
 
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 

@@ -38,8 +38,8 @@ public class MousePole {
 
 	public static abstract class Pole {
 		public abstract void mouseMove(Vec2 vec2);
-		public abstract void mouseClick(MouseButtons button, boolean isPressed, int modifiers, Vec2 position);
-		public abstract void mouseWheel(int direction, int modifiers, Vec2 position);
+		public abstract void mouseClick(MouseButtons button, boolean isPressed, MouseModifiers modifiers, Vec2 position);
+		public abstract void mouseWheel(int direction, MouseModifiers modifiers, Vec2 position);
 	}
 
 	public static abstract class ViewProvider extends Pole {
@@ -71,7 +71,7 @@ public class MousePole {
 	public static class ViewData {
 		Vec3 targetPos;
 		Quaternion orient;
-		float radius;
+		public float radius;
 		float degSpinRotation;
 
 		public ViewData(Vec3 targetPos, Quaternion orient, float radius, float degSpinRotation) {

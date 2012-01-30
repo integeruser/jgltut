@@ -1,4 +1,4 @@
-package rosick.mckesson.III.tut10;
+package rosick.mckesson.III.tut11;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -21,6 +21,7 @@ import rosick.framework.Framework;
 import rosick.framework.Mesh;
 import rosick.framework.Timer;
 import rosick.glm.Glm;
+import rosick.glm.Mat3;
 import rosick.glm.Mat4;
 import rosick.glm.Quaternion;
 import rosick.glm.Vec3;
@@ -35,16 +36,19 @@ import rosick.glutil.pole.ViewPole;
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
  * III. Illumination
- * 10. Plane Lights
- * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2010.html
+ * 11. Shinies
+ * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2011.html
  * @author integeruser
  * 
  * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
- * I,J,K,L  - controls the light's position. Holding SHIFT with these keys will move in smaller increments.
+ * I,J,K,L  - control the light's position. Holding SHIFT with these keys will move in smaller increments.
+ * U,O      - control the specular value. They raise and low the specular exponent. Using SHIFT in combination 
+ * 				with them will raise/lower the exponent by smaller amounts.
  * Y 		- toggles the drawing of the light source.
  * T 		- toggles between the scaled and unscaled cylinder.
- * H 		- toggles between per-fragment lighting and per-vertex lighting.
  * B 		- toggles the light's rotation on/off.
+ * G 		- toggles between a diffuse color of (1, 1, 1) and a darker diffuse color of (0.2, 0.2, 0.2).
+ * H 		- switch between Blinn and Phong specular. Pressing SHIFT+H will switch between diffuse+specular and specular only.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
  * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
@@ -54,14 +58,14 @@ import rosick.glutil.pole.ViewPole;
  * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
  * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
  */
-public class FragmentPointLighting02 extends GLWindow {
+public class BlinnVsPhongLighting02 extends GLWindow {
 	
 	public static void main(String[] args) {		
-		new FragmentPointLighting02().start();
+		new BlinnVsPhongLighting02().start();
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/III/tut10/data/";
+	private static final String BASEPATH = "/rosick/mckesson/III/tut11/data/";
 	
 	
 	
@@ -71,18 +75,41 @@ public class FragmentPointLighting02 extends GLWindow {
 	private class ProgramData {
 		int theProgram;
 		
-		int modelSpaceLightPosUnif;
+		int modelToCameraMatrixUnif;
+
 		int lightIntensityUnif;
 		int ambientIntensityUnif;
 
-		int modelToCameraMatrixUnif;
+		int normalModelToCameraMatrixUnif;
+		int cameraSpaceLightPosUnif;
+		int lightAttenuationUnif;
+		int shininessFactorUnif;
+		int baseDiffuseColorUnif;
 	}
 	
 	private class UnlitProgData {
 		int theProgram;
-		
+
 		int objectColorUnif;
 		int modelToCameraMatrixUnif;
+	}
+	
+	
+	private class ProgramPairs {
+		ProgramData whiteProg;
+		ProgramData colorProg;
+	}
+	
+	private class ShaderPairs {
+		String strWhiteVertShader;
+		String strColorVertShader;
+		String strFragmentShader;
+		
+		public ShaderPairs(String strWhiteVertShader, String strColorVertShader, String strFragmentShader) {
+			this.strWhiteVertShader = strWhiteVertShader;
+			this.strColorVertShader = strColorVertShader;
+			this.strFragmentShader = strFragmentShader;
+		}
 	}
 	
 	
@@ -91,14 +118,17 @@ public class FragmentPointLighting02 extends GLWindow {
 		
 		static final int SIZE = 16 * (Float.SIZE / 8);
 	}
-	
-	
-	private final int g_projectionBlockIndex = 2;
 
-	private ProgramData g_WhiteDiffuseColor;
-	private ProgramData g_VertexDiffuseColor;
-	private ProgramData g_FragWhiteDiffuseColor;
-	private ProgramData g_FragVertexDiffuseColor;
+		
+	private final int g_projectionBlockIndex = 2;
+			
+	private ProgramPairs g_Programs[] = new ProgramPairs[LightingModel.LM_MAX_LIGHTING_MODEL.ordinal()];
+	private ShaderPairs g_ShaderFiles[] = new ShaderPairs[] {
+		new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "PhongLighting.frag"),
+		new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "PhongOnly.frag"),
+		new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "BlinnLighting.frag"),
+		new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "BlinnOnly.frag")
+	};
 	
 	private UnlitProgData g_Unlit;
 	
@@ -109,10 +139,11 @@ public class FragmentPointLighting02 extends GLWindow {
 	private MatrixStack modelMatrix = new MatrixStack();
 
 	private FloatBuffer tempSharedBuffer4 = BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempSharedBuffer9 = BufferUtils.createFloatBuffer(9);
 	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
-	
-	
 
+	
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
@@ -146,9 +177,14 @@ public class FragmentPointLighting02 extends GLWindow {
 		ProgramData data = new ProgramData();
 		data.theProgram = Framework.createProgram(shaderList);
 		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
-		data.modelSpaceLightPosUnif = glGetUniformLocation(data.theProgram, "modelSpaceLightPos");
 		data.lightIntensityUnif = glGetUniformLocation(data.theProgram, "lightIntensity");
 		data.ambientIntensityUnif = glGetUniformLocation(data.theProgram, "ambientIntensity");
+
+		data.normalModelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "normalModelToCameraMatrix");
+		data.cameraSpaceLightPosUnif = glGetUniformLocation(data.theProgram, "cameraSpaceLightPos");
+		data.lightAttenuationUnif = glGetUniformLocation(data.theProgram, "lightAttenuation");
+		data.shininessFactorUnif = glGetUniformLocation(data.theProgram, "shininessFactor");
+		data.baseDiffuseColorUnif = glGetUniformLocation(data.theProgram, "baseDiffuseColor");
 
 		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
 		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
@@ -157,10 +193,11 @@ public class FragmentPointLighting02 extends GLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_WhiteDiffuseColor =		loadLitProgram(BASEPATH + "ModelPosVertexLighting_PN.vert",		BASEPATH + "ColorPassthrough.frag");		
-		g_VertexDiffuseColor = 		loadLitProgram(BASEPATH + "ModelPosVertexLighting_PCN.vert",	BASEPATH + "ColorPassthrough.frag");
-		g_FragWhiteDiffuseColor =	loadLitProgram(BASEPATH + "FragmentLighting_PN.vert",			BASEPATH + "FragmentLighting.frag");		
-		g_FragVertexDiffuseColor = 	loadLitProgram(BASEPATH + "FragmentLighting_PCN.vert", 			BASEPATH + "FragmentLighting.frag");
+		for (int iProg = 0; iProg < LightingModel.LM_MAX_LIGHTING_MODEL.ordinal(); iProg++) {
+			g_Programs[iProg] = new ProgramPairs();
+			g_Programs[iProg].whiteProg = loadLitProgram(g_ShaderFiles[iProg].strWhiteVertShader, g_ShaderFiles[iProg].strFragmentShader);
+			g_Programs[iProg].colorProg = loadLitProgram(g_ShaderFiles[iProg].strColorVertShader, g_ShaderFiles[iProg].strFragmentShader);
+		}
 		
 		g_Unlit = loadUnlitProgram(BASEPATH + "PosTransform.vert", BASEPATH + "UniformColor.frag");
 	}
@@ -182,11 +219,14 @@ public class FragmentPointLighting02 extends GLWindow {
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		glFrontFace(GL_CW);
+		
+		final float depthZNear = 0.0f;
+		final float depthZFar = 1.0f;
 
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(true);
 		glDepthFunc(GL_LEQUAL);
-		glDepthRange(0.0f, 1.0f);
+		glDepthRange(depthZNear, depthZFar);
 		glEnable(GL_DEPTH_CLAMP);
 		
 		g_projectionUniformBuffer = glGenBuffers();	       
@@ -198,8 +238,8 @@ public class FragmentPointLighting02 extends GLWindow {
 		
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
-
 	
+
 	@Override
 	protected void update() {
 		while (Mouse.next()) {
@@ -232,6 +272,9 @@ public class FragmentPointLighting02 extends GLWindow {
 		}
 		
 		
+		boolean bChangedShininess = false;
+		boolean bChangedLightModel = false;
+		
 		float lastFrameDuration = (float) (getLastFrameDuration() * 5 / 1000.0);
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
@@ -261,26 +304,62 @@ public class FragmentPointLighting02 extends GLWindow {
 				g_fLightHeight -= 0.2f * lastFrameDuration;
 			}
 		}
-		
 
+		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
 				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
 					g_bDrawColoredCyl = !g_bDrawColoredCyl;
 					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_O) {
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+						g_matParams.increment(false);
+					} else {
+						g_matParams.increment(true);
+					}
+					
+					bChangedShininess = true;
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_U) {
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+						g_matParams.decrement(false);
+					} else {
+						g_matParams.decrement(true);
+					}
+					
+					bChangedShininess = true;
+					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
-					g_bDrawLight = !g_bDrawLight;
+					g_bDrawLightSource = !g_bDrawLightSource;
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
 					g_bScaleCyl = !g_bScaleCyl;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
-					g_bUseFragmentLighting = !g_bUseFragmentLighting;
-					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_B) {
 					g_LightTimer.togglePause();
-
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
+					g_bDrawDark = !g_bDrawDark;
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+						int index;
+						if (g_eLightModel.ordinal() % 2 != 0) {
+							index = g_eLightModel.ordinal() - 1;
+						} else {
+							index = g_eLightModel.ordinal() + 1;
+						}
+						index %= LightingModel.LM_MAX_LIGHTING_MODEL.ordinal();
+						g_eLightModel = LightingModel.values()[index];
+					} else {
+						int index = g_eLightModel.ordinal() + 2;
+						index %= LightingModel.LM_MAX_LIGHTING_MODEL.ordinal();
+						g_eLightModel = LightingModel.values()[index];
+					}
 				
+					bChangedLightModel = true;
+				
+					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
 					leaveMainLoop();
 				}
@@ -290,6 +369,14 @@ public class FragmentPointLighting02 extends GLWindow {
 		
 		if (g_fLightRadius < 0.2f) {
 			g_fLightRadius = 0.2f;
+		}
+		
+		if (bChangedShininess) {
+			System.out.println("Shiny: " + g_matParams.getSpecularValue());
+		}
+		
+		if (bChangedLightModel) {
+			System.out.println(strLightModelNames[g_eLightModel.ordinal()]);
 		}
 	}
 	
@@ -306,26 +393,25 @@ public class FragmentPointLighting02 extends GLWindow {
 		modelMatrix.setMatrix(g_viewPole.calcMatrix());
 
 		final Vec4 worldLightPos = calcLightPosition();
+		final Vec4 lightPosCameraSpace = Mat4.mul(modelMatrix.top(), worldLightPos);
 		
-		Vec4 lightPosCameraSpace = Mat4.mul(modelMatrix.top(), worldLightPos);
+		ProgramData whiteProg = g_Programs[g_eLightModel.ordinal()].whiteProg;
+		ProgramData colorProg = g_Programs[g_eLightModel.ordinal()].colorProg;		
+					
+		glUseProgram(whiteProg.theProgram);
+		glUniform4f(whiteProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
+		glUniform4f(whiteProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
+		glUniform3(whiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedBuffer4));
+		glUniform1f(whiteProg.lightAttenuationUnif, g_fLightAttenuation);
+		glUniform1f(whiteProg.shininessFactorUnif, g_matParams.getSpecularValue());
+		glUniform4(whiteProg.baseDiffuseColorUnif, g_bDrawDark ? g_darkColor.fillBuffer(tempSharedBuffer4) : g_lightColor.fillBuffer(tempSharedBuffer4));
 		
-		ProgramData pWhiteProgram;
-		ProgramData pVertColorProgram;
-		
-		if (g_bUseFragmentLighting) {
-			pWhiteProgram = 	g_FragWhiteDiffuseColor;
-			pVertColorProgram = g_FragVertexDiffuseColor;
-		} else {
-			pWhiteProgram = 	g_WhiteDiffuseColor;
-			pVertColorProgram = g_VertexDiffuseColor;
-		}
-			
-		glUseProgram(pWhiteProgram.theProgram);
-		glUniform4f(pWhiteProgram.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
-		glUniform4f(pWhiteProgram.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-		glUseProgram(pVertColorProgram.theProgram);
-		glUniform4f(pVertColorProgram.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
-		glUniform4f(pVertColorProgram.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
+		glUseProgram(colorProg.theProgram);
+		glUniform4f(colorProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
+		glUniform4f(colorProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
+		glUniform3(colorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedBuffer4));
+		glUniform1f(colorProg.lightAttenuationUnif, g_fLightAttenuation);
+		glUniform1f(colorProg.shininessFactorUnif, g_matParams.getSpecularValue());
 		glUseProgram(0);
 		
 		{
@@ -335,13 +421,13 @@ public class FragmentPointLighting02 extends GLWindow {
 			{
 				modelMatrix.push();
 
-				glUseProgram(pWhiteProgram.theProgram);
-				glUniformMatrix4(pWhiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				Mat3 normMatrix = new Mat3(modelMatrix.top());
+				normMatrix = Glm.transpose(Glm.inverse(normMatrix));
+				
+				glUseProgram(whiteProg.theProgram);
+				glUniformMatrix4(whiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
 
-				Mat4 invTransform = Glm.inverse(modelMatrix.top());
-				Vec4 lightPosModelSpace = Mat4.mul(invTransform, lightPosCameraSpace);
-				glUniform3(pWhiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillBuffer(tempSharedBuffer4));
-
+				glUniformMatrix3(whiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
 				g_pPlaneMesh.render();
 				glUseProgram(0);
 				
@@ -358,31 +444,28 @@ public class FragmentPointLighting02 extends GLWindow {
 					modelMatrix.scale(1.0f, 1.0f, 0.2f);
 				}
 				
-				Mat4 invTransform = Glm.inverse(modelMatrix.top());
-				Vec4 lightPosModelSpace = Mat4.mul(invTransform, lightPosCameraSpace);
+				Mat3 normMatrix = new Mat3(modelMatrix.top());
+				normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 				
-				if (g_bDrawColoredCyl) {
-					glUseProgram(pVertColorProgram.theProgram);
-					glUniformMatrix4(pVertColorProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
-					
-					glUniform3(pVertColorProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillBuffer(tempSharedBuffer4));
+				ProgramData prog = g_bDrawColoredCyl ? colorProg : whiteProg;
+				glUseProgram(prog.theProgram);
+				glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
 
+				glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+
+				if (g_bDrawColoredCyl) {
 					g_pCylinderMesh.render("lit-color");
 				} else {
-					glUseProgram(pWhiteProgram.theProgram);
-					glUniformMatrix4(pWhiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
-
-					glUniform3(pWhiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillBuffer(tempSharedBuffer4));
-
 					g_pCylinderMesh.render("lit");
 				}
+				
 				glUseProgram(0);
 				
 				modelMatrix.pop();
 			}
 			
 			// Render the light
-			if (g_bDrawLight) {
+			if (g_bDrawLightSource) {
 				modelMatrix.push();
 
 				modelMatrix.translate(worldLightPos.get(X), worldLightPos.get(Y), worldLightPos.get(Z));
@@ -421,13 +504,39 @@ public class FragmentPointLighting02 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private static boolean g_bUseFragmentLighting = true;
+	private static LightingModel g_eLightModel = LightingModel.LM_BLINN_SPECULAR;
+	
+	
+	private enum LightingModel {
+		LM_PHONG_SPECULAR,
+		LM_PHONG_ONLY,
+		LM_BLINN_SPECULAR,
+		LM_BLINN_ONLY,
+
+		LM_MAX_LIGHTING_MODEL,
+	};
+	
+	
+	private static final String strLightModelNames[] = {
+		"Phong Specular.",
+		"Phong Only.",
+		"Blinn Specular.",
+		"Blinn Only.",
+	};
+	
 	private static boolean g_bDrawColoredCyl;
-	private static boolean g_bDrawLight;
+	private static boolean g_bDrawLightSource;
 	private static boolean g_bScaleCyl;
+	private static boolean g_bDrawDark;
+
 	private static float g_fLightHeight = 1.5f;
 	private static float g_fLightRadius = 1.0f;
 	
+	private final float g_fLightAttenuation = 1.2f;
+	
+	private final Vec4 g_darkColor = new Vec4(0.2f, 0.2f, 0.2f, 1.0f);
+	private final Vec4 g_lightColor = new Vec4(1.0f);
+
 	private Timer g_LightTimer = new Timer(Timer.Type.TT_LOOP, 5.0f);
 	
 	private Mesh g_pCylinderMesh;
@@ -458,8 +567,8 @@ public class FragmentPointLighting02 extends GLWindow {
 
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);
 	private ObjectPole g_objtPole = new ObjectPole(g_initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, g_viewPole);
+		
 	
-
 	private Vec4 calcLightPosition() {
 		float fCurrTimeThroughLoop = g_LightTimer.getAlpha();
 
@@ -469,5 +578,105 @@ public class FragmentPointLighting02 extends GLWindow {
 		ret.set(Z, (float) (Math.sin(fCurrTimeThroughLoop * (3.14159f * 2.0f)) * g_fLightRadius));
 
 		return ret;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private static MaterialParams g_matParams = new MaterialParams();
+
+	
+	private static class MaterialParams {
+
+		private float m_fPhongExponent;
+		private float m_fBlinnExponent;
+
+		
+		MaterialParams() {
+			m_fPhongExponent = 4.0f;
+			m_fBlinnExponent = 4.0f;
+		}
+		
+		
+		void increment(boolean bIsLarge) {
+			switch (g_eLightModel) {
+			case LM_PHONG_SPECULAR:
+			case LM_PHONG_ONLY:
+				if (bIsLarge) {
+					m_fPhongExponent += 0.5f;
+				} else {
+					m_fPhongExponent += 0.1f;
+				}
+				break;
+			case LM_BLINN_SPECULAR:
+			case LM_BLINN_ONLY:
+				if (bIsLarge) {
+					m_fBlinnExponent += 0.5f;
+				} else {
+					m_fBlinnExponent += 0.1f;
+				}
+				break;
+		}
+					
+		clampParam();
+		}
+		
+		void decrement(boolean bIsLarge) {
+			switch (g_eLightModel) {
+				case LM_PHONG_SPECULAR:
+				case LM_PHONG_ONLY:
+					if (bIsLarge) {
+						m_fPhongExponent -= 0.5f;
+					} else {
+						m_fPhongExponent -= 0.1f;
+					}
+					break;
+				case LM_BLINN_SPECULAR:
+				case LM_BLINN_ONLY:
+					if (bIsLarge) {
+						m_fBlinnExponent -= 0.5f;
+					} else {
+						m_fBlinnExponent -= 0.1f;
+					}
+					break;
+			}
+						
+			clampParam();
+		}
+		
+		
+		float getSpecularValue() {
+			switch (g_eLightModel) {
+				case LM_PHONG_SPECULAR:
+				case LM_PHONG_ONLY:
+					return m_fPhongExponent;
+				case LM_BLINN_SPECULAR:
+				case LM_BLINN_ONLY:
+					return m_fBlinnExponent;
+			}
+
+			float fStopComplaint = 0.0f;
+			return fStopComplaint;
+		}
+		
+
+		private void clampParam() {
+			switch (g_eLightModel) {
+				case LM_PHONG_SPECULAR:
+				case LM_PHONG_ONLY:
+					if (m_fPhongExponent <= 0.0f) {
+						m_fPhongExponent = 0.0001f;
+					}
+					break;
+				case LM_BLINN_SPECULAR:
+				case LM_BLINN_ONLY:
+					if (m_fBlinnExponent <= 0.0f) {
+						m_fBlinnExponent = 0.0001f;
+					}
+					break;
+			}
+		}		
 	}
 }

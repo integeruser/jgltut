@@ -108,4 +108,11 @@ public class Vec4 extends Vec {
 
 		return res.mul(b);
 	}
+	
+	
+	public static Vec4 scale(Vec4 vec, float scalar) {
+		Vec4 res = new Vec4(vec);
+
+		return res.scale(scalar);
+	}
 }

@@ -107,14 +107,14 @@ public class ObjectPole extends Pole {
 	}
 	
 	@Override
-	public void mouseClick(MouseButtons button, boolean isPressed, int modifiers, Vec2 position) {
+	public void mouseClick(MouseButtons button, boolean isPressed, MouseModifiers modifiers, Vec2 position) {
 		if (isPressed) {
 			// Ignore button presses when dragging.
 			if (!m_bIsDragging){
 				if (button == m_actionButton) {
-					if (modifiers == MouseModifiers.MM_KEY_ALT.ordinal())
+					if (modifiers == MouseModifiers.MM_KEY_ALT)
 						m_RotateMode = RotateMode.RM_SPIN;
-					else if(modifiers == MouseModifiers.MM_KEY_CTRL.ordinal())
+					else if(modifiers == MouseModifiers.MM_KEY_CTRL)
 						m_RotateMode = RotateMode.RM_BIAXIAL;
 					else
 						m_RotateMode = RotateMode.RM_DUAL_AXIS;
@@ -139,7 +139,7 @@ public class ObjectPole extends Pole {
 	}
 
 	@Override
-	public void mouseWheel(int direction, int modifiers, Vec2 position) {		
+	public void mouseWheel(int direction, MouseModifiers modifiers, Vec2 position) {		
 	}
 	
 	

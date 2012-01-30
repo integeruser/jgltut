@@ -552,7 +552,7 @@ public class WorldWithUBO02 extends GLWindow {
 		float fTrunkHeight;
 		float fConeHeight;
 
-		public TreeData(float fXPos, float fZPos, float fTrunkHeight, float fConeHeight) {
+		TreeData(float fXPos, float fZPos, float fTrunkHeight, float fConeHeight) {
 			this.fXPos = fXPos;
 			this.fZPos = fZPos;
 			this.fTrunkHeight = fTrunkHeight;

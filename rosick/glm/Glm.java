@@ -198,57 +198,57 @@ public class Glm {
 	}
 	
 	public static Mat4 inverse(Mat4 mat) {
-		float Coef00 = mat.matrix[10] * mat.matrix[15] - mat.matrix[14] * mat.matrix[11];
-		float Coef02 = mat.matrix[6] * mat.matrix[15] - mat.matrix[14] * mat.matrix[7];
-		float Coef03 = mat.matrix[6] * mat.matrix[11] - mat.matrix[10] * mat.matrix[7];
+		float coef00 = mat.matrix[10] * mat.matrix[15] - mat.matrix[14] * mat.matrix[11];
+		float coef02 = mat.matrix[6] * mat.matrix[15] - mat.matrix[14] * mat.matrix[7];
+		float coef03 = mat.matrix[6] * mat.matrix[11] - mat.matrix[10] * mat.matrix[7];
 
-		float Coef04 = mat.matrix[9] * mat.matrix[15] - mat.matrix[13] * mat.matrix[11];
-		float Coef06 = mat.matrix[5] * mat.matrix[15] - mat.matrix[13] * mat.matrix[7];
-		float Coef07 = mat.matrix[5] * mat.matrix[11] - mat.matrix[9] * mat.matrix[7];
+		float coef04 = mat.matrix[9] * mat.matrix[15] - mat.matrix[13] * mat.matrix[11];
+		float coef06 = mat.matrix[5] * mat.matrix[15] - mat.matrix[13] * mat.matrix[7];
+		float coef07 = mat.matrix[5] * mat.matrix[11] - mat.matrix[9] * mat.matrix[7];
 
-		float Coef08 = mat.matrix[9] * mat.matrix[14] - mat.matrix[13] * mat.matrix[10];
-		float Coef10 = mat.matrix[5] * mat.matrix[14] - mat.matrix[13] * mat.matrix[6];
-		float Coef11 = mat.matrix[5] * mat.matrix[10] - mat.matrix[9] * mat.matrix[6];
+		float coef08 = mat.matrix[9] * mat.matrix[14] - mat.matrix[13] * mat.matrix[10];
+		float coef10 = mat.matrix[5] * mat.matrix[14] - mat.matrix[13] * mat.matrix[6];
+		float coef11 = mat.matrix[5] * mat.matrix[10] - mat.matrix[9] * mat.matrix[6];
 
-		float Coef12 = mat.matrix[8] * mat.matrix[15] - mat.matrix[12] * mat.matrix[11];
-		float Coef14 = mat.matrix[4] * mat.matrix[15] - mat.matrix[12] * mat.matrix[7];
-		float Coef15 = mat.matrix[4] * mat.matrix[11] - mat.matrix[8] * mat.matrix[7];
+		float coef12 = mat.matrix[8] * mat.matrix[15] - mat.matrix[12] * mat.matrix[11];
+		float coef14 = mat.matrix[4] * mat.matrix[15] - mat.matrix[12] * mat.matrix[7];
+		float coef15 = mat.matrix[4] * mat.matrix[11] - mat.matrix[8] * mat.matrix[7];
 
-		float Coef16 = mat.matrix[8] * mat.matrix[14] - mat.matrix[12] * mat.matrix[10];
-		float Coef18 = mat.matrix[4] * mat.matrix[14] - mat.matrix[12] * mat.matrix[6];
-		float Coef19 = mat.matrix[4] * mat.matrix[10] - mat.matrix[8] * mat.matrix[6];
+		float coef16 = mat.matrix[8] * mat.matrix[14] - mat.matrix[12] * mat.matrix[10];
+		float coef18 = mat.matrix[4] * mat.matrix[14] - mat.matrix[12] * mat.matrix[6];
+		float coef19 = mat.matrix[4] * mat.matrix[10] - mat.matrix[8] * mat.matrix[6];
 
-		float Coef20 = mat.matrix[8] * mat.matrix[13] - mat.matrix[12] * mat.matrix[9];
-		float Coef22 = mat.matrix[4] * mat.matrix[13] - mat.matrix[12] * mat.matrix[5];
-		float Coef23 = mat.matrix[4] * mat.matrix[9]  - mat.matrix[8] * mat.matrix[5];
+		float coef20 = mat.matrix[8] * mat.matrix[13] - mat.matrix[12] * mat.matrix[9];
+		float coef22 = mat.matrix[4] * mat.matrix[13] - mat.matrix[12] * mat.matrix[5];
+		float coef23 = mat.matrix[4] * mat.matrix[9]  - mat.matrix[8] * mat.matrix[5];
 
-		final Vec4 SignA = new Vec4(+1, -1, +1, -1);
-		final Vec4 SignB = new Vec4(-1, +1, -1, +1);
+		final Vec4 signA = new Vec4(+1, -1, +1, -1);
+		final Vec4 signB = new Vec4(-1, +1, -1, +1);
 
-		Vec4 Fac0 = new Vec4(Coef00, Coef00, Coef02, Coef03);
-		Vec4 Fac1 = new Vec4(Coef04, Coef04, Coef06, Coef07);
-		Vec4 Fac2 = new Vec4(Coef08, Coef08, Coef10, Coef11);
-		Vec4 Fac3 = new Vec4(Coef12, Coef12, Coef14, Coef15);
-		Vec4 Fac4 = new Vec4(Coef16, Coef16, Coef18, Coef19);
-		Vec4 Fac5 = new Vec4(Coef20, Coef20, Coef22, Coef23);
+		Vec4 fac0 = new Vec4(coef00, coef00, coef02, coef03);
+		Vec4 fac1 = new Vec4(coef04, coef04, coef06, coef07);
+		Vec4 fac2 = new Vec4(coef08, coef08, coef10, coef11);
+		Vec4 fac3 = new Vec4(coef12, coef12, coef14, coef15);
+		Vec4 fac4 = new Vec4(coef16, coef16, coef18, coef19);
+		Vec4 fac5 = new Vec4(coef20, coef20, coef22, coef23);
 
-		Vec4 Vec0 = new Vec4(mat.matrix[4], mat.matrix[0], mat.matrix[0], mat.matrix[0]);
-		Vec4 Vec1 = new Vec4(mat.matrix[5], mat.matrix[1], mat.matrix[1], mat.matrix[1]);
-		Vec4 Vec2 = new Vec4(mat.matrix[6], mat.matrix[2], mat.matrix[2], mat.matrix[2]);
-		Vec4 Vec3 = new Vec4(mat.matrix[7], mat.matrix[3], mat.matrix[3], mat.matrix[3]);
+		Vec4 vec0 = new Vec4(mat.matrix[4], mat.matrix[0], mat.matrix[0], mat.matrix[0]);
+		Vec4 vec1 = new Vec4(mat.matrix[5], mat.matrix[1], mat.matrix[1], mat.matrix[1]);
+		Vec4 vec2 = new Vec4(mat.matrix[6], mat.matrix[2], mat.matrix[2], mat.matrix[2]);
+		Vec4 vec3 = new Vec4(mat.matrix[7], mat.matrix[3], mat.matrix[3], mat.matrix[3]);
 
-		Vec4 Inv0 = Vec4.mul(SignA, Vec4.mul(Vec1, Fac0).sub(Vec4.mul(Vec2, Fac1)).add(Vec4.mul(Vec3, Fac2)));
-		Vec4 Inv1 = Vec4.mul(SignB, Vec4.mul(Vec0, Fac0).sub(Vec4.mul(Vec2, Fac3)).add(Vec4.mul(Vec3, Fac4)));
-		Vec4 Inv2 = Vec4.mul(SignA, Vec4.mul(Vec0, Fac1).sub(Vec4.mul(Vec1, Fac3)).add(Vec4.mul(Vec3, Fac5)));
-		Vec4 Inv3 = Vec4.mul(SignB, Vec4.mul(Vec0, Fac2).sub(Vec4.mul(Vec1, Fac4)).add(Vec4.mul(Vec2, Fac5)));
+		Vec4 inv0 = Vec4.mul(signA, Vec4.mul(vec1, fac0).sub(Vec4.mul(vec2, fac1)).add(Vec4.mul(vec3, fac2)));
+		Vec4 inv1 = Vec4.mul(signB, Vec4.mul(vec0, fac0).sub(Vec4.mul(vec2, fac3)).add(Vec4.mul(vec3, fac4)));
+		Vec4 inv2 = Vec4.mul(signA, Vec4.mul(vec0, fac1).sub(Vec4.mul(vec1, fac3)).add(Vec4.mul(vec3, fac5)));
+		Vec4 inv3 = Vec4.mul(signB, Vec4.mul(vec0, fac2).sub(Vec4.mul(vec1, fac4)).add(Vec4.mul(vec2, fac5)));
 
-		Mat4 res = new Mat4(Inv0, Inv1, Inv2, Inv3);
+		Mat4 res = new Mat4(inv0, inv1, inv2, inv3);
 
-		Vec4 Row0 = new Vec4(res.matrix[0], res.matrix[4], res.matrix[8], res.matrix[12]);
+		Vec4 row0 = new Vec4(res.matrix[0], res.matrix[4], res.matrix[8], res.matrix[12]);
 
-		float Determinant = Glm.dot(mat.getColumn(0), Row0);
+		float determinant = Glm.dot(mat.getColumn(0), row0);
 
-		return res.scale(1.0f / Determinant);
+		return res.scale(1.0f / determinant);
 	}
 	
 		
@@ -287,15 +287,30 @@ public class Glm {
         return res;
 	}
 	
-	public static Mat4 transpose(Mat4 mat) {
-		float source[] = mat.matrix;
-		float destination[] = new float[16];
-
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
-				destination[j + i * 4] = source[i + j * 4];
+	public static Mat4 transpose(Mat4 mat) {		
+		Mat4 res = new Mat4();
 		
-		return new Mat4(destination);
+		res.matrix[0] = mat.matrix[0];
+		res.matrix[1] = mat.matrix[4];
+		res.matrix[2] = mat.matrix[8];
+		res.matrix[3] = mat.matrix[12];
+		
+		res.matrix[4] = mat.matrix[1];
+		res.matrix[5] = mat.matrix[5];
+        res.matrix[6] = mat.matrix[9];
+        res.matrix[7] = mat.matrix[13];
+        
+		res.matrix[8] = mat.matrix[2];
+		res.matrix[9] = mat.matrix[6];
+        res.matrix[10] = mat.matrix[10];
+        res.matrix[11] = mat.matrix[14];
+        
+		res.matrix[12] = mat.matrix[3];
+		res.matrix[13] = mat.matrix[7];
+        res.matrix[14] = mat.matrix[11];
+        res.matrix[15] = mat.matrix[15];
+        
+        return res;
 	}
 	
 	
@@ -319,7 +334,7 @@ public class Glm {
 	
 	
 	public static Mat4 matCast(Quaternion quat) {
-		// Converts this quaternion to a rotation matrix.
+		//  Converts this quaternion to a rotation matrix.
 	    //  | 1 - 2(y^2 + z^2)	2(xy + wz)			2(xz - wy)			0  |
 	    //  | 2(xy - wz)		1 - 2(x^2 + z^2)	2(yz + wx)			0  |
 	    //  | 2(xz + wy)		2(yz - wx)			1 - 2(x^2 + y^2)	0  |
@@ -345,5 +360,37 @@ public class Glm {
 	    res.matrix[15] = 1.0f;
 	    
 		return res;
+	}
+	
+	
+	public static Mat4 rotate(Mat4 m, float angle, Vec3 v) {
+        float a = (float) Math.toRadians(angle);
+        float c = (float) Math.cos(a);
+        float s = (float) Math.sin(a);
+
+        Vec3 axis = normalize(v);
+
+        Vec3 temp = Vec3.scale(axis, 1.0f - c);
+
+        Mat4 rotate = new Mat4();
+		rotate.set(0, c + temp.vector[X] * axis.vector[X]);
+		rotate.set(1, 0 + temp.vector[X] * axis.vector[Y] + s * axis.vector[Z]);
+		rotate.set(2, 0 + 0 + temp.vector[X] * axis.vector[Z] - s * axis.vector[Y]);
+
+		rotate.set(4, 0 + temp.vector[Y] * axis.vector[X] - s * axis.vector[Z]);
+		rotate.set(5, c + temp.vector[Y] * axis.vector[Y]);
+		rotate.set(6, 0 + temp.vector[Y] * axis.vector[Z] + s * axis.vector[X]);
+		
+		rotate.set(8, 0 + temp.vector[Z] * axis.vector[X] + s * axis.vector[Y]);
+		rotate.set(9, 0 + temp.vector[Z] * axis.vector[Y] - s * axis.vector[X]);
+		rotate.set(10, c + temp.vector[Z] * axis.vector[Z]);
+
+	    Mat4 result = new Mat4();
+	    result.setColumn(0, Vec4.scale(m.getColumn(0), rotate.matrix[0]).add(Vec4.scale(m.getColumn(1), rotate.matrix[1])).add(Vec4.scale(m.getColumn(2), rotate.matrix[2])));
+	    result.setColumn(1, Vec4.scale(m.getColumn(0), rotate.matrix[4]).add(Vec4.scale(m.getColumn(1), rotate.matrix[5])).add(Vec4.scale(m.getColumn(2), rotate.matrix[6])));
+	    result.setColumn(2, Vec4.scale(m.getColumn(0), rotate.matrix[8]).add(Vec4.scale(m.getColumn(1), rotate.matrix[9])).add(Vec4.scale(m.getColumn(2), rotate.matrix[10])));
+	    result.setColumn(3, m.getColumn(3));
+		
+		return result;
 	}
 }

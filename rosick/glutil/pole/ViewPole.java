@@ -137,6 +137,11 @@ public class ViewPole extends ViewProvider {
 			m_currView = m_initialView;
 		}
 	}
+	
+	
+	public ViewData getView() {
+		return m_currView;
+	}
 
 	
 	

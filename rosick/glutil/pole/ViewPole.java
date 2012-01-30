@@ -2,6 +2,8 @@ package rosick.glutil.pole;
 
 import static rosick.glm.Vec.*;
 
+import org.lwjgl.input.Keyboard;
+
 import rosick.glm.Glm;
 import rosick.glm.Mat4;
 import rosick.glm.Quaternion;
@@ -22,7 +24,17 @@ public class ViewPole extends ViewProvider {
 		RM_BIAXIAL_ROTATE,
 		RM_XZ_AXIS_ROTATE,
 		RM_Y_AXIS_ROTATE,
-		RM_SPIN_VIEW_AXIS,
+		RM_SPIN_VIEW_AXIS
+	};
+	
+	
+	private enum TargetOffsetDir {
+		DIR_UP,
+		DIR_DOWN,
+		DIR_FORWARD,
+		DIR_BACKWARD,
+		DIR_RIGHT,
+		DIR_LEFT
 	};
 	
 	
@@ -40,6 +52,15 @@ public class ViewPole extends ViewProvider {
 	private Vec2 m_startDragMouseLoc;
 	private Quaternion m_startDragOrient;
 
+	private Vec3 g_offsets[] = {
+		new Vec3( 0.0f,  1.0f,  0.0f),
+		new Vec3( 0.0f, -1.0f,  0.0f),
+		new Vec3( 0.0f,  0.0f, -1.0f),
+		new Vec3( 0.0f,  0.0f,  1.0f),
+		new Vec3( 1.0f,  0.0f,  0.0f),
+		new Vec3(-1.0f,  0.0f,  0.0f)
+	};
+	
 
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -104,6 +125,42 @@ public class ViewPole extends ViewProvider {
 			moveAway(modifiers != MouseModifiers.MM_KEY_SHIFT);
 		}
 	}
+	
+	
+	@Override
+	public void charPress(int key, boolean isShiftPressed, float lastFrameDuration) {
+		switch (key) {
+			case Keyboard.KEY_W: offsetTargetPos(TargetOffsetDir.DIR_FORWARD, 
+					isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+					lastFrameDuration); 
+			break;
+			
+			case Keyboard.KEY_S: offsetTargetPos(TargetOffsetDir.DIR_BACKWARD, 
+					isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+					lastFrameDuration); 
+			break;
+			
+			case Keyboard.KEY_D: offsetTargetPos(TargetOffsetDir.DIR_RIGHT, 
+					isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+					lastFrameDuration); 
+			break;
+			
+			case Keyboard.KEY_A: offsetTargetPos(TargetOffsetDir.DIR_LEFT, 
+					isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+					lastFrameDuration); 
+			break;
+			
+			case Keyboard.KEY_E: offsetTargetPos(TargetOffsetDir.DIR_UP, 
+					isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+					lastFrameDuration); 
+			break;
+			
+			case Keyboard.KEY_Q: offsetTargetPos(TargetOffsetDir.DIR_DOWN, 
+					isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+					lastFrameDuration); 
+			break;
+		}
+	};
 
 	
 	@Override
@@ -266,5 +323,21 @@ public class ViewPole extends ViewProvider {
 		if (m_currView.radius > m_viewScale.maxRadius) {
 			m_currView.radius = m_viewScale.maxRadius;
 		}
+	}
+	
+	
+	private void offsetTargetPos(TargetOffsetDir eDir, float worldDistance, float lastFrameDuration) {
+		Vec3 offsetDir = new Vec3(g_offsets[eDir.ordinal()]);
+		offsetTargetPos(offsetDir.scale(worldDistance).scale(lastFrameDuration), lastFrameDuration);
+	}
+
+	private void offsetTargetPos(Vec3 cameraOffset, float lastFrameDuration) {
+		Mat4 currMat = calcMatrix();
+		Quaternion orientation = Glm.quatCast(currMat);
+
+		Quaternion invOrient = Glm.conjugate(orientation);
+		Vec3 worldOffset = invOrient.mul(cameraOffset);
+
+		m_currView.targetPos.add(worldOffset);
 	}
 }

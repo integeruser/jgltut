@@ -143,7 +143,12 @@ public class ObjectPole extends Pole {
 	}
 	
 	
-
+	@Override
+	public void charPress(int key, boolean isShiftPressed, float lastFrameDuration) {		
+	}
+	
+	
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 

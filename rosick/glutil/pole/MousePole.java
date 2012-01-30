@@ -71,7 +71,7 @@ public class MousePole {
 	public static class ViewData {
 		Vec3 targetPos;
 		Quaternion orient;
-		float radius;
+		public float radius;
 		float degSpinRotation;
 
 		public ViewData(Vec3 targetPos, Quaternion orient, float radius, float degSpinRotation) {

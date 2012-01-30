@@ -64,6 +64,11 @@ public class MatrixStack {
 		currentMatrix.mul(mat);
 	}
 		
+	
+	public void setIdentity() {
+		currentMatrix = new Mat4(1.0f);
+	}
+	
 	public void setMatrix(Mat4 mat) {
 		currentMatrix = new Mat4(mat);
 	}
@@ -85,7 +90,11 @@ public class MatrixStack {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
-
+	
+	public void rotate(Vec3 axis, float angDegCCW) {
+		currentMatrix = Glm.rotate(currentMatrix, angDegCCW, axis);
+	}
+	
 	public void rotateX(float fAngDeg) {
 		currentMatrix.mul(Mat4.getRotateX(fAngDeg));
 	}

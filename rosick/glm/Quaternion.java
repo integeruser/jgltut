@@ -73,6 +73,20 @@ public class Quaternion extends Vec {
 		return this;
 	}
 	
+	public Vec3 mul(Vec3 v) {	
+		float two = 2.0f;
+		Vec3 uv, uuv;
+		Vec3 QuatVector = new Vec3(vector[X], vector[Y], vector[Z]);
+
+		uv = Glm.cross(QuatVector, v);
+		uuv = Glm.cross(QuatVector, uv);
+			
+		uv.scale(two * vector[W]); 
+		uuv.scale(two); 
+
+		return v.add(uv).add(uuv);
+	}
+	
 	
 	public Quaternion scale(float scalar) {
 		vector[X] *= scalar;
@@ -113,6 +127,12 @@ public class Quaternion extends Vec {
 	}
 	
 	public static Quaternion mul(Quaternion a, Quaternion b) {
+		Quaternion res = new Quaternion(a);
+		
+		return res.mul(b);
+	}
+	
+	public static Vec3 mul(Quaternion a, Vec3 b) {
 		Quaternion res = new Quaternion(a);
 		
 		return res.mul(b);

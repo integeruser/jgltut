@@ -1,0 +1,526 @@
+package rosick.mckesson.III.tut12;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL31.*;
+import static org.lwjgl.opengl.GL32.*;
+
+import static rosick.glm.Vec.*;
+
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
+import rosick.GLWindow;
+import rosick.framework.Framework;
+import rosick.framework.Timer;
+import rosick.glm.Mat4;
+import rosick.glm.Quaternion;
+import rosick.glm.Vec3;
+import rosick.glm.Vec4;
+import rosick.glutil.MatrixStack;
+import rosick.glutil.pole.MousePole.*;
+import rosick.glutil.pole.ViewPole;
+import rosick.mckesson.III.tut12.LightManager.LightBlock;
+import rosick.mckesson.III.tut12.LightManager.SunlightValue;
+import rosick.mckesson.III.tut12.LightManager.TimerTypes;
+import rosick.mckesson.III.tut12.Scene.LightingProgramTypes;
+import rosick.mckesson.III.tut12.Scene.ProgramData;
+
+
+/**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
+ * III. Illumination
+ * 11. Shinies
+ * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2011.html
+ * @author integeruser
+ * 
+ * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
+ * I,J,K,L  - control the light's position. Holding SHIFT with these keys will move in smaller increments.
+ * U,O      - control the specular value. They raise and low the specular exponent. Using SHIFT in combination 
+ * 				with them will raise/lower the exponent by smaller amounts.
+ * Y 		- toggles the drawing of the light source.
+ * T 		- toggles between the scaled and unscaled cylinder.
+ * B 		- toggles the light's rotation on/off.
+ * G 		- toggles between a diffuse color of (1, 1, 1) and a darker diffuse color of (0.2, 0.2, 0.2).
+ * H 		- switch between Blinn, Phong and Gaussian specular. Pressing SHIFT+H will switch between 
+ * 				diffuse+specular and specular only.
+ * 
+ * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
+ * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
+ */
+public class SceneLighting01 extends GLWindow {
+	
+	public static void main(String[] args) {		
+		new SceneLighting01().start();
+	}
+	
+	
+	private static final String BASEPATH = "/rosick/mckesson/III/tut12/data/";
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+	private class UnlitProgData {
+		int theProgram;
+
+		int objectColorUnif;
+		//int cameraToClipMatrixUnif;
+		int modelToCameraMatrixUnif;
+		
+		/*
+		void setWindowData(Mat4 cameraToClip) {
+			glUseProgram(theProgram);
+			glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClip.fillBuffer(tempSharedBuffer16));
+			glUseProgram(0);
+		}
+		*/
+	}
+	
+	
+	private class Shaders {
+		String fileVertexShader;
+		String fileFragmentShader;
+		
+		Shaders(String fileVertexShader, String fileFragmentShader) {
+			this.fileVertexShader = fileVertexShader;
+			this.fileFragmentShader = fileFragmentShader;
+		}
+	}
+	
+	
+	private class ProjectionBlock {
+		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = 16 * (Float.SIZE / 8);
+	}
+
+		
+	private final int g_materialBlockIndex 		= 0;
+	private final int g_lightBlockIndex 		= 1;
+	private final int g_projectionBlockIndex 	= 2;
+
+	private ProgramData g_Programs[] = new ProgramData[LightingProgramTypes.LP_MAX_LIGHTING_PROGRAM_TYPES.ordinal()];
+	private Shaders g_ShaderFiles[] = new Shaders[] {
+		new Shaders(BASEPATH + "PCN.vert", BASEPATH + "DiffuseSpecular.frag"),
+		new Shaders(BASEPATH + "PCN.vert", BASEPATH + "DiffuseOnly.frag"),
+		
+		new Shaders(BASEPATH + "PN.vert", BASEPATH + "DiffuseSpecularMtl.frag"),
+		new Shaders(BASEPATH + "PN.vert", BASEPATH + "DiffuseOnlyMtl.frag"),
+	};
+	
+	private UnlitProgData g_Unlit;
+	
+	private int g_lightUniformBuffer;
+	private int g_projectionUniformBuffer;
+	private float g_fzNear = 1.0f;
+	private float g_fzFar = 1000.0f;
+	
+	private MatrixStack modelMatrix = new MatrixStack();
+
+	private FloatBuffer tempSharedBuffer4 = BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
+	private ByteBuffer tempSharedBuffer160 = BufferUtils.createByteBuffer(160);
+
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private UnlitProgData loadUnlitProgram(String strVertexShader, String strFragmentShader) {		
+		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
+
+		ArrayList<Integer> shaderList = new ArrayList<>();
+		shaderList.add(vertexShader);
+		shaderList.add(fragmentShader);
+
+		UnlitProgData data = new UnlitProgData();
+		data.theProgram = Framework.createProgram(shaderList);
+		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
+		data.objectColorUnif = glGetUniformLocation(data.theProgram, "objectColor");
+
+		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
+		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
+
+		return data;
+	}
+	
+	private ProgramData loadLitProgram(String strVertexShader, String strFragmentShader) {		
+		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
+		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
+
+		ArrayList<Integer> shaderList = new ArrayList<>();
+		shaderList.add(vertexShader);
+		shaderList.add(fragmentShader);
+
+		ProgramData data = new ProgramData();
+		data.theProgram = Framework.createProgram(shaderList);
+		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
+
+		data.normalModelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "normalModelToCameraMatrix");
+
+		int materialBlock = glGetUniformBlockIndex(data.theProgram, "Material");
+		int lightBlock = glGetUniformBlockIndex(data.theProgram, "Light");
+		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
+
+		glUniformBlockBinding(data.theProgram, materialBlock, g_materialBlockIndex);
+		glUniformBlockBinding(data.theProgram, lightBlock, g_lightBlockIndex);
+		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
+
+		return data;
+	}
+	
+	private void initializePrograms() {	
+		for (int iProg = 0; iProg < LightingProgramTypes.LP_MAX_LIGHTING_PROGRAM_TYPES.ordinal(); iProg++) {
+			g_Programs[iProg] = new ProgramData();
+			g_Programs[iProg] = loadLitProgram(g_ShaderFiles[iProg].fileVertexShader, g_ShaderFiles[iProg].fileFragmentShader);
+		}
+
+		g_Unlit = loadUnlitProgram(BASEPATH + "PosTransform.vert", BASEPATH + "UniformColor.frag");
+	}
+	
+	
+	@Override
+	protected void init() {
+		initializePrograms();
+
+		try {
+			g_pScene = new Scene(BASEPATH) {
+
+				@Override
+				ProgramData getProgram(LightingProgramTypes eType) {
+					return g_Programs[eType.ordinal()];
+				}
+			};
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			System.exit(0);
+		}	
+		
+		setupDaytimeLighting();
+
+		g_lights.createTimer("tetra", Timer.Type.TT_LOOP, 2.5f);
+		
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glFrontFace(GL_CW);
+		
+		final float depthZNear = 0.0f;
+		final float depthZFar = 1.0f;
+
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(true);
+		glDepthFunc(GL_LEQUAL);
+		glDepthRange(depthZNear, depthZFar);
+		glEnable(GL_DEPTH_CLAMP);
+		
+		// Setup our Uniform Buffers
+		g_lightUniformBuffer = glGenBuffers();	       
+		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
+		glBufferData(GL_UNIFORM_BUFFER, LightBlock.SIZE, GL_DYNAMIC_DRAW);	
+		
+		g_projectionUniformBuffer = glGenBuffers();	       
+		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
+		glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW);	
+		
+		// Bind the static buffers.
+		glBindBufferRange(GL_UNIFORM_BUFFER, g_lightBlockIndex, g_lightUniformBuffer, 0, LightBlock.SIZE);
+		
+		glBindBufferRange(GL_UNIFORM_BUFFER, g_projectionBlockIndex, g_projectionUniformBuffer, 0, ProjectionBlock.SIZE);
+
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+	
+
+	@Override
+	protected void update() {
+		while (Mouse.next()) {
+			int eventButton = Mouse.getEventButton();
+									
+			if (eventButton != -1) {
+				if (Mouse.getEventButtonState()) {
+					// Mouse down
+					Framework.forwardMouseButton(g_viewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
+				} else {
+					// Mouse up
+					Framework.forwardMouseButton(g_viewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
+				}
+			} else {
+				// Mouse moving or mouse scrolling
+				int dWheel = Mouse.getDWheel();
+				
+				if (dWheel != 0) {
+					Framework.forwardMouseWheel(g_viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
+				}
+				
+				if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)) {
+					Framework.forwardMouseMotion(g_viewPole, Mouse.getX(), Mouse.getY());			
+				}
+			}
+		}
+		
+		
+		float lastFrameDuration = (float) (getLastFrameDuration() / 100.0);
+
+		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+			g_viewPole.charPress(Keyboard.KEY_W, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+			g_viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+		}
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+			g_viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+		} else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+			g_viewPole.charPress(Keyboard.KEY_A, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+		}
+
+		if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
+			g_viewPole.charPress(Keyboard.KEY_E, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+		} else if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
+			g_viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+		}
+		
+		
+		while (Keyboard.next()) {
+			if (Keyboard.getEventKeyState()) {
+				if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+					g_lights.togglePause(g_eTimerMode);
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_MINUS) {
+					g_lights.rewindTime(g_eTimerMode, 1.0f);
+										
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_EQUALS) {
+					g_lights.fastForwardTime(g_eTimerMode, 1.0f);
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+					g_bDrawCameraPos = !g_bDrawCameraPos;
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_1) {
+					g_eTimerMode = TimerTypes.TIMER_ALL;
+					System.out.println("All.");
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_2) {
+					g_eTimerMode = TimerTypes.TIMER_SUN;
+					System.out.println("Sun.");
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_3) {
+					g_eTimerMode = TimerTypes.TIMER_LIGHTS;
+					System.out.println("Lights.");
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_L) {
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+						setupNighttimeLighting();
+					} else {
+						setupDaytimeLighting();
+					}
+						
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+					float sunAlpha = g_lights.getSunTime();
+					float sunTimeHours = sunAlpha * 24.0f + 12.0f;
+					sunTimeHours = sunTimeHours > 24.0f ? sunTimeHours - 24.0f : sunTimeHours;
+					int sunHours = (int) sunTimeHours;
+					float sunTimeMinutes = (sunTimeHours - sunHours) * 60.0f;
+					int sunMinutes = (int) sunTimeMinutes;
+					System.out.format("%02d:%02d\n", sunHours, sunMinutes);
+					
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+					leaveMainLoop();
+				}
+			}
+		}
+	}
+	
+
+	@Override
+	protected void display() {			
+		g_lights.updateTime(getElapsedTime());
+		
+		Vec4 bkg = g_lights.getBackgroundColor();
+
+		glClearColor(bkg.get(X), bkg.get(Y), bkg.get(Z), bkg.get(W));
+		glClearDepth(1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		modelMatrix.clear();
+		modelMatrix.setMatrix(g_viewPole.calcMatrix());
+
+		final Mat4 worldToCamMat = modelMatrix.top();
+		LightBlock lightData = g_lights.getLightInformation(worldToCamMat);
+		
+		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillBuffer(tempSharedBuffer160));
+
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		
+		{
+			modelMatrix.push();
+
+			g_pScene.draw(modelMatrix, g_materialBlockIndex, g_lights.getTimerValue("tetra"));
+			
+			modelMatrix.pop();
+		}
+		
+		{
+			modelMatrix.push();
+
+			// Render the sun
+			{
+				modelMatrix.push();
+
+				Vec3 sunlightDir = new Vec3(g_lights.getSunlightDirection());
+				modelMatrix.translate(sunlightDir.scale(500.0f));
+				modelMatrix.scale(30.0f, 30.0f, 30.0f);
+
+				glUseProgram(g_Unlit.theProgram);
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+
+				Vec4 lightColor = g_lights.getSunlightIntensity();
+				glUniform4(g_Unlit.objectColorUnif, lightColor.fillBuffer(tempSharedBuffer4));
+				g_pScene.getSphereMesh().render("flat");
+				
+				modelMatrix.pop();
+			}
+
+			// Render the lights
+			if (g_bDrawLights) {
+				for (int light = 0; light < g_lights.getNumberOfPointLights(); light++) {
+					modelMatrix.push();
+
+					modelMatrix.translate(g_lights.getWorldLightPosition(light));
+
+					glUseProgram(g_Unlit.theProgram);
+					glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+
+					Vec4 lightColor = g_lights.getPointLightIntensity(light);
+					glUniform4(g_Unlit.objectColorUnif, lightColor.fillBuffer(tempSharedBuffer4));
+					g_pScene.getCubeMesh().render("flat");
+
+					modelMatrix.pop();
+				}
+			}
+			
+			
+			if (g_bDrawCameraPos) {
+				modelMatrix.push();
+
+				modelMatrix.setIdentity();
+				modelMatrix.translate(0.0f, 0.0f, -g_viewPole.getView().radius);
+
+				glDisable(GL_DEPTH_TEST);
+				glDepthMask(false);
+				glUseProgram(g_Unlit.theProgram);
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniform4f(g_Unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
+				g_pScene.getCubeMesh().render("flat");
+				glDepthMask(true);
+				glEnable(GL_DEPTH_TEST);
+				glUniform4f(g_Unlit.objectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
+				g_pScene.getCubeMesh().render("flat");
+				
+				modelMatrix.pop();
+			}
+			
+			modelMatrix.pop();
+		}
+	}
+	
+	
+	@Override
+	protected void reshape(int width, int height) {	
+		MatrixStack persMatrix = new MatrixStack();
+		persMatrix.perspective(45.0f, (width / (float) height), g_fzNear, g_fzFar);
+		
+		ProjectionBlock projData = new ProjectionBlock();
+		projData.cameraToClipMatrix = persMatrix.top();
+
+		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		
+		glViewport(0, 0, width, height);
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final Vec4 g_skyDaylightColor = new Vec4(0.65f, 0.65f, 1.0f, 1.0f);
+
+	private Scene g_pScene;
+	private LightManager g_lights = new LightManager();
+	
+	private TimerTypes g_eTimerMode = TimerTypes.TIMER_ALL;
+
+	private boolean g_bDrawLights = true;
+	private boolean g_bDrawCameraPos;
+	
+	
+	// View/Object Setup
+	
+	private ViewData g_initialViewData = new ViewData(
+		new Vec3(-59.5f, 44.0f, 95.0f),
+		new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+		50.0f,
+		0.0f
+	);
+
+	private ViewScale g_viewScale = new ViewScale(	
+		3.0f, 80.0f,
+		4.0f, 1.0f,
+		5.0f, 1.0f,
+		90.0f / 250.0f
+	);
+
+	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);
+		
+	
+	void setupDaytimeLighting() {
+		SunlightValue values[] = {
+			new SunlightValue(0.0f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(g_skyDaylightColor)),
+			new SunlightValue(4.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(g_skyDaylightColor)),
+			new SunlightValue(6.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.10f, 1.0f), new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+			new SunlightValue(8.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+			new SunlightValue(18.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+			new SunlightValue(19.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.1f, 1.0f), new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+			new SunlightValue(20.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(g_skyDaylightColor)),
+		};
+
+		g_lights.setSunlightValues(values, 7);
+
+		g_lights.setPointLightIntensity(0, new Vec4(0.2f, 0.2f, 0.2f, 1.0f));
+		g_lights.setPointLightIntensity(1, new Vec4(0.0f, 0.0f, 0.3f, 1.0f));
+		g_lights.setPointLightIntensity(2, new Vec4(0.3f, 0.0f, 0.0f, 1.0f));
+	}
+
+	void setupNighttimeLighting() {
+		SunlightValue values[] = {
+			new SunlightValue(0.0f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(g_skyDaylightColor)),
+			new SunlightValue(4.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(g_skyDaylightColor)),
+			new SunlightValue(6.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.10f, 1.0f), new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+			new SunlightValue(8.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+			new SunlightValue(18.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+			new SunlightValue(19.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.1f, 1.0f), new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+			new SunlightValue(20.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(g_skyDaylightColor))
+		};
+
+		g_lights.setSunlightValues(values, 7);
+
+		g_lights.setPointLightIntensity(0, new Vec4(0.6f, 0.6f, 0.6f, 1.0f));
+		g_lights.setPointLightIntensity(1, new Vec4(0.0f, 0.0f, 0.7f, 1.0f));
+		g_lights.setPointLightIntensity(2, new Vec4(0.7f, 0.0f, 0.0f, 1.0f));
+	}
+}

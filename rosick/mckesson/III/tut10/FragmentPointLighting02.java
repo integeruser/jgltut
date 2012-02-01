@@ -108,8 +108,8 @@ public class FragmentPointLighting02 extends GLWindow {
 	
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedBuffer4 = BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 	
 	
 
@@ -117,12 +117,9 @@ public class FragmentPointLighting02 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	private UnlitProgData loadUnlitProgram(String strVertexShader, String strFragmentShader) {		
-		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		UnlitProgData data = new UnlitProgData();
 		data.theProgram = Framework.createProgram(shaderList);
@@ -136,12 +133,9 @@ public class FragmentPointLighting02 extends GLWindow {
 	}
 	
 	private ProgramData loadLitProgram(String strVertexShader, String strFragmentShader) {		
-		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		ProgramData data = new ProgramData();
 		data.theProgram = Framework.createProgram(shaderList);
@@ -336,11 +330,11 @@ public class FragmentPointLighting02 extends GLWindow {
 				modelMatrix.push();
 
 				glUseProgram(pWhiteProgram.theProgram);
-				glUniformMatrix4(pWhiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(pWhiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 
 				Mat4 invTransform = Glm.inverse(modelMatrix.top());
 				Vec4 lightPosModelSpace = Mat4.mul(invTransform, lightPosCameraSpace);
-				glUniform3(pWhiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillBuffer(tempSharedBuffer4));
+				glUniform3(pWhiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillBuffer(tempSharedFloatBuffer4));
 
 				g_pPlaneMesh.render();
 				glUseProgram(0);
@@ -363,16 +357,16 @@ public class FragmentPointLighting02 extends GLWindow {
 				
 				if (g_bDrawColoredCyl) {
 					glUseProgram(pVertColorProgram.theProgram);
-					glUniformMatrix4(pVertColorProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+					glUniformMatrix4(pVertColorProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 					
-					glUniform3(pVertColorProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillBuffer(tempSharedBuffer4));
+					glUniform3(pVertColorProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillBuffer(tempSharedFloatBuffer4));
 
 					g_pCylinderMesh.render("lit-color");
 				} else {
 					glUseProgram(pWhiteProgram.theProgram);
-					glUniformMatrix4(pWhiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+					glUniformMatrix4(pWhiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 
-					glUniform3(pWhiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillBuffer(tempSharedBuffer4));
+					glUniform3(pWhiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillBuffer(tempSharedFloatBuffer4));
 
 					g_pCylinderMesh.render("lit");
 				}
@@ -389,7 +383,7 @@ public class FragmentPointLighting02 extends GLWindow {
 				modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
 				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 				glUniform4f(g_Unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f);
 				g_pCubeMesh.render("flat");
 				
@@ -410,7 +404,7 @@ public class FragmentPointLighting02 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);

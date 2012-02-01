@@ -86,7 +86,8 @@ public class Rotation03 extends GLWindow {
 	private final int numberOfVertices = 8;
 	
 	private Mat4 cameraToClipMatrix = new Mat4();
-	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
+	
+	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -94,12 +95,9 @@ public class Rotation03 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 		
 	private void initializeProgram() {	
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "PosColorLocalTransform.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "ColorPassthrough.frag");
-        
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	BASEPATH + "PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "ColorPassthrough.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -115,7 +113,7 @@ public class Rotation03 extends GLWindow {
 		cameraToClipMatrix.set(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
 		
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
 		glUseProgram(0);
 	}
 	
@@ -184,7 +182,7 @@ public class Rotation03 extends GLWindow {
 		for (Instance currInst : g_instanceList) {
 			final Mat4 transformMatrix = currInst.constructMatrix(fElapsedTime);
 			
-			glUniformMatrix4(modelToCameraMatrixUnif, false, transformMatrix.fillBuffer(tempSharedBuffer16));
+			glUniformMatrix4(modelToCameraMatrixUnif, false, transformMatrix.fillBuffer(tempSharedFloatBuffer16));
 			glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		}
 
@@ -199,7 +197,7 @@ public class Rotation03 extends GLWindow {
 		cameraToClipMatrix.set(5, fFrustumScale);
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
 		glUseProgram(0);
 
 		glViewport(0, 0, width, height);

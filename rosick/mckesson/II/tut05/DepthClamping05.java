@@ -176,13 +176,10 @@ public class DepthClamping05 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 		
-	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "Standard.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "Standard.frag");
-        
+	private void initializeProgram() {			        
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "Standard.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "Standard.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		

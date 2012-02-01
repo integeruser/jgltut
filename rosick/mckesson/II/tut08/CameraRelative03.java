@@ -34,9 +34,10 @@ import rosick.glutil.MatrixStack;
  * W,S		- control the outer gimbal.
  * A,D 		- control the middle gimbal.
  * Q,E  	- control the inner gimbal.
- * I,K      - move the camera up and down, relative to a center point.
- * J,L 		- move the camera left and right around the center point.
- * Holding SHIFT with these keys will move the camera in smaller increments.
+ * I,K      - move the camera up and down, relative to a center point. Holding LEFT_SHIFT with these keys will move 
+ * 				the camera in smaller increments.
+ * J,L 		- move the camera left and right around the center point. Holding LEFT_SHIFT with these keys will move 
+ * 				the camera in smaller increments.
  */
 public class CameraRelative03 extends GLWindow {
 	
@@ -58,7 +59,8 @@ public class CameraRelative03 extends GLWindow {
 	private MatrixStack currMatrix = new MatrixStack(); 
 
 	private Mat4 cameraToClipMatrix = new Mat4();
-	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
+	
+	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -66,12 +68,9 @@ public class CameraRelative03 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "PosColorLocalTransform.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "ColorMultUniform.frag");
-        
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "ColorMultUniform.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -88,7 +87,7 @@ public class CameraRelative03 extends GLWindow {
 		cameraToClipMatrix.set(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
 		glUseProgram(0);
 	}
 	
@@ -220,7 +219,7 @@ public class CameraRelative03 extends GLWindow {
 			currMatrix.scale(100.0f, 1.0f, 100.0f);
 
 			glUniform4f(baseColorUnif, 0.2f, 0.5f, 0.2f, 1.0f);
-			glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillBuffer(tempSharedBuffer16));
+			glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 
 			g_pPlane.render();
 			
@@ -236,7 +235,7 @@ public class CameraRelative03 extends GLWindow {
 
 			//Set the base color for this object.
 			glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-			glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillBuffer(tempSharedBuffer16));
+			glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 
 			g_pShip.render("tint");
 			
@@ -253,7 +252,7 @@ public class CameraRelative03 extends GLWindow {
 		cameraToClipMatrix.set(5, fFrustumScale);
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
 		glUseProgram(0);
 
 		glViewport(0, 0, width, height);

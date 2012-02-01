@@ -148,12 +148,9 @@ public class MatrixPerspective03 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "MatrixPerspective.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "StandardColors.frag");
-        
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "MatrixPerspective.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "StandardColors.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -172,23 +169,23 @@ public class MatrixPerspective03 extends GLWindow {
 		theMatrix[14] 	= (2 * fzFar * fzNear) / (fzNear - fzFar);
 		theMatrix[11] 	= -1.0f;
 		
-		FloatBuffer tempBuffer = BufferUtils.createFloatBuffer(theMatrix.length);
-		tempBuffer.put(theMatrix);
-		tempBuffer.flip();
+		FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(theMatrix.length);
+		tempFloatBuffer.put(theMatrix);
+		tempFloatBuffer.flip();
 		
 		glUseProgram(theProgram);
-		glUniformMatrix4(perspectiveMatrixUnif, false, tempBuffer);
+		glUniformMatrix4(perspectiveMatrixUnif, false, tempFloatBuffer);
 		glUseProgram(0);
 	}
 	
 	private void initializeVertexBuffer() {
-		FloatBuffer tempBuffer = BufferUtils.createFloatBuffer(vertexData.length);
-		tempBuffer.put(vertexData);
-		tempBuffer.flip();
+		FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+		tempFloatBuffer.put(vertexData);
+		tempFloatBuffer.flip();
 		
         vertexBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, tempBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, tempFloatBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	

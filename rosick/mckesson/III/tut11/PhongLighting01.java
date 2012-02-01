@@ -41,14 +41,14 @@ import rosick.glutil.pole.ViewPole;
  * @author integeruser
  * 
  * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
- * I,J,K,L  - control the light's position. Holding SHIFT with these keys will move in smaller increments.
- * U,O      - control the specular value. They raise and low the specular exponent. Using SHIFT in combination 
+ * I,J,K,L  - control the light's position. Holding LEFT_SHIFT with these keys will move in smaller increments.
+ * U,O      - control the specular value. They raise and low the specular exponent. Using LEFT_SHIFT in combination 
  * 				with them will raise/lower the exponent by smaller amounts.
  * Y 		- toggles the drawing of the light source.
  * T 		- toggles between the scaled and unscaled cylinder.
  * B 		- toggles the light's rotation on/off.
  * G 		- toggles between a diffuse color of (1, 1, 1) and a darker diffuse color of (0.2, 0.2, 0.2).
- * H 		- selects between specular and diffuse, just specular and just diffuse. Pressing SHIFT+H will toggle 
+ * H 		- selects between specular and diffuse, just specular and just diffuse. Pressing LEFT_SHIFT+H will toggle 
  * 				between diffuse only and diffuse+specular.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
@@ -122,9 +122,9 @@ public class PhongLighting01 extends GLWindow {
 	
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedBuffer4 = BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedBuffer9 = BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
+	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -132,12 +132,9 @@ public class PhongLighting01 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	private UnlitProgData loadUnlitProgram(String strVertexShader, String strFragmentShader) {		
-		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		UnlitProgData data = new UnlitProgData();
 		data.theProgram = Framework.createProgram(shaderList);
@@ -151,12 +148,9 @@ public class PhongLighting01 extends GLWindow {
 	}
 	
 	private ProgramData loadLitProgram(String strVertexShader, String strFragmentShader) {		
-		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		ProgramData data = new ProgramData();
 		data.theProgram = Framework.createProgram(shaderList);
@@ -410,15 +404,15 @@ public class PhongLighting01 extends GLWindow {
 		glUseProgram(pWhiteProg.theProgram);
 		glUniform4f(pWhiteProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
 		glUniform4f(pWhiteProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-		glUniform3(pWhiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedBuffer4));
+		glUniform3(pWhiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
 		glUniform1f(pWhiteProg.lightAttenuationUnif, g_fLightAttenuation);
 		glUniform1f(pWhiteProg.shininessFactorUnif, g_fShininessFactor);
-		glUniform4(pWhiteProg.baseDiffuseColorUnif, g_bDrawDark ? g_darkColor.fillBuffer(tempSharedBuffer4) : g_lightColor.fillBuffer(tempSharedBuffer4));
+		glUniform4(pWhiteProg.baseDiffuseColorUnif, g_bDrawDark ? g_darkColor.fillBuffer(tempSharedFloatBuffer4) : g_lightColor.fillBuffer(tempSharedFloatBuffer4));
 		
 		glUseProgram(pColorProg.theProgram);
 		glUniform4f(pColorProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
 		glUniform4f(pColorProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-		glUniform3(pColorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedBuffer4));
+		glUniform3(pColorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
 		glUniform1f(pColorProg.lightAttenuationUnif, g_fLightAttenuation);
 		glUniform1f(pColorProg.shininessFactorUnif, g_fShininessFactor);
 		glUseProgram(0);
@@ -434,9 +428,9 @@ public class PhongLighting01 extends GLWindow {
 				normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 				
 				glUseProgram(pWhiteProg.theProgram);
-				glUniformMatrix4(pWhiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(pWhiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 
-				glUniformMatrix3(pWhiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+				glUniformMatrix3(pWhiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
 				g_pPlaneMesh.render();
 				glUseProgram(0);
 				
@@ -458,9 +452,9 @@ public class PhongLighting01 extends GLWindow {
 				
 				ProgramData pProg = g_bDrawColoredCyl ? pColorProg : pWhiteProg;
 				glUseProgram(pProg.theProgram);
-				glUniformMatrix4(pProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(pProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 
-				glUniformMatrix3(pProg.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+				glUniformMatrix3(pProg.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
 
 				if (g_bDrawColoredCyl) {
 					g_pCylinderMesh.render("lit-color");
@@ -481,7 +475,7 @@ public class PhongLighting01 extends GLWindow {
 				modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
 				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 				glUniform4f(g_Unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f);
 				g_pCubeMesh.render("flat");
 				
@@ -502,7 +496,7 @@ public class PhongLighting01 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);

@@ -10,6 +10,11 @@ import rosick.mckesson.III.tut12.LightManager.LightVectorData;
 import rosick.mckesson.III.tut12.LightManager.MaxIntensityData;
 
 
+/**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
+ * @author integeruser
+ */
 public class Interpolators {
 	
 	static class WeightedLinearInterpolatorFloat {

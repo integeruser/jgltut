@@ -108,6 +108,10 @@ public class MatrixStack {
 	}
 
 	
+	public void scale(float f) {
+		scale(f, f, f);
+	}
+	
 	public void scale(float x, float y, float z) {
 		Mat4 mat = new Mat4();
 		

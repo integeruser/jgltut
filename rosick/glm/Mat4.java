@@ -8,7 +8,7 @@ import static rosick.glm.Vec4.*;
  * 
  * @author integeruser, xire-
  */
-public class Mat4 extends Mat implements Bufferable {
+public class Mat4 extends Mat {
 	
 	public Mat4() {
 		matrix = new float[16];

@@ -1,6 +1,6 @@
-package rosick.glm;
+package rosick.framework;
 
-import java.nio.FloatBuffer;
+import java.nio.Buffer;
 
 
 /**
@@ -8,7 +8,7 @@ import java.nio.FloatBuffer;
  * 
  * @author integeruser
  */
-public interface Bufferable {
+public interface Bufferable<T extends Buffer> {
 	
-	public FloatBuffer fillBuffer(FloatBuffer buffer);
+	public T fillBuffer(T buffer);
 }

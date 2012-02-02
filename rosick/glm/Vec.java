@@ -2,7 +2,7 @@ package rosick.glm;
 
 import java.nio.FloatBuffer;
 
-import rosick.framework.Bufferable;
+import rosick.PortingUtils.Bufferable;
 
 
 /**

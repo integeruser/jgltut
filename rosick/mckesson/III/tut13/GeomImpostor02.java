@@ -129,7 +129,7 @@ public class GeomImpostor02 extends GLWindow {
 	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
 	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempSharedFloatBuffer21 = BufferUtils.createFloatBuffer(21);
+	private FloatBuffer tempSharedFloatBuffer37 = BufferUtils.createFloatBuffer(37);
 
 	
 	
@@ -346,7 +346,7 @@ public class GeomImpostor02 extends GLWindow {
 		lightData.lights[1].lightIntensity = new Vec4(0.4f, 0.4f, 0.4f, 1.0f);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillBuffer(tempSharedFloatBuffer21));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillBuffer(tempSharedFloatBuffer37));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		{
@@ -489,12 +489,12 @@ public class GeomImpostor02 extends GLWindow {
 		float lightAttenuation;
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 		
-		static final int SIZE = 21 * (Float.SIZE / 8);
+		static final int SIZE = 37 * (Float.SIZE / 8);
 
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			float data[] = new float[21];
+			float data[] = new float[37];
 			System.arraycopy(ambientIntensity.get(), 0, data, 0, 4);
 			
 			data[4] = lightAttenuation;
@@ -504,7 +504,7 @@ public class GeomImpostor02 extends GLWindow {
 				System.arraycopy(lights[i].cameraSpaceLightPos.get(), 0, temp, 0, 4);
 				System.arraycopy(lights[i].lightIntensity.get(), 0, temp, 4, 4);
 				
-				System.arraycopy(temp, 0, data, 5 + i * 8, 8);
+				System.arraycopy(temp, 0, data, 8 + i * 8, 8);
 			}
 			
 			buffer.put(data);

@@ -399,8 +399,6 @@ public class BasicImpostor01 extends GLWindow {
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		{
-			modelMatrix.push();
-
 			glBindBufferRange(GL_UNIFORM_BUFFER, g_materialBlockIndex, g_materialUniformBuffer,
 				MaterialNames.MTL_TERRAIN.ordinal() * g_materialBlockOffset, MaterialBlock.SIZE);
 
@@ -415,8 +413,6 @@ public class BasicImpostor01 extends GLWindow {
 
 			glUseProgram(0);
 			glBindBufferBase(GL_UNIFORM_BUFFER, g_materialBlockIndex, 0);
-			
-			modelMatrix.pop();
 		}
 
 		drawSphere(modelMatrix, new Vec3(0.0f, 10.0f, 0.0f), 4.0f, MaterialNames.MTL_BLUE_SHINY, g_drawImposter[0]);

@@ -9,7 +9,7 @@ public class PortingUtils {
 	}
 	
 	
-	public static abstract class BufferableData {	
+	public static abstract class BufferableData {		
 		public abstract byte[] getAsByteArray();
 	}
 	

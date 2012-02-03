@@ -9,7 +9,6 @@ import static org.lwjgl.opengl.GL32.*;
 
 import static rosick.glm.Vec.*;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -18,6 +17,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import rosick.GLWindow;
+import rosick.PortingUtils.Bufferable;
 import rosick.framework.Framework;
 import rosick.framework.Timer;
 import rosick.glm.Mat4;
@@ -34,24 +34,27 @@ import rosick.mckesson.III.tut12.Scene.LightingProgramTypes;
 import rosick.mckesson.III.tut12.Scene.ProgramData;
 
 
+// Some graphics card (like my Radeon HD3870) generates an OpenGL error. Don't worry, the tutorial works fine anyway.
+
+
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
  * III. Illumination
- * 11. Shinies
- * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2011.html
+ * 12. Dynamic Range
+ * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2012.html
  * @author integeruser
  * 
- * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
- * I,J,K,L  - control the light's position. Holding SHIFT with these keys will move in smaller increments.
- * U,O      - control the specular value. They raise and low the specular exponent. Using SHIFT in combination 
- * 				with them will raise/lower the exponent by smaller amounts.
- * Y 		- toggles the drawing of the light source.
- * T 		- toggles between the scaled and unscaled cylinder.
- * B 		- toggles the light's rotation on/off.
- * G 		- toggles between a diffuse color of (1, 1, 1) and a darker diffuse color of (0.2, 0.2, 0.2).
- * H 		- switch between Blinn, Phong and Gaussian specular. Pressing SHIFT+H will switch between 
- * 				diffuse+specular and specular only.
+ * W,A,S,D	- move the cameras forward/backwards and left/right, relative to the camera's current orientation.
+ * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
+ * Q,E		- raise and lower the camera, relative to its current orientation. 
+ * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
+ * P		- toggle pausing on/off.
+ * -,=		- rewind/jump forward time by one second (of real-time).
+ * T		- toggle viewing of the current target point.
+ * 1,2,3	- timer commands affect both the sun and the other lights/only the sun/only the other lights.
+ * L		- switch to day-optimized lighting. Pressing LEFT_SHIFT+L will switch to a night-time optimized version.
+ * SPACEBAR - print out the current sun-based time, in 24-hour notation.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
  * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
@@ -61,7 +64,7 @@ import rosick.mckesson.III.tut12.Scene.ProgramData;
 public class SceneLighting01 extends GLWindow {
 	
 	public static void main(String[] args) {		
-		new SceneLighting01().start();
+		new SceneLighting01().start(800, 800);
 	}
 	
 	
@@ -76,16 +79,7 @@ public class SceneLighting01 extends GLWindow {
 		int theProgram;
 
 		int objectColorUnif;
-		//int cameraToClipMatrixUnif;
 		int modelToCameraMatrixUnif;
-		
-		/*
-		void setWindowData(Mat4 cameraToClip) {
-			glUseProgram(theProgram);
-			glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClip.fillBuffer(tempSharedBuffer16));
-			glUseProgram(0);
-		}
-		*/
 	}
 	
 	
@@ -100,10 +94,16 @@ public class SceneLighting01 extends GLWindow {
 	}
 	
 	
-	private class ProjectionBlock {
+	private class ProjectionBlock implements Bufferable<FloatBuffer>{
 		Mat4 cameraToClipMatrix;
 		
 		static final int SIZE = 16 * (Float.SIZE / 8);
+
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
+		}
 	}
 
 		
@@ -117,7 +117,7 @@ public class SceneLighting01 extends GLWindow {
 		new Shaders(BASEPATH + "PCN.vert", BASEPATH + "DiffuseOnly.frag"),
 		
 		new Shaders(BASEPATH + "PN.vert", BASEPATH + "DiffuseSpecularMtl.frag"),
-		new Shaders(BASEPATH + "PN.vert", BASEPATH + "DiffuseOnlyMtl.frag"),
+		new Shaders(BASEPATH + "PN.vert", BASEPATH + "DiffuseOnlyMtl.frag")
 	};
 	
 	private UnlitProgData g_Unlit;
@@ -129,9 +129,9 @@ public class SceneLighting01 extends GLWindow {
 	
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedBuffer4 = BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
-	private ByteBuffer tempSharedBuffer160 = BufferUtils.createByteBuffer(160);
+	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempSharedFloatBuffer40 = BufferUtils.createFloatBuffer(40);
 
 	
 	
@@ -139,12 +139,9 @@ public class SceneLighting01 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	private UnlitProgData loadUnlitProgram(String strVertexShader, String strFragmentShader) {		
-		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		UnlitProgData data = new UnlitProgData();
 		data.theProgram = Framework.createProgram(shaderList);
@@ -158,12 +155,9 @@ public class SceneLighting01 extends GLWindow {
 	}
 	
 	private ProgramData loadLitProgram(String strVertexShader, String strFragmentShader) {		
-		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		ProgramData data = new ProgramData();
 		data.theProgram = Framework.createProgram(shaderList);
@@ -361,8 +355,7 @@ public class SceneLighting01 extends GLWindow {
 		LightBlock lightData = g_lights.getLightInformation(worldToCamMat);
 		
 		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillBuffer(tempSharedBuffer160));
-
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillBuffer(tempSharedFloatBuffer40));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		{
@@ -385,10 +378,10 @@ public class SceneLighting01 extends GLWindow {
 				modelMatrix.scale(30.0f, 30.0f, 30.0f);
 
 				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 
 				Vec4 lightColor = g_lights.getSunlightIntensity();
-				glUniform4(g_Unlit.objectColorUnif, lightColor.fillBuffer(tempSharedBuffer4));
+				glUniform4(g_Unlit.objectColorUnif, lightColor.fillBuffer(tempSharedFloatBuffer4));
 				g_pScene.getSphereMesh().render("flat");
 				
 				modelMatrix.pop();
@@ -402,27 +395,26 @@ public class SceneLighting01 extends GLWindow {
 					modelMatrix.translate(g_lights.getWorldLightPosition(light));
 
 					glUseProgram(g_Unlit.theProgram);
-					glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+					glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 
 					Vec4 lightColor = g_lights.getPointLightIntensity(light);
-					glUniform4(g_Unlit.objectColorUnif, lightColor.fillBuffer(tempSharedBuffer4));
+					glUniform4(g_Unlit.objectColorUnif, lightColor.fillBuffer(tempSharedFloatBuffer4));
 					g_pScene.getCubeMesh().render("flat");
 
 					modelMatrix.pop();
 				}
 			}
 			
-			
 			if (g_bDrawCameraPos) {
 				modelMatrix.push();
 
 				modelMatrix.setIdentity();
-				modelMatrix.translate(0.0f, 0.0f, -g_viewPole.getView().radius);
+				modelMatrix.translate(0.0f, 0.0f, - g_viewPole.getView().radius);
 
 				glDisable(GL_DEPTH_TEST);
 				glDepthMask(false);
 				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 				glUniform4f(g_Unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
 				g_pScene.getCubeMesh().render("flat");
 				glDepthMask(true);
@@ -447,7 +439,7 @@ public class SceneLighting01 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -488,15 +480,15 @@ public class SceneLighting01 extends GLWindow {
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);
 		
 	
-	void setupDaytimeLighting() {
+	private void setupDaytimeLighting() {
 		SunlightValue values[] = {
-			new SunlightValue(0.0f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(g_skyDaylightColor)),
-			new SunlightValue(4.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(g_skyDaylightColor)),
-			new SunlightValue(6.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.10f, 1.0f), new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
-			new SunlightValue(8.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
-			new SunlightValue(18.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
-			new SunlightValue(19.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.1f, 1.0f), new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
-			new SunlightValue(20.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(g_skyDaylightColor)),
+			new SunlightValue( 0.0f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
+			new SunlightValue( 4.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
+			new SunlightValue( 6.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.10f, 1.0f), 	new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+			new SunlightValue( 8.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+			new SunlightValue(18.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+			new SunlightValue(19.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.1f, 1.0f), 	new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+			new SunlightValue(20.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
 		};
 
 		g_lights.setSunlightValues(values, 7);
@@ -506,15 +498,15 @@ public class SceneLighting01 extends GLWindow {
 		g_lights.setPointLightIntensity(2, new Vec4(0.3f, 0.0f, 0.0f, 1.0f));
 	}
 
-	void setupNighttimeLighting() {
+	private void setupNighttimeLighting() {
 		SunlightValue values[] = {
-			new SunlightValue(0.0f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(g_skyDaylightColor)),
-			new SunlightValue(4.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(g_skyDaylightColor)),
-			new SunlightValue(6.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.10f, 1.0f), new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
-			new SunlightValue(8.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
-			new SunlightValue(18.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
-			new SunlightValue(19.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.1f, 1.0f), new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
-			new SunlightValue(20.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(g_skyDaylightColor))
+			new SunlightValue( 0.0f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
+			new SunlightValue( 4.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
+			new SunlightValue( 6.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.10f, 1.0f), 	new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+			new SunlightValue( 8.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f),	new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+			new SunlightValue(18.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+			new SunlightValue(19.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.1f, 1.0f), 	new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+			new SunlightValue(20.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor)
 		};
 
 		g_lights.setSunlightValues(values, 7);

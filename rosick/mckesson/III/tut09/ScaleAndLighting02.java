@@ -15,6 +15,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import rosick.GLWindow;
+import rosick.PortingUtils.Bufferable;
 import rosick.framework.Framework;
 import rosick.framework.Mesh;
 import rosick.glm.Glm;
@@ -73,10 +74,16 @@ public class ScaleAndLighting02 extends GLWindow {
 	}
 	
 	
-	private class ProjectionBlock {
+	private class ProjectionBlock implements Bufferable<FloatBuffer>{
 		Mat4 cameraToClipMatrix;
 		
 		static final int SIZE = 16 * (Float.SIZE / 8);
+
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
+		}
 	}
 	
 		
@@ -286,7 +293,7 @@ public class ScaleAndLighting02 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);

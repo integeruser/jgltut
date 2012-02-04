@@ -101,30 +101,10 @@ public class FragmentAttenuation03 extends GLWindow {
 		int objectColorUnif;
 		int modelToCameraMatrixUnif;
 	}
-	
-	
-	private class ProjectionBlock implements Bufferable<FloatBuffer>{
-		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
-
-		
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillBuffer(buffer);
-		}
-	}
 	
-	private class UnProjectionBlock {
-		Mat4 clipToCameraMatrix;
-		Vec2 windowSize;
-		
-		static final int SIZE = 18 * (Float.SIZE / 8);
-	}
-	
-	
-	private final int g_projectionBlockIndex 	= 2;
-	private final int g_unprojectionBlockIndex 	= 1;
+	private final int g_projectionBlockIndex = 2;
+	private final int g_unprojectionBlockIndex = 1;
 
 	private ProgramData g_FragWhiteDiffuseColor;
 	private ProgramData g_FragVertexDiffuseColor;
@@ -222,10 +202,10 @@ public class FragmentAttenuation03 extends GLWindow {
 		glEnable(GL_DEPTH_CLAMP);
 		
 		g_projectionUniformBuffer 	= glGenBuffers();	  
-		g_unprojectionUniformBuffer = glGenBuffers();	       
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
 		glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW);	
 		
+		g_unprojectionUniformBuffer = glGenBuffers();	       
 		glBindBuffer(GL_UNIFORM_BUFFER, g_unprojectionUniformBuffer);
 		glBufferData(GL_UNIFORM_BUFFER, UnProjectionBlock.SIZE, GL_DYNAMIC_DRAW);	
 		
@@ -474,20 +454,11 @@ public class FragmentAttenuation03 extends GLWindow {
 		UnProjectionBlock unprojData = new UnProjectionBlock();
 		unprojData.clipToCameraMatrix = Glm.inverse(persMatrix.top());
 		unprojData.windowSize = new Vec2(width, height);
-		
+
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
-		
-		glBindBuffer(GL_UNIFORM_BUFFER, g_unprojectionUniformBuffer);
-		
-		FloatBuffer tempSharedBuffer18 = BufferUtils.createFloatBuffer(18);
-		float data[] = new float[18];
-		System.arraycopy(unprojData.clipToCameraMatrix.get(), 0, data, 0, 16);
-		System.arraycopy(unprojData.windowSize.get(), 0, data, 16, 2);
-		tempSharedBuffer18.put(data);
-		tempSharedBuffer18.flip();
-		
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, tempSharedBuffer18);
+		glBindBuffer(GL_UNIFORM_BUFFER, g_unprojectionUniformBuffer);	
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, unprojData.fillBuffer(BufferUtils.createFloatBuffer(18)));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	
 		glViewport(0, 0, width, height);
@@ -497,6 +468,39 @@ public class FragmentAttenuation03 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = 16 * (Float.SIZE / 8);
+
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
+		}
+	}
+	
+	private class UnProjectionBlock implements Bufferable<FloatBuffer> {
+		Mat4 clipToCameraMatrix;
+		Vec2 windowSize;
+		
+		static final int SIZE = 18 * (Float.SIZE / 8);
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			float data[] = new float[18];
+			System.arraycopy(clipToCameraMatrix.get(), 0, data, 0, 16);
+			System.arraycopy(windowSize.get(), 0, data, 16, 2);
+			
+			buffer.clear();
+			buffer.put(data);
+			buffer.flip();
+			
+			return buffer;
+		}
+	}
+	
 	
 	private static boolean g_bDrawColoredCyl;
 	private static boolean g_bDrawLight;

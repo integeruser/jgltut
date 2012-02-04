@@ -17,12 +17,13 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import rosick.GLWindow;
+import rosick.PortingUtils;
 import rosick.PortingUtils.Bufferable;
+import rosick.PortingUtils.BufferableData;
 import rosick.framework.Framework;
 import rosick.framework.Mesh;
 import rosick.framework.Timer;
 import rosick.framework.UniformBlockArray;
-import rosick.framework.UniformBlockArray.MaterialBlock;
 import rosick.glm.Glm;
 import rosick.glm.Mat3;
 import rosick.glm.Mat4;
@@ -49,6 +50,7 @@ import rosick.glutil.pole.ViewPole;
  * P		- toggle pausing on/off.
  * -,=		- rewind/jump forward time by 0.5 second (of real-time).
  * T		- toggle a display showing the look-at point.
+ * G		- toggles the drawing of the light source.
  * 1		- switch back and forth between actual meshes and impostor spheres (the central blue sphere).
  * 2		- switch back and forth between actual meshes and impostor spheres (the orbiting grey sphere).
  * 3		- switch back and forth between actual meshes and impostor spheres (the black marble on the left).
@@ -87,8 +89,7 @@ public class BasicImpostor01 extends GLWindow {
 		int sphereRadiusUnif;
 		int cameraSpherePosUnif;
 	}
-	
-	
+		
 	private class UnlitProgData {
 		int theProgram;
 
@@ -96,20 +97,7 @@ public class BasicImpostor01 extends GLWindow {
 		int modelToCameraMatrixUnif;
 	}
 		
-	
-	private class ProjectionBlock implements Bufferable<FloatBuffer> {
-		Mat4 cameraToClipMatrix;
-		
-		static final int SIZE = 16 * (Float.SIZE / 8);
-
-		
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillBuffer(buffer);
-		}
-	}
-
-		
+			
 	private final int g_materialBlockIndex = 0;
 	private final int g_lightBlockIndex = 1;
 	private final int g_projectionBlockIndex = 2;
@@ -137,7 +125,7 @@ public class BasicImpostor01 extends GLWindow {
 	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
 	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempSharedFloatBuffer37 = BufferUtils.createFloatBuffer(37);
+	private FloatBuffer tempSharedFloatBuffer24 = BufferUtils.createFloatBuffer(24);
 
 	
 	
@@ -395,7 +383,7 @@ public class BasicImpostor01 extends GLWindow {
 		lightData.lights[1].lightIntensity = new Vec4(0.4f, 0.4f, 0.4f, 1.0f);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillBuffer(tempSharedFloatBuffer37));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillBuffer(tempSharedFloatBuffer24));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		{
@@ -478,13 +466,26 @@ public class BasicImpostor01 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private enum Impostors {
-		IMP_BASIC,
-	 	IMP_PERSPECTIVE,
-	 	IMP_DEPTH,
+	private class MaterialBlock extends BufferableData {
+		Vec4 diffuseColor;
+		Vec4 specularColor;
+		float specularShininess;
+		float padding[] = new float[3];
 
-		IMP_NUM_IMPOSTORS
-	};
+		static final int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
+		
+
+		@Override
+		public byte[] getAsByteArray() {
+			float data[] = new float[12];
+			System.arraycopy(diffuseColor.get(), 0, data, 0, 4);
+			System.arraycopy(specularColor.get(), 0, data, 4, 4);
+			data[8] = specularShininess;
+			System.arraycopy(padding, 0, data, 9, padding.length);
+			
+			return PortingUtils.toByteArray(data);
+		}
+	}
 	
 	
 	private class PerLight {
@@ -495,26 +496,28 @@ public class BasicImpostor01 extends GLWindow {
 	private class LightBlock implements Bufferable<FloatBuffer> {
 		Vec4 ambientIntensity;
 		float lightAttenuation;
+		float padding[] = new float[3];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
-		
-		static final int SIZE = 37 * (Float.SIZE / 8);
+
+		static final int SIZE = (4 + 1 + 3 + (8 * 2)) * (Float.SIZE / 8);
 
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			float data[] = new float[37];
+			float data[] = new float[24];
 			System.arraycopy(ambientIntensity.get(), 0, data, 0, 4);
-			
 			data[4] = lightAttenuation;
-			
+			System.arraycopy(padding, 0, data, 5, padding.length);
+
 			for (int i = 0; i < lights.length; i++) {
-				float temp[] = new float[8];
-				System.arraycopy(lights[i].cameraSpaceLightPos.get(), 0, temp, 0, 4);
-				System.arraycopy(lights[i].lightIntensity.get(), 0, temp, 4, 4);
+				float light[] = new float[8];
+				System.arraycopy(lights[i].cameraSpaceLightPos.get(), 0, light, 0, 4);
+				System.arraycopy(lights[i].lightIntensity.get(), 0, light, 4, 4);
 				
-				System.arraycopy(temp, 0, data, 8 + i * 8, 8);
+				System.arraycopy(light, 0, data, 8 + i * 8, 8);
 			}
 			
+			buffer.clear();
 			buffer.put(data);
 			buffer.flip();
 			
@@ -522,6 +525,28 @@ public class BasicImpostor01 extends GLWindow {
 		}
 	}
 
+	
+	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = 16 * (Float.SIZE / 8);
+
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
+		}
+	}
+	
+	
+	private enum Impostors {
+		IMP_BASIC,
+	 	IMP_PERSPECTIVE,
+	 	IMP_DEPTH,
+
+		IMP_NUM_IMPOSTORS
+	};
+	
 	
 	private final int NUMBER_OF_LIGHTS = 2;
 	private final float g_fHalfLightDistance = 25.0f;

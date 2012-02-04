@@ -50,10 +50,7 @@ import rosick.glutil.pole.ViewPole;
  * P		- toggle pausing on/off.
  * -,=		- rewind/jump forward time by 0.5 second (of real-time).
  * T		- toggle a display showing the look-at point.
- * 1		- switch back and forth between actual meshes and impostor spheres (the central blue sphere).
- * 2		- switch back and forth between actual meshes and impostor spheres (the orbiting grey sphere).
- * 3		- switch back and forth between actual meshes and impostor spheres (the black marble on the left).
- * 4		- switch back and forth between actual meshes and impostor spheres (the gold sphere on the right).
+ * G		- toggles the drawing of the light source.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
  * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
@@ -85,7 +82,6 @@ public class GeomImpostor02 extends GLWindow {
 		int theProgram;
 	}
 	
-	
 	private class UnlitProgData {
 		int theProgram;
 
@@ -93,28 +89,15 @@ public class GeomImpostor02 extends GLWindow {
 		int modelToCameraMatrixUnif;
 	}
 	
-	
-	private class ProjectionBlock implements Bufferable<FloatBuffer> {
-		Mat4 cameraToClipMatrix;
-		
-		static final int SIZE = 16 * (Float.SIZE / 8);
-
-		
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillBuffer(buffer);
-		}
-	}
-
-		
+			
 	private final int g_materialBlockIndex = 0;
 	private final int g_lightBlockIndex = 1;
 	private final int g_projectionBlockIndex = 2;
-	private UnlitProgData g_Unlit;
 
 	private ProgramMeshData g_litMeshProg;
 	private ProgramImposData g_litImpProg;
-		
+	private UnlitProgData g_Unlit;
+
 	private int g_lightUniformBuffer;
 	private int g_projectionUniformBuffer;
 	private int g_materialArrayUniformBuffer;
@@ -129,7 +112,7 @@ public class GeomImpostor02 extends GLWindow {
 	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
 	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempSharedFloatBuffer37 = BufferUtils.createFloatBuffer(37);
+	private FloatBuffer tempSharedFloatBuffer24 = BufferUtils.createFloatBuffer(24);
 
 	
 	
@@ -315,6 +298,25 @@ public class GeomImpostor02 extends GLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
+				if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+					g_sphereTimer.togglePause();
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_MINUS) {
+					g_sphereTimer.rewind(0.5f);
+										
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_EQUALS) {
+					g_sphereTimer.fastForward(0.5f);
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+					g_bDrawCameraPos = !g_bDrawCameraPos;
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
+					g_bDrawLights = !g_bDrawLights;
+					
+					
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+					leaveMainLoop();
+				}
 			}
 		}
 	}
@@ -346,7 +348,7 @@ public class GeomImpostor02 extends GLWindow {
 		lightData.lights[1].lightIntensity = new Vec4(0.4f, 0.4f, 0.4f, 1.0f);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillBuffer(tempSharedFloatBuffer37));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillBuffer(tempSharedFloatBuffer24));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		{
@@ -393,7 +395,7 @@ public class GeomImpostor02 extends GLWindow {
 			glBindBuffer(GL_ARRAY_BUFFER, g_imposterVBO);
 			
 			{
-				byte buffer[] = new byte[VertexData.SIZE * posSizeArray.length];
+				byte buffer[] = new byte[NUMBER_OF_SPHERES * VertexData.SIZE];
 				
 				for (int i = 0; i < posSizeArray.length; i++) {
 					System.arraycopy(posSizeArray[i].getAsByteArray(), 0, buffer, i * VertexData.SIZE, VertexData.SIZE);
@@ -468,7 +470,7 @@ public class GeomImpostor02 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -487,30 +489,45 @@ public class GeomImpostor02 extends GLWindow {
 	private class LightBlock implements Bufferable<FloatBuffer> {
 		Vec4 ambientIntensity;
 		float lightAttenuation;
+		float padding[] = new float[3];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
-		
-		static final int SIZE = 37 * (Float.SIZE / 8);
+
+		static final int SIZE = (4 + 1 + 3 + (8 * 2)) * (Float.SIZE / 8);
 
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			float data[] = new float[37];
+			float data[] = new float[24];
 			System.arraycopy(ambientIntensity.get(), 0, data, 0, 4);
-			
 			data[4] = lightAttenuation;
-			
+			System.arraycopy(padding, 0, data, 5, padding.length);
+
 			for (int i = 0; i < lights.length; i++) {
-				float temp[] = new float[8];
-				System.arraycopy(lights[i].cameraSpaceLightPos.get(), 0, temp, 0, 4);
-				System.arraycopy(lights[i].lightIntensity.get(), 0, temp, 4, 4);
+				float light[] = new float[8];
+				System.arraycopy(lights[i].cameraSpaceLightPos.get(), 0, light, 0, 4);
+				System.arraycopy(lights[i].lightIntensity.get(), 0, light, 4, 4);
 				
-				System.arraycopy(temp, 0, data, 8 + i * 8, 8);
+				System.arraycopy(light, 0, data, 8 + i * 8, 8);
 			}
 			
+			buffer.clear();
 			buffer.put(data);
 			buffer.flip();
 			
 			return buffer;
+		}
+	}
+	
+	
+	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = 16 * (Float.SIZE / 8);
+
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
 		}
 	}
 	
@@ -572,19 +589,21 @@ public class GeomImpostor02 extends GLWindow {
 	
 	
 	private static class MaterialEntry extends BufferableData {
-		public Vec4 diffuseColor;
-		public Vec4 specularColor;
-		public float specularShininess;
-		
-		public static int SIZE = 9 * (Float.SIZE / 8);
+		Vec4 diffuseColor;
+		Vec4 specularColor;
+		float specularShininess;
+		float padding[] = new float[3];
+
+		static int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
 
 		
 		@Override
 		public byte[] getAsByteArray() {
-			float data[] = new float[9];
+			float data[] = new float[12];
 			System.arraycopy(diffuseColor.get(), 0, data, 0, 4);
 			System.arraycopy(specularColor.get(), 0, data, 4, 4);
 			data[8] = specularShininess;
+			System.arraycopy(padding, 0, data, 9, padding.length);
 
 			return PortingUtils.toByteArray(data);
 		}
@@ -600,16 +619,19 @@ public class GeomImpostor02 extends GLWindow {
 		mtl.specularShininess = 0.1f;
 		ubArray.add(mtl);
 
+		mtl = new MaterialEntry();
 		mtl.diffuseColor = new Vec4(0.4f, 0.4f, 0.4f, 1.0f);
 		mtl.specularColor = new Vec4(0.1f, 0.1f, 0.1f, 1.0f);
 		mtl.specularShininess = 0.8f;
 		ubArray.add(mtl);
-
+		
+		mtl = new MaterialEntry();
 		mtl.diffuseColor = new Vec4(0.05f, 0.05f, 0.05f, 1.0f);
 		mtl.specularColor = new Vec4(0.95f, 0.95f, 0.95f, 1.0f);
 		mtl.specularShininess = 0.3f;
 		ubArray.add(mtl);
 
+		mtl = new MaterialEntry();
 		mtl.diffuseColor = new Vec4(0.803f, 0.709f, 0.15f, 1.0f);
 		mtl.specularColor = new Vec4(0.803f, 0.709f, 0.15f, 1.0f).scale(0.75f);
 		mtl.specularShininess = 0.18f;
@@ -641,10 +663,8 @@ public class GeomImpostor02 extends GLWindow {
 			mtl.specularColor = new Vec4(0.5f, 0.5f, 0.5f, 1.0f);
 			mtl.specularShininess = 0.6f;
 			
-			byte buffer[] = mtl.getAsByteArray();
-			
-			ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(buffer.length);
-			tempByteBuffer.put(buffer);
+			ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(MaterialEntry.SIZE);
+			tempByteBuffer.put(mtl.getAsByteArray());
 			tempByteBuffer.flip();
 			
 			glBufferData(GL_UNIFORM_BUFFER, tempByteBuffer, GL_STATIC_DRAW);

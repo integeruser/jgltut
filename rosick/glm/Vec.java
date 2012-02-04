@@ -26,6 +26,7 @@ public abstract class Vec implements Bufferable<FloatBuffer> {
 	
 	@Override
 	public FloatBuffer fillBuffer(FloatBuffer buffer) {
+		buffer.clear();
 		buffer.put(vector);
 		buffer.flip();
 		

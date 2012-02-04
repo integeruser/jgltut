@@ -21,6 +21,7 @@ public abstract class Mat implements Bufferable<FloatBuffer> {
 	
 	@Override
 	public FloatBuffer fillBuffer(FloatBuffer buffer) {
+		buffer.clear();
 		buffer.put(matrix);
 		buffer.flip();
 		

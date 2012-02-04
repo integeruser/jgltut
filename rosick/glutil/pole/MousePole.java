@@ -57,7 +57,7 @@ public class MousePole {
 	 * Utility object containing the ObjectPole's position and orientation information.
 	 */
 	public static class ObjectData {
-		Vec3 position;
+		public Vec3 position;
 		Quaternion orientation;
 
 		public ObjectData(Vec3 position, Quaternion orientation) {

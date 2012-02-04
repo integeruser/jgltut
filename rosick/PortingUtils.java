@@ -2,6 +2,12 @@ package rosick;
 
 import java.nio.Buffer;
 
+
+/**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
+ * @author integeruser
+ */
 public class PortingUtils {
 
 	public static interface Bufferable<T extends Buffer> {	

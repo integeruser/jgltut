@@ -40,8 +40,8 @@ import rosick.glutil.pole.ViewPole;
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2010.html
  * @author integeruser
  * 
+ * I,J,K,L  - control the light's position. Holding LEFT_SHIFT with these keys will move in smaller increments.
  * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
- * I,J,K,L  - controls the light's position. Holding SHIFT with these keys will move in smaller increments.
  * Y 		- toggles the drawing of the light source.
  * B 		- toggles the light's rotation on/off.
  * 
@@ -84,20 +84,7 @@ public class VertexPointLighting01 extends GLWindow {
 		int objectColorUnif;
 		int modelToCameraMatrixUnif;
 	}
-	
-	
-	private class ProjectionBlock implements Bufferable<FloatBuffer>{
-		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
-
-		
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillBuffer(buffer);
-		}
-	}
-	
 	
 	private final int g_projectionBlockIndex = 2;
 			
@@ -393,6 +380,19 @@ public class VertexPointLighting01 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = 16 * (Float.SIZE / 8);
+
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
+		}
+	}
+	
 	
 	private static boolean g_bDrawColoredCyl;
 	private static boolean g_bDrawLight;

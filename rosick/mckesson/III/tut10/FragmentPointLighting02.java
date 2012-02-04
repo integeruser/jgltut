@@ -40,8 +40,8 @@ import rosick.glutil.pole.ViewPole;
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2010.html
  * @author integeruser
  * 
+ * I,J,K,L  - control the light's position. Holding LEFT_SHIFT with these keys will move in smaller increments.
  * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
- * I,J,K,L  - controls the light's position. Holding SHIFT with these keys will move in smaller increments.
  * Y 		- toggles the drawing of the light source.
  * T 		- toggles between the scaled and unscaled cylinder.
  * H 		- toggles between per-fragment lighting and per-vertex lighting.
@@ -84,19 +84,6 @@ public class FragmentPointLighting02 extends GLWindow {
 		
 		int objectColorUnif;
 		int modelToCameraMatrixUnif;
-	}
-	
-	
-	private class ProjectionBlock implements Bufferable<FloatBuffer>{
-		Mat4 cameraToClipMatrix;
-		
-		static final int SIZE = 16 * (Float.SIZE / 8);
-
-		
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillBuffer(buffer);
-		}
 	}
 	
 	
@@ -421,6 +408,19 @@ public class FragmentPointLighting02 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = 16 * (Float.SIZE / 8);
+
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
+		}
+	}
+	
 	
 	private static boolean g_bUseFragmentLighting = true;
 	private static boolean g_bDrawColoredCyl;

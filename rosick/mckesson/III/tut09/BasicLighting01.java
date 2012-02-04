@@ -71,19 +71,6 @@ public class BasicLighting01 extends GLWindow {
 		int normalModelToCameraMatrixUnif;
 	}
 	
-	
-	private class ProjectionBlock implements Bufferable<FloatBuffer>{
-		Mat4 cameraToClipMatrix;
-		
-		static final int SIZE = 16 * (Float.SIZE / 8);
-
-		
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillBuffer(buffer);
-		}
-	}
-	
 		
 	private final int g_projectionBlockIndex = 2;
 	
@@ -295,6 +282,19 @@ public class BasicLighting01 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = 16 * (Float.SIZE / 8);
+
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
+		}
+	}
+	
 	
 	private static boolean g_bDrawColoredCyl = true;
 	

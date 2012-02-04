@@ -30,10 +30,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 
+// TEMPORARY CLASS
+
+
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
- * 
- * TEMPORARY CLASS
  * 
  * @author xire-
  */

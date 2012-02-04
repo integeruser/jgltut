@@ -36,25 +36,26 @@ public class LightManager {
 		float lightAttenuation;
 		float padding[] = new float[3];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
-		
-		static final int SIZE = 40 * (Float.SIZE / 8);
+
+		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * (Float.SIZE / 8);
 
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			float data[] = new float[40];
 			System.arraycopy(ambientIntensity.get(), 0, data, 0, 4);
-			
 			data[4] = lightAttenuation;
-			
+			System.arraycopy(padding, 0, data, 5, padding.length);
+
 			for (int i = 0; i < lights.length; i++) {
-				float temp[] = new float[8];
-				System.arraycopy(lights[i].cameraSpaceLightPos.get(), 0, temp, 0, 4);
-				System.arraycopy(lights[i].lightIntensity.get(), 0, temp, 4, 4);
+				float light[] = new float[8];
+				System.arraycopy(lights[i].cameraSpaceLightPos.get(), 0, light, 0, 4);
+				System.arraycopy(lights[i].lightIntensity.get(), 0, light, 4, 4);
 				
-				System.arraycopy(temp, 0, data, 8 + i * 8, 8);
+				System.arraycopy(light, 0, data, 8 + i * 8, 8);
 			}
 			
+			buffer.clear();
 			buffer.put(data);
 			buffer.flip();
 			
@@ -74,9 +75,9 @@ public class LightManager {
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			float data[] = new float[40];
 			System.arraycopy(ambientIntensity.get(), 0, data, 0, 4);
-			
 			data[4] = lightAttenuation;
 			data[5] = maxIntensity;
+			System.arraycopy(padding, 0, data, 6, padding.length);
 
 			for (int i = 0; i < lights.length; i++) {
 				float temp[] = new float[8];
@@ -106,10 +107,10 @@ public class LightManager {
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			float data[] = new float[40];
 			System.arraycopy(ambientIntensity.get(), 0, data, 0, 4);
-			
 			data[4] = lightAttenuation;
 			data[5] = maxIntensity;
 			data[6] = gamma;
+			data[7] = padding;
 
 			for (int i = 0; i < lights.length; i++) {
 				float temp[] = new float[8];

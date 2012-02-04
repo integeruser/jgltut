@@ -36,9 +36,10 @@ import rosick.glutil.pole.ViewPole;
 
 //
 //  SORRY, THIS CLASS DOESN'T WORK PROPERLY.
-//  I HAVE CHECKED IT TWENTY TIMES AND I DIND'T FIND WHAT IS WRONG.
+//  I WASN'T ABLE TO FIND WHAT IS WRONG.
 //  IF YOU HAVE ANY SUGGESTIONS PLEASE SEND ME A MESSAGE 
-//  (https://github.com/rosickteam/OpenGL OR the LWJGL / JAVA-GAMING forums) Nick: integeruser
+//  https://github.com/rosickteam/OpenGL OR 
+//	the LWJGL / JAVA-GAMING forums Nick: integeruser
 //  THANK YOU. 
 //
 
@@ -50,22 +51,6 @@ import rosick.glutil.pole.ViewPole;
  * 10. Plane Lights
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2010.html
  * @author integeruser
- * 
- * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
- * I,J,K,L  - controls the light's position. Holding SHIFT with these keys will move in smaller increments.
- * O,U 		- increase and decrease the attenuation constant
- * Y 		- toggles the drawing of the light source.
- * T 		- toggles between the scaled and unscaled cylinder.
- * H 		- swaps between the linear and quadratic interpolation functions.
- * B 		- toggles the light's rotation on/off.
- * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING				- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
  */
 public class FragmentAttenuation03 extends GLWindow {
 	

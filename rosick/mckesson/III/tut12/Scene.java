@@ -37,20 +37,22 @@ public abstract class Scene {
 	}
 
 	
-	class MaterialBlock extends BufferableData {
+	private class MaterialBlock extends BufferableData {
 		Vec4 diffuseColor;
 		Vec4 specularColor;
 		float specularShininess;
+		float padding[] = new float[3];
 
-		static final int SIZE = 9 * (Float.SIZE / 8);
-		
-		
+		static final int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
+
+
 		@Override
 		public byte[] getAsByteArray() {
-			float data[] = new float[9];
+			float data[] = new float[12];
 			System.arraycopy(diffuseColor.get(), 0, data, 0, 4);
 			System.arraycopy(specularColor.get(), 0, data, 4, 4);
 			data[8] = specularShininess;
+			System.arraycopy(padding, 0, data, 9, padding.length);
 			
 			return PortingUtils.toByteArray(data);
 		}

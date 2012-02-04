@@ -41,8 +41,8 @@ import rosick.glutil.pole.ViewPole;
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2011.html
  * @author integeruser
  * 
- * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
  * I,J,K,L  - control the light's position. Holding LEFT_SHIFT with these keys will move in smaller increments.
+ * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
  * U,O      - control the specular value. They raise and low the specular exponent. Using LEFT_SHIFT in combination 
  * 				with them will raise/lower the exponent by smaller amounts.
  * Y 		- toggles the drawing of the light source.
@@ -114,19 +114,6 @@ public class GaussianSpecularLighting03 extends GLWindow {
 		}
 	}
 	
-	
-	private class ProjectionBlock implements Bufferable<FloatBuffer>{
-		Mat4 cameraToClipMatrix;
-		
-		static final int SIZE = 16 * (Float.SIZE / 8);
-
-		
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillBuffer(buffer);
-		}
-	}
-
 		
 	private final int g_projectionBlockIndex = 2;
 			
@@ -508,7 +495,17 @@ public class GaussianSpecularLighting03 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private static LightingModel g_eLightModel = LightingModel.LM_GAUSSIAN_SPECULAR;
+	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = 16 * (Float.SIZE / 8);
+
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
+		}
+	}
 	
 	
 	private enum LightingModel {
@@ -523,6 +520,7 @@ public class GaussianSpecularLighting03 extends GLWindow {
 	};
 	
 	
+	private static LightingModel g_eLightModel = LightingModel.LM_GAUSSIAN_SPECULAR;
 	private static final String strLightModelNames[] = {
 		"Phong Specular.",
 		"Phong Only.",

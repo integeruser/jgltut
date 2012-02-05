@@ -6,7 +6,7 @@ This project is my porting of McKesson's excellent tutorials to Java using LWJGL
 [Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html) is the book where to start. 
 I decided to put online my work, although it is not yet complete, to give to all LWJGL users a starting point for the understanding of OpenGL 3.3.
 I am dedicating to this project most of my free time and it will update as frequently as possible.
-Thanks to Marco for his contribution.
+Thanks to Marco for some contribution.
 
 Happy coding! 
 
@@ -62,4 +62,5 @@ Distribution
 ------------
 
 This project is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. 
+
 To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/.

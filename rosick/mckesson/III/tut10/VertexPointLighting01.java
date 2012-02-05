@@ -17,6 +17,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import rosick.GLWindow;
+import rosick.PortingUtils.Bufferable;
 import rosick.framework.Framework;
 import rosick.framework.Mesh;
 import rosick.framework.Timer;
@@ -39,8 +40,8 @@ import rosick.glutil.pole.ViewPole;
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2010.html
  * @author integeruser
  * 
+ * I,J,K,L  - control the light's position. Holding LEFT_SHIFT with these keys will move in smaller increments.
  * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
- * I,J,K,L  - controls the light's position. Holding SHIFT with these keys will move in smaller increments.
  * Y 		- toggles the drawing of the light source.
  * B 		- toggles the light's rotation on/off.
  * 
@@ -83,14 +84,7 @@ public class VertexPointLighting01 extends GLWindow {
 		int objectColorUnif;
 		int modelToCameraMatrixUnif;
 	}
-	
-	
-	private class ProjectionBlock {
-		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
-	}
-	
 	
 	private final int g_projectionBlockIndex = 2;
 			
@@ -105,9 +99,9 @@ public class VertexPointLighting01 extends GLWindow {
 	
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedBuffer4 = BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedBuffer9 = BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
+	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -115,12 +109,9 @@ public class VertexPointLighting01 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	private UnlitProgData loadUnlitProgram(String strVertexShader, String strFragmentShader) {		
-		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		UnlitProgData data = new UnlitProgData();
 		data.theProgram = Framework.createProgram(shaderList);
@@ -134,12 +125,9 @@ public class VertexPointLighting01 extends GLWindow {
 	}
 	
 	private ProgramData loadLitProgram(String strVertexShader, String strFragmentShader) {		
-		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		ProgramData data = new ProgramData();
 		data.theProgram = Framework.createProgram(shaderList);
@@ -300,9 +288,9 @@ public class VertexPointLighting01 extends GLWindow {
 		Vec4 lightPosCameraSpace = Mat4.mul(modelMatrix.top(), worldLightPos);
 		
 		glUseProgram(g_WhiteDiffuseColor.theProgram);
-		glUniform3(g_WhiteDiffuseColor.lightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedBuffer4));
+		glUniform3(g_WhiteDiffuseColor.lightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
 		glUseProgram(g_VertexDiffuseColor.theProgram);
-		glUniform3(g_VertexDiffuseColor.lightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedBuffer4));
+		glUniform3(g_VertexDiffuseColor.lightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
 
 		glUseProgram(g_WhiteDiffuseColor.theProgram);
 		glUniform4f(g_WhiteDiffuseColor.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
@@ -320,9 +308,9 @@ public class VertexPointLighting01 extends GLWindow {
 				modelMatrix.push();
 
 				glUseProgram(g_WhiteDiffuseColor.theProgram);
-				glUniformMatrix4(g_WhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(g_WhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 				Mat3 normMatrix = new Mat3(modelMatrix.top());
-				glUniformMatrix3(g_WhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+				glUniformMatrix3(g_WhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
 				g_pPlaneMesh.render();
 				glUseProgram(0);
 				
@@ -337,15 +325,15 @@ public class VertexPointLighting01 extends GLWindow {
 
 				if (g_bDrawColoredCyl) {
 					glUseProgram(g_VertexDiffuseColor.theProgram);
-					glUniformMatrix4(g_VertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+					glUniformMatrix4(g_VertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 					Mat3 normMatrix = new Mat3(modelMatrix.top());
-					glUniformMatrix3(g_VertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+					glUniformMatrix3(g_VertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
 					g_pCylinderMesh.render("lit-color");
 				} else {
 					glUseProgram(g_WhiteDiffuseColor.theProgram);
-					glUniformMatrix4(g_WhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+					glUniformMatrix4(g_WhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 					Mat3 normMatrix = new Mat3(modelMatrix.top());
-					glUniformMatrix3(g_WhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+					glUniformMatrix3(g_WhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
 					g_pCylinderMesh.render("lit");
 				}
 				glUseProgram(0);
@@ -361,7 +349,7 @@ public class VertexPointLighting01 extends GLWindow {
 				modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
 				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 				glUniform4f(g_Unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f);
 				g_pCubeMesh.render("flat");
 				
@@ -382,7 +370,7 @@ public class VertexPointLighting01 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -392,6 +380,19 @@ public class VertexPointLighting01 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = 16 * (Float.SIZE / 8);
+
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
+		}
+	}
+	
 	
 	private static boolean g_bDrawColoredCyl;
 	private static boolean g_bDrawLight;

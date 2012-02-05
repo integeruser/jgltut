@@ -65,13 +65,10 @@ public class HelloTriangle extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private void initializeProgram() {			
-		int vertexShader =		createShader(GL_VERTEX_SHADER,		strVertexShader);
-		int fragmentShader = 	createShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-        
+	private void initializeProgram() {	
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(createShader(GL_VERTEX_SHADER,	strVertexShader));
+		shaderList.add(createShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		theProgram = createProgram(shaderList);
 		

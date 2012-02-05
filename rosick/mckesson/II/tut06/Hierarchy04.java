@@ -150,7 +150,8 @@ public class Hierarchy04 extends GLWindow {
 	private final int numberOfVertices = 24;
 	
 	private Mat4 cameraToClipMatrix = new Mat4();
-	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
+	
+	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 	
 	
 	
@@ -158,12 +159,9 @@ public class Hierarchy04 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 
 	private void initializeProgram() {	
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "PosColorLocalTransform.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "ColorPassthrough.frag");
-        
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "ColorPassthrough.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -182,7 +180,7 @@ public class Hierarchy04 extends GLWindow {
 		cameraToClipMatrix.set(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
 		
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
 		glUseProgram(0);
 	}
 	
@@ -303,7 +301,7 @@ public class Hierarchy04 extends GLWindow {
 		cameraToClipMatrix.set(5, fFrustumScale);
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
 		glUseProgram(0);
 
 		glViewport(0, 0, width, height);
@@ -452,7 +450,7 @@ public class Hierarchy04 extends GLWindow {
 				modelToCameraStack.translate(posBaseLeft);
 				modelToCameraStack.scale(new Vec3(1.0f, 1.0f, scaleBaseZ));
 				
-				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedFloatBuffer16));
 				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 				
 				modelToCameraStack.pop();
@@ -465,7 +463,7 @@ public class Hierarchy04 extends GLWindow {
 				modelToCameraStack.translate(posBaseRight);
 				modelToCameraStack.scale(new Vec3(1.0f, 1.0f, scaleBaseZ));
 				
-				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedFloatBuffer16));
 				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 				
 				modelToCameraStack.pop();
@@ -489,7 +487,7 @@ public class Hierarchy04 extends GLWindow {
 				modelToCameraStack.translate(new Vec3(0.0f, 0.0f, (sizeUpperArm / 2.0f) - 1.0f));
 				modelToCameraStack.scale(new Vec3(1.0f, 1.0f, sizeUpperArm / 2.0f));
 				
-				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedFloatBuffer16));
 				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 				
 				modelToCameraStack.pop();
@@ -512,7 +510,7 @@ public class Hierarchy04 extends GLWindow {
 				modelToCameraStack.translate(new Vec3(0.0f, 0.0f, lenLowerArm / 2.0f));
 				modelToCameraStack.scale(new Vec3(widthLowerArm / 2.0f, widthLowerArm / 2.0f, lenLowerArm / 2.0f));
 				
-				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedFloatBuffer16));
 				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 				
 				modelToCameraStack.pop();
@@ -535,7 +533,7 @@ public class Hierarchy04 extends GLWindow {
 				
 				modelToCameraStack.scale(new Vec3(widthWrist / 2.0f, widthWrist/ 2.0f, lenWrist / 2.0f));
 				
-				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedFloatBuffer16));
 				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 				
 				modelToCameraStack.pop();
@@ -559,7 +557,7 @@ public class Hierarchy04 extends GLWindow {
 				modelToCameraStack.translate(new Vec3(0.0f, 0.0f, lenFinger / 2.0f));
 				modelToCameraStack.scale(new Vec3(widthFinger / 2.0f, widthFinger/ 2.0f, lenFinger / 2.0f));
 				
-				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedFloatBuffer16));
 				glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 				
 				modelToCameraStack.pop();
@@ -578,7 +576,7 @@ public class Hierarchy04 extends GLWindow {
 					modelToCameraStack.translate(new Vec3(0.0f, 0.0f, lenFinger / 2.0f));
 					modelToCameraStack.scale(new Vec3(widthFinger / 2.0f, widthFinger/ 2.0f, lenFinger / 2.0f));
 					
-					glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedBuffer16));
+					glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedFloatBuffer16));
 					glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 					
 					modelToCameraStack.pop();
@@ -602,7 +600,7 @@ public class Hierarchy04 extends GLWindow {
 					modelToCameraStack.translate(new Vec3(0.0f, 0.0f, lenFinger / 2.0f));
 					modelToCameraStack.scale(new Vec3(widthFinger / 2.0f, widthFinger/ 2.0f, lenFinger / 2.0f));
 					
-					glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedBuffer16));
+					glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedFloatBuffer16));
 					glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 					
 					modelToCameraStack.pop();
@@ -621,7 +619,7 @@ public class Hierarchy04 extends GLWindow {
 						modelToCameraStack.translate(new Vec3(0.0f, 0.0f, lenFinger / 2.0f));
 						modelToCameraStack.scale(new Vec3(widthFinger / 2.0f, widthFinger/ 2.0f, lenFinger / 2.0f));
 						
-						glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedBuffer16));
+						glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillBuffer(tempSharedFloatBuffer16));
 						glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 						
 						modelToCameraStack.pop();

@@ -17,6 +17,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import rosick.GLWindow;
+import rosick.PortingUtils.Bufferable;
 import rosick.framework.Framework;
 import rosick.framework.Mesh;
 import rosick.framework.Timer;
@@ -40,15 +41,16 @@ import rosick.glutil.pole.ViewPole;
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2011.html
  * @author integeruser
  * 
+ * I,J,K,L  - control the light's position. Holding LEFT_SHIFT with these keys will move in smaller increments.
  * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
- * I,J,K,L  - control the light's position. Holding SHIFT with these keys will move in smaller increments.
- * U,O      - control the specular value. They raise and low the specular exponent. Using SHIFT in combination 
+ * U,O      - control the specular value. They raise and low the specular exponent. Using LEFT_SHIFT in combination 
  * 				with them will raise/lower the exponent by smaller amounts.
  * Y 		- toggles the drawing of the light source.
  * T 		- toggles between the scaled and unscaled cylinder.
  * B 		- toggles the light's rotation on/off.
  * G 		- toggles between a diffuse color of (1, 1, 1) and a darker diffuse color of (0.2, 0.2, 0.2).
- * H 		- switch between Blinn and Phong specular. Pressing SHIFT+H will switch between diffuse+specular and specular only.
+ * H 		- switch between Blinn and Phong specular. Pressing LEFT_SHIFT+H will switch between diffuse+specular 
+ * 				and specular only.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
  * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
@@ -112,14 +114,7 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 		}
 	}
 	
-	
-	private class ProjectionBlock {
-		Mat4 cameraToClipMatrix;
-		
-		static final int SIZE = 16 * (Float.SIZE / 8);
-	}
-
-		
+			
 	private final int g_projectionBlockIndex = 2;
 			
 	private ProgramPairs g_Programs[] = new ProgramPairs[LightingModel.LM_MAX_LIGHTING_MODEL.ordinal()];
@@ -138,9 +133,9 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 	
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedBuffer4 = BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedBuffer9 = BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
+	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -148,12 +143,9 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	private UnlitProgData loadUnlitProgram(String strVertexShader, String strFragmentShader) {		
-		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		UnlitProgData data = new UnlitProgData();
 		data.theProgram = Framework.createProgram(shaderList);
@@ -167,12 +159,9 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 	}
 	
 	private ProgramData loadLitProgram(String strVertexShader, String strFragmentShader) {		
-		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		ProgramData data = new ProgramData();
 		data.theProgram = Framework.createProgram(shaderList);
@@ -401,15 +390,15 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 		glUseProgram(whiteProg.theProgram);
 		glUniform4f(whiteProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
 		glUniform4f(whiteProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-		glUniform3(whiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedBuffer4));
+		glUniform3(whiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
 		glUniform1f(whiteProg.lightAttenuationUnif, g_fLightAttenuation);
 		glUniform1f(whiteProg.shininessFactorUnif, g_matParams.getSpecularValue());
-		glUniform4(whiteProg.baseDiffuseColorUnif, g_bDrawDark ? g_darkColor.fillBuffer(tempSharedBuffer4) : g_lightColor.fillBuffer(tempSharedBuffer4));
+		glUniform4(whiteProg.baseDiffuseColorUnif, g_bDrawDark ? g_darkColor.fillBuffer(tempSharedFloatBuffer4) : g_lightColor.fillBuffer(tempSharedFloatBuffer4));
 		
 		glUseProgram(colorProg.theProgram);
 		glUniform4f(colorProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
 		glUniform4f(colorProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-		glUniform3(colorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedBuffer4));
+		glUniform3(colorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
 		glUniform1f(colorProg.lightAttenuationUnif, g_fLightAttenuation);
 		glUniform1f(colorProg.shininessFactorUnif, g_matParams.getSpecularValue());
 		glUseProgram(0);
@@ -425,9 +414,9 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 				normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 				
 				glUseProgram(whiteProg.theProgram);
-				glUniformMatrix4(whiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(whiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 
-				glUniformMatrix3(whiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+				glUniformMatrix3(whiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
 				g_pPlaneMesh.render();
 				glUseProgram(0);
 				
@@ -449,9 +438,9 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 				
 				ProgramData prog = g_bDrawColoredCyl ? colorProg : whiteProg;
 				glUseProgram(prog.theProgram);
-				glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 
-				glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+				glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
 
 				if (g_bDrawColoredCyl) {
 					g_pCylinderMesh.render("lit-color");
@@ -472,7 +461,7 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 				modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
 				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 				glUniform4f(g_Unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f);
 				g_pCubeMesh.render("flat");
 				
@@ -493,7 +482,7 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -504,7 +493,17 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private static LightingModel g_eLightModel = LightingModel.LM_BLINN_SPECULAR;
+	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = 16 * (Float.SIZE / 8);
+
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
+		}
+	}
 	
 	
 	private enum LightingModel {
@@ -517,6 +516,7 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 	};
 	
 	
+	private static LightingModel g_eLightModel = LightingModel.LM_BLINN_SPECULAR;
 	private static final String strLightModelNames[] = {
 		"Phong Specular.",
 		"Phong Only.",

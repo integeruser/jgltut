@@ -2,13 +2,15 @@ package rosick.glm;
 
 import java.nio.FloatBuffer;
 
+import rosick.PortingUtils.Bufferable;
+
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
  * @author integeruser, xire-
  */
-public abstract class Mat implements Bufferable {
+public abstract class Mat implements Bufferable<FloatBuffer> {
 	
 	float matrix[];
 
@@ -19,6 +21,7 @@ public abstract class Mat implements Bufferable {
 	
 	@Override
 	public FloatBuffer fillBuffer(FloatBuffer buffer) {
+		buffer.clear();
 		buffer.put(matrix);
 		buffer.flip();
 		

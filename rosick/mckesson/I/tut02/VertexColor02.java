@@ -55,24 +55,21 @@ public class VertexColor02 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "VertexColors.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "VertexColors.frag");
-        
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "VertexColors.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "VertexColors.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 	}
 	
 	private void initializeVertexBuffer() {
-		FloatBuffer tempBuffer = BufferUtils.createFloatBuffer(vertexData.length);
-		tempBuffer.put(vertexData);
-		tempBuffer.flip();
+		FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+		tempFloatBuffer.put(vertexData);
+		tempFloatBuffer.flip();
 		
         vertexBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, tempBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, tempFloatBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	

@@ -40,6 +40,8 @@ public class MousePole {
 		public abstract void mouseMove(Vec2 vec2);
 		public abstract void mouseClick(MouseButtons button, boolean isPressed, MouseModifiers modifiers, Vec2 position);
 		public abstract void mouseWheel(int direction, MouseModifiers modifiers, Vec2 position);
+		
+		public abstract void charPress(int key, boolean isShiftPressed, float lastFrameDuration);
 	}
 
 	public static abstract class ViewProvider extends Pole {
@@ -55,7 +57,7 @@ public class MousePole {
 	 * Utility object containing the ObjectPole's position and orientation information.
 	 */
 	public static class ObjectData {
-		Vec3 position;
+		public Vec3 position;
 		Quaternion orientation;
 
 		public ObjectData(Vec3 position, Quaternion orientation) {

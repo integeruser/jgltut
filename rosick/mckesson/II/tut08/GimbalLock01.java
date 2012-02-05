@@ -52,7 +52,8 @@ public class GimbalLock01 extends GLWindow {
 	private MatrixStack currMatrix = new MatrixStack(); 
 	
 	private Mat4 cameraToClipMatrix = new Mat4();
-	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
+	
+	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 	
 
 	
@@ -60,12 +61,9 @@ public class GimbalLock01 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "PosColorLocalTransform.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "ColorMultUniform.frag");
-        
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "ColorMultUniform.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -82,7 +80,7 @@ public class GimbalLock01 extends GLWindow {
 		cameraToClipMatrix.set(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
 		
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
 		glUseProgram(0);
 	}
 	
@@ -171,7 +169,7 @@ public class GimbalLock01 extends GLWindow {
 		currMatrix.rotateX(-90.0f);
 		// Set the base color for this object.
 		glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-		glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillBuffer(tempSharedBuffer16));
+		glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 
 		g_pObject.render("tint");
 
@@ -185,7 +183,7 @@ public class GimbalLock01 extends GLWindow {
 		cameraToClipMatrix.set(5, fFrustumScale);
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
 		glUseProgram(0);
 
 		glViewport(0, 0, width, height);
@@ -246,7 +244,7 @@ public class GimbalLock01 extends GLWindow {
 		glUseProgram(theProgram);
 		// Set the base color for this object.
 		glUniform4f(baseColorUnif, baseColor.get(X), baseColor.get(Y), baseColor.get(Z), baseColor.get(W));
-		glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillBuffer(tempSharedBuffer16));
+		glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 		
 		g_Gimbals[eAxis.ordinal()].render();
 

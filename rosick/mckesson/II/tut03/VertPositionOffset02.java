@@ -53,12 +53,9 @@ public class VertPositionOffset02 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	private void initializeProgram() {			
-		int vertexShader =		Framework.loadShader(GL_VERTEX_SHADER, 		BASEPATH + "PositionOffset.vert");
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER, 	BASEPATH + "Standard.frag");
-        
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "PositionOffset.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "Standard.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -66,13 +63,13 @@ public class VertPositionOffset02 extends GLWindow {
 	}
 	
 	private void initializeVertexBuffer() {
-		FloatBuffer tempBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
-		tempBuffer.put(vertexPositions);
-		tempBuffer.flip();
+		FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
+		tempFloatBuffer.put(vertexPositions);
+		tempFloatBuffer.flip();
 		
         positionBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, tempBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, tempFloatBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	

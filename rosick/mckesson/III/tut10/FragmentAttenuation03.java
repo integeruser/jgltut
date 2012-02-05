@@ -17,6 +17,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import rosick.GLWindow;
+import rosick.PortingUtils.Bufferable;
 import rosick.framework.Framework;
 import rosick.framework.Mesh;
 import rosick.framework.Timer;
@@ -35,9 +36,10 @@ import rosick.glutil.pole.ViewPole;
 
 //
 //  SORRY, THIS CLASS DOESN'T WORK PROPERLY.
-//  I HAVE CHECKED IT TWENTY TIMES AND I DIND'T FIND WHAT IS WRONG.
+//  I WASN'T ABLE TO FIND WHAT IS WRONG.
 //  IF YOU HAVE ANY SUGGESTIONS PLEASE SEND ME A MESSAGE 
-//  (https://github.com/rosickteam/OpenGL OR the LWJGL / JAVA-GAMING forums) Nick: integeruser
+//  https://github.com/rosickteam/OpenGL OR 
+//	the LWJGL / JAVA-GAMING forums Nick: integeruser
 //  THANK YOU. 
 //
 
@@ -49,22 +51,6 @@ import rosick.glutil.pole.ViewPole;
  * 10. Plane Lights
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2010.html
  * @author integeruser
- * 
- * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
- * I,J,K,L  - controls the light's position. Holding SHIFT with these keys will move in smaller increments.
- * O,U 		- increase and decrease the attenuation constant
- * Y 		- toggles the drawing of the light source.
- * T 		- toggles between the scaled and unscaled cylinder.
- * H 		- swaps between the linear and quadratic interpolation functions.
- * B 		- toggles the light's rotation on/off.
- * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING				- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
  */
 public class FragmentAttenuation03 extends GLWindow {
 	
@@ -100,24 +86,10 @@ public class FragmentAttenuation03 extends GLWindow {
 		int objectColorUnif;
 		int modelToCameraMatrixUnif;
 	}
-	
-	
-	private class ProjectionBlock {
-		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
-	}
 	
-	private class UnProjectionBlock {
-		Mat4 clipToCameraMatrix;
-		Vec2 windowSize;
-		
-		static final int SIZE = 18 * (Float.SIZE / 8);
-	}
-	
-	
-	private final int g_projectionBlockIndex 	= 2;
-	private final int g_unprojectionBlockIndex 	= 1;
+	private final int g_projectionBlockIndex = 2;
+	private final int g_unprojectionBlockIndex = 1;
 
 	private ProgramData g_FragWhiteDiffuseColor;
 	private ProgramData g_FragVertexDiffuseColor;
@@ -131,9 +103,9 @@ public class FragmentAttenuation03 extends GLWindow {
 
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedBuffer4 = BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedBuffer9 = BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempSharedBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
+	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -141,12 +113,9 @@ public class FragmentAttenuation03 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	private UnlitProgData loadUnlitProgram(String strVertexShader, String strFragmentShader) {		
-		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER,		strVertexShader);
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		UnlitProgData data = new UnlitProgData();
 		data.theProgram = Framework.createProgram(shaderList);
@@ -160,12 +129,9 @@ public class FragmentAttenuation03 extends GLWindow {
 	}
 	
 	private ProgramData loadLitProgram(String strVertexShader, String strFragmentShader) {		
-		int vertexShader =	 	Framework.loadShader(GL_VERTEX_SHADER, 		strVertexShader);
-		int fragmentShader = 	Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader);
-
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(vertexShader);
-		shaderList.add(fragmentShader);
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		ProgramData data = new ProgramData();
 		data.theProgram = Framework.createProgram(shaderList);
@@ -221,10 +187,10 @@ public class FragmentAttenuation03 extends GLWindow {
 		glEnable(GL_DEPTH_CLAMP);
 		
 		g_projectionUniformBuffer 	= glGenBuffers();	  
-		g_unprojectionUniformBuffer = glGenBuffers();	       
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
 		glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW);	
 		
+		g_unprojectionUniformBuffer = glGenBuffers();	       
 		glBindBuffer(GL_UNIFORM_BUFFER, g_unprojectionUniformBuffer);
 		glBufferData(GL_UNIFORM_BUFFER, UnProjectionBlock.SIZE, GL_DYNAMIC_DRAW);	
 		
@@ -379,14 +345,14 @@ public class FragmentAttenuation03 extends GLWindow {
 		glUseProgram(g_FragWhiteDiffuseColor.theProgram);
 		glUniform4f(g_FragWhiteDiffuseColor.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
 		glUniform4f(g_FragWhiteDiffuseColor.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-		glUniform3(g_FragWhiteDiffuseColor.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedBuffer4));
+		glUniform3(g_FragWhiteDiffuseColor.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
 		glUniform1f(g_FragWhiteDiffuseColor.lightAttenuationUnif, g_fLightAttenuation);
 		glUniform1i(g_FragWhiteDiffuseColor.bUseRSquareUnif, g_bUseRSquare ? 1 : 0);
 
 		glUseProgram(g_FragVertexDiffuseColor.theProgram);
 		glUniform4f(g_FragVertexDiffuseColor.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
 		glUniform4f(g_FragVertexDiffuseColor.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-		glUniform3(g_FragVertexDiffuseColor.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedBuffer4));
+		glUniform3(g_FragVertexDiffuseColor.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
 		glUniform1f(g_FragVertexDiffuseColor.lightAttenuationUnif, g_fLightAttenuation);
 		glUniform1i(g_FragVertexDiffuseColor.bUseRSquareUnif, g_bUseRSquare ? 1 : 0);
 		glUseProgram(0);
@@ -402,9 +368,9 @@ public class FragmentAttenuation03 extends GLWindow {
 				normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 				
 				glUseProgram(g_FragWhiteDiffuseColor.theProgram);
-				glUniformMatrix4(g_FragWhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(g_FragWhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 
-				glUniformMatrix3(g_FragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));		
+				glUniformMatrix3(g_FragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));		
 				g_pPlaneMesh.render();
 				glUseProgram(0);
 				
@@ -426,15 +392,15 @@ public class FragmentAttenuation03 extends GLWindow {
 						
 				if (g_bDrawColoredCyl) {
 					glUseProgram(g_FragVertexDiffuseColor.theProgram);
-					glUniformMatrix4(g_FragVertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+					glUniformMatrix4(g_FragVertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 					
-					glUniformMatrix3(g_FragVertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));		
+					glUniformMatrix3(g_FragVertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));		
 					g_pCylinderMesh.render("lit-color");
 				} else {
 					glUseProgram(g_FragWhiteDiffuseColor.theProgram);
-					glUniformMatrix4(g_FragWhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+					glUniformMatrix4(g_FragWhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 					
-					glUniformMatrix3(g_FragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedBuffer9));
+					glUniformMatrix3(g_FragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
 					g_pCylinderMesh.render("lit");
 				}
 				glUseProgram(0);
@@ -450,7 +416,7 @@ public class FragmentAttenuation03 extends GLWindow {
 				modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
 				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedBuffer16));
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
 				glUniform4f(g_Unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f);
 				g_pCubeMesh.render("flat");
 				
@@ -473,20 +439,11 @@ public class FragmentAttenuation03 extends GLWindow {
 		UnProjectionBlock unprojData = new UnProjectionBlock();
 		unprojData.clipToCameraMatrix = Glm.inverse(persMatrix.top());
 		unprojData.windowSize = new Vec2(width, height);
-		
+
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillBuffer(tempSharedBuffer16));
-		
-		glBindBuffer(GL_UNIFORM_BUFFER, g_unprojectionUniformBuffer);
-		
-		FloatBuffer tempSharedBuffer18 = BufferUtils.createFloatBuffer(18);
-		float data[] = new float[18];
-		System.arraycopy(unprojData.clipToCameraMatrix.get(), 0, data, 0, 16);
-		System.arraycopy(unprojData.windowSize.get(), 0, data, 16, 2);
-		tempSharedBuffer18.put(data);
-		tempSharedBuffer18.flip();
-		
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, tempSharedBuffer18);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
+		glBindBuffer(GL_UNIFORM_BUFFER, g_unprojectionUniformBuffer);	
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, unprojData.fillBuffer(BufferUtils.createFloatBuffer(18)));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	
 		glViewport(0, 0, width, height);
@@ -496,6 +453,39 @@ public class FragmentAttenuation03 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = 16 * (Float.SIZE / 8);
+
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
+		}
+	}
+	
+	private class UnProjectionBlock implements Bufferable<FloatBuffer> {
+		Mat4 clipToCameraMatrix;
+		Vec2 windowSize;
+		
+		static final int SIZE = 18 * (Float.SIZE / 8);
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			float data[] = new float[18];
+			System.arraycopy(clipToCameraMatrix.get(), 0, data, 0, 16);
+			System.arraycopy(windowSize.get(), 0, data, 16, 2);
+			
+			buffer.clear();
+			buffer.put(data);
+			buffer.flip();
+			
+			return buffer;
+		}
+	}
+	
 	
 	private static boolean g_bDrawColoredCyl;
 	private static boolean g_bDrawLight;

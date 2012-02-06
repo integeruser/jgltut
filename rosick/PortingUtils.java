@@ -1,6 +1,7 @@
 package rosick;
 
 import java.nio.Buffer;
+import java.util.ArrayList;
 
 
 /**
@@ -40,5 +41,26 @@ public class PortingUtils {
 		}
 
 		return bytes;
+	}
+	
+	
+	public static byte[] toByteArray(ArrayList<Character> data, int start, int length) {
+		byte bytes[] = new byte[length];
+		
+		for (int i = start; i < start + length; i++) {
+			bytes[i - start] = (byte) (char) data.get(i);
+		}
+		
+		return bytes;
+	}
+	
+	public static long toLong(byte data[]) {
+		long value = 0;
+		
+		for (int i = 0; i < data.length; i++) {
+		   value += (data[i] & 0xff) << (8 * i);
+		}
+		
+		return value;
 	}
 }

@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
-import rosick.framework.Framework;
+import rosick.jglsdk.GLWindow;
+import rosick.jglsdk.framework.Framework;
 
 
 /**

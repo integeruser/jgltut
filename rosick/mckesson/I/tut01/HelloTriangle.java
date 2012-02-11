@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
-import rosick.GLWindow;
+import rosick.jglsdk.GLWindow;
 
 
 /**

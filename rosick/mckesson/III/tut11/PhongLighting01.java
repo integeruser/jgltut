@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -18,19 +18,19 @@ import org.lwjgl.input.Mouse;
 
 import rosick.GLWindow;
 import rosick.PortingUtils.Bufferable;
-import rosick.framework.Framework;
-import rosick.framework.Mesh;
-import rosick.framework.Timer;
-import rosick.glm.Glm;
-import rosick.glm.Mat3;
-import rosick.glm.Mat4;
-import rosick.glm.Quaternion;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
-import rosick.glutil.MatrixStack;
-import rosick.glutil.pole.MousePole.*;
-import rosick.glutil.pole.ObjectPole;
-import rosick.glutil.pole.ViewPole;
+import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.framework.Mesh;
+import rosick.jglsdk.framework.Timer;
+import rosick.jglsdk.glm.Glm;
+import rosick.jglsdk.glm.Mat3;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Quaternion;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
+import rosick.jglsdk.glutil.MatrixStack;
+import rosick.jglsdk.glutil.pole.MousePole.*;
+import rosick.jglsdk.glutil.pole.ObjectPole;
+import rosick.jglsdk.glutil.pole.ViewPole;
 
 
 /**
@@ -116,9 +116,9 @@ public class PhongLighting01 extends GLWindow {
 	
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
+	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -365,7 +365,7 @@ public class PhongLighting01 extends GLWindow {
 
 	@Override
 	protected void display() {			
-		g_LightTimer.update(getElapsedTime());
+		g_LightTimer.update((float) getElapsedTime());
 		
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClearDepth(1.0f);
@@ -398,15 +398,15 @@ public class PhongLighting01 extends GLWindow {
 		glUseProgram(pWhiteProg.theProgram);
 		glUniform4f(pWhiteProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
 		glUniform4f(pWhiteProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-		glUniform3(pWhiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
+		glUniform3(pWhiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(tempFloatBuffer4));
 		glUniform1f(pWhiteProg.lightAttenuationUnif, g_fLightAttenuation);
 		glUniform1f(pWhiteProg.shininessFactorUnif, g_fShininessFactor);
-		glUniform4(pWhiteProg.baseDiffuseColorUnif, g_bDrawDark ? g_darkColor.fillBuffer(tempSharedFloatBuffer4) : g_lightColor.fillBuffer(tempSharedFloatBuffer4));
+		glUniform4(pWhiteProg.baseDiffuseColorUnif, g_bDrawDark ? g_darkColor.fillAndFlipBuffer(tempFloatBuffer4) : g_lightColor.fillAndFlipBuffer(tempFloatBuffer4));
 		
 		glUseProgram(pColorProg.theProgram);
 		glUniform4f(pColorProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
 		glUniform4f(pColorProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-		glUniform3(pColorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
+		glUniform3(pColorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(tempFloatBuffer4));
 		glUniform1f(pColorProg.lightAttenuationUnif, g_fLightAttenuation);
 		glUniform1f(pColorProg.shininessFactorUnif, g_fShininessFactor);
 		glUseProgram(0);
@@ -422,9 +422,9 @@ public class PhongLighting01 extends GLWindow {
 				normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 				
 				glUseProgram(pWhiteProg.theProgram);
-				glUniformMatrix4(pWhiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+				glUniformMatrix4(pWhiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
-				glUniformMatrix3(pWhiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+				glUniformMatrix3(pWhiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 				g_pPlaneMesh.render();
 				glUseProgram(0);
 				
@@ -446,9 +446,9 @@ public class PhongLighting01 extends GLWindow {
 				
 				ProgramData pProg = g_bDrawColoredCyl ? pColorProg : pWhiteProg;
 				glUseProgram(pProg.theProgram);
-				glUniformMatrix4(pProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+				glUniformMatrix4(pProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
-				glUniformMatrix3(pProg.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+				glUniformMatrix3(pProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 
 				if (g_bDrawColoredCyl) {
 					g_pCylinderMesh.render("lit-color");
@@ -469,7 +469,7 @@ public class PhongLighting01 extends GLWindow {
 				modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
 				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 				glUniform4f(g_Unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f);
 				g_pCubeMesh.render("flat");
 				
@@ -490,7 +490,7 @@ public class PhongLighting01 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(tempFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -506,13 +506,17 @@ public class PhongLighting01 extends GLWindow {
 		
 		static final int SIZE = 16 * (Float.SIZE / 8);
 
+		@Override
+		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillAndFlipBuffer(buffer);
+		}
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			return cameraToClipMatrix.fillBuffer(buffer);
 		}
 	}
-	
+		
 	
 	private enum LightingModel {
 		LM_PURE_DIFFUSE,

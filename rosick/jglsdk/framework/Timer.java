@@ -1,6 +1,6 @@
-package rosick.framework;
+package rosick.jglsdk.framework;
 
-import rosick.glm.Glm;
+import rosick.jglsdk.glm.Glm;
 
 
 /**
@@ -56,8 +56,8 @@ public class Timer {
 	 * Will only return true for SINGLE timers that have reached their duration.
 	 * @param elapsedTime the time passed since the application start (in milliseconds)
 	 */
-	public boolean update(double elapsedTime) {
-		float absCurrTime = (float) (elapsedTime / 1000.0);
+	public boolean update(float elapsedTime) {
+		float absCurrTime = elapsedTime / 1000.0f;
 		
 		if (!m_hasUpdated) {
 			m_absPrevTime = absCurrTime;

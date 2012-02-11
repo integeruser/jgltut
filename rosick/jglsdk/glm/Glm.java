@@ -1,6 +1,6 @@
-package rosick.glm;
+package rosick.jglsdk.glm;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
 
 /**
@@ -392,5 +392,28 @@ public class Glm {
 	    result.setColumn(3, m.getColumn(3));
 		
 		return result;
+	}
+
+
+	
+	
+	public static Mat4 lookAt(Vec3 eye, Vec3 center, Vec3 up) {
+        Vec3 f = normalize(Vec3.sub(center, eye));
+        Vec3 u = normalize(up);
+        Vec3 s = normalize(cross(f, u));
+        u = cross(s, f);
+
+        Mat4 result = new Mat4(1.0f);
+        result.set(0, 0, s.get(X));
+        result.set(1, 0, s.get(Y));
+        result.set(2, 0, s.get(Z));
+        result.set(0, 1, u.get(X));
+        result.set(1, 1, u.get(Y));
+        result.set(2, 1, u.get(Z));
+        result.set(0, 2, -f.get(X));
+        result.set(1, 2, -f.get(Y));
+        result.set(2, 2, -f.get(Z));
+
+		return translate(result, Vec3.negate(eye));
 	}
 }

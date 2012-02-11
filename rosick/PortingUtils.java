@@ -1,6 +1,7 @@
 package rosick;
 
 import java.nio.Buffer;
+import java.util.ArrayList;
 
 
 /**
@@ -11,18 +12,38 @@ import java.nio.Buffer;
 public class PortingUtils {
 
 	public static interface Bufferable<T extends Buffer> {	
+		public T fillAndFlipBuffer(T buffer);
 		public T fillBuffer(T buffer);
 	}
-	
-	
-	public static abstract class BufferableData {		
-		public abstract byte[] getAsByteArray();
+		
+	public static abstract class BufferableData<T extends Buffer> implements Bufferable<T> {		
+		
+		@Override
+		public T fillAndFlipBuffer(T buffer) {
+			buffer.clear();
+			fillBuffer(buffer);
+			buffer.flip();
+			
+			return buffer;
+		}
 	}
 	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	
+	public static long toLong(byte data[]) {
+		long value = 0;
+		
+		for (int i = 0; i < data.length; i++) {
+		   value += (data[i] & 0xff) << (8 * i);
+		}
+		
+		return value;
+	}
+	
 	
 	public static byte[] toByteArray(float data[]) {
 		byte[] bytes = new byte[data.length * 4];
@@ -40,5 +61,15 @@ public class PortingUtils {
 		}
 
 		return bytes;
+	}
+	
+	public static byte[] toByteArray(ArrayList<Character> data, int start, int length) {
+		String temp = "";
+		
+		for (int i = start; i < start + length; i++) {
+			temp += data.get(i);
+		}
+		
+		return temp.getBytes();
 	}
 }

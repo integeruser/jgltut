@@ -1,4 +1,4 @@
-package rosick.framework;
+package rosick.jglsdk.framework;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -16,7 +16,7 @@ import rosick.PortingUtils.BufferableData;
  * 
  * @author integeruser
  */
-public class UniformBlockArray<T extends BufferableData> {
+public class UniformBlockArray<T extends BufferableData<ByteBuffer>> {
 
 	private byte[] m_storage;
 	private int m_blockOffset;
@@ -48,7 +48,12 @@ public class UniformBlockArray<T extends BufferableData> {
 	public int createBufferObject() {		
 		int bufferObject = glGenBuffers();
 		glBindBuffer(GL_UNIFORM_BUFFER, bufferObject);
-		glBufferData(GL_UNIFORM_BUFFER, getAsBuffer(), GL_STATIC_DRAW);
+		
+		ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(m_storage.length);
+		tempByteBuffer.put(m_storage);
+		tempByteBuffer.flip();
+		
+		glBufferData(GL_UNIFORM_BUFFER, tempByteBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		return bufferObject;
@@ -56,7 +61,15 @@ public class UniformBlockArray<T extends BufferableData> {
 	
 		
 	public void set(int index, T data) {
-		System.arraycopy(data.getAsByteArray(), 0, m_storage, index * m_blockOffset, blockSize);
+		ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(blockSize);
+		data.fillAndFlipBuffer(tempByteBuffer);
+		
+		byte temp[] = new byte[blockSize];
+		for (int i = 0; i < temp.length; i++) {
+			temp[i] = tempByteBuffer.get(i);
+		}
+		
+		System.arraycopy(temp, 0, m_storage, index * m_blockOffset, blockSize);
 	}
 	
 	
@@ -67,13 +80,5 @@ public class UniformBlockArray<T extends BufferableData> {
 	
 	public int getArrayOffset() {
 		return m_blockOffset;
-	}
-	
-	public ByteBuffer getAsBuffer() {
-		ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(m_storage.length);
-		tempByteBuffer.put(m_storage);
-		tempByteBuffer.flip();
-		
-		return tempByteBuffer;
 	}
 }

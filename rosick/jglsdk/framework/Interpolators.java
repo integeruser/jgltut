@@ -1,13 +1,10 @@
-package rosick.framework;
+package rosick.jglsdk.framework;
 
 import java.util.ArrayList;
 
-import rosick.glm.Glm;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
-import rosick.mckesson.III.tut12.LightManager;
-import rosick.mckesson.III.tut12.LightManager.LightVectorData;
-import rosick.mckesson.III.tut12.LightManager.MaxIntensityData;
+import rosick.jglsdk.glm.Glm;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
 
 
 /**
@@ -17,14 +14,14 @@ import rosick.mckesson.III.tut12.LightManager.MaxIntensityData;
  */
 public class Interpolators {
 	
-	static class WeightedLinearInterpolatorFloat {
+	public static class WeightedLinearInterpolatorFloat {
 		
-		class Data {
-			float data;
-			float weight;
+		public class Data {
+			public float data;
+			public float weight;
 		};
 	
-		ArrayList<Data> m_values = new ArrayList<>();
+		protected ArrayList<Data> m_values = new ArrayList<>();
 	
 		
 		public float interpolate(float fAlpha) {
@@ -62,7 +59,7 @@ public class Interpolators {
 		}
 	}
 	
-	static class WeightedLinearInterpolatorVec3 {
+	public static class WeightedLinearInterpolatorVec3 {
 		
 		class Data {
 			Vec3 data;
@@ -107,14 +104,14 @@ public class Interpolators {
 		}
 	}
 	
-	static class WeightedLinearInterpolatorVec4 {
+	public static class WeightedLinearInterpolatorVec4 {
 		
-		class Data {
-			Vec4 data;
-			float weight;
+		public class Data {
+			public Vec4 data;
+			public float weight;
 		};
 	
-		ArrayList<Data> m_values = new ArrayList<>();
+		protected ArrayList<Data> m_values = new ArrayList<>();
 	
 		
 		public Vec4 interpolate(float fAlpha) {
@@ -208,75 +205,4 @@ public class Interpolators {
 	}
 	
 	public static class LightInterpolatorVec3 extends ConstVelLinearInterpolatorVec3 {}
-
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	public static class TimedLinearInterpolatorFloat extends WeightedLinearInterpolatorFloat {
-
-		public void setValues(ArrayList<MaxIntensityData> data) {
-			setValues(data, true);
-		}
-		
-		public void setValues(ArrayList<MaxIntensityData> data, boolean isLooping) {
-			m_values.clear();
-
-			for (MaxIntensityData curr : data) {				
-				Data temp = new Data();
-				temp.data = LightManager.getValue(curr);
-				temp.weight = LightManager.getTime(curr);
-
-				m_values.add(temp);
-			}
-			
-			if (isLooping && !m_values.isEmpty()) {
-				Data temp = new Data();
-				temp.data = m_values.get(0).data;
-				temp.weight = m_values.get(0).weight;
-
-				m_values.add(temp);
-			}
-				
-			// Ensure first is weight 0, and last is weight 1.
-			if (!m_values.isEmpty()) {
-				m_values.get(0).weight = 0.0f;
-				m_values.get(m_values.size() - 1).weight = 1.0f;
-			}
-		}
-	}
-		
-	public static class TimedLinearInterpolatorVec4 extends WeightedLinearInterpolatorVec4 {
-
-		public void setValues(ArrayList<LightVectorData> data) {
-			setValues(data, true);
-		}
-		
-		public void setValues(ArrayList<LightVectorData> data, boolean isLooping) {
-			m_values.clear();
-
-			for (LightVectorData curr : data) {				
-				Data temp = new Data();
-				temp.data = new Vec4(LightManager.getValue(curr));
-				temp.weight = LightManager.getTime(curr);
-
-				m_values.add(temp);
-			}
-			
-			if (isLooping && !m_values.isEmpty()) {
-				Data temp = new Data();
-				temp.data = new Vec4(m_values.get(0).data);
-				temp.weight = m_values.get(0).weight;
-
-				m_values.add(temp);
-			}
-				
-			// Ensure first is weight 0, and last is weight 1.
-			if (!m_values.isEmpty()) {
-				m_values.get(0).weight = 0.0f;
-				m_values.get(m_values.size() - 1).weight = 1.0f;
-			}
-		}
-	}
 }

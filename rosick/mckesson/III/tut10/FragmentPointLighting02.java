@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -18,18 +18,18 @@ import org.lwjgl.input.Mouse;
 
 import rosick.GLWindow;
 import rosick.PortingUtils.Bufferable;
-import rosick.framework.Framework;
-import rosick.framework.Mesh;
-import rosick.framework.Timer;
-import rosick.glm.Glm;
-import rosick.glm.Mat4;
-import rosick.glm.Quaternion;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
-import rosick.glutil.MatrixStack;
-import rosick.glutil.pole.MousePole.*;
-import rosick.glutil.pole.ObjectPole;
-import rosick.glutil.pole.ViewPole;
+import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.framework.Mesh;
+import rosick.jglsdk.framework.Timer;
+import rosick.jglsdk.glm.Glm;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Quaternion;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
+import rosick.jglsdk.glutil.MatrixStack;
+import rosick.jglsdk.glutil.pole.MousePole.*;
+import rosick.jglsdk.glutil.pole.ObjectPole;
+import rosick.jglsdk.glutil.pole.ViewPole;
 
 
 /**
@@ -102,8 +102,8 @@ public class FragmentPointLighting02 extends GLWindow {
 	
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 	
 	
 
@@ -284,7 +284,7 @@ public class FragmentPointLighting02 extends GLWindow {
 
 	@Override
 	protected void display() {			
-		g_LightTimer.update(getElapsedTime());
+		g_LightTimer.update((float) getElapsedTime());
 		
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClearDepth(1.0f);
@@ -324,11 +324,11 @@ public class FragmentPointLighting02 extends GLWindow {
 				modelMatrix.push();
 
 				glUseProgram(pWhiteProgram.theProgram);
-				glUniformMatrix4(pWhiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+				glUniformMatrix4(pWhiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
 				Mat4 invTransform = Glm.inverse(modelMatrix.top());
 				Vec4 lightPosModelSpace = Mat4.mul(invTransform, lightPosCameraSpace);
-				glUniform3(pWhiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillBuffer(tempSharedFloatBuffer4));
+				glUniform3(pWhiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillAndFlipBuffer(tempFloatBuffer4));
 
 				g_pPlaneMesh.render();
 				glUseProgram(0);
@@ -351,16 +351,16 @@ public class FragmentPointLighting02 extends GLWindow {
 				
 				if (g_bDrawColoredCyl) {
 					glUseProgram(pVertColorProgram.theProgram);
-					glUniformMatrix4(pVertColorProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+					glUniformMatrix4(pVertColorProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 					
-					glUniform3(pVertColorProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillBuffer(tempSharedFloatBuffer4));
+					glUniform3(pVertColorProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillAndFlipBuffer(tempFloatBuffer4));
 
 					g_pCylinderMesh.render("lit-color");
 				} else {
 					glUseProgram(pWhiteProgram.theProgram);
-					glUniformMatrix4(pWhiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+					glUniformMatrix4(pWhiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
-					glUniform3(pWhiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillBuffer(tempSharedFloatBuffer4));
+					glUniform3(pWhiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillAndFlipBuffer(tempFloatBuffer4));
 
 					g_pCylinderMesh.render("lit");
 				}
@@ -377,7 +377,7 @@ public class FragmentPointLighting02 extends GLWindow {
 				modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
 				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 				glUniform4f(g_Unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f);
 				g_pCubeMesh.render("flat");
 				
@@ -398,7 +398,7 @@ public class FragmentPointLighting02 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(tempFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -414,13 +414,17 @@ public class FragmentPointLighting02 extends GLWindow {
 		
 		static final int SIZE = 16 * (Float.SIZE / 8);
 
+		@Override
+		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillAndFlipBuffer(buffer);
+		}
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			return cameraToClipMatrix.fillBuffer(buffer);
 		}
 	}
-	
+		
 	
 	private static boolean g_bUseFragmentLighting = true;
 	private static boolean g_bDrawColoredCyl;

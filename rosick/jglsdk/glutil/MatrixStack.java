@@ -1,16 +1,16 @@
-package rosick.glutil;
+package rosick.jglsdk.glutil;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
-import rosick.glm.Glm;
-import rosick.glm.Mat4;
-import rosick.glm.Vec3;
+import rosick.jglsdk.glm.Glm;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Vec3;
 
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
- * @author integeruser, xire-
+ * @author integeruser
  */
 public class MatrixStack {	
 	

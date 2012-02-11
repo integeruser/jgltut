@@ -1,4 +1,4 @@
-package rosick.framework;
+package rosick.jglsdk.framework;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -30,13 +30,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 
-// TEMPORARY CLASS
-
-
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
- * @author xire-
+ * @author integeruser
  */
 public class Mesh {
 	private int oAttribArraysBuffer = 0;

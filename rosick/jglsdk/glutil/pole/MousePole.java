@@ -1,9 +1,9 @@
-package rosick.glutil.pole;
+package rosick.jglsdk.glutil.pole;
 
-import rosick.glm.Mat4;
-import rosick.glm.Quaternion;
-import rosick.glm.Vec2;
-import rosick.glm.Vec3;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Quaternion;
+import rosick.jglsdk.glm.Vec2;
+import rosick.jglsdk.glm.Vec3;
 
 
 /**

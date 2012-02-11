@@ -6,20 +6,18 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
-import rosick.PortingUtils;
 import rosick.PortingUtils.BufferableData;
-import rosick.framework.Mesh;
-import rosick.glm.Glm;
-import rosick.glm.Mat3;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
-import rosick.glutil.MatrixStack;
+import rosick.jglsdk.framework.Mesh;
+import rosick.jglsdk.glm.Glm;
+import rosick.jglsdk.glm.Mat3;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
+import rosick.jglsdk.glutil.MatrixStack;
 
 
 /**
@@ -37,7 +35,7 @@ public abstract class Scene {
 	}
 
 	
-	private class MaterialBlock extends BufferableData {
+	private class MaterialBlock extends BufferableData<FloatBuffer> {
 		Vec4 diffuseColor;
 		Vec4 specularColor;
 		float specularShininess;
@@ -45,16 +43,14 @@ public abstract class Scene {
 
 		static final int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
 
-
 		@Override
-		public byte[] getAsByteArray() {
-			float data[] = new float[12];
-			System.arraycopy(diffuseColor.get(), 0, data, 0, 4);
-			System.arraycopy(specularColor.get(), 0, data, 4, 4);
-			data[8] = specularShininess;
-			System.arraycopy(padding, 0, data, 9, padding.length);
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			diffuseColor.fillBuffer(buffer);
+			specularColor.fillBuffer(buffer);
+			buffer.put(specularShininess);
+			buffer.put(padding);
 			
-			return PortingUtils.toByteArray(data);
+			return buffer;
 		}
 	}
 	
@@ -70,8 +66,8 @@ public abstract class Scene {
 	private int m_sizeMaterialBlock;
 	private int m_materialUniformBuffer;
 	
-	private FloatBuffer tempSharedFloatBuffer9 = BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer9 = BufferUtils.createFloatBuffer(9);
+	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 	
 	
 	
@@ -96,21 +92,18 @@ public abstract class Scene {
 		ArrayList<MaterialBlock> materials = new ArrayList<>();
 		getMaterials(materials);
 
-		byte mtlBuffer[] = new byte[sizeMaterialUniformBuffer];
+		FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(sizeMaterialUniformBuffer);
 		
-		for (int mtl = 0; mtl < materials.size(); mtl++) {
-			byte currMtl[] = materials.get(mtl).getAsByteArray();
-			
-			System.arraycopy(currMtl, 0, mtlBuffer, mtl * m_sizeMaterialBlock, MaterialBlock.SIZE);
+		for (MaterialBlock materialBlock : materials) {
+			materialBlock.fillBuffer(tempFloatBuffer);
+			tempFloatBuffer.put(new float[m_sizeMaterialBlock / 4 - MaterialBlock.SIZE / 4]);
 		}
-
-		ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(mtlBuffer.length);
-		tempByteBuffer.put(mtlBuffer);
-		tempByteBuffer.flip();
 		
+		tempFloatBuffer.flip();
+
 		m_materialUniformBuffer = glGenBuffers();
 		glBindBuffer(GL_UNIFORM_BUFFER, m_materialUniformBuffer);
-		glBufferData(GL_UNIFORM_BUFFER, tempByteBuffer, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, tempFloatBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 	
@@ -226,9 +219,9 @@ public abstract class Scene {
 		normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 		
 		glUseProgram(prog.theProgram);
-		glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+		glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
-		glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+		glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 		pMesh.render();
 		glUseProgram(0);
 		
@@ -242,9 +235,9 @@ public abstract class Scene {
 		normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 		
 		glUseProgram(prog.theProgram);
-		glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+		glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
-		glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+		glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 		pMesh.render(meshName);
 		glUseProgram(0);
 		

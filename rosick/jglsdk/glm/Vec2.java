@@ -1,4 +1,4 @@
-package rosick.glm;
+package rosick.jglsdk.glm;
 
 
 /**

@@ -1,14 +1,14 @@
-package rosick.glutil.pole;
+package rosick.jglsdk.glutil.pole;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
-import rosick.glm.Glm;
-import rosick.glm.Mat4;
-import rosick.glm.Quaternion;
-import rosick.glm.Vec2;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
-import rosick.glutil.pole.MousePole.*;
+import rosick.jglsdk.glm.Glm;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Quaternion;
+import rosick.jglsdk.glm.Vec2;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
+import rosick.jglsdk.glutil.pole.MousePole.*;
 
 
 /**

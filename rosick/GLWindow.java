@@ -34,7 +34,7 @@ public class GLWindow {
 	
 	public final void start(int width, int height) {		
 		try {
-			Display.setTitle("Tutorials by rosickteam");
+			Display.setTitle("GLWindow by rosickteam");
 			Display.setDisplayMode(new DisplayMode(width, height));
 			Display.setResizable(true);
 			Display.setVSyncEnabled(true);
@@ -123,7 +123,7 @@ public class GLWindow {
 		int error_code = glGetError();
 		
 		if (error_code != 0) {
-			System.err.println("Method:\t\t" + method + "\nglGetError():\t" + Util.translateGLErrorString(error_code));
+			System.err.println("While executing:\t" + method + "\nglGetError():\t\t" + Util.translateGLErrorString(error_code));
 		}
 	}
 }

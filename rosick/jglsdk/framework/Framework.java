@@ -1,4 +1,4 @@
-package rosick.framework;
+package rosick.jglsdk.framework;
 
 import static org.lwjgl.opengl.GL20.*;
 
@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
 
-import rosick.glm.Vec2;
-import rosick.glutil.pole.MousePole.*;
+import rosick.jglsdk.glm.Vec2;
+import rosick.jglsdk.glutil.pole.MousePole.*;
 
 
 /**
@@ -19,17 +19,31 @@ import rosick.glutil.pole.MousePole.*;
  */
 public class Framework {
 
-	/**
-	 * Create and compile a vertex / fragment shader from a file.
-	 * @param path the path of the shader file
-	 * @param shaderType can assume two possible values: GL_VERTEX_SHADER to create a vertex shader, GL_FRAGMENT_SHADER to create a fragment shader
-	 * @return the created shader
-	 */
     public static int loadShader(int shaderType, String path){
         int shader = glCreateShader(shaderType);
        
         if (shader != 0) {
-            String shaderCode = loadFileAsString(path);
+        	String shaderCode;
+        	
+        	{
+        		// Load file as a string
+                StringBuilder text = new StringBuilder();
+                
+                try {
+                	BufferedReader reader = new BufferedReader(new InputStreamReader(ClassLoader.class.getResourceAsStream(path)));
+                	String line;
+                	
+                	while ((line = reader.readLine()) != null) {
+                		text.append(line).append("\n");
+                	}
+                	
+                	reader.close();
+                } catch (Exception e){
+                	System.err.println("Fail reading " + path + ": " + e.getMessage());
+                }
+                
+                shaderCode = text.toString();
+        	}
             
             glShaderSource(shader, shaderCode);
             glCompileShader(shader);
@@ -39,11 +53,6 @@ public class Framework {
     }
     
     
-	/**
-	 * Create a program and attach a list of shaders to it.
-	 * @param shaderList the list of shaders to attach
-	 * @return the created program
-	 */
 	public static int createProgram(ArrayList<Integer> shaderList) {		
 	    int program = glCreateProgram();
 	    
@@ -125,29 +134,5 @@ public class Framework {
 	
 	public static float degToRad(float fAngDeg) {
 		return fAngDeg * fDegToRad;
-	}
-	
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	private static String loadFileAsString(String filepath) {
-        StringBuilder text = new StringBuilder();
-        
-        try {
-        	BufferedReader reader = new BufferedReader(new InputStreamReader(ClassLoader.class.getResourceAsStream(filepath)));
-        	String line;
-        	
-        	while ((line = reader.readLine()) != null) {
-        		text.append(line).append("\n");
-        	}
-        	
-        	reader.close();
-        } catch (Exception e){
-        	System.err.println("Fail reading " + filepath + ": " + e.getMessage());
-        }
-        
-        return text.toString();
 	}
 }

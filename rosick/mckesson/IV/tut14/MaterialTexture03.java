@@ -27,6 +27,11 @@ import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.framework.Timer;
+import rosick.jglsdk.framework.UniformBlockArray;
+import rosick.jglsdk.glimg.Dds;
+import rosick.jglsdk.glimg.ImageSet;
+import rosick.jglsdk.glimg.ImageSet.Dimensions;
+import rosick.jglsdk.glimg.ImageSet.SingleImage;
 import rosick.jglsdk.glm.Glm;
 import rosick.jglsdk.glm.Mat3;
 import rosick.jglsdk.glm.Mat4;
@@ -51,8 +56,11 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * -,=		- rewind/jump forward time by 0.5 second (of real-time).
  * T		- toggle a display showing the look-at point.
  * G		- toggles the drawing of the light source.
- * SPACEBAR	- toggle between shader-based Gaussian specular and texture-based specular.
+ * Y		- switch between the infinity symbol and a flat plane.
+ * SPACEBAR	- switch between one of three rendering modes: fixed shininess with a Gaussian lookup-table, a texture-based shininess with a 
+ * 				Gaussian lookup-table, and a texture-based shininess with a shader-computed Gaussian term.
  * 1,2,3,4	- switch to progressively larger textures.
+ * 8,9		- switch to the gold material/a material with a dark diffuse color and bright specular color.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
  * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
@@ -62,10 +70,10 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
  * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
  */
-public class BasicTexture01 extends GLWindow {
+public class MaterialTexture03 extends GLWindow {
 	
 	public static void main(String[] args) {		
-		new BasicTexture01().start();
+		new MaterialTexture03().start();
 	}
 	
 	
@@ -90,14 +98,30 @@ public class BasicTexture01 extends GLWindow {
 		int modelToCameraMatrixUnif;
 	}
 		
+	
+	private class ShaderPairs {
+		String vertShader;
+		String fragShader;
 		
+		ShaderPairs(String vertShader, String fragShader) {
+			this.vertShader = vertShader;
+			this.fragShader = fragShader;
+		}
+	};
+	
+	
 	private final int g_materialBlockIndex = 0;
 	private final int g_lightBlockIndex = 1;
 	private final int g_projectionBlockIndex = 2;
 	
-	private ProgramData g_litShaderProg;
-	private ProgramData g_litTextureProg;	
+	private ProgramData g_Programs[] = new ProgramData[ShaderMode.NUM_SHADER_MODES.ordinal()];
 	private UnlitProgData g_Unlit;
+	
+	private ShaderPairs g_shaderPairs[] = new ShaderPairs[] {
+		new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "FixedShininess.frag"),
+		new ShaderPairs(BASEPATH + "PNT.vert", BASEPATH + "TextureShininess.frag"),
+		new ShaderPairs(BASEPATH + "PNT.vert", BASEPATH + "TextureCompute.frag")
+	};
 	
 	private int g_lightUniformBuffer;
 	private int g_projectionUniformBuffer;
@@ -152,28 +176,32 @@ public class BasicTexture01 extends GLWindow {
 		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
 
 		int gaussianTextureUnif = glGetUniformLocation(data.theProgram, "gaussianTexture");
+		int shininessTextureUnif = glGetUniformLocation(data.theProgram, "shininessTexture");
 		glUseProgram(data.theProgram);
 		glUniform1i(gaussianTextureUnif, g_gaussTexUnit);
+		glUniform1i(shininessTextureUnif, g_shineTexUnit);
 		glUseProgram(0);
 		
 		return data;
 	}
 	
 	private void initializePrograms() {	
-		g_litShaderProg = loadStandardProgram(BASEPATH + "PN.vert", BASEPATH + "ShaderGaussian.frag");
-		g_litTextureProg = loadStandardProgram(BASEPATH + "PN.vert", BASEPATH + "TextureGaussian.frag");
+		for (int prog = 0; prog < ShaderMode.NUM_SHADER_MODES.ordinal(); prog++) {
+			g_Programs[prog] = loadStandardProgram(g_shaderPairs[prog].vertShader, g_shaderPairs[prog].fragShader);
+		}
 
 		g_Unlit = loadUnlitProgram("/rosick/mckesson/data/" + "Unlit.vert", "/rosick/mckesson/data/" + "Unlit.frag");
 	}
 	
 	
 	@Override
-	protected void init() {
+	protected void init() {	
 		initializePrograms();
-		
+
 		try {
 			g_pObjectMesh = new Mesh("/rosick/mckesson/data/" + "Infinity.xml");
 			g_pCubeMesh = 	new Mesh(BASEPATH + "UnitCube.xml");
+			g_pPlaneMesh = 	new Mesh("/rosick/mckesson/data/" + "UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -193,14 +221,7 @@ public class BasicTexture01 extends GLWindow {
 		glEnable(GL_DEPTH_CLAMP);
 
 		// Setup our Uniform Buffers
-		MaterialBlock mtl = new MaterialBlock();
-		mtl.diffuseColor = new Vec4(1.0f, 0.673f, 0.043f, 1.0f);
-		mtl.specularColor = new Vec4(1.0f, 0.673f, 0.043f, 1.0f).scale(0.4f);
-		mtl.specularShininess = g_specularShininess;
-		
-		g_materialUniformBuffer = glGenBuffers();
-		glBindBuffer(GL_UNIFORM_BUFFER, g_materialUniformBuffer);
-		glBufferData(GL_UNIFORM_BUFFER, mtl.fillAndFlipBuffer(BufferUtils.createFloatBuffer(12)), GL_STATIC_DRAW);
+		setupMaterials();
 		
 		g_lightUniformBuffer = glGenBuffers();	       
 		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
@@ -218,8 +239,9 @@ public class BasicTexture01 extends GLWindow {
 		glBindBufferRange(GL_UNIFORM_BUFFER, g_materialBlockIndex, g_materialUniformBuffer, 0, MaterialBlock.SIZE);
 		
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		
+
 		createGaussianTextures();
+		createShininessTexture();
 	}
 	
 
@@ -272,19 +294,26 @@ public class BasicTexture01 extends GLWindow {
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
 					g_bDrawLights = !g_bDrawLights;
 				
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+					g_bUseInfinity = !g_bUseInfinity;
+					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
-					g_bUseTexture = !g_bUseTexture;
-					if (g_bUseTexture) {
-						System.out.println("Texture");
-					} else {
-						System.out.println("Shader");
-					}
+					int index = (g_eMode.ordinal() + 1) % ShaderMode.NUM_SHADER_MODES.ordinal();
+					g_eMode = ShaderMode.values()[index];
+
+					System.out.println(g_shaderModeNames[g_eMode.ordinal()]);
 					
 				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9  ) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_GAUSS_TEXTURES) {
 						System.out.println("Angle Resolution: "+ calcCosAngResolution(number));
 						g_currTexture = number;
+					}
+					
+					if (number >= (9 - NUM_MATERIALS)) {
+						number = number - (9 - NUM_MATERIALS);
+						System.out.println("Material number " + number);
+						g_currMaterial = number;
 					}
 					
 					
@@ -328,30 +357,40 @@ public class BasicTexture01 extends GLWindow {
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		{
-			glBindBufferRange(GL_UNIFORM_BUFFER, g_materialBlockIndex, g_materialUniformBuffer, 0, MaterialBlock.SIZE);
+			Mesh pMesh = g_bUseInfinity ? g_pObjectMesh : g_pPlaneMesh;
+			
+			glBindBufferRange(GL_UNIFORM_BUFFER, g_materialBlockIndex, g_materialUniformBuffer, g_currMaterial * g_materialOffset, MaterialBlock.SIZE);
 
 			modelMatrix.push();
 			
 			modelMatrix.applyMatrix(g_objtPole.calcMatrix());
-			modelMatrix.scale(2.0f);
+			modelMatrix.scale(g_bUseInfinity ? 2.0f : 4.0f);
 			
 			Mat3 normMatrix = new Mat3(modelMatrix.top());
 			normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 
-			ProgramData prog = g_bUseTexture ? g_litTextureProg : g_litShaderProg;
+			ProgramData prog = g_Programs[g_eMode.ordinal()];
 
 			glUseProgram(prog.theProgram);
 			glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 			glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 
 			glActiveTexture(GL_TEXTURE0 + g_gaussTexUnit);
-			glBindTexture(GL_TEXTURE_1D, g_gaussTextures[g_currTexture]);
-			glBindSampler(g_gaussTexUnit, g_gaussSampler);
+			glBindTexture(GL_TEXTURE_2D, g_gaussTextures[g_currTexture]);
+			glBindSampler(g_gaussTexUnit, g_textureSampler);
 
-			g_pObjectMesh.render("lit");
-
+			glActiveTexture(GL_TEXTURE0 + g_shineTexUnit);
+			glBindTexture(GL_TEXTURE_2D, g_shineTexture);
+			glBindSampler(g_shineTexUnit, g_textureSampler);
+			
+			if (g_eMode != ShaderMode.MODE_FIXED) {
+				pMesh.render("lit-tex");
+			} else {
+				pMesh.render("lit");				
+			}
+			
 			glBindSampler(g_gaussTexUnit, 0);
-			glBindTexture(GL_TEXTURE_1D, 0);
+			glBindTexture(GL_TEXTURE_2D, 0);
 
 			glUseProgram(0);
 			glBindBufferBase(GL_UNIFORM_BUFFER, g_materialBlockIndex, 0);
@@ -426,7 +465,7 @@ public class BasicTexture01 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	private class MaterialBlock extends BufferableData<FloatBuffer> {
+	private class MaterialBlock extends BufferableData<ByteBuffer> {
 		Vec4 diffuseColor;
 		Vec4 specularColor;
 		float specularShininess;
@@ -435,16 +474,22 @@ public class BasicTexture01 extends GLWindow {
 		static final int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
 
 		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			diffuseColor.fillBuffer(buffer);
-			specularColor.fillBuffer(buffer);
-			buffer.put(specularShininess);
-			buffer.put(padding);
+		public ByteBuffer fillBuffer(ByteBuffer buffer) {
+			for (int i = 0; i < 4; i++) {
+				buffer.putFloat(diffuseColor.get(i));
+			}
+			for (int i = 0; i < 4; i++) {
+				buffer.putFloat(specularColor.get(i));
+			}
+			buffer.putFloat(specularShininess);
+			for (int i = 0; i < 3; i++) {
+				buffer.putFloat(padding[i]);
+			}
 			
 			return buffer;
 		}
 	}
-
+	
 	
 	private class PerLight extends BufferableData<FloatBuffer> {
 		Vec4 cameraSpaceLightPos;
@@ -499,24 +544,46 @@ public class BasicTexture01 extends GLWindow {
 	}
 		
 	
+	private enum ShaderMode {
+		MODE_FIXED,
+		MODE_TEXTURED,
+		MODE_TEXTURED_COMPUTE,
+
+		NUM_SHADER_MODES,
+	};
+	
+	
 	private final int NUMBER_OF_LIGHTS = 2;
 	private final int NUM_GAUSS_TEXTURES = 4;
+	private final int NUM_MATERIALS = 2;
 	private final int g_gaussTexUnit = 0;
+	private final int g_shineTexUnit = 1;
 	private final float g_fHalfLightDistance = 25.0f;
 	private final float g_fLightAttenuation = 1.0f / (g_fHalfLightDistance * g_fHalfLightDistance);
 
+	private final String g_shaderModeNames[] = {
+		"Fixed Shininess with Gaussian Texture",
+		"Texture Shininess with Gaussian Texture",
+		"Texture Shininess with computed Gaussian",
+	};
+	
 	private Mesh g_pObjectMesh;
 	private Mesh g_pCubeMesh;
-	
+	private Mesh g_pPlaneMesh;
+
 	private Timer g_lightTimer = new Timer(Timer.Type.TT_LOOP, 6.0f);
 	
+	private ShaderMode g_eMode = ShaderMode.MODE_FIXED;
+	
 	private boolean g_bDrawLights = true;
+	private boolean g_bUseInfinity = true;
 	private boolean g_bDrawCameraPos;
-	private boolean g_bUseTexture;
 	private int g_gaussTextures[] = new int[NUM_GAUSS_TEXTURES];
-	private int g_gaussSampler;
-	private int g_currTexture;	
-	private float g_specularShininess = 0.2f;
+	private int g_materialOffset;
+	private int g_textureSampler;
+	private int g_shineTexture;	
+	private int g_currTexture = NUM_GAUSS_TEXTURES - 1;
+	private int g_currMaterial;	
 	private float g_lightHeight = 1.0f;
 	private float g_lightRadius = 3.0f;
 
@@ -546,15 +613,42 @@ public class BasicTexture01 extends GLWindow {
 	private ObjectPole g_objtPole = new ObjectPole(g_initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, g_viewPole);
 
 
-	private void buildGaussianData(byte textureData[], int cosAngleResolution) {
-		for (int iCosAng = 0; iCosAng < cosAngleResolution; iCosAng++) {
-			float cosAng = iCosAng / (float) (cosAngleResolution - 1);
-			float angle = (float) Math.acos(cosAng);
-			float exponent = angle / g_specularShininess;
-			exponent = - (exponent * exponent);
-			float gaussianTerm = (float) Math.exp(exponent);
+	private void setupMaterials() {
+		UniformBlockArray<MaterialBlock> mtls = new UniformBlockArray<>(MaterialBlock.SIZE, NUM_MATERIALS);
+
+		MaterialBlock mtl = new MaterialBlock();
+		mtl.diffuseColor = new Vec4(1.0f, 0.673f, 0.043f, 1.0f);
+		mtl.specularColor = new Vec4(1.0f, 0.673f, 0.043f, 1.0f).scale(0.4f);
+		mtl.specularShininess = 0.125f;
+		mtls.set(0, mtl);
+
+		mtl = new MaterialBlock();
+		mtl.diffuseColor = new Vec4(0.01f, 0.01f, 0.01f, 1.0f);
+		mtl.specularColor = new Vec4(0.99f, 0.99f, 0.99f, 1.0f);
+		mtl.specularShininess = 0.125f;
+		mtls.set(1, mtl);
+
+		g_materialUniformBuffer = mtls.createBufferObject();
+		g_materialOffset = mtls.getArrayOffset();
+	}
+	
+	
+	private void buildGaussianData(byte textureData[], int cosAngleResolution, int shininessResolution) {
+		int currIt = 0;
+		
+		for (int iShin = 1; iShin <= shininessResolution; iShin++) {
+			float shininess = iShin / (float)(shininessResolution);
 			
-			textureData[iCosAng] = (byte) (gaussianTerm * 255.0f);
+			for (int iCosAng = 0; iCosAng < cosAngleResolution; iCosAng++) {
+				float cosAng = iCosAng / (float)(cosAngleResolution - 1);
+				float angle = (float) Math.acos(cosAng);
+				float exponent = angle / shininess;
+				exponent = -(exponent * exponent);
+				float gaussianTerm = (float) Math.exp(exponent);
+	
+				textureData[currIt] = (byte) (char) (gaussianTerm * 255.0f);
+				currIt++;
+			}
 		}
 	}
 	
@@ -562,32 +656,56 @@ public class BasicTexture01 extends GLWindow {
 	private void createGaussianTextures() {
 		for (int loop = 0; loop < NUM_GAUSS_TEXTURES; loop++) {
 			int cosAngleResolution = calcCosAngResolution(loop);
-			g_gaussTextures[loop] = createGaussianTexture(cosAngleResolution);
+			g_gaussTextures[loop] = createGaussianTexture(cosAngleResolution, 128);
 		}
 
-		g_gaussSampler = glGenSamplers();
-		glSamplerParameteri(g_gaussSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glSamplerParameteri(g_gaussSampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glSamplerParameteri(g_gaussSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		g_textureSampler = glGenSamplers();
+		glSamplerParameteri(g_textureSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glSamplerParameteri(g_textureSampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glSamplerParameteri(g_textureSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glSamplerParameteri(g_textureSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
 	
-	private int createGaussianTexture(int cosAngleResolution) {	
-		byte[] textureData = new byte[cosAngleResolution];
+	private int createGaussianTexture(int cosAngleResolution, int shininessResolution) {	
+		byte[] textureData = new byte[shininessResolution * cosAngleResolution];
 				
-		buildGaussianData(textureData, cosAngleResolution);
+		buildGaussianData(textureData, cosAngleResolution, shininessResolution);
 		
 		ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(textureData.length);
 		tempByteBuffer.put(textureData);
 		tempByteBuffer.flip();
 		
 		int gaussTexture = glGenTextures();
-		glBindTexture(GL_TEXTURE_1D, gaussTexture);
-		glTexImage1D(GL_TEXTURE_1D, 0, GL_R8, cosAngleResolution, 0, GL11.GL_RED, GL_UNSIGNED_BYTE, tempByteBuffer);
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_BASE_LEVEL, 0);
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAX_LEVEL, 0);
-		glBindTexture(GL_TEXTURE_1D, 0);
+		glBindTexture(GL_TEXTURE_2D, gaussTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, cosAngleResolution, shininessResolution, 0, GL11.GL_RED, GL_UNSIGNED_BYTE, tempByteBuffer);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 
 		return gaussTexture;
+	}
+	
+	
+	private void createShininessTexture() {
+		ImageSet pImageSet;
+
+		try {
+			pImageSet = Dds.loadFromFile(BASEPATH + "main.dds");
+			
+			SingleImage image = pImageSet.getImage(0, 0, 0);
+
+			Dimensions dims = image.getDimensions();
+
+			g_shineTexture = glGenTextures();
+			glBindTexture(GL_TEXTURE_2D, g_shineTexture);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, dims.width, dims.height, 0,
+				GL11.GL_RED, GL_UNSIGNED_BYTE, image.getImageData());
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+			glBindTexture(GL_TEXTURE_2D, 0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	

@@ -1,12 +1,12 @@
-package rosick.glm;
+package rosick.jglsdk.glm;
 
-import static rosick.glm.Vec4.*;
+import static rosick.jglsdk.glm.Vec4.*;
 
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
- * @author integeruser, xire-
+ * @author integeruser
  */
 public class Mat4 extends Mat {
 	
@@ -105,6 +105,10 @@ public class Mat4 extends Mat {
 		return res;
 	}
 	
+	
+	public void set(int columnIndex, int rowIndex, float value) {
+		matrix[columnIndex * 4 + rowIndex] = value;
+	}
 	
 	public void setColumn(int columnIndex, Vec4 vec) {
 		int offset = (columnIndex * 4);

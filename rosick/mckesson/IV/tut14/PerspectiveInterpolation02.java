@@ -10,9 +10,9 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
 import rosick.GLWindow;
-import rosick.framework.Framework;
-import rosick.framework.Mesh;
-import rosick.glutil.MatrixStack;
+import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.framework.Mesh;
+import rosick.jglsdk.glutil.MatrixStack;
 
 
 /**
@@ -54,7 +54,7 @@ public class PerspectiveInterpolation02 extends GLWindow {
 	private float g_fzNear = 1.0f;
 	private float g_fzFar = 1000.0f;
 	
-	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -81,9 +81,9 @@ public class PerspectiveInterpolation02 extends GLWindow {
 		persMatrix.perspective(60.0f, 1.0f, g_fzNear, g_fzFar);
 
 		glUseProgram(g_SmoothInterp.theProgram);
-		glUniformMatrix4(g_SmoothInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+		glUniformMatrix4(g_SmoothInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 		glUseProgram(g_LinearInterp.theProgram);
-		glUniformMatrix4(g_LinearInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+		glUniformMatrix4(g_LinearInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 		glUseProgram(0);	
 	}
 	

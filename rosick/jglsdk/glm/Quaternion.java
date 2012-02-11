@@ -1,10 +1,10 @@
-package rosick.glm;
+package rosick.jglsdk.glm;
 
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
- * @author integeruser, xire-
+ * @author integeruser
  */
 public class Quaternion extends Vec {
 	

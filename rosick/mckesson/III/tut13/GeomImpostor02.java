@@ -7,9 +7,8 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -18,21 +17,20 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import rosick.GLWindow;
-import rosick.PortingUtils;
 import rosick.PortingUtils.Bufferable;
 import rosick.PortingUtils.BufferableData;
-import rosick.framework.Framework;
-import rosick.framework.Mesh;
-import rosick.framework.Timer;
-import rosick.glm.Glm;
-import rosick.glm.Mat3;
-import rosick.glm.Mat4;
-import rosick.glm.Quaternion;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
-import rosick.glutil.MatrixStack;
-import rosick.glutil.pole.MousePole.*;
-import rosick.glutil.pole.ViewPole;
+import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.framework.Mesh;
+import rosick.jglsdk.framework.Timer;
+import rosick.jglsdk.glm.Glm;
+import rosick.jglsdk.glm.Mat3;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Quaternion;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
+import rosick.jglsdk.glutil.MatrixStack;
+import rosick.jglsdk.glutil.pole.MousePole.*;
+import rosick.jglsdk.glutil.pole.ViewPole;
 
 
 /**
@@ -109,10 +107,10 @@ public class GeomImpostor02 extends GLWindow {
 	
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempSharedFloatBuffer24 = BufferUtils.createFloatBuffer(24);
+	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
+	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer24 = BufferUtils.createFloatBuffer(24);
 
 	
 	
@@ -182,7 +180,7 @@ public class GeomImpostor02 extends GLWindow {
 
 		g_litImpProg = loadLitImposProgram(BASEPATH + "GeomImpostor.vert", BASEPATH + "GeomImpostor.geom", BASEPATH + "GeomImpostor.frag");
 
-		g_Unlit = loadUnlitProgram(BASEPATH + "Unlit.vert", BASEPATH + "Unlit.frag");
+		g_Unlit = loadUnlitProgram("/rosick/mckesson/data/" + "Unlit.vert", "/rosick/mckesson/data/" + "Unlit.frag");
 	}
 	
 	
@@ -324,7 +322,7 @@ public class GeomImpostor02 extends GLWindow {
 
 	@Override
 	protected void display() {			
-		g_sphereTimer.update(getElapsedTime());
+		g_sphereTimer.update((float) getElapsedTime());
 
 		glClearColor(0.75f, 0.75f, 1.0f, 1.0f);
 		glClearDepth(1.0f);
@@ -348,7 +346,7 @@ public class GeomImpostor02 extends GLWindow {
 		lightData.lights[1].lightIntensity = new Vec4(0.4f, 0.4f, 0.4f, 1.0f);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillBuffer(tempSharedFloatBuffer24));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillAndFlipBuffer(tempFloatBuffer24));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		{
@@ -358,8 +356,8 @@ public class GeomImpostor02 extends GLWindow {
 			normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 
 			glUseProgram(g_litMeshProg.theProgram);
-			glUniformMatrix4(g_litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
-			glUniformMatrix3(g_litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+			glUniformMatrix4(g_litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
+			glUniformMatrix3(g_litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 
 			g_pPlaneMesh.render();
 
@@ -394,18 +392,16 @@ public class GeomImpostor02 extends GLWindow {
 
 			glBindBuffer(GL_ARRAY_BUFFER, g_imposterVBO);
 			
-			{
-				byte buffer[] = new byte[NUMBER_OF_SPHERES * VertexData.SIZE];
+			{				
+				FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(NUMBER_OF_SPHERES * VertexData.SIZE / (Float.SIZE / 8));
 				
-				for (int i = 0; i < posSizeArray.length; i++) {
-					System.arraycopy(posSizeArray[i].getAsByteArray(), 0, buffer, i * VertexData.SIZE, VertexData.SIZE);
+				for (VertexData vertexData : posSizeArray) {
+					vertexData.fillBuffer(tempFloatBuffer);
 				}
 				
-				ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(buffer.length);
-				tempByteBuffer.put(buffer);
-				tempByteBuffer.flip();
+				tempFloatBuffer.flip();
 				
-				glBufferData(GL_ARRAY_BUFFER, tempByteBuffer, GL_STREAM_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, tempFloatBuffer, GL_STREAM_DRAW);
 			}
 			
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -430,10 +426,10 @@ public class GeomImpostor02 extends GLWindow {
 			modelMatrix.scale(0.5f);
 
 			glUseProgram(g_Unlit.theProgram);
-			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
 			Vec4 lightColor = new Vec4(1.0f);
-			glUniform4(g_Unlit.objectColorUnif, lightColor.fillBuffer(tempSharedFloatBuffer4));
+			glUniform4(g_Unlit.objectColorUnif, lightColor.fillAndFlipBuffer(tempFloatBuffer4));
 			g_pCubeMesh.render("flat");
 			
 			modelMatrix.pop();
@@ -448,7 +444,7 @@ public class GeomImpostor02 extends GLWindow {
 			glDisable(GL_DEPTH_TEST);
 			glDepthMask(false);
 			glUseProgram(g_Unlit.theProgram);
-			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 			glUniform4f(g_Unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
 			g_pCubeMesh.render("flat");
 			glDepthMask(true);
@@ -470,7 +466,7 @@ public class GeomImpostor02 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(tempFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -480,39 +476,38 @@ public class GeomImpostor02 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	private class PerLight {
+
+	private class PerLight extends BufferableData<FloatBuffer> {
 		Vec4 cameraSpaceLightPos;
 		Vec4 lightIntensity;
-	};
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			cameraSpaceLightPos.fillBuffer(buffer);
+			lightIntensity.fillBuffer(buffer);
+
+			return buffer;
+		}
+	}
 	
-	private class LightBlock implements Bufferable<FloatBuffer> {
+	
+	private class LightBlock extends BufferableData<FloatBuffer> {
 		Vec4 ambientIntensity;
 		float lightAttenuation;
 		float padding[] = new float[3];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-		static final int SIZE = (4 + 1 + 3 + (8 * 2)) * (Float.SIZE / 8);
-
+		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * (Float.SIZE / 8);
 
 		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			float data[] = new float[24];
-			System.arraycopy(ambientIntensity.get(), 0, data, 0, 4);
-			data[4] = lightAttenuation;
-			System.arraycopy(padding, 0, data, 5, padding.length);
-
-			for (int i = 0; i < lights.length; i++) {
-				float light[] = new float[8];
-				System.arraycopy(lights[i].cameraSpaceLightPos.get(), 0, light, 0, 4);
-				System.arraycopy(lights[i].lightIntensity.get(), 0, light, 4, 4);
-				
-				System.arraycopy(light, 0, data, 8 + i * 8, 8);
-			}
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
+			ambientIntensity.fillBuffer(buffer);
+			buffer.put(lightAttenuation);
+			buffer.put(padding);
 			
-			buffer.clear();
-			buffer.put(data);
-			buffer.flip();
+			for (PerLight light : lights) {
+				light.fillBuffer(buffer);
+			}
 			
 			return buffer;
 		}
@@ -524,13 +519,17 @@ public class GeomImpostor02 extends GLWindow {
 		
 		static final int SIZE = 16 * (Float.SIZE / 8);
 
+		@Override
+		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillAndFlipBuffer(buffer);
+		}
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			return cameraToClipMatrix.fillBuffer(buffer);
 		}
 	}
-	
+		
 	
 	private final int NUMBER_OF_LIGHTS = 2;
 	private final int NUMBER_OF_SPHERES = 4;
@@ -570,42 +569,38 @@ public class GeomImpostor02 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
-	private class VertexData extends BufferableData {
+	private class VertexData extends BufferableData<FloatBuffer> {
 		Vec3 cameraPosition;
 		float sphereRadius;
 		
 		static final int SIZE = 4 * (Float.SIZE / 8);
 
-		
 		@Override
-		public byte[] getAsByteArray() {
-			float data[] = new float[4];
-			System.arraycopy(cameraPosition.get(), 0, data, 0, 3);
-			data[3] = sphereRadius;
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			cameraPosition.fillBuffer(buffer);
+			buffer.put(sphereRadius);
 			
-			return PortingUtils.toByteArray(data);
+			return buffer;
 		}
 	}
 	
 	
-	private static class MaterialEntry extends BufferableData {
+	private static class MaterialEntry extends BufferableData<FloatBuffer> {
 		Vec4 diffuseColor;
 		Vec4 specularColor;
 		float specularShininess;
 		float padding[] = new float[3];
 
-		static int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
+		static final int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
 
-		
 		@Override
-		public byte[] getAsByteArray() {
-			float data[] = new float[12];
-			System.arraycopy(diffuseColor.get(), 0, data, 0, 4);
-			System.arraycopy(specularColor.get(), 0, data, 4, 4);
-			data[8] = specularShininess;
-			System.arraycopy(padding, 0, data, 9, padding.length);
-
-			return PortingUtils.toByteArray(data);
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			diffuseColor.fillBuffer(buffer);
+			specularColor.fillBuffer(buffer);
+			buffer.put(specularShininess);
+			buffer.put(padding);
+			
+			return buffer;
 		}
 	}
 
@@ -641,18 +636,16 @@ public class GeomImpostor02 extends GLWindow {
 		g_materialTerrainUniformBuffer = glGenBuffers();
 		glBindBuffer(GL_UNIFORM_BUFFER, g_materialArrayUniformBuffer);
 		
-		{
-			byte[] buffer = new byte[MaterialEntry.SIZE * ubArray.size()];
+		{			
+			FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(ubArray.size() * MaterialEntry.SIZE / (Float.SIZE / 8));
 			
 			for (int i = 0; i < ubArray.size(); i++) {
-				System.arraycopy(ubArray.get(i).getAsByteArray(), 0, buffer, i * MaterialEntry.SIZE, MaterialEntry.SIZE);
+				ubArray.get(i).fillBuffer(tempFloatBuffer);
 			}
 			
-			ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(buffer.length);
-			tempByteBuffer.put(buffer);
-			tempByteBuffer.flip();
+			tempFloatBuffer.flip();
 			
-			glBufferData(GL_UNIFORM_BUFFER, tempByteBuffer, GL_STATIC_DRAW);
+			glBufferData(GL_UNIFORM_BUFFER, tempFloatBuffer, GL_STATIC_DRAW);
 		}
 		
 		glBindBuffer(GL_UNIFORM_BUFFER, g_materialTerrainUniformBuffer);
@@ -663,11 +656,7 @@ public class GeomImpostor02 extends GLWindow {
 			mtl.specularColor = new Vec4(0.5f, 0.5f, 0.5f, 1.0f);
 			mtl.specularShininess = 0.6f;
 			
-			ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(MaterialEntry.SIZE);
-			tempByteBuffer.put(mtl.getAsByteArray());
-			tempByteBuffer.flip();
-			
-			glBufferData(GL_UNIFORM_BUFFER, tempByteBuffer, GL_STATIC_DRAW);
+			glBufferData(GL_UNIFORM_BUFFER, mtl.fillAndFlipBuffer(BufferUtils.createFloatBuffer(MaterialEntry.SIZE / (Float.SIZE / 8))), GL_STATIC_DRAW);
 		}
 		
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);

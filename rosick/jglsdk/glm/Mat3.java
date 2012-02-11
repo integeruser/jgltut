@@ -1,12 +1,12 @@
-package rosick.glm;
+package rosick.jglsdk.glm;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
- * @author integeruser, xire-
+ * @author integeruser
  */
 public class Mat3 extends Mat {
 	
@@ -102,17 +102,5 @@ public class Mat3 extends Mat {
 	
 	public void clear(Mat3 mat) {
 		clear(mat.matrix);
-	}
-
-
-	@Override
-	public String toString() {
-		String res = "";
-
-		for (int i = 0; i < 3; i++) {
-			res += matrix[i * 3] + " " + matrix[i * 3 + 1] + " " + matrix[i * 3 + 2] + "\n";
-		}
-
-		return res;
 	}
 }

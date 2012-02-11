@@ -180,7 +180,7 @@ public class GeomImpostor02 extends GLWindow {
 
 		g_litImpProg = loadLitImposProgram(BASEPATH + "GeomImpostor.vert", BASEPATH + "GeomImpostor.geom", BASEPATH + "GeomImpostor.frag");
 
-		g_Unlit = loadUnlitProgram(BASEPATH + "Unlit.vert", BASEPATH + "Unlit.frag");
+		g_Unlit = loadUnlitProgram("/rosick/mckesson/data/" + "Unlit.vert", "/rosick/mckesson/data/" + "Unlit.frag");
 	}
 	
 	

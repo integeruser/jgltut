@@ -200,7 +200,7 @@ public class MaterialTexture03 extends GLWindow {
 
 		try {
 			g_pObjectMesh = new Mesh("/rosick/mckesson/data/" + "Infinity.xml");
-			g_pCubeMesh = 	new Mesh("/rosick/mckesson/data/" + "UnitCube.xml");
+			g_pCubeMesh = 	new Mesh(BASEPATH + "UnitCube.xml");
 			g_pPlaneMesh = 	new Mesh("/rosick/mckesson/data/" + "UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();

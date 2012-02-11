@@ -199,7 +199,7 @@ public class BasicImpostor01 extends GLWindow {
 			g_litImpProgs[iLoop] = loadLitImposProgram(g_impShaderNames[iLoop * 2], g_impShaderNames[iLoop * 2 + 1]);
 		}
 
-		g_Unlit = loadUnlitProgram(BASEPATH + "Unlit.vert", BASEPATH + "Unlit.frag");
+		g_Unlit = loadUnlitProgram("/rosick/mckesson/data/" + "Unlit.vert", "/rosick/mckesson/data/" + "Unlit.frag");
 	}
 	
 	

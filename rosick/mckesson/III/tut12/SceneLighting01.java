@@ -96,7 +96,7 @@ public class SceneLighting01 extends GLWindow {
 		
 	private final int g_materialBlockIndex 		= 0;
 	private final int g_lightBlockIndex 		= 1;
-	private final int g_projectionBlockIndex 	= 2;
+	private final int g_projectionBlockIndex	= 2;
 
 	private ProgramData g_Programs[] = new ProgramData[LightingProgramTypes.LP_MAX_LIGHTING_PROGRAM_TYPES.ordinal()];
 	private Shaders g_ShaderFiles[] = new Shaders[] {

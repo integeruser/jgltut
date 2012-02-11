@@ -173,7 +173,7 @@ public class BasicTexture01 extends GLWindow {
 		
 		try {
 			g_pObjectMesh = new Mesh("/rosick/mckesson/data/" + "Infinity.xml");
-			g_pCubeMesh = 	new Mesh("/rosick/mckesson/data/" + "UnitCube.xml");
+			g_pCubeMesh = 	new Mesh(BASEPATH + "UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

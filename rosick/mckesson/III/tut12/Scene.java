@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
-import rosick.jglsdk.PortingUtils.BufferableData;
+import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.glm.Glm;
 import rosick.jglsdk.glm.Mat3;

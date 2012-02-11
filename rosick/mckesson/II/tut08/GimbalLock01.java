@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.jglsdk.GLWindow;
+import rosick.GLWindow;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.glm.Mat4;

@@ -16,8 +16,8 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.jglsdk.GLWindow;
-import rosick.jglsdk.PortingUtils.Bufferable;
+import rosick.GLWindow;
+import rosick.PortingUtils.Bufferable;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Timer;
 import rosick.jglsdk.glm.Mat4;

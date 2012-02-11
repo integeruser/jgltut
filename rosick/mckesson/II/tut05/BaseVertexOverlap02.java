@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
-import rosick.jglsdk.GLWindow;
+import rosick.GLWindow;
 import rosick.jglsdk.framework.Framework;
 
 

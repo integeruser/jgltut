@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import rosick.jglsdk.PortingUtils.BufferableData;
+import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Interpolators.LightInterpolatorVec3;
 import rosick.jglsdk.framework.Interpolators.WeightedLinearInterpolatorFloat;
 import rosick.jglsdk.framework.Interpolators.WeightedLinearInterpolatorVec4;

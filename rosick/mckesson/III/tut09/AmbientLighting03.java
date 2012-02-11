@@ -14,20 +14,19 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
-import rosick.PortingUtils.Bufferable;
-import rosick.framework.Framework;
-import rosick.framework.Mesh;
-import rosick.glm.Mat3;
-import rosick.glm.Mat4;
-import rosick.glm.Quaternion;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
-import rosick.glutil.MatrixStack;
-import rosick.glutil.pole.MousePole.*;
-import rosick.glutil.pole.ObjectPole;
-import rosick.glutil.pole.ViewPole;
-
+import rosick.jglsdk.GLWindow;
+import rosick.jglsdk.PortingUtils.Bufferable;
+import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.framework.Mesh;
+import rosick.jglsdk.glm.Mat3;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Quaternion;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
+import rosick.jglsdk.glutil.MatrixStack;
+import rosick.jglsdk.glutil.pole.MousePole.*;
+import rosick.jglsdk.glutil.pole.ObjectPole;
+import rosick.jglsdk.glutil.pole.ViewPole;
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
@@ -87,9 +86,9 @@ public class AmbientLighting03 extends GLWindow {
 
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
+	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 	
 	
 	
@@ -241,9 +240,9 @@ public class AmbientLighting03 extends GLWindow {
 		}
 		
 		glUseProgram(whiteDiffuse.theProgram);
-		glUniform3(whiteDiffuse.dirToLightUnif, lightDirCameraSpace.fillBuffer(tempSharedFloatBuffer4));
+		glUniform3(whiteDiffuse.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(tempFloatBuffer4));
 		glUseProgram(vertexDiffuse.theProgram);
-		glUniform3(vertexDiffuse.dirToLightUnif, lightDirCameraSpace.fillBuffer(tempSharedFloatBuffer4));
+		glUniform3(vertexDiffuse.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(tempFloatBuffer4));
 		glUseProgram(0);
 
 		{
@@ -254,9 +253,9 @@ public class AmbientLighting03 extends GLWindow {
 				modelMatrix.push();
 
 				glUseProgram(whiteDiffuse.theProgram);
-				glUniformMatrix4(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+				glUniformMatrix4(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 				Mat3 normMatrix = new Mat3(modelMatrix.top());
-				glUniformMatrix3(whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+				glUniformMatrix3(whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 				g_pPlaneMesh.render();
 				glUseProgram(0);
 				
@@ -271,15 +270,15 @@ public class AmbientLighting03 extends GLWindow {
 
 				if (g_bDrawColoredCyl) {
 					glUseProgram(vertexDiffuse.theProgram);
-					glUniformMatrix4(vertexDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+					glUniformMatrix4(vertexDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 					Mat3 normMatrix = new Mat3(modelMatrix.top());
-					glUniformMatrix3(vertexDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+					glUniformMatrix3(vertexDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 					g_pCylinderMesh.render("lit-color");
 				} else {
 					glUseProgram(whiteDiffuse.theProgram);
-					glUniformMatrix4(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+					glUniformMatrix4(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 					Mat3 normMatrix = new Mat3(modelMatrix.top());
-					glUniformMatrix3(whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+					glUniformMatrix3(whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 					g_pCylinderMesh.render("lit");
 				}
 				glUseProgram(0);
@@ -301,7 +300,7 @@ public class AmbientLighting03 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(tempFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -317,6 +316,10 @@ public class AmbientLighting03 extends GLWindow {
 		
 		static final int SIZE = 16 * (Float.SIZE / 8);
 
+		@Override
+		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillAndFlipBuffer(buffer);
+		}
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {

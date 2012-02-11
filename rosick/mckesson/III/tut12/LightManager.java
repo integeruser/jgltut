@@ -1,21 +1,21 @@
 package rosick.mckesson.III.tut12;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import rosick.PortingUtils.Bufferable;
-import rosick.framework.Interpolators.LightInterpolatorVec3;
-import rosick.framework.Interpolators.TimedLinearInterpolatorFloat;
-import rosick.framework.Interpolators.TimedLinearInterpolatorVec4;
-import rosick.framework.Timer;
-import rosick.glm.Glm;
-import rosick.glm.Mat4;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
+import rosick.jglsdk.PortingUtils.BufferableData;
+import rosick.jglsdk.framework.Interpolators.LightInterpolatorVec3;
+import rosick.jglsdk.framework.Interpolators.WeightedLinearInterpolatorFloat;
+import rosick.jglsdk.framework.Interpolators.WeightedLinearInterpolatorVec4;
+import rosick.jglsdk.framework.Timer;
+import rosick.jglsdk.glm.Glm;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
 
 
 /**
@@ -25,13 +25,20 @@ import rosick.glm.Vec4;
  */
 public class LightManager {
 	
-	class PerLight {
+	class PerLight extends BufferableData<FloatBuffer> {
 		Vec4 cameraSpaceLightPos;
 		Vec4 lightIntensity;
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			cameraSpaceLightPos.fillBuffer(buffer);
+			lightIntensity.fillBuffer(buffer);
+
+			return buffer;
+		}
 	}
 	
-	
-	class LightBlock implements Bufferable<FloatBuffer> {
+	class LightBlock extends BufferableData<FloatBuffer> {
 		Vec4 ambientIntensity;
 		float lightAttenuation;
 		float padding[] = new float[3];
@@ -39,62 +46,45 @@ public class LightManager {
 
 		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * (Float.SIZE / 8);
 
-
 		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			float data[] = new float[40];
-			System.arraycopy(ambientIntensity.get(), 0, data, 0, 4);
-			data[4] = lightAttenuation;
-			System.arraycopy(padding, 0, data, 5, padding.length);
-
-			for (int i = 0; i < lights.length; i++) {
-				float light[] = new float[8];
-				System.arraycopy(lights[i].cameraSpaceLightPos.get(), 0, light, 0, 4);
-				System.arraycopy(lights[i].lightIntensity.get(), 0, light, 4, 4);
-				
-				System.arraycopy(light, 0, data, 8 + i * 8, 8);
-			}
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
+			ambientIntensity.fillBuffer(buffer);
+			buffer.put(lightAttenuation);
+			buffer.put(padding);
 			
-			buffer.clear();
-			buffer.put(data);
-			buffer.flip();
+			for (PerLight light : lights) {
+				light.fillBuffer(buffer);
+			}
 			
 			return buffer;
 		}
 	}
 
-	class LightBlockHDR implements Bufferable<FloatBuffer> {
+	class LightBlockHDR extends BufferableData<FloatBuffer> {
 		Vec4 ambientIntensity;
 		float lightAttenuation;
 		float maxIntensity;
 		float padding[] = new float[2];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-		
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			float data[] = new float[40];
-			System.arraycopy(ambientIntensity.get(), 0, data, 0, 4);
-			data[4] = lightAttenuation;
-			data[5] = maxIntensity;
-			System.arraycopy(padding, 0, data, 6, padding.length);
+		static final int SIZE = (4 + 1 + 1 + 2 + (8 * 4)) * (Float.SIZE / 8);
 
-			for (int i = 0; i < lights.length; i++) {
-				float temp[] = new float[8];
-				System.arraycopy(lights[i].cameraSpaceLightPos.get(), 0, temp, 0, 4);
-				System.arraycopy(lights[i].lightIntensity.get(), 0, temp, 4, 4);
-				
-				System.arraycopy(temp, 0, data, 8 + i * 8, 8);
-			}
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
+			ambientIntensity.fillBuffer(buffer);
+			buffer.put(lightAttenuation);
+			buffer.put(maxIntensity);
+			buffer.put(padding);
 			
-			buffer.put(data);
-			buffer.flip();
+			for (PerLight light : lights) {
+				light.fillBuffer(buffer);
+			}
 			
 			return buffer;
 		}
 	}
 		
-	class LightBlockGamma implements Bufferable<FloatBuffer> {
+	class LightBlockGamma extends BufferableData<FloatBuffer> {
 		Vec4 ambientIntensity;
 		float lightAttenuation;
 		float maxIntensity;
@@ -102,26 +92,19 @@ public class LightManager {
 		float padding;
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 		
+		static final int SIZE = (4 + 1 + 1 + 1 + 1 + (8 * 4)) * (Float.SIZE / 8);
 		
 		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			float data[] = new float[40];
-			System.arraycopy(ambientIntensity.get(), 0, data, 0, 4);
-			data[4] = lightAttenuation;
-			data[5] = maxIntensity;
-			data[6] = gamma;
-			data[7] = padding;
-
-			for (int i = 0; i < lights.length; i++) {
-				float temp[] = new float[8];
-				System.arraycopy(lights[i].cameraSpaceLightPos.get(), 0, temp, 0, 4);
-				System.arraycopy(lights[i].lightIntensity.get(), 0, temp, 4, 4);
-				
-				System.arraycopy(temp, 0, data, 8 + i * 8, 8);
-			}
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
+			ambientIntensity.fillBuffer(buffer);
+			buffer.put(lightAttenuation);
+			buffer.put(maxIntensity);
+			buffer.put(gamma);
+			buffer.put(padding);
 			
-			buffer.put(data);
-			buffer.flip();
+			for (PerLight light : lights) {
+				light.fillBuffer(buffer);
+			}
 			
 			return buffer;
 		}
@@ -290,6 +273,77 @@ public class LightManager {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
+	public static class TimedLinearInterpolatorFloat extends WeightedLinearInterpolatorFloat {
+
+		public void setValues(ArrayList<MaxIntensityData> data) {
+			setValues(data, true);
+		}
+		
+		public void setValues(ArrayList<MaxIntensityData> data, boolean isLooping) {
+			m_values.clear();
+
+			for (MaxIntensityData curr : data) {				
+				Data temp = new Data();
+				temp.data = LightManager.getValue(curr);
+				temp.weight = LightManager.getTime(curr);
+
+				m_values.add(temp);
+			}
+			
+			if (isLooping && !m_values.isEmpty()) {
+				Data temp = new Data();
+				temp.data = m_values.get(0).data;
+				temp.weight = m_values.get(0).weight;
+
+				m_values.add(temp);
+			}
+				
+			// Ensure first is weight 0, and last is weight 1.
+			if (!m_values.isEmpty()) {
+				m_values.get(0).weight = 0.0f;
+				m_values.get(m_values.size() - 1).weight = 1.0f;
+			}
+		}
+	}
+		
+	public static class TimedLinearInterpolatorVec4 extends WeightedLinearInterpolatorVec4 {
+
+		public void setValues(ArrayList<LightVectorData> data) {
+			setValues(data, true);
+		}
+		
+		public void setValues(ArrayList<LightVectorData> data, boolean isLooping) {
+			m_values.clear();
+
+			for (LightVectorData curr : data) {				
+				Data temp = new Data();
+				temp.data = new Vec4(LightManager.getValue(curr));
+				temp.weight = LightManager.getTime(curr);
+
+				m_values.add(temp);
+			}
+			
+			if (isLooping && !m_values.isEmpty()) {
+				Data temp = new Data();
+				temp.data = new Vec4(m_values.get(0).data);
+				temp.weight = m_values.get(0).weight;
+
+				m_values.add(temp);
+			}
+				
+			// Ensure first is weight 0, and last is weight 1.
+			if (!m_values.isEmpty()) {
+				m_values.get(0).weight = 0.0f;
+				m_values.get(m_values.size() - 1).weight = 1.0f;
+			}
+		}
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
 	class Pair<K, V> {
 		K first;
 		V second;
@@ -383,14 +437,14 @@ public class LightManager {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
 	void updateTime(double fElapsedTime) {
-		m_sunTimer.update(fElapsedTime);
+		m_sunTimer.update((float) fElapsedTime);
 		
 		for (Timer timer : m_lightTimers) {
-			timer.update(fElapsedTime);
+			timer.update((float) fElapsedTime);
 		}
 		
 		for (Timer timer : m_extraTimers.values()) {
-			timer.update(fElapsedTime);
+			timer.update((float) fElapsedTime);
 		}
 	}
 

@@ -7,8 +7,9 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -16,23 +17,22 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
-import rosick.PortingUtils;
-import rosick.PortingUtils.Bufferable;
-import rosick.PortingUtils.BufferableData;
-import rosick.framework.Framework;
-import rosick.framework.Mesh;
-import rosick.framework.Timer;
-import rosick.framework.UniformBlockArray;
-import rosick.glm.Glm;
-import rosick.glm.Mat3;
-import rosick.glm.Mat4;
-import rosick.glm.Quaternion;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
-import rosick.glutil.MatrixStack;
-import rosick.glutil.pole.MousePole.*;
-import rosick.glutil.pole.ViewPole;
+import rosick.jglsdk.GLWindow;
+import rosick.jglsdk.PortingUtils.Bufferable;
+import rosick.jglsdk.PortingUtils.BufferableData;
+import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.framework.Mesh;
+import rosick.jglsdk.framework.Timer;
+import rosick.jglsdk.framework.UniformBlockArray;
+import rosick.jglsdk.glm.Glm;
+import rosick.jglsdk.glm.Mat3;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Quaternion;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
+import rosick.jglsdk.glutil.MatrixStack;
+import rosick.jglsdk.glutil.pole.MousePole.*;
+import rosick.jglsdk.glutil.pole.ViewPole;
 
 
 /**
@@ -122,10 +122,10 @@ public class BasicImpostor01 extends GLWindow {
 	
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempSharedFloatBuffer24 = BufferUtils.createFloatBuffer(24);
+	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
+	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer24 = BufferUtils.createFloatBuffer(24);
 
 	
 	
@@ -359,7 +359,7 @@ public class BasicImpostor01 extends GLWindow {
 
 	@Override
 	protected void display() {			
-		g_sphereTimer.update(getElapsedTime());
+		g_sphereTimer.update((float) getElapsedTime());
 
 		glClearColor(0.75f, 0.75f, 1.0f, 1.0f);
 		glClearDepth(1.0f);
@@ -383,7 +383,7 @@ public class BasicImpostor01 extends GLWindow {
 		lightData.lights[1].lightIntensity = new Vec4(0.4f, 0.4f, 0.4f, 1.0f);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillBuffer(tempSharedFloatBuffer24));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillAndFlipBuffer(tempFloatBuffer24));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		{
@@ -394,8 +394,8 @@ public class BasicImpostor01 extends GLWindow {
 			normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 
 			glUseProgram(g_litMeshProg.theProgram);
-			glUniformMatrix4(g_litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
-			glUniformMatrix3(g_litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+			glUniformMatrix4(g_litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
+			glUniformMatrix3(g_litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 
 			g_pPlaneMesh.render();
 
@@ -415,10 +415,10 @@ public class BasicImpostor01 extends GLWindow {
 			modelMatrix.scale(0.5f);
 
 			glUseProgram(g_Unlit.theProgram);
-			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
 			Vec4 lightColor = new Vec4(1.0f);
-			glUniform4(g_Unlit.objectColorUnif, lightColor.fillBuffer(tempSharedFloatBuffer4));
+			glUniform4(g_Unlit.objectColorUnif, lightColor.fillAndFlipBuffer(tempFloatBuffer4));
 			g_pCubeMesh.render("flat");
 			
 			modelMatrix.pop();
@@ -433,7 +433,7 @@ public class BasicImpostor01 extends GLWindow {
 			glDisable(GL_DEPTH_TEST);
 			glDepthMask(false);
 			glUseProgram(g_Unlit.theProgram);
-			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 			glUniform4f(g_Unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
 			g_pCubeMesh.render("flat");
 			glDepthMask(true);
@@ -455,7 +455,7 @@ public class BasicImpostor01 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(tempFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -466,60 +466,62 @@ public class BasicImpostor01 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private class MaterialBlock extends BufferableData {
+	private class MaterialBlock extends BufferableData<ByteBuffer> {
 		Vec4 diffuseColor;
 		Vec4 specularColor;
 		float specularShininess;
 		float padding[] = new float[3];
 
 		static final int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
-		
 
 		@Override
-		public byte[] getAsByteArray() {
-			float data[] = new float[12];
-			System.arraycopy(diffuseColor.get(), 0, data, 0, 4);
-			System.arraycopy(specularColor.get(), 0, data, 4, 4);
-			data[8] = specularShininess;
-			System.arraycopy(padding, 0, data, 9, padding.length);
+		public ByteBuffer fillBuffer(ByteBuffer buffer) {
+			for (int i = 0; i < 4; i++) {
+				buffer.putFloat(diffuseColor.get(i));
+			}
+			for (int i = 0; i < 4; i++) {
+				buffer.putFloat(specularColor.get(i));
+			}
+			buffer.putFloat(specularShininess);
+			for (int i = 0; i < 3; i++) {
+				buffer.putFloat(padding[i]);
+			}
 			
-			return PortingUtils.toByteArray(data);
+			return buffer;
 		}
 	}
+		
 	
-	
-	private class PerLight {
+	private class PerLight extends BufferableData<FloatBuffer> {
 		Vec4 cameraSpaceLightPos;
 		Vec4 lightIntensity;
-	};
-	
-	private class LightBlock implements Bufferable<FloatBuffer> {
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			cameraSpaceLightPos.fillBuffer(buffer);
+			lightIntensity.fillBuffer(buffer);
+
+			return buffer;
+		}
+	}
+		
+	private class LightBlock extends BufferableData<FloatBuffer> {
 		Vec4 ambientIntensity;
 		float lightAttenuation;
 		float padding[] = new float[3];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-		static final int SIZE = (4 + 1 + 3 + (8 * 2)) * (Float.SIZE / 8);
-
+		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * (Float.SIZE / 8);
 
 		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			float data[] = new float[24];
-			System.arraycopy(ambientIntensity.get(), 0, data, 0, 4);
-			data[4] = lightAttenuation;
-			System.arraycopy(padding, 0, data, 5, padding.length);
-
-			for (int i = 0; i < lights.length; i++) {
-				float light[] = new float[8];
-				System.arraycopy(lights[i].cameraSpaceLightPos.get(), 0, light, 0, 4);
-				System.arraycopy(lights[i].lightIntensity.get(), 0, light, 4, 4);
-				
-				System.arraycopy(light, 0, data, 8 + i * 8, 8);
-			}
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
+			ambientIntensity.fillBuffer(buffer);
+			buffer.put(lightAttenuation);
+			buffer.put(padding);
 			
-			buffer.clear();
-			buffer.put(data);
-			buffer.flip();
+			for (PerLight light : lights) {
+				light.fillBuffer(buffer);
+			}
 			
 			return buffer;
 		}
@@ -531,13 +533,17 @@ public class BasicImpostor01 extends GLWindow {
 		
 		static final int SIZE = 16 * (Float.SIZE / 8);
 
+		@Override
+		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillAndFlipBuffer(buffer);
+		}
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			return cameraToClipMatrix.fillBuffer(buffer);
 		}
 	}
-	
+		
 	
 	private enum Impostors {
 		IMP_BASIC,
@@ -645,7 +651,7 @@ public class BasicImpostor01 extends GLWindow {
 		if (bDrawImposter) {
 			Vec4 cameraSpherePos = Mat4.mul(modelMatrix.top(), new Vec4(position, 1.0f));
 			glUseProgram(g_litImpProgs[g_currImpostor.ordinal()].theProgram);
-			glUniform3(g_litImpProgs[g_currImpostor.ordinal()].cameraSpherePosUnif, cameraSpherePos.fillBuffer(tempSharedFloatBuffer4));
+			glUniform3(g_litImpProgs[g_currImpostor.ordinal()].cameraSpherePosUnif, cameraSpherePos.fillAndFlipBuffer(tempFloatBuffer4));
 			glUniform1f(g_litImpProgs[g_currImpostor.ordinal()].sphereRadiusUnif, radius);
 		
 			glBindVertexArray(g_imposterVAO);
@@ -664,8 +670,8 @@ public class BasicImpostor01 extends GLWindow {
 			normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 		
 			glUseProgram(g_litMeshProg.theProgram);
-			glUniformMatrix4(g_litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
-			glUniformMatrix3(g_litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+			glUniformMatrix4(g_litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
+			glUniformMatrix3(g_litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 		
 			g_pSphereMesh.render("lit");
 		

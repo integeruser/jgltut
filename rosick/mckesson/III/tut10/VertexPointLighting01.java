@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -16,20 +16,20 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
-import rosick.PortingUtils.Bufferable;
-import rosick.framework.Framework;
-import rosick.framework.Mesh;
-import rosick.framework.Timer;
-import rosick.glm.Mat3;
-import rosick.glm.Mat4;
-import rosick.glm.Quaternion;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
-import rosick.glutil.MatrixStack;
-import rosick.glutil.pole.MousePole.*;
-import rosick.glutil.pole.ObjectPole;
-import rosick.glutil.pole.ViewPole;
+import rosick.jglsdk.GLWindow;
+import rosick.jglsdk.PortingUtils.Bufferable;
+import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.framework.Mesh;
+import rosick.jglsdk.framework.Timer;
+import rosick.jglsdk.glm.Mat3;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Quaternion;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
+import rosick.jglsdk.glutil.MatrixStack;
+import rosick.jglsdk.glutil.pole.MousePole.*;
+import rosick.jglsdk.glutil.pole.ObjectPole;
+import rosick.jglsdk.glutil.pole.ViewPole;
 
 
 /**
@@ -99,9 +99,9 @@ public class VertexPointLighting01 extends GLWindow {
 	
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
+	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -274,7 +274,7 @@ public class VertexPointLighting01 extends GLWindow {
 
 	@Override
 	protected void display() {			
-		g_LightTimer.update(getElapsedTime());
+		g_LightTimer.update((float) getElapsedTime());
 		
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClearDepth(1.0f);
@@ -288,9 +288,9 @@ public class VertexPointLighting01 extends GLWindow {
 		Vec4 lightPosCameraSpace = Mat4.mul(modelMatrix.top(), worldLightPos);
 		
 		glUseProgram(g_WhiteDiffuseColor.theProgram);
-		glUniform3(g_WhiteDiffuseColor.lightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
+		glUniform3(g_WhiteDiffuseColor.lightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(tempFloatBuffer4));
 		glUseProgram(g_VertexDiffuseColor.theProgram);
-		glUniform3(g_VertexDiffuseColor.lightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
+		glUniform3(g_VertexDiffuseColor.lightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(tempFloatBuffer4));
 
 		glUseProgram(g_WhiteDiffuseColor.theProgram);
 		glUniform4f(g_WhiteDiffuseColor.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
@@ -308,9 +308,9 @@ public class VertexPointLighting01 extends GLWindow {
 				modelMatrix.push();
 
 				glUseProgram(g_WhiteDiffuseColor.theProgram);
-				glUniformMatrix4(g_WhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+				glUniformMatrix4(g_WhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 				Mat3 normMatrix = new Mat3(modelMatrix.top());
-				glUniformMatrix3(g_WhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+				glUniformMatrix3(g_WhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 				g_pPlaneMesh.render();
 				glUseProgram(0);
 				
@@ -325,15 +325,15 @@ public class VertexPointLighting01 extends GLWindow {
 
 				if (g_bDrawColoredCyl) {
 					glUseProgram(g_VertexDiffuseColor.theProgram);
-					glUniformMatrix4(g_VertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+					glUniformMatrix4(g_VertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 					Mat3 normMatrix = new Mat3(modelMatrix.top());
-					glUniformMatrix3(g_VertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+					glUniformMatrix3(g_VertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 					g_pCylinderMesh.render("lit-color");
 				} else {
 					glUseProgram(g_WhiteDiffuseColor.theProgram);
-					glUniformMatrix4(g_WhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+					glUniformMatrix4(g_WhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 					Mat3 normMatrix = new Mat3(modelMatrix.top());
-					glUniformMatrix3(g_WhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+					glUniformMatrix3(g_WhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 					g_pCylinderMesh.render("lit");
 				}
 				glUseProgram(0);
@@ -349,7 +349,7 @@ public class VertexPointLighting01 extends GLWindow {
 				modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
 				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 				glUniform4f(g_Unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f);
 				g_pCubeMesh.render("flat");
 				
@@ -370,7 +370,7 @@ public class VertexPointLighting01 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(tempFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -386,6 +386,10 @@ public class VertexPointLighting01 extends GLWindow {
 		
 		static final int SIZE = 16 * (Float.SIZE / 8);
 
+		@Override
+		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillAndFlipBuffer(buffer);
+		}
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {

@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -16,17 +16,17 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
-import rosick.PortingUtils.Bufferable;
-import rosick.framework.Framework;
-import rosick.framework.Timer;
-import rosick.glm.Mat4;
-import rosick.glm.Quaternion;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
-import rosick.glutil.MatrixStack;
-import rosick.glutil.pole.MousePole.*;
-import rosick.glutil.pole.ViewPole;
+import rosick.jglsdk.GLWindow;
+import rosick.jglsdk.PortingUtils.Bufferable;
+import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.framework.Timer;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Quaternion;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
+import rosick.jglsdk.glutil.MatrixStack;
+import rosick.jglsdk.glutil.pole.MousePole.*;
+import rosick.jglsdk.glutil.pole.ViewPole;
 import rosick.mckesson.III.tut12.LightManager.LightBlock;
 import rosick.mckesson.III.tut12.LightManager.LightBlockHDR;
 import rosick.mckesson.III.tut12.LightManager.SunlightValue;
@@ -119,9 +119,9 @@ public class HDRLighting02 extends GLWindow {
 	
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempSharedFloatBuffer40 = BufferUtils.createFloatBuffer(40);
+	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer40 = BufferUtils.createFloatBuffer(40);
 
 	
 	
@@ -348,7 +348,7 @@ public class HDRLighting02 extends GLWindow {
 		LightBlockHDR lightData = g_lights.getLightInformationHDR(worldToCamMat);
 		
 		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillBuffer(tempSharedFloatBuffer40));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillAndFlipBuffer(tempFloatBuffer40));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		{
@@ -371,10 +371,10 @@ public class HDRLighting02 extends GLWindow {
 				modelMatrix.scale(30.0f, 30.0f, 30.0f);
 
 				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
 				Vec4 lightColor = g_lights.getSunlightIntensity();
-				glUniform4(g_Unlit.objectColorUnif, lightColor.fillBuffer(tempSharedFloatBuffer4));
+				glUniform4(g_Unlit.objectColorUnif, lightColor.fillAndFlipBuffer(tempFloatBuffer4));
 				g_pScene.getSphereMesh().render("flat");
 				
 				modelMatrix.pop();
@@ -388,10 +388,10 @@ public class HDRLighting02 extends GLWindow {
 					modelMatrix.translate(g_lights.getWorldLightPosition(light));
 
 					glUseProgram(g_Unlit.theProgram);
-					glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+					glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
 					Vec4 lightColor = g_lights.getPointLightIntensity(light);
-					glUniform4(g_Unlit.objectColorUnif, lightColor.fillBuffer(tempSharedFloatBuffer4));
+					glUniform4(g_Unlit.objectColorUnif, lightColor.fillAndFlipBuffer(tempFloatBuffer4));
 					g_pScene.getCubeMesh().render("flat");
 
 					modelMatrix.pop();
@@ -407,7 +407,7 @@ public class HDRLighting02 extends GLWindow {
 				glDisable(GL_DEPTH_TEST);
 				glDepthMask(false);
 				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 				glUniform4f(g_Unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
 				g_pScene.getCubeMesh().render("flat");
 				glDepthMask(true);
@@ -432,7 +432,7 @@ public class HDRLighting02 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillAndFlipBuffer(tempFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -448,13 +448,17 @@ public class HDRLighting02 extends GLWindow {
 		
 		static final int SIZE = 16 * (Float.SIZE / 8);
 
+		@Override
+		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillAndFlipBuffer(buffer);
+		}
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			return cameraToClipMatrix.fillBuffer(buffer);
 		}
 	}
-	
+		
 	
 	private final Vec4 g_skyDaylightColor = new Vec4(0.65f, 0.65f, 1.0f, 1.0f);
 

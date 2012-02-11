@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL33.*;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -21,28 +21,27 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import rosick.GLWindow;
-import rosick.PortingUtils;
-import rosick.PortingUtils.Bufferable;
-import rosick.PortingUtils.BufferableData;
-import rosick.framework.Framework;
-import rosick.framework.Mesh;
-import rosick.framework.Timer;
-import rosick.framework.UniformBlockArray;
-import rosick.glimg.Dds;
-import rosick.glimg.ImageSet;
-import rosick.glimg.ImageSet.Dimensions;
-import rosick.glimg.ImageSet.SingleImage;
-import rosick.glm.Glm;
-import rosick.glm.Mat3;
-import rosick.glm.Mat4;
-import rosick.glm.Quaternion;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
-import rosick.glutil.MatrixStack;
-import rosick.glutil.pole.MousePole.*;
-import rosick.glutil.pole.ObjectPole;
-import rosick.glutil.pole.ViewPole;
+import rosick.jglsdk.GLWindow;
+import rosick.jglsdk.PortingUtils.Bufferable;
+import rosick.jglsdk.PortingUtils.BufferableData;
+import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.framework.Mesh;
+import rosick.jglsdk.framework.Timer;
+import rosick.jglsdk.framework.UniformBlockArray;
+import rosick.jglsdk.glimg.Dds;
+import rosick.jglsdk.glimg.ImageSet;
+import rosick.jglsdk.glimg.ImageSet.Dimensions;
+import rosick.jglsdk.glimg.ImageSet.SingleImage;
+import rosick.jglsdk.glm.Glm;
+import rosick.jglsdk.glm.Mat3;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Quaternion;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
+import rosick.jglsdk.glutil.MatrixStack;
+import rosick.jglsdk.glutil.pole.MousePole.*;
+import rosick.jglsdk.glutil.pole.ObjectPole;
+import rosick.jglsdk.glutil.pole.ViewPole;
 
 
 /**
@@ -132,10 +131,10 @@ public class MaterialTexture03 extends GLWindow {
 	
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempSharedFloatBuffer24 = BufferUtils.createFloatBuffer(24);
+	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
+	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer24 = BufferUtils.createFloatBuffer(24);
 
 	
 	
@@ -191,7 +190,7 @@ public class MaterialTexture03 extends GLWindow {
 			g_Programs[prog] = loadStandardProgram(g_shaderPairs[prog].vertShader, g_shaderPairs[prog].fragShader);
 		}
 
-		g_Unlit = loadUnlitProgram(BASEPATH + "Unlit.vert", BASEPATH + "Unlit.frag");
+		g_Unlit = loadUnlitProgram("/rosick/mckesson/data/" + "Unlit.vert", "/rosick/mckesson/data/" + "Unlit.frag");
 	}
 	
 	
@@ -200,9 +199,9 @@ public class MaterialTexture03 extends GLWindow {
 		initializePrograms();
 
 		try {
-			g_pObjectMesh = new Mesh(BASEPATH + "Infinity.xml");
-			g_pCubeMesh = 	new Mesh(BASEPATH + "UnitCube.xml");
-			g_pPlaneMesh = 	new Mesh(BASEPATH + "UnitPlane.xml");
+			g_pObjectMesh = new Mesh("/rosick/mckesson/data/" + "Infinity.xml");
+			g_pCubeMesh = 	new Mesh("/rosick/mckesson/data/" + "UnitCube.xml");
+			g_pPlaneMesh = 	new Mesh("/rosick/mckesson/data/" + "UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -328,7 +327,7 @@ public class MaterialTexture03 extends GLWindow {
 
 	@Override
 	protected void display() {			
-		g_lightTimer.update(getElapsedTime());
+		g_lightTimer.update((float) getElapsedTime());
 
 		glClearColor(0.75f, 0.75f, 1.0f, 1.0f);
 		glClearDepth(1.0f);
@@ -354,7 +353,7 @@ public class MaterialTexture03 extends GLWindow {
 		lightData.lights[1].lightIntensity = new Vec4(0.4f, 0.4f, 0.4f, 1.0f);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillBuffer(tempSharedFloatBuffer24));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillAndFlipBuffer(tempFloatBuffer24));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		{
@@ -373,8 +372,8 @@ public class MaterialTexture03 extends GLWindow {
 			ProgramData prog = g_Programs[g_eMode.ordinal()];
 
 			glUseProgram(prog.theProgram);
-			glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
-			glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+			glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
+			glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 
 			glActiveTexture(GL_TEXTURE0 + g_gaussTexUnit);
 			glBindTexture(GL_TEXTURE_2D, g_gaussTextures[g_currTexture]);
@@ -406,10 +405,10 @@ public class MaterialTexture03 extends GLWindow {
 			modelMatrix.scale(0.25f);
 
 			glUseProgram(g_Unlit.theProgram);
-			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
 			Vec4 lightColor = new Vec4(1.0f);
-			glUniform4(g_Unlit.objectColorUnif, lightColor.fillBuffer(tempSharedFloatBuffer4));
+			glUniform4(g_Unlit.objectColorUnif, lightColor.fillAndFlipBuffer(tempFloatBuffer4));
 			g_pCubeMesh.render("flat");
 			
 			modelMatrix.pop();
@@ -417,7 +416,7 @@ public class MaterialTexture03 extends GLWindow {
 			modelMatrix.translate(globalLightDirection.scale(100.0f));
 			modelMatrix.scale(5.0f);
 
-			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 			g_pCubeMesh.render("flat");
 
 			glUseProgram(0);
@@ -433,7 +432,7 @@ public class MaterialTexture03 extends GLWindow {
 			glDisable(GL_DEPTH_TEST);
 			glDepthMask(false);
 			glUseProgram(g_Unlit.theProgram);
-			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+			glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 			glUniform4f(g_Unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
 			g_pCubeMesh.render("flat");
 			glDepthMask(true);
@@ -455,7 +454,7 @@ public class MaterialTexture03 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(tempFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -466,7 +465,7 @@ public class MaterialTexture03 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	private class MaterialBlock extends BufferableData implements Bufferable<FloatBuffer> {
+	private class MaterialBlock extends BufferableData<ByteBuffer> {
 		Vec4 diffuseColor;
 		Vec4 specularColor;
 		float specularShininess;
@@ -474,67 +473,54 @@ public class MaterialTexture03 extends GLWindow {
 
 		static final int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
 
-		
 		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			float data[] = new float[12];
-			System.arraycopy(diffuseColor.get(), 0, data, 0, 4);
-			System.arraycopy(specularColor.get(), 0, data, 4, 4);
-			data[8] = specularShininess;
-			System.arraycopy(padding, 0, data, 9, padding.length);
-
-			buffer.clear();
-			buffer.put(data);
-			buffer.flip();
+		public ByteBuffer fillBuffer(ByteBuffer buffer) {
+			for (int i = 0; i < 4; i++) {
+				buffer.putFloat(diffuseColor.get(i));
+			}
+			for (int i = 0; i < 4; i++) {
+				buffer.putFloat(specularColor.get(i));
+			}
+			buffer.putFloat(specularShininess);
+			for (int i = 0; i < 3; i++) {
+				buffer.putFloat(padding[i]);
+			}
 			
 			return buffer;
-		}
-
-		@Override
-		public byte[] getAsByteArray() {
-			float data[] = new float[12];
-			System.arraycopy(diffuseColor.get(), 0, data, 0, 4);
-			System.arraycopy(specularColor.get(), 0, data, 4, 4);
-			data[8] = specularShininess;
-			System.arraycopy(padding, 0, data, 9, padding.length);
-			
-			return PortingUtils.toByteArray(data);
 		}
 	}
 	
 	
-	private class PerLight {
+	private class PerLight extends BufferableData<FloatBuffer> {
 		Vec4 cameraSpaceLightPos;
 		Vec4 lightIntensity;
-	};
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			cameraSpaceLightPos.fillBuffer(buffer);
+			lightIntensity.fillBuffer(buffer);
+
+			return buffer;
+		}
+	}
 	
-	private class LightBlock implements Bufferable<FloatBuffer> {
+	private class LightBlock extends BufferableData<FloatBuffer> {
 		Vec4 ambientIntensity;
 		float lightAttenuation;
 		float padding[] = new float[3];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-		static final int SIZE = (4 + 1 + 3 + (8 * 2)) * (Float.SIZE / 8);
-
+		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * (Float.SIZE / 8);
 
 		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			float data[] = new float[24];
-			System.arraycopy(ambientIntensity.get(), 0, data, 0, 4);
-			data[4] = lightAttenuation;
-			System.arraycopy(padding, 0, data, 5, padding.length);
-
-			for (int i = 0; i < lights.length; i++) {
-				float light[] = new float[8];
-				System.arraycopy(lights[i].cameraSpaceLightPos.get(), 0, light, 0, 4);
-				System.arraycopy(lights[i].lightIntensity.get(), 0, light, 4, 4);
-				
-				System.arraycopy(light, 0, data, 8 + i * 8, 8);
-			}
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
+			ambientIntensity.fillBuffer(buffer);
+			buffer.put(lightAttenuation);
+			buffer.put(padding);
 			
-			buffer.clear();
-			buffer.put(data);
-			buffer.flip();
+			for (PerLight light : lights) {
+				light.fillBuffer(buffer);
+			}
 			
 			return buffer;
 		}
@@ -546,13 +532,17 @@ public class MaterialTexture03 extends GLWindow {
 		
 		static final int SIZE = 16 * (Float.SIZE / 8);
 
+		@Override
+		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillAndFlipBuffer(buffer);
+		}
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			return cameraToClipMatrix.fillBuffer(buffer);
 		}
 	}
-	
+		
 	
 	private enum ShaderMode {
 		MODE_FIXED,

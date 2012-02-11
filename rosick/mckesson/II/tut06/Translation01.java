@@ -11,11 +11,11 @@ import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
-import rosick.GLWindow;
-import rosick.framework.Framework;
-import rosick.glm.Mat4;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
+import rosick.jglsdk.GLWindow;
+import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
 
 
 /**
@@ -83,7 +83,7 @@ public class Translation01 extends GLWindow {
 
 	private Mat4 cameraToClipMatrix = new Mat4();
 	
-	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 	
 	
 	
@@ -109,7 +109,7 @@ public class Translation01 extends GLWindow {
 		cameraToClipMatrix.set(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
 		
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(tempFloatBuffer16));
 		glUseProgram(0);
 	}
 	
@@ -178,7 +178,7 @@ public class Translation01 extends GLWindow {
 		for (Instance currInst : g_instanceList) {
 			final Mat4 transformMatrix = currInst.constructMatrix(fElapsedTime);
 			
-			glUniformMatrix4(modelToCameraMatrixUnif, false, transformMatrix.fillBuffer(tempSharedFloatBuffer16));
+			glUniformMatrix4(modelToCameraMatrixUnif, false, transformMatrix.fillAndFlipBuffer(tempFloatBuffer16));
 			glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		}
 
@@ -193,7 +193,7 @@ public class Translation01 extends GLWindow {
 		cameraToClipMatrix.set(5, fFrustumScale);
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(tempFloatBuffer16));
 		glUseProgram(0);
 
 		glViewport(0, 0, width, height);

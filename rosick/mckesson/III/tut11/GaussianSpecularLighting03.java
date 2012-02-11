@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -16,21 +16,21 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
-import rosick.PortingUtils.Bufferable;
-import rosick.framework.Framework;
-import rosick.framework.Mesh;
-import rosick.framework.Timer;
-import rosick.glm.Glm;
-import rosick.glm.Mat3;
-import rosick.glm.Mat4;
-import rosick.glm.Quaternion;
-import rosick.glm.Vec3;
-import rosick.glm.Vec4;
-import rosick.glutil.MatrixStack;
-import rosick.glutil.pole.MousePole.*;
-import rosick.glutil.pole.ObjectPole;
-import rosick.glutil.pole.ViewPole;
+import rosick.jglsdk.GLWindow;
+import rosick.jglsdk.PortingUtils.Bufferable;
+import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.framework.Mesh;
+import rosick.jglsdk.framework.Timer;
+import rosick.jglsdk.glm.Glm;
+import rosick.jglsdk.glm.Mat3;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Quaternion;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glm.Vec4;
+import rosick.jglsdk.glutil.MatrixStack;
+import rosick.jglsdk.glutil.pole.MousePole.*;
+import rosick.jglsdk.glutil.pole.ObjectPole;
+import rosick.jglsdk.glutil.pole.ViewPole;
 
 
 /**
@@ -135,9 +135,9 @@ public class GaussianSpecularLighting03 extends GLWindow {
 	
 	private MatrixStack modelMatrix = new MatrixStack();
 
-	private FloatBuffer tempSharedFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempSharedFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
+	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -374,7 +374,7 @@ public class GaussianSpecularLighting03 extends GLWindow {
 
 	@Override
 	protected void display() {			
-		g_LightTimer.update(getElapsedTime());
+		g_LightTimer.update((float) getElapsedTime());
 		
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClearDepth(1.0f);
@@ -392,15 +392,15 @@ public class GaussianSpecularLighting03 extends GLWindow {
 		glUseProgram(whiteProg.theProgram);
 		glUniform4f(whiteProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
 		glUniform4f(whiteProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-		glUniform3(whiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
+		glUniform3(whiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(tempFloatBuffer4));
 		glUniform1f(whiteProg.lightAttenuationUnif, g_fLightAttenuation);
 		glUniform1f(whiteProg.shininessFactorUnif, g_matParams.getSpecularValue());
-		glUniform4(whiteProg.baseDiffuseColorUnif, g_bDrawDark ? g_darkColor.fillBuffer(tempSharedFloatBuffer4) : g_lightColor.fillBuffer(tempSharedFloatBuffer4));
+		glUniform4(whiteProg.baseDiffuseColorUnif, g_bDrawDark ? g_darkColor.fillAndFlipBuffer(tempFloatBuffer4) : g_lightColor.fillAndFlipBuffer(tempFloatBuffer4));
 		
 		glUseProgram(colorProg.theProgram);
 		glUniform4f(colorProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
 		glUniform4f(colorProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-		glUniform3(colorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillBuffer(tempSharedFloatBuffer4));
+		glUniform3(colorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(tempFloatBuffer4));
 		glUniform1f(colorProg.lightAttenuationUnif, g_fLightAttenuation);
 		glUniform1f(colorProg.shininessFactorUnif, g_matParams.getSpecularValue());
 		glUseProgram(0);
@@ -416,9 +416,9 @@ public class GaussianSpecularLighting03 extends GLWindow {
 				normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 				
 				glUseProgram(whiteProg.theProgram);
-				glUniformMatrix4(whiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+				glUniformMatrix4(whiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
-				glUniformMatrix3(whiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+				glUniformMatrix3(whiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 				g_pPlaneMesh.render();
 				glUseProgram(0);
 				
@@ -440,9 +440,9 @@ public class GaussianSpecularLighting03 extends GLWindow {
 				
 				ProgramData prog = g_bDrawColoredCyl ? colorProg : whiteProg;
 				glUseProgram(prog.theProgram);
-				glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+				glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
-				glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillBuffer(tempSharedFloatBuffer9));
+				glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
 
 				if (g_bDrawColoredCyl) {
 					g_pCylinderMesh.render("lit-color");
@@ -463,7 +463,7 @@ public class GaussianSpecularLighting03 extends GLWindow {
 				modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
 				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 				glUniform4f(g_Unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f);
 				g_pCubeMesh.render("flat");
 				
@@ -484,7 +484,7 @@ public class GaussianSpecularLighting03 extends GLWindow {
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(tempSharedFloatBuffer16));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(tempFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -500,13 +500,17 @@ public class GaussianSpecularLighting03 extends GLWindow {
 		
 		static final int SIZE = 16 * (Float.SIZE / 8);
 
+		@Override
+		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillAndFlipBuffer(buffer);
+		}
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			return cameraToClipMatrix.fillBuffer(buffer);
 		}
 	}
-	
+		
 	
 	private enum LightingModel {
 		LM_PHONG_SPECULAR,

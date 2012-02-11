@@ -3,7 +3,7 @@ package rosick.mckesson.II.tut08;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
-import static rosick.glm.Vec.*;
+import static rosick.jglsdk.glm.Vec.*;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
-import rosick.framework.Framework;
-import rosick.framework.Mesh;
-import rosick.glm.Glm;
-import rosick.glm.Mat4;
-import rosick.glm.Quaternion;
-import rosick.glm.Vec3;
-import rosick.glutil.MatrixStack;
+import rosick.jglsdk.GLWindow;
+import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.framework.Mesh;
+import rosick.jglsdk.glm.Glm;
+import rosick.jglsdk.glm.Mat4;
+import rosick.jglsdk.glm.Quaternion;
+import rosick.jglsdk.glm.Vec3;
+import rosick.jglsdk.glutil.MatrixStack;
 
 
 /**
@@ -55,7 +55,7 @@ public class QuaternionYPR02 extends GLWindow {
 
 	private Mat4 cameraToClipMatrix = new Mat4();
 	
-	private FloatBuffer tempSharedFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 
 
 		
@@ -82,7 +82,7 @@ public class QuaternionYPR02 extends GLWindow {
 		cameraToClipMatrix.set(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(tempFloatBuffer16));
 		glUseProgram(0);
 	}
 	
@@ -163,7 +163,7 @@ public class QuaternionYPR02 extends GLWindow {
 		currMatrix.rotateX(-90.0f);
 		// Set the base color for this object.
 		glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-		glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillBuffer(tempSharedFloatBuffer16));
+		glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
 		g_pShip.render("tint");
 
@@ -177,7 +177,7 @@ public class QuaternionYPR02 extends GLWindow {
 		cameraToClipMatrix.set(5, fFrustumScale);
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillBuffer(tempSharedFloatBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(tempFloatBuffer16));
 		glUseProgram(0);
 
 		glViewport(0, 0, width, height);

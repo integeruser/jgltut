@@ -34,9 +34,6 @@ import rosick.mckesson.III.tut12.Scene.LightingProgramTypes;
 import rosick.mckesson.III.tut12.Scene.ProgramData;
 
 
-// Some graphics card (like my Radeon HD3870) generates an OpenGL error. Don't worry, the tutorial works fine anyway.
-
-
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
@@ -156,7 +153,9 @@ public class SceneLighting01 extends GLWindow {
 		int lightBlock = glGetUniformBlockIndex(data.theProgram, "Light");
 		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
 
-		glUniformBlockBinding(data.theProgram, materialBlock, g_materialBlockIndex);
+		if (materialBlock != GL_INVALID_INDEX) {									// Can be optimized out.
+			glUniformBlockBinding(data.theProgram, materialBlock, g_materialBlockIndex);
+		}
 		glUniformBlockBinding(data.theProgram, lightBlock, g_lightBlockIndex);
 		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
 

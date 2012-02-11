@@ -38,27 +38,14 @@ import rosick.jglsdk.glutil.MatrixStack;
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
  * IV. Texturing
- * 14. Textures are not Pictures
- * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
+ * 15. Many Images
+ * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2015.html
  * @author integeruser
  * 
- * P		- toggle pausing on/off.
- * -,=		- rewind/jump forward time by 0.5 second (of real-time).
- * T		- toggle a display showing the look-at point.
- * G		- toggles the drawing of the light source.
- * Y		- switch between the infinity symbol and a flat plane.
- * SPACEBAR	- switch between one of three rendering modes: fixed shininess with a Gaussian lookup-table, a texture-based shininess with a 
- * 				Gaussian lookup-table, and a texture-based shininess with a shader-computed Gaussian term.
- * 1,2,3,4	- switch to progressively larger textures.
- * 8,9		- switch to the gold material/a material with a dark diffuse color and bright specular color.
- * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING				- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
+ * SPACEBAR		- toggle between loaded/constructed texture.
+ * Y			- toggle between plane/corridor mesh.
+ * P			- toggle pausing on/off.
+ * 1,2,3,4,5,6	- switch filtering technique.
  */
 public class ManyImages01 extends GLWindow {
 	
@@ -226,6 +213,13 @@ public class ManyImages01 extends GLWindow {
 		glActiveTexture(GL_TEXTURE0 + g_colorTexUnit);
 		glBindTexture(GL_TEXTURE_2D,
 			g_useMipmapTexture ? g_mipmapTestTexture : g_checkerTexture);
+
+		/* Not in the original tutorial, needed for LWJGL */
+		if (!g_useMipmapTexture) {
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		/*                                                */
+		
 		glBindSampler(g_colorTexUnit, g_samplers[g_currSampler]);
 
 		if (g_drawCorridor) {
@@ -325,7 +319,7 @@ public class ManyImages01 extends GLWindow {
 		// Linear
 		glSamplerParameteri(g_samplers[1], GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glSamplerParameteri(g_samplers[1], GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
+		
 		// Linear mipmap Nearest
 		glSamplerParameteri(g_samplers[2], GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glSamplerParameteri(g_samplers[2], GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);

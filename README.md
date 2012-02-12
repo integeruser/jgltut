@@ -4,10 +4,10 @@ OpenGL tutorials with LWJGL
 This project is a port of McKesson's excellent OpenGL tutorials to Java using LWJGL and it is distributed in the hope that it will be useful.
 
 [Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html) is the book where to start; you can find the original code
-[here](https://bitbucket.org/alfonse/gltut/wiki/Home). The author occasionally updates his book by adding new tutorials:
-we will update this project in the same manner as soon as we can.
+[here](https://bitbucket.org/alfonse/gltut/wiki/Home).  
+The author occasionally updates his book by adding new tutorials: we will update this project in the same manner as soon as we can.
 
-N° of original tutorials:\t\t\t\t16  
+N° of original tutorials:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;16  
 N° of ported tutorials so far:&nbsp;&nbsp;&nbsp;&nbsp;15
 
 Use the [github issue tracker](https://github.com/rosickteam/OpenGL/issues) to suggest a feature, report a bug, or general discussion.  
@@ -24,12 +24,13 @@ To download and install LWJGL visit [the official site](http://www.lwjgl.org/).
 
 - "rosick/jglsdk" 	: package with the glsdk port.
 - "rosick/mckesson" : package with the tutorials port.
-  - "I"    : The Basics
-  - "II"   : Positioning
-  - "III"  : Illumination
-  - "IV"   : Texturing
+  - "I" :&nbsp;&nbsp;&nbsp; The Basics
+  - "II" :&nbsp; Positioning
+  - "III" : Illumination
+  - "IV" :&nbsp; Texturing
 
-To test it out, it is recommended to use [Eclipse](http://www.eclipse.org/). Open Eclipse, copy or link the "rosick" package into an existing project (in the "src" folder) and, if you haven't already done, 
+To test it out, it is recommended to use [Eclipse](http://www.eclipse.org/).  
+Open Eclipse, copy or link the "rosick" package into an existing project (in the "src" folder) and, if you haven't already done, 
 add and configure the LWJGL library in the project build path. Open any tutorial and run it by clicking the 'play' button.
 
 

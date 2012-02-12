@@ -104,7 +104,7 @@ public class ImageCreator {
 	}
 
 
-	static Dimensions modifySizeForMipmap(Dimensions origDim, int mipmapLevel) {
+	public static Dimensions modifySizeForMipmap(Dimensions origDim, int mipmapLevel) {
 		for(int iLoop = 0; iLoop < mipmapLevel; iLoop++) {
 			origDim.width /= 2;
 			origDim.height /= 2;
@@ -115,7 +115,7 @@ public class ImageCreator {
 	}
 
 
-	static int calcBytesPerPixel(ImageFormat fmt) {
+	public static int calcBytesPerPixel(ImageFormat fmt) {
 		int bytesPerPixel = 0;
 		switch(fmt.depth()) {
 		case BD_COMPRESSED:			return 0;

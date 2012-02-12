@@ -90,14 +90,14 @@ public class ImageFormat {
 	
 	
 	public static class UncheckedImageFormat {
-		PixelDataType eType;		//<The type of pixel data.
-		PixelComponents eFormat;	//<The components stored by a pixel.
-		ComponentOrder eOrder;		//<The order of the components of the pixel.
-		Bitdepth eBitdepth;			//<The bitdepth of each pixel component.
+		public PixelDataType eType;		//<The type of pixel data.
+		public PixelComponents eFormat;	//<The components stored by a pixel.
+		public ComponentOrder eOrder;		//<The order of the components of the pixel.
+		public Bitdepth eBitdepth;			//<The bitdepth of each pixel component.
 
 		int lineAlignment;			//<The byte alignment of a horizontal line of pixel data.
 		
-		UncheckedImageFormat(PixelDataType eType, PixelComponents eFormat,
+		public UncheckedImageFormat(PixelDataType eType, PixelComponents eFormat,
 				ComponentOrder eOrder, Bitdepth eBitdepth, int lineAlignment) {
 			this.eType = eType;
 			this.eFormat = eFormat;

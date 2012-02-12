@@ -23,12 +23,12 @@ public class ImageSet {
 
 
 	public static class Dimensions {
-		int numDimensions;	// <The number of dimensions of an image. Can be 1, 2, or 3.
+		public int numDimensions;	// <The number of dimensions of an image. Can be 1, 2, or 3.
 		public int width;			// <The width of the image. Always valid.
 		public int height;			// <The height of the image. Only valid if numDimensions is 2 or 3.
-		int depth;			// <The depth of the image. Only valid if numDimensions is 3.
+		public int depth;			// <The depth of the image. Only valid if numDimensions is 3.
 
-		Dimensions(Dimensions dimensions) {
+		public Dimensions(Dimensions dimensions) {
 			numDimensions = dimensions.numDimensions;
 			width = dimensions.width;
 			height = dimensions.height;

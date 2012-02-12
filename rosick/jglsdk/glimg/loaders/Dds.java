@@ -1,4 +1,4 @@
-package rosick.jglsdk.glimg;
+package rosick.jglsdk.glimg.loaders;
 
 import static rosick.PortingUtils.*;
 import static rosick.jglsdk.glimg.ImageFormat.Bitdepth.*;
@@ -11,13 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import rosick.jglsdk.glimg.ImageCreator.BadFaceCountException;
-import rosick.jglsdk.glimg.ImageCreator.CubemapsMustBe2DException;
-import rosick.jglsdk.glimg.ImageCreator.No3DTextureArrayException;
-import rosick.jglsdk.glimg.ImageCreator.NoImagesSpecifiedException;
+import rosick.jglsdk.glimg.ImageCreator;
+import rosick.jglsdk.glimg.ImageFormat;
+import rosick.jglsdk.glimg.ImageSet;
 import rosick.jglsdk.glimg.ImageFormat.UncheckedImageFormat;
 import rosick.jglsdk.glimg.ImageSet.Dimensions;
 
@@ -27,7 +25,7 @@ import rosick.jglsdk.glimg.ImageSet.Dimensions;
  * 
  * @author integeruser
  */
-public class DdsLoader {
+public class Dds {
 	
 	static class MagicNumbers {
 		static final int DDS_MAGIC_NUMBER 	= 0x20534444;							// "DDS "
@@ -181,7 +179,7 @@ public class DdsLoader {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	static class DdsFileNotFoundException extends Exception {
+	static class DdsFileNotFoundException extends RuntimeException {
 		private static final long serialVersionUID = 7749946923854530980L;
 
 		public DdsFileNotFoundException(String filename) {
@@ -189,7 +187,7 @@ public class DdsLoader {
 		}
 	}
 	
-	static class DdsFileMalformedException extends Exception {
+	static class DdsFileMalformedException extends RuntimeException {
 		private static final long serialVersionUID = 7351687754827086128L;
 
 		public DdsFileMalformedException(String filename, String message) {
@@ -197,7 +195,7 @@ public class DdsLoader {
 		}
 	}
 	
-	static class DdsFileUnsupportedException extends Exception {
+	static class DdsFileUnsupportedException extends RuntimeException {
 		private static final long serialVersionUID = 377383320427260974L;
 
 		public DdsFileUnsupportedException(String filename, String message) {
@@ -210,7 +208,27 @@ public class DdsLoader {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
-	public static ImageSet processDDSData(ArrayList<Character> ddsData, String filename) throws DdsFileMalformedException, UnsupportedEncodingException, DdsFileUnsupportedException, CubemapsMustBe2DException, BadFaceCountException, No3DTextureArrayException, NoImagesSpecifiedException {
+	public static ImageSet loadFromFile(String filename) {
+		// Load the file.
+		ArrayList<Character> fileData = new ArrayList<>();
+
+		InputStream in = ClassLoader.class.getResourceAsStream(filename);
+		Reader buffer = new BufferedReader(new InputStreamReader(in));
+		int r;
+		
+        try {
+			while ((r = buffer.read()) != -1) {
+				fileData.add((char) r);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+		return processDDSData(fileData, filename);
+	}
+	
+	
+	public static ImageSet processDDSData(ArrayList<Character> ddsData, String filename) {
 		// Check the first 4 bytes.
 		int magicTest = (int) toLong(toByteArray(ddsData, 0, 4));
 
@@ -218,13 +236,12 @@ public class DdsLoader {
 			throw new DdsFileMalformedException(filename, "The Magic number is missing from the file.");
 		}
 		
-		if (ddsData.size() < DdsHeader.SIZE + 4)
+		if (ddsData.size() < DdsHeader.SIZE + 4) {
 			throw new DdsFileMalformedException(filename, "The data is way too small to store actual information.");
-
+		}
 		
 		// Now, get a DDS header.
 		DdsHeader header = new DdsHeader(ddsData, 4);
-		
 		
 		// Collect info from the DDS file.
 		Dds10Header header10 = getDDS10Header(header, ddsData);
@@ -238,10 +255,7 @@ public class DdsLoader {
 			
 		int baseOffset = getByteOffsetToData(header);
 
-	
-		
-
-		//Build the image creator. No more exceptions, except for those thrown by the ImageCreator.
+		// Build the image creator. No more exceptions, except for those thrown by the ImageCreator.
 		ImageCreator imgCreator = new ImageCreator(new ImageFormat(fmt), dims, numMipmaps, numArrays, numFaces);
 		int cumulativeOffset = baseOffset;
 		for (int arrayIx = 0; arrayIx < numArrays; arrayIx++)
@@ -263,6 +277,85 @@ public class DdsLoader {
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private static Dds10Header getDDS10Header(DdsHeader header, ArrayList<Character> ddsData) {
+		if (header.ddspf.dwFourCC == MagicNumbers.DDS10_FOUR_CC) {
+			Dds10Header header10;
+			int offsetToNewHeader = 4 + DdsHeader.SIZE;
+
+			header10 = new Dds10Header(ddsData, offsetToNewHeader);
+
+			return header10;
+		}
+
+		// Compute the header manually. Namely, compute the DXGI_FORMAT for the given data.
+		Dds10Header header10 = new Dds10Header();
+		
+		// Get dimensionality. Assume 2D unless otherwise stated.
+		header10.resourceDimension = Dds10ResourceDimensions.DDS_DIMENSION_TEXTURE2D;
+		
+		if ((header.dwCaps2 & DdsCaps2.DDSCAPS2_VOLUME) != 0 && (header.dwFlags & DdsFlags.DDSD_DEPTH) != 0) {
+			header10.resourceDimension = Dds10ResourceDimensions.DDS_DIMENSION_TEXTURE3D;
+		}
+
+		// Get cubemap.
+		int cubemapTest = header.dwCaps2 & DdsCaps2.DDSCAPS2_CUBEMAP_ALL;
+		if (cubemapTest == 0) {
+			header10.miscFlag = 0;
+		} else {
+			// All faces must be specified or none. Otherwise unsupported.
+			if (cubemapTest != DdsCaps2.DDSCAPS2_CUBEMAP_ALL) {
+				throw new DdsFileUnsupportedException("", "All cubemap faces must be specified.");
+			}
+			
+			header10.miscFlag = Dds10MiscFlags.DDS_RESOURCE_MISC_TEXTURECUBE;
+		}
+
+		// Array size is... zero?
+		header10.arraySize = 0;
+
+		// Use the old-style format.
+		header10.dxgiFormat = DXGI_FORMAT.DXGI_FORMAT_UNKNOWN;
+
+		return header10;
+	}
+	
+	
+	private static Dimensions getDimensions(DdsHeader header, Dds10Header header10) {
+		Dimensions dims = new Dimensions();
+		dims.numDimensions = 1;
+		dims.width = header.dwWidth;
+		
+		if ((header.dwFlags & DdsFlags.DDSD_HEIGHT) != 0) {
+			dims.numDimensions = 2;
+			dims.height = header.dwHeight;
+		}
+		
+		if ((header.dwFlags & DdsFlags.DDSD_DEPTH) != 0) {
+			dims.numDimensions = 3;
+			dims.depth = header.dwDepth;
+		}
+
+		return dims;
+	}
+	
+	
+	private static UncheckedImageFormat getImageFormat(DdsHeader header, Dds10Header header10) {
+		for (int convIx = 0; convIx < g_oldFmtConvert.length; convIx++) {
+			if (doesMatchFormat(g_oldFmtConvert[convIx].ddsFmt, header)) {
+				return g_oldFmtConvert[convIx].fmt;
+			}
+		}
+
+		throw new DdsFileUnsupportedException("", "Could not use the DDS9's image format.");
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	private static int calcMipmapSize(Dimensions dims, int currLevel, UncheckedImageFormat fmt) {
 		Dimensions mipmapDims = new Dimensions(ImageCreator.modifySizeForMipmap(dims, currLevel));
@@ -466,98 +559,4 @@ public class DdsLoader {
 		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RG, ORDER_RGBA, BD_PER_COMP_8, 1),
 				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_LUMINANCE | DdsPixelFormatFlags.DDPF_ALPHAPIXELS, 8, 0xff, 0, 0, 0xff00, 0)),		
 	};
-
-	private static UncheckedImageFormat getImageFormat(DdsHeader header, Dds10Header header10) throws DdsFileUnsupportedException {
-		for (int convIx = 0; convIx < g_oldFmtConvert.length; convIx++) {
-			if (doesMatchFormat(g_oldFmtConvert[convIx].ddsFmt, header)) {
-				return g_oldFmtConvert[convIx].fmt;
-			}
-		}
-
-		throw new DdsFileUnsupportedException("", "Could not use the DDS9's image format.");
-	}
-
-
-
-
-	public static ImageSet loadFromFile(String filename) throws DdsFileMalformedException, UnsupportedEncodingException, DdsFileUnsupportedException, CubemapsMustBe2DException, BadFaceCountException, No3DTextureArrayException, NoImagesSpecifiedException {
-		// Load the file.
-		ArrayList<Character> fileData = new ArrayList<>();
-
-		InputStream in = ClassLoader.class.getResourceAsStream(filename);
-		Reader buffer = new BufferedReader(new InputStreamReader(in));
-		int r;
-		
-        try {
-			while ((r = buffer.read()) != -1) {
-				fileData.add((char) r);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        
-		return processDDSData(fileData, filename);
-	}
-	
-	
-	private static Dds10Header getDDS10Header(DdsHeader header, ArrayList<Character> ddsData) throws DdsFileUnsupportedException {
-		if (header.ddspf.dwFourCC == MagicNumbers.DDS10_FOUR_CC) {
-			Dds10Header header10;
-			int offsetToNewHeader = 4 + DdsHeader.SIZE;
-
-			header10 = new Dds10Header(ddsData, offsetToNewHeader);
-
-			return header10;
-		}
-
-		// Compute the header manually. Namely, compute the DXGI_FORMAT for the given data.
-		Dds10Header header10 = new Dds10Header();
-		
-		// Get dimensionality. Assume 2D unless otherwise stated.
-		header10.resourceDimension = Dds10ResourceDimensions.DDS_DIMENSION_TEXTURE2D;
-		
-		if ((header.dwCaps2 & DdsCaps2.DDSCAPS2_VOLUME) != 0 && (header.dwFlags & DdsFlags.DDSD_DEPTH) != 0) {
-			header10.resourceDimension = Dds10ResourceDimensions.DDS_DIMENSION_TEXTURE3D;
-		}
-
-		// Get cubemap.
-		int cubemapTest = header.dwCaps2 & DdsCaps2.DDSCAPS2_CUBEMAP_ALL;
-		if (cubemapTest == 0) {
-			header10.miscFlag = 0;
-		} else {
-			// All faces must be specified or none. Otherwise unsupported.
-			if (cubemapTest != DdsCaps2.DDSCAPS2_CUBEMAP_ALL) {
-				throw new DdsFileUnsupportedException("", "All cubemap faces must be specified.");
-			}
-			
-			header10.miscFlag = Dds10MiscFlags.DDS_RESOURCE_MISC_TEXTURECUBE;
-		}
-
-		// Array size is... zero?
-		header10.arraySize = 0;
-
-		// Use the old-style format.
-		header10.dxgiFormat = DXGI_FORMAT.DXGI_FORMAT_UNKNOWN;
-
-		return header10;
-	}
-	
-	
-	private static Dimensions getDimensions(DdsHeader header, Dds10Header header10) {
-		Dimensions dims = new Dimensions();
-		dims.numDimensions = 1;
-		dims.width = header.dwWidth;
-		
-		if ((header.dwFlags & DdsFlags.DDSD_HEIGHT) != 0) {
-			dims.numDimensions = 2;
-			dims.height = header.dwHeight;
-		}
-		
-		if ((header.dwFlags & DdsFlags.DDSD_DEPTH) != 0) {
-			dims.numDimensions = 3;
-			dims.depth = header.dwDepth;
-		}
-
-		return dims;
-	}
 }

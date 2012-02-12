@@ -7,8 +7,8 @@ This project is a port of McKesson's excellent OpenGL tutorials to Java using LW
 [here](https://bitbucket.org/alfonse/gltut/wiki/Home). The author occasionally updates his book by adding new tutorials:
 we will update this project in the same manner as soon as we can.
 
-N° of original tutorials:        16  
-N° of ported tutorials so far:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;15
+N° of original tutorials:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;16  
+N° of ported tutorials so far:&nbsp;&nbsp;&nbsp;&nbsp;15
 
 If you find any issues or difficulties in using this project, please tell us.  
 Happy coding! 

@@ -24,7 +24,7 @@ import rosick.PortingUtils.Bufferable;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.framework.Timer;
-import rosick.jglsdk.glimg.Dds;
+import rosick.jglsdk.glimg.DdsLoader;
 import rosick.jglsdk.glimg.ImageSet;
 import rosick.jglsdk.glimg.ImageSet.Dimensions;
 import rosick.jglsdk.glimg.ImageSet.SingleImage;
@@ -388,7 +388,7 @@ public class ManyImages01 extends GLWindow {
 	
 	private void loadCheckerTexture() {
 		try	{
-			ImageSet pImageSet = Dds.loadFromFile(BASEPATH + "checker.dds");
+			ImageSet pImageSet = DdsLoader.loadFromFile(BASEPATH + "checker.dds");
 
 			g_checkerTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_checkerTexture);

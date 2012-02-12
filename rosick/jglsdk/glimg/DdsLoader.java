@@ -27,9 +27,9 @@ import rosick.jglsdk.glimg.ImageSet.Dimensions;
  * 
  * @author integeruser
  */
-public class Dds {
+public class DdsLoader {
 	
-	private static class MagicNumbers {
+	static class MagicNumbers {
 		static final int DDS_MAGIC_NUMBER 	= 0x20534444;							// "DDS "
 		static final int DDS10_FOUR_CC 		= 0x30314458;							// "DX10"
 
@@ -39,7 +39,7 @@ public class Dds {
 	};
 	
 	
-	private static class DdsFlags {
+	static class DdsFlags {
 		static final int DDSD_CAPS			= 0x00000001;							
 		static final int DDSD_HEIGHT 		= 0x00000002;							
 		static final int DDSD_WIDTH 		= 0x00000004;							
@@ -51,17 +51,17 @@ public class Dds {
 
 	}
 	    
-	private static class Dds10ResourceDimensions {
+	static class Dds10ResourceDimensions {
 		static final int DDS_DIMENSION_TEXTURE1D = 2;							
 		static final int DDS_DIMENSION_TEXTURE2D = 3;							
 		static final int DDS_DIMENSION_TEXTURE3D = 4;							
 	}
 	
-	private static class Dds10MiscFlags {
+	static class Dds10MiscFlags {
 		static final int DDS_RESOURCE_MISC_TEXTURECUBE = 0x00000004;													
 	}
 	
-	private static class DdsCaps2 {
+	static class DdsCaps2 {
 		static final int DDSCAPS2_CUBEMAP 			= 0x00000200;							
 		static final int DDSCAPS2_CUBEMAP_POSITIVEX = 0x00000400;							
 		static final int DDSCAPS2_CUBEMAP_NEGATIVEX = 0x00000800;
@@ -69,7 +69,7 @@ public class Dds {
 		static final int DDSCAPS2_CUBEMAP_NEGATIVEY = 0x00002000;							
 		static final int DDSCAPS2_CUBEMAP_POSITIVEZ = 0x00004000;							
 		static final int DDSCAPS2_CUBEMAP_NEGATIVEZ = 0x00008000;							
-		static final int DDSCAPS2_VOLUME = 0x00200000;		
+		static final int DDSCAPS2_VOLUME 			= 0x00200000;		
 		
 		static final int DDSCAPS2_CUBEMAP_ALL		= DDSCAPS2_CUBEMAP | DDSCAPS2_CUBEMAP_POSITIVEX | 
 				DDSCAPS2_CUBEMAP_NEGATIVEX | DDSCAPS2_CUBEMAP_POSITIVEY |
@@ -77,13 +77,13 @@ public class Dds {
 			   	DDSCAPS2_CUBEMAP_NEGATIVEZ;
 	}
 	
-	private static class DXGI_FORMAT {
+	static class DXGI_FORMAT {
 		static final int DXGI_FORMAT_UNKNOWN = 0;
 	}
 		
 
 
-	private static class DdsPixelFormat {
+	static class DdsPixelFormat {
 		int	dwSize;
 		int	dwFlags;
 		int	dwFourCC;
@@ -105,7 +105,7 @@ public class Dds {
 		}
 	};
 	
-	private static class DdsPixelFormatFlags {
+	static class DdsPixelFormatFlags {
 		static final int DDPF_ALPHAPIXELS 	= 0x00000001;
 		static final int DDPF_ALPHA 		= 0x00000002;
 		static final int DDPF_FOURCC 		= 0x00000004;
@@ -114,7 +114,7 @@ public class Dds {
 		static final int DDPF_LUMINANCE 	= 0x00020000;
     };
 
-	private static class DdsHeader {
+	static class DdsHeader {
 		int	dwSize;
 		int dwFlags;
 		int	dwHeight;
@@ -156,7 +156,7 @@ public class Dds {
 	};
 
 
-	private static class Dds10Header {
+	static class Dds10Header {
 		int dxgiFormat;
 		int resourceDimension;
 		int miscFlag;
@@ -178,28 +178,38 @@ public class Dds {
 	}
 
 	
-	public static class DdsFileNotFoundException extends Exception {
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	static class DdsFileNotFoundException extends Exception {
 		private static final long serialVersionUID = 7749946923854530980L;
 
 		public DdsFileNotFoundException(String filename) {
+			super(filename);
 		}
 	}
 	
-	public static class DdsFileMalformedException extends Exception {
+	static class DdsFileMalformedException extends Exception {
 		private static final long serialVersionUID = 7351687754827086128L;
 
 		public DdsFileMalformedException(String filename, String message) {
+			super(filename + ": " + message);
 		}
 	}
 	
-	public static class DdsFileUnsupportedException extends Exception {
+	static class DdsFileUnsupportedException extends Exception {
 		private static final long serialVersionUID = 377383320427260974L;
 
 		public DdsFileUnsupportedException(String filename, String message) {
+			super(filename + ": " + message);
 		}
 	}
 		
-		
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
+	
 	public static ImageSet processDDSData(ArrayList<Character> ddsData, String filename) throws DdsFileMalformedException, UnsupportedEncodingException, DdsFileUnsupportedException, CubemapsMustBe2DException, BadFaceCountException, No3DTextureArrayException, NoImagesSpecifiedException {
 		// Check the first 4 bytes.
 		int magicTest = (int) toLong(toByteArray(ddsData, 0, 4));
@@ -228,74 +238,57 @@ public class Dds {
 			
 		int baseOffset = getByteOffsetToData(header);
 
-		ArrayList<Integer> imageOffsets = new ArrayList<>();
-
-		// TODO: remove
-		if (numArrays != 1 || numFaces != 1) {
-			throw new DdsFileUnsupportedException(filename, "foo");
-		}
-			
-		for (int mipmapLevel = 0; mipmapLevel < numMipmaps; mipmapLevel++) {
-			int offsetFromFirstImg = calcByteOffsetToImage(fmt, dims, mipmapLevel, 0, 0);
-			imageOffsets.add(baseOffset + offsetFromFirstImg);
-		}
+	
+		
 
 		//Build the image creator. No more exceptions, except for those thrown by the ImageCreator.
 		ImageCreator imgCreator = new ImageCreator(new ImageFormat(fmt), dims, numMipmaps, numArrays, numFaces);
-		
+		int cumulativeOffset = baseOffset;
 		for (int arrayIx = 0; arrayIx < numArrays; arrayIx++)
 		{
 			for(int faceIx = 0; faceIx < numFaces; faceIx++)
 			{
 				for(int mipmapLevel = 0; mipmapLevel < numMipmaps; mipmapLevel++)
 				{
-					imgCreator.setImageData(ddsData, imageOffsets.get(arrayIx), true, mipmapLevel, arrayIx, faceIx);
+					imgCreator.setImageData(ddsData, cumulativeOffset, true, mipmapLevel, arrayIx, faceIx);
+					cumulativeOffset += calcMipmapSize(dims, mipmapLevel, fmt);
 				}
 			}
 		}
 		
 		return imgCreator.createImage();
 	}
-
 	
-	private static int calcByteOffsetToImage(UncheckedImageFormat fmt, Dimensions dims, int mipmapLevel, int i, int j) {
-		int currOffset = 0;
+	
 
-		for (int currLevel = 0; currLevel < mipmapLevel; currLevel++) {
-			Dimensions temp = new Dimensions();
-			temp.numDimensions = dims.numDimensions;
-			temp.height = dims.height;
-			temp.width = dims.width;
-			temp.depth = dims.depth;
-			
-			Dimensions mipmapDims = ImageCreator.modifySizeForMipmap(temp, currLevel);
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private static int calcMipmapSize(Dimensions dims, int currLevel, UncheckedImageFormat fmt) {
+		Dimensions mipmapDims = new Dimensions(ImageCreator.modifySizeForMipmap(dims, currLevel));
 
-			int lineSize = calcLineSize(fmt, mipmapDims.width);
+		int lineSize = calcLineSize(fmt, mipmapDims.width);
 
-			int effectiveHeight = 1;
-			if(mipmapDims.numDimensions > 1)
-			{
-				effectiveHeight = mipmapDims.height;
-				if(fmt.eBitdepth == BD_COMPRESSED)
-					effectiveHeight = (effectiveHeight + 3) / 4;
-			}
-
-			int effectiveDepth = 1;
-			if(mipmapDims.numDimensions > 2)
-			{
-				effectiveDepth = mipmapDims.depth;
-				if(fmt.eBitdepth == BD_COMPRESSED)
-					effectiveDepth = (effectiveDepth + 3) / 4;
-			}
-
-			int numLines = effectiveHeight * effectiveDepth;
-			currOffset += numLines * lineSize;
+		int effectiveHeight = 1;
+		if(mipmapDims.numDimensions > 1)
+		{
+			effectiveHeight = mipmapDims.height;
+			if(fmt.eBitdepth == BD_COMPRESSED)
+				effectiveHeight = (effectiveHeight + 3) / 4;
 		}
 
-		return currOffset;
+		int effectiveDepth = 1;
+		if(mipmapDims.numDimensions > 2)
+		{
+			effectiveDepth = mipmapDims.depth;
+			if(fmt.eBitdepth == BD_COMPRESSED)
+				effectiveDepth = (effectiveDepth + 3) / 4;
+		}
+
+		int numLines = effectiveHeight * effectiveDepth;
+		return numLines * lineSize;
 	}
-
-
+	
 
 
 	private static int calcLineSize(UncheckedImageFormat fmt, int lineWidth) {

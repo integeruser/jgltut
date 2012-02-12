@@ -28,7 +28,7 @@ import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.framework.Timer;
 import rosick.jglsdk.framework.UniformBlockArray;
-import rosick.jglsdk.glimg.Dds;
+import rosick.jglsdk.glimg.DdsLoader;
 import rosick.jglsdk.glimg.ImageSet;
 import rosick.jglsdk.glimg.ImageSet.Dimensions;
 import rosick.jglsdk.glimg.ImageSet.SingleImage;
@@ -690,7 +690,7 @@ public class MaterialTexture03 extends GLWindow {
 		ImageSet pImageSet;
 
 		try {
-			pImageSet = Dds.loadFromFile(BASEPATH + "main.dds");
+			pImageSet = DdsLoader.loadFromFile(BASEPATH + "main.dds");
 			
 			SingleImage image = pImageSet.getImage(0, 0, 0);
 

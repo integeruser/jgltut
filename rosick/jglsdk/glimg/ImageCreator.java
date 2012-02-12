@@ -207,7 +207,8 @@ public class ImageCreator {
 		if((faceIx < 0) || (m_faceCount <= faceIx))
 			throw new FaceIndexOutOfBoundsException();
 
-		int imageOffset = arrayIx * faceIx * m_imageSizes.get(mipmapLevel);
+		//int imageOffset = arrayIx * faceIx * m_imageSizes.get(mipmapLevel);
+		int imageOffset = ((arrayIx * m_faceCount) + faceIx) * m_imageSizes.get(mipmapLevel);
 
 		ArrayList<Integer> pMipmapData = m_imageData.get(mipmapLevel);
 		//pMipmapData += imageOffset;

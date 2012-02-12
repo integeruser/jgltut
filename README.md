@@ -10,8 +10,7 @@ we will update this project in the same manner as soon as we can.
 N° of original tutorials:         16  
 N° of ported tutorials so far:    15
 
-If you find any issues or difficulties in using this project, please tell us.
-
+If you find any issues or difficulties in using this project, please tell us.  
 Happy coding! 
 
 Francesco & Marco

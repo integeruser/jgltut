@@ -48,15 +48,15 @@ public class Dds {
 		static final int DDSD_DEPTH 		= 0x00800000;							
 
 	}
-	    
+	 
+	static class Dds10MiscFlags {
+		static final int DDS_RESOURCE_MISC_TEXTURECUBE = 0x00000004;													
+	}
+	
 	static class Dds10ResourceDimensions {
 		static final int DDS_DIMENSION_TEXTURE1D = 2;							
 		static final int DDS_DIMENSION_TEXTURE2D = 3;							
 		static final int DDS_DIMENSION_TEXTURE3D = 4;							
-	}
-	
-	static class Dds10MiscFlags {
-		static final int DDS_RESOURCE_MISC_TEXTURECUBE = 0x00000004;													
 	}
 	
 	static class DdsCaps2 {
@@ -92,14 +92,14 @@ public class Dds {
 		int	dwABitMask;
 
 		DdsPixelFormat(ArrayList<Character> ddsData, int startIndex) {
-			dwSize =		(int) toLong(toByteArray(ddsData, startIndex, 		4));
-			dwFlags =		(int) toLong(toByteArray(ddsData, startIndex + 4, 	4));
-			dwFourCC =		(int) toLong(toByteArray(ddsData, startIndex + 8, 	4));
-			dwRGBBitCount =	(int) toLong(toByteArray(ddsData, startIndex + 12, 	4));
-			dwRBitMask =	(int) toLong(toByteArray(ddsData, startIndex + 16, 	4));
-			dwGBitMask =	(int) toLong(toByteArray(ddsData, startIndex + 20, 	4));
-			dwBBitMask =	(int) toLong(toByteArray(ddsData, startIndex + 24, 	4));
-			dwABitMask =	(int) toLong(toByteArray(ddsData, startIndex + 28, 	4));
+			dwSize =		toInt(ddsData, startIndex, 		4);
+			dwFlags =		toInt(ddsData, startIndex +  4,	4);
+			dwFourCC =		toInt(ddsData, startIndex +  8,	4);
+			dwRGBBitCount =	toInt(ddsData, startIndex + 12, 4);
+			dwRBitMask =	toInt(ddsData, startIndex + 16, 4);
+			dwGBitMask =	toInt(ddsData, startIndex + 20, 4);
+			dwBBitMask =	toInt(ddsData, startIndex + 24, 4);
+			dwABitMask =	toInt(ddsData, startIndex + 28, 4);
 		}
 	};
 	
@@ -112,6 +112,7 @@ public class Dds {
 		static final int DDPF_LUMINANCE 	= 0x00020000;
     };
 
+    
 	static class DdsHeader {
 		int	dwSize;
 		int dwFlags;
@@ -128,31 +129,31 @@ public class Dds {
 		int	dwCaps4;
 		int	dwReserved2;
 
-		static final int SIZE = 31 * (Integer.SIZE / 8);
+		static final int SIZE = (7 + 11 + 8 + 5) * (Integer.SIZE / 8);
 
-
-		DdsHeader(ArrayList<Character> ddsData, int startIndex) {	
-			dwSize = 				(int) toLong(toByteArray(ddsData, startIndex, 		4));
-			dwFlags = 				(int) toLong(toByteArray(ddsData, startIndex + 4, 	4));
-			dwHeight = 				(int) toLong(toByteArray(ddsData, startIndex + 8, 	4));
-			dwWidth = 				(int) toLong(toByteArray(ddsData, startIndex + 12, 	4));
-			dwPitchOrLinearSize = 	(int) toLong(toByteArray(ddsData, startIndex + 16, 	4));
-			dwDepth = 				(int) toLong(toByteArray(ddsData, startIndex + 20, 	4));
-			dwMipMapCount = 		(int) toLong(toByteArray(ddsData, startIndex + 24, 	4));
+		DdsHeader(ArrayList<Character> ddsData) {
+			int startIndex = 4;
+			
+			dwSize = 				toInt(ddsData, startIndex, 		4);
+			dwFlags = 				toInt(ddsData, startIndex +  4,	4);
+			dwHeight = 				toInt(ddsData, startIndex +  8,	4);
+			dwWidth = 				toInt(ddsData, startIndex + 12, 4);
+			dwPitchOrLinearSize = 	toInt(ddsData, startIndex + 16, 4);
+			dwDepth = 				toInt(ddsData, startIndex + 20, 4);
+			dwMipMapCount = 		toInt(ddsData, startIndex + 24, 4);
 
 			for (int i = 0; i < 11; i++) {
-				dwReserved1[i] = 	(int) toLong(toByteArray(ddsData, (startIndex + 28) + 4 * i, 4));
+				dwReserved1[i] = 	toInt(ddsData, (startIndex + 28) + 4 * i, 4);
 			}
 
 			ddspf = 				new DdsPixelFormat(ddsData, 76);
-			dwCaps = 				(int) toLong(toByteArray(ddsData, startIndex + 104, 4));
-			dwCaps2 = 				(int) toLong(toByteArray(ddsData, startIndex + 108, 4));
-			dwCaps3 = 				(int) toLong(toByteArray(ddsData, startIndex + 112, 4));
-			dwCaps4 = 				(int) toLong(toByteArray(ddsData, startIndex + 116, 4));
-			dwReserved2 = 			(int) toLong(toByteArray(ddsData, startIndex + 120, 4));
+			dwCaps = 				toInt(ddsData, startIndex + 104, 4);
+			dwCaps2 = 				toInt(ddsData, startIndex + 108, 4);
+			dwCaps3 = 				toInt(ddsData, startIndex + 112, 4);
+			dwCaps4 = 				toInt(ddsData, startIndex + 116, 4);
+			dwReserved2 = 			toInt(ddsData, startIndex + 120, 4);
 		}
 	};
-
 
 	static class Dds10Header {
 		int dxgiFormat;
@@ -163,18 +164,18 @@ public class Dds {
 
 		static final int SIZE = 5 * (Integer.SIZE / 8);
 
-		
 		Dds10Header() {}
 
 		Dds10Header(ArrayList<Character> ddsData, int startIndex) {
-			dxgiFormat = 		(int) toLong(toByteArray(ddsData, startIndex, 		4));
-			resourceDimension = (int) toLong(toByteArray(ddsData, startIndex + 4, 	4));
-			miscFlag = 			(int) toLong(toByteArray(ddsData, startIndex + 8, 	4));
-			arraySize = 		(int) toLong(toByteArray(ddsData, startIndex + 12, 	4));
-			reserved = 			(int) toLong(toByteArray(ddsData, startIndex + 16, 	4));
+			dxgiFormat = 		toInt(ddsData, startIndex, 		4);
+			resourceDimension = toInt(ddsData, startIndex +  4,	4);
+			miscFlag = 			toInt(ddsData, startIndex +  8,	4);
+			arraySize = 		toInt(ddsData, startIndex + 12,	4);
+			reserved = 			toInt(ddsData, startIndex + 16,	4);
 		}
 	}
 
+	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -230,7 +231,7 @@ public class Dds {
 	
 	public static ImageSet processDDSData(ArrayList<Character> ddsData, String filename) {
 		// Check the first 4 bytes.
-		int magicTest = (int) toLong(toByteArray(ddsData, 0, 4));
+		int magicTest = toInt(ddsData, 0, 4);
 
 		if (magicTest != MagicNumbers.DDS_MAGIC_NUMBER) {
 			throw new DdsFileMalformedException(filename, "The Magic number is missing from the file.");
@@ -241,7 +242,7 @@ public class Dds {
 		}
 		
 		// Now, get a DDS header.
-		DdsHeader header = new DdsHeader(ddsData, 4);
+		DdsHeader header = new DdsHeader(ddsData);
 		
 		// Collect info from the DDS file.
 		Dds10Header header10 = getDDS10Header(header, ddsData);
@@ -258,12 +259,9 @@ public class Dds {
 		// Build the image creator. No more exceptions, except for those thrown by the ImageCreator.
 		ImageCreator imgCreator = new ImageCreator(new ImageFormat(fmt), dims, numMipmaps, numArrays, numFaces);
 		int cumulativeOffset = baseOffset;
-		for (int arrayIx = 0; arrayIx < numArrays; arrayIx++)
-		{
-			for(int faceIx = 0; faceIx < numFaces; faceIx++)
-			{
-				for(int mipmapLevel = 0; mipmapLevel < numMipmaps; mipmapLevel++)
-				{
+		for (int arrayIx = 0; arrayIx < numArrays; arrayIx++) {
+			for (int faceIx = 0; faceIx < numFaces; faceIx++) {
+				for (int mipmapLevel = 0; mipmapLevel < numMipmaps; mipmapLevel++) {
 					imgCreator.setImageData(ddsData, cumulativeOffset, true, mipmapLevel, arrayIx, faceIx);
 					cumulativeOffset += calcMipmapSize(dims, mipmapLevel, fmt);
 				}
@@ -307,7 +305,6 @@ public class Dds {
 			if (cubemapTest != DdsCaps2.DDSCAPS2_CUBEMAP_ALL) {
 				throw new DdsFileUnsupportedException("", "All cubemap faces must be specified.");
 			}
-			
 			header10.miscFlag = Dds10MiscFlags.DDS_RESOURCE_MISC_TEXTURECUBE;
 		}
 
@@ -351,68 +348,6 @@ public class Dds {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	private static int calcMipmapSize(Dimensions dims, int currLevel, UncheckedImageFormat fmt) {
-		Dimensions mipmapDims = new Dimensions(ImageCreator.modifySizeForMipmap(dims, currLevel));
-
-		int lineSize = calcLineSize(fmt, mipmapDims.width);
-
-		int effectiveHeight = 1;
-		if(mipmapDims.numDimensions > 1)
-		{
-			effectiveHeight = mipmapDims.height;
-			if(fmt.eBitdepth == BD_COMPRESSED)
-				effectiveHeight = (effectiveHeight + 3) / 4;
-		}
-
-		int effectiveDepth = 1;
-		if(mipmapDims.numDimensions > 2)
-		{
-			effectiveDepth = mipmapDims.depth;
-			if(fmt.eBitdepth == BD_COMPRESSED)
-				effectiveDepth = (effectiveDepth + 3) / 4;
-		}
-
-		int numLines = effectiveHeight * effectiveDepth;
-		return numLines * lineSize;
-	}
-	
-
-
-	private static int calcLineSize(UncheckedImageFormat fmt, int lineWidth) {
-		//This is from the DDS suggestions for line size computations.
-		if(fmt.eBitdepth == BD_COMPRESSED)
-		{
-			int blockSize = 16;
-
-			if(fmt.eType == DT_COMPRESSED_BC1 ||
-				fmt.eType == DT_COMPRESSED_UNSIGNED_BC4 || fmt.eType == DT_COMPRESSED_SIGNED_BC4)
-				blockSize = 8;
-
-			return ((lineWidth + 3) / 4) * blockSize;
-		}
-
-		int bytesPerPixel = ImageCreator.calcBytesPerPixel(new ImageFormat(fmt));
-		return lineWidth * bytesPerPixel;
-	}
-
-
-	private static int getByteOffsetToData(DdsHeader header) {
-		int byteOffset = DdsHeader.SIZE + 4;
-
-		if (header.ddspf.dwFourCC == MagicNumbers.DDS10_FOUR_CC) {
-			byteOffset += Dds10Header.SIZE;
-		}
-
-		return byteOffset;
-	}
-
-
 	private static int[] getImageCounts(DdsHeader header, Dds10Header header10) {
 		int data[] = new int[3];
 		int numMipmaps;
@@ -443,8 +378,125 @@ public class Dds {
 		
 		return data;
 	}
+	
+	
+	private static int getByteOffsetToData(DdsHeader header) {
+		int byteOffset = DdsHeader.SIZE + 4;
 
+		if (header.ddspf.dwFourCC == MagicNumbers.DDS10_FOUR_CC) {
+			byteOffset += Dds10Header.SIZE;
+		}
 
+		return byteOffset;
+	}
+	
+	
+	private static int calcMipmapSize(Dimensions dims, int currLevel, UncheckedImageFormat fmt) {
+		Dimensions mipmapDims = new Dimensions(ImageCreator.modifySizeForMipmap(dims, currLevel));
+
+		int lineSize = calcLineSize(fmt, mipmapDims.width);
+
+		int effectiveHeight = 1;
+		if (mipmapDims.numDimensions > 1) {
+			effectiveHeight = mipmapDims.height;
+			if (fmt.eBitdepth == BD_COMPRESSED) {
+				effectiveHeight = (effectiveHeight + 3) / 4;
+			}
+		}
+
+		int effectiveDepth = 1;
+		if (mipmapDims.numDimensions > 2) {
+			effectiveDepth = mipmapDims.depth;
+			if (fmt.eBitdepth == BD_COMPRESSED) {
+				effectiveDepth = (effectiveDepth + 3) / 4;
+			}
+		}
+
+		int numLines = effectiveHeight * effectiveDepth;
+		
+		return numLines * lineSize;
+	}
+
+	private static int calcLineSize(UncheckedImageFormat fmt, int lineWidth) {
+		// This is from the DDS suggestions for line size computations.
+		if (fmt.eBitdepth == BD_COMPRESSED) {
+			int blockSize = 16;
+
+			if (fmt.eType == DT_COMPRESSED_BC1 ||
+				fmt.eType == DT_COMPRESSED_UNSIGNED_BC4 || fmt.eType == DT_COMPRESSED_SIGNED_BC4) {
+				blockSize = 8;
+			}
+
+			return ((lineWidth + 3) / 4) * blockSize;
+		}
+
+		int bytesPerPixel = ImageCreator.calcBytesPerPixel(new ImageFormat(fmt));
+		
+		return lineWidth * bytesPerPixel;
+	}
+	
+
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private static OldDdsFormatConv g_oldFmtConvert[] = {
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGBA, ORDER_RGBA, BD_PER_COMP_8, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB | DdsPixelFormatFlags.DDPF_ALPHAPIXELS, 32, 0xff, 0xff00, 0xff0000, 0xff000000, 0)),
+				
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGBA, ORDER_BGRA, BD_PACKED_32_BIT_8888_REV, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB | DdsPixelFormatFlags.DDPF_ALPHAPIXELS, 32, 0xff0000, 0xff00, 0xff, 0xff000000, 0)),
+	
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGBX, ORDER_RGBA, BD_PER_COMP_8, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 32, 0xff, 0xff00, 0xff0000, 0, 0)),
+
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGB, ORDER_RGBA, BD_PER_COMP_8, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 24, 0xff, 0xff00, 0xff0000, 0, 0)),
+				
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGB, ORDER_RGBA, BD_PER_COMP_8, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 24, 0xff, 0xff00, 0xff0000, 0, 0)),		
+				
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGB, ORDER_BGRA, BD_PER_COMP_8, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 24, 0xff0000, 0xff00, 0xff, 0, 0)),
+
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGB, ORDER_RGBA, BD_PACKED_16_BIT_565, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 16, 0xf800, 0x7e0, 0x1f, 0, 0)),
+
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGBA, ORDER_BGRA, BD_PACKED_16_BIT_1555_REV, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 16, 0x7c00, 0x3e0, 0x1f, 0x8000, 0)),
+
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGBA, ORDER_BGRA, BD_PACKED_16_BIT_4444_REV, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 16, 0xf00, 0xf0, 0xf, 0xf000, 0)),
+
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_COMPRESSED_BC1, FMT_COLOR_RGB, ORDER_COMPRESSED, BD_COMPRESSED, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_FOURCC, 0, 0, 0, 0, 0, MagicNumbers.DDSFOURCC_DXT1)),
+
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_COMPRESSED_BC2, FMT_COLOR_RGBA, ORDER_COMPRESSED, BD_COMPRESSED, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_FOURCC, 0, 0, 0, 0, 0, MagicNumbers.DDSFOURCC_DXT3)),
+
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_COMPRESSED_BC3, FMT_COLOR_RGBA, ORDER_COMPRESSED, BD_COMPRESSED, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_FOURCC, 0, 0, 0, 0, 0, MagicNumbers.DDSFOURCC_DXT5)),
+
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RG, ORDER_RGBA, BD_PER_COMP_16, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 32, 0xffff, 0xffff0000, 0, 0, 0)),
+
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RG, ORDER_RGBA, BD_PER_COMP_8, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 16, 0xffff, 0xffff0000, 0, 0, 0)),
+
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RED, ORDER_RGBA, BD_PER_COMP_16, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_LUMINANCE, 16, 0xffff, 0, 0, 0, 0)),
+
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RED, ORDER_RGBA, BD_PER_COMP_8, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_LUMINANCE, 8, 0xff, 0, 0, 0, 0)),
+
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RG, ORDER_RGBA, BD_PER_COMP_16, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_LUMINANCE | DdsPixelFormatFlags.DDPF_ALPHAPIXELS, 16, 0xffff, 0, 0, 0xffff0000, 0)),
+
+		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RG, ORDER_RGBA, BD_PER_COMP_8, 1),
+				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_LUMINANCE | DdsPixelFormatFlags.DDPF_ALPHAPIXELS, 8, 0xff, 0, 0, 0xff00, 0)),		
+	};
+	
+	
 	private static class OldDdsFmtMatch {
 		int dwFlags;
 		int bitDepth;
@@ -502,61 +554,5 @@ public class Dds {
 		}
 
 		return true;
-	}
-	
-	private static OldDdsFormatConv g_oldFmtConvert[] = {
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGBA, ORDER_RGBA, BD_PER_COMP_8, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB | DdsPixelFormatFlags.DDPF_ALPHAPIXELS, 32, 0xff, 0xff00, 0xff0000, 0xff000000, 0)),
-				
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGBA, ORDER_BGRA, BD_PACKED_32_BIT_8888_REV, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB | DdsPixelFormatFlags.DDPF_ALPHAPIXELS, 32, 0xff0000, 0xff00, 0xff, 0xff000000, 0)),
-	
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGBX, ORDER_RGBA, BD_PER_COMP_8, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 32, 0xff, 0xff00, 0xff0000, 0, 0)),
-
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGB, ORDER_RGBA, BD_PER_COMP_8, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 24, 0xff, 0xff00, 0xff0000, 0, 0)),
-				
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGB, ORDER_RGBA, BD_PER_COMP_8, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 24, 0xff, 0xff00, 0xff0000, 0, 0)),		
-				
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGB, ORDER_BGRA, BD_PER_COMP_8, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 24, 0xff0000, 0xff00, 0xff, 0, 0)),
-
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGB, ORDER_RGBA, BD_PACKED_16_BIT_565, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 16, 0xf800, 0x7e0, 0x1f, 0, 0)),
-
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGBA, ORDER_BGRA, BD_PACKED_16_BIT_1555_REV, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 16, 0x7c00, 0x3e0, 0x1f, 0x8000, 0)),
-
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGBA, ORDER_BGRA, BD_PACKED_16_BIT_4444_REV, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 16, 0xf00, 0xf0, 0xf, 0xf000, 0)),
-
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_COMPRESSED_BC1, FMT_COLOR_RGB, ORDER_COMPRESSED, BD_COMPRESSED, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_FOURCC, 0, 0, 0, 0, 0, MagicNumbers.DDSFOURCC_DXT1)),
-
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_COMPRESSED_BC2, FMT_COLOR_RGBA, ORDER_COMPRESSED, BD_COMPRESSED, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_FOURCC, 0, 0, 0, 0, 0, MagicNumbers.DDSFOURCC_DXT3)),
-
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_COMPRESSED_BC3, FMT_COLOR_RGBA, ORDER_COMPRESSED, BD_COMPRESSED, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_FOURCC, 0, 0, 0, 0, 0, MagicNumbers.DDSFOURCC_DXT5)),
-
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RG, ORDER_RGBA, BD_PER_COMP_16, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 32, 0xffff, 0xffff0000, 0, 0, 0)),
-
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RG, ORDER_RGBA, BD_PER_COMP_8, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB, 16, 0xffff, 0xffff0000, 0, 0, 0)),
-
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RED, ORDER_RGBA, BD_PER_COMP_16, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_LUMINANCE, 16, 0xffff, 0, 0, 0, 0)),
-
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RED, ORDER_RGBA, BD_PER_COMP_8, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_LUMINANCE, 8, 0xff, 0, 0, 0, 0)),
-
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RG, ORDER_RGBA, BD_PER_COMP_16, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_LUMINANCE | DdsPixelFormatFlags.DDPF_ALPHAPIXELS, 16, 0xffff, 0, 0, 0xffff0000, 0)),
-
-		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RG, ORDER_RGBA, BD_PER_COMP_8, 1),
-				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_LUMINANCE | DdsPixelFormatFlags.DDPF_ALPHAPIXELS, 8, 0xff, 0, 0, 0xff00, 0)),		
-	};
+	}	
 }

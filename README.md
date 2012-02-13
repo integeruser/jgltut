@@ -9,7 +9,7 @@ The author occasionally updates his book by adding new tutorials: we will update
 
 Tutorials ported so far: 15 / 16
 
-Use the [github issue tracker](https://github.com/rosickteam/OpenGL/issues) to suggest a feature, report a bug, or general discussion.  
+To suggest a feature, report a bug, or general discussion: [github issue tracker](https://github.com/rosickteam/OpenGL/issues).  
 Happy coding! 
 
 Francesco & Marco
@@ -23,10 +23,6 @@ To download and install LWJGL visit [the official site](http://www.lwjgl.org/).
 
 - "rosick/jglsdk" 	: package with the glsdk port.
 - "rosick/mckesson" : package with the tutorials port.
-  - "I" The Basics
-  - "II" Positioning
-  - "III" Illumination
-  - "IV" Texturing
 
 To test it out, it is recommended to use [Eclipse](http://www.eclipse.org/).  
 Open Eclipse, copy or link the "rosick" package into an existing project (in the "src" folder) and, if you haven't already done, 

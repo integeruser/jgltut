@@ -32,14 +32,12 @@ import rosick.jglsdk.glutil.MatrixStack;
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
  * IV. Texturing
- * 15. Many Images
- * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2015.html
+ * 16. Gamma and Textures
+ * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2016.html
  * @author integeruser
  * 
- * SPACEBAR		- toggle between loaded/constructed texture.
- * Y			- toggle between plane/corridor mesh.
- * P			- toggle pausing on/off.
- * 1,2,3,4,5,6	- switch filtering technique.
+ * 1 		- switches the top texture between lRGB and sRGB.
+ * 2		- switches the bottom texture between lRGB and sRGB.
  */
 public class GammaRamp01 extends GLWindow {
 	

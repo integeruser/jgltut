@@ -205,21 +205,11 @@ public class ManyImages01 extends GLWindow {
 
 		modelMatrix.applyMatrix(worldToCamMat);	
 
-		modelMatrix.push();
-
 		glUseProgram(g_program.theProgram);
 		glUniformMatrix4(g_program.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
 		glActiveTexture(GL_TEXTURE0 + g_colorTexUnit);
-		glBindTexture(GL_TEXTURE_2D,
-			g_useMipmapTexture ? g_mipmapTestTexture : g_checkerTexture);
-
-		/* Not in the original tutorial, needed for LWJGL */
-		if (!g_useMipmapTexture) {
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-		/*                                                */
-		
+		glBindTexture(GL_TEXTURE_2D, g_useMipmapTexture ? g_mipmapTestTexture : g_checkerTexture);		
 		glBindSampler(g_colorTexUnit, g_samplers[g_currSampler]);
 
 		if (g_drawCorridor) {
@@ -399,6 +389,7 @@ public class ManyImages01 extends GLWindow {
 
 				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_RGB8, dims.width, dims.height, 0,
 					GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData());
+				glGenerateMipmap(GL_TEXTURE_2D);
 			}
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);

@@ -15,9 +15,7 @@ import org.lwjgl.opengl.Util;
  * @author integeruser
  */
 public class GLWindow {
-	
-	protected static final int FLOAT_SIZE = Float.SIZE / 8;
-	
+		
 	// Measured in milliseconds
 	private double elapsedTime; 
 	private double lastFrameDuration;

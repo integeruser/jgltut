@@ -46,108 +46,109 @@ public class Hierarchy04 extends GLWindow {
 	
 	
 	private static final String BASEPATH = "/rosick/mckesson/II/tut06/data/";
+	private static final int FLOAT_SIZE = Float.SIZE / 8;
 
 	
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		
+			
+	private final float vertexData[] = {
+			// Front
+			+1.0f, +1.0f, +1.0f,
+			+1.0f, -1.0f, +1.0f,
+			-1.0f, -1.0f, +1.0f,
+			-1.0f, +1.0f, +1.0f,
+	
+			// Top
+			+1.0f, +1.0f, +1.0f,
+			-1.0f, +1.0f, +1.0f,
+			-1.0f, +1.0f, -1.0f,
+			+1.0f, +1.0f, -1.0f,
+	
+			// Left
+			+1.0f, +1.0f, +1.0f,
+			+1.0f, +1.0f, -1.0f,
+			+1.0f, -1.0f, -1.0f,
+			+1.0f, -1.0f, +1.0f,
+	
+			// Back
+			+1.0f, +1.0f, -1.0f,
+			-1.0f, +1.0f, -1.0f,
+			-1.0f, -1.0f, -1.0f,
+			+1.0f, -1.0f, -1.0f,
+	
+			// Bottom
+			+1.0f, -1.0f, +1.0f,
+			+1.0f, -1.0f, -1.0f,
+			-1.0f, -1.0f, -1.0f,
+			-1.0f, -1.0f, +1.0f,
+	
+			// Right
+			-1.0f, +1.0f, +1.0f,
+			-1.0f, -1.0f, +1.0f,
+			-1.0f, -1.0f, -1.0f,
+			-1.0f, +1.0f, -1.0f,
+	
+	
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+	
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+	
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+	
+			1.0f, 1.0f, 0.0f, 1.0f,
+			1.0f, 1.0f, 0.0f, 1.0f,
+			1.0f, 1.0f, 0.0f, 1.0f,
+			1.0f, 1.0f, 0.0f, 1.0f,
+	
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+	
+			1.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, 0.0f, 1.0f, 1.0f
+	};
+	
+	private final short indexData[] = {
+			0, 1, 2,
+			2, 3, 0,
+	
+			4, 5, 6,
+			6, 7, 4,
+	
+			8, 9, 10,
+			10, 11, 8,
+	
+			12, 13, 14,
+			14, 15, 12,
+	
+			16, 17, 18,
+			18, 19, 16,
+	
+			20, 21, 22,
+			22, 23, 20
+	};
+	
+	private final int numberOfVertices = 24;
+	
 	private int theProgram;
 	private int positionAttrib, colorAttrib;
 	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
 	private int vertexBufferObject, indexBufferObject;
 	private int vao;
-	
-	private final float vertexData[] = {
-		// Front
-		+1.0f, +1.0f, +1.0f,
-		+1.0f, -1.0f, +1.0f,
-		-1.0f, -1.0f, +1.0f,
-		-1.0f, +1.0f, +1.0f,
-
-		// Top
-		+1.0f, +1.0f, +1.0f,
-		-1.0f, +1.0f, +1.0f,
-		-1.0f, +1.0f, -1.0f,
-		+1.0f, +1.0f, -1.0f,
-
-		// Left
-		+1.0f, +1.0f, +1.0f,
-		+1.0f, +1.0f, -1.0f,
-		+1.0f, -1.0f, -1.0f,
-		+1.0f, -1.0f, +1.0f,
-
-		// Back
-		+1.0f, +1.0f, -1.0f,
-		-1.0f, +1.0f, -1.0f,
-		-1.0f, -1.0f, -1.0f,
-		+1.0f, -1.0f, -1.0f,
-
-		// Bottom
-		+1.0f, -1.0f, +1.0f,
-		+1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f, +1.0f,
-
-		// Right
-		-1.0f, +1.0f, +1.0f,
-		-1.0f, -1.0f, +1.0f,
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, +1.0f, -1.0f,
-
-
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-
-		1.0f, 1.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, 0.0f, 1.0f,
-
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-
-		1.0f, 0.0f, 1.0f, 1.0f,
-		1.0f, 0.0f, 1.0f, 1.0f,
-		1.0f, 0.0f, 1.0f, 1.0f,
-		1.0f, 0.0f, 1.0f, 1.0f,
-	};
-	
-	private final short indexData[] = {
-		0, 1, 2,
-		2, 3, 0,
-
-		4, 5, 6,
-		6, 7, 4,
-
-		8, 9, 10,
-		10, 11, 8,
-
-		12, 13, 14,
-		14, 15, 12,
-
-		16, 17, 18,
-		18, 19, 16,
-
-		20, 21, 22,
-		22, 23, 20,
-	};
-	
-	private final int numberOfVertices = 24;
 	
 	private Mat4 cameraToClipMatrix = new Mat4();
 	
@@ -185,29 +186,29 @@ public class Hierarchy04 extends GLWindow {
 	}
 	
 	private void initializeVAO() {
-		FloatBuffer tempVertexBuffer = BufferUtils.createFloatBuffer(vertexData.length);
-		tempVertexBuffer.put(vertexData);
-		tempVertexBuffer.flip();
+		FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+		vertexDataBuffer.put(vertexData);
+		vertexDataBuffer.flip();
 		
         vertexBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, tempVertexBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
-		
-		ShortBuffer tempIndexBuffer = BufferUtils.createShortBuffer(indexData.length);
-		tempIndexBuffer.put(indexData);
-		tempIndexBuffer.flip();
+		ShortBuffer indexDataBuffer = BufferUtils.createShortBuffer(indexData.length);
+		indexDataBuffer.put(indexData);
+		indexDataBuffer.flip();
 		
         indexBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, tempIndexBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		
 		
 		vao = glGenVertexArrays();
 		glBindVertexArray(vao);
 
-		int colorDataOffset = (Float.SIZE / 8) * 3 * numberOfVertices;
+		int colorDataOffset = FLOAT_SIZE * 3 * numberOfVertices;
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 		glEnableVertexAttribArray(positionAttrib);
 		glEnableVertexAttribArray(colorAttrib);
@@ -224,7 +225,6 @@ public class Hierarchy04 extends GLWindow {
 		initializeProgram();
 		initializeVAO(); 
 
-		
 	    glEnable(GL_CULL_FACE);
 	    glCullFace(GL_BACK);
 	    glFrontFace(GL_CW);
@@ -693,11 +693,13 @@ public class Hierarchy04 extends GLWindow {
 	
 	
 	private float clamp(float fValue, float fMinValue, float fMaxValue) {
-		if (fValue < fMinValue)
+		if (fValue < fMinValue) {
 			return fMinValue;
+		}
 
-		if (fValue > fMaxValue)
+		if (fValue > fMaxValue) {
 			return fMaxValue;
+		}
 
 		return fValue;
 	}
@@ -718,6 +720,7 @@ public class Hierarchy04 extends GLWindow {
 		Mat3 theMat = new Mat3(1.0f);
 		theMat.set(4, fCos); theMat.set(7, -fSin); 
 		theMat.set(5, fSin); theMat.set(8, fCos); 
+		
 		return theMat;
 	}
 
@@ -729,6 +732,7 @@ public class Hierarchy04 extends GLWindow {
 		Mat3 theMat = new Mat3(1.0f);
 		theMat.set(0, fCos); theMat.set(6, fSin); 
 		theMat.set(2, -fSin); theMat.set(8, fCos);
+		
 		return theMat;
 	}
 
@@ -740,6 +744,7 @@ public class Hierarchy04 extends GLWindow {
 		Mat3 theMat = new Mat3(1.0f);
 		theMat.set(0, fCos); theMat.set(3, -fSin); 
 		theMat.set(1, fSin); theMat.set(4, fCos);
+		
 		return theMat;
 	}
 }

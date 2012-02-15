@@ -27,7 +27,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2008.html
  * @author integeruser
  * 
- * SPACEBAR	- toggles drawing the gimbal rings.
+ * SPACE	- toggles drawing the gimbal rings.
  * W,S		- control the outer gimbal.
  * A,D 		- control the middle gimbal.
  * Q,E  	- control the inner gimbal.
@@ -200,6 +200,7 @@ public class GimbalLock01 extends GLWindow {
 		GIMBAL_Z_AXIS;
 	};
 	
+	
 	private class GimbalAngles {
 		float fAngleX;
 		float fAngleY;
@@ -209,15 +210,16 @@ public class GimbalLock01 extends GLWindow {
 	
 	private final float SMALL_ANGLE_INCREMENT = 9.0f;
 	private final String g_strGimbalNames[] = {
-		BASEPATH + "LargeGimbal.xml",
-		BASEPATH + "MediumGimbal.xml",
-		BASEPATH + "SmallGimbal.xml",
+			BASEPATH + "LargeGimbal.xml",
+			BASEPATH + "MediumGimbal.xml",
+			BASEPATH + "SmallGimbal.xml",
 	};
 	
 	private GimbalAngles g_angles = new GimbalAngles();
 
 	private Mesh g_Gimbals[] = new Mesh[3];
 	private Mesh g_pObject;
+	
 	private boolean g_bDrawGimbals = true;
 	
 	
@@ -229,16 +231,16 @@ public class GimbalLock01 extends GLWindow {
 		currMatrix.push();
 
 		switch (eAxis) {
-			case GIMBAL_X_AXIS:
-				break;
-			case GIMBAL_Y_AXIS:
-				currMatrix.rotateZ(90.0f);
-				currMatrix.rotateX(90.0f);
-				break;
-			case GIMBAL_Z_AXIS:
-				currMatrix.rotateY(90.0f);
-				currMatrix.rotateX(90.0f);
-				break;
+		case GIMBAL_X_AXIS:
+			break;
+		case GIMBAL_Y_AXIS:
+			currMatrix.rotateZ(90.0f);
+			currMatrix.rotateX(90.0f);
+			break;
+		case GIMBAL_Z_AXIS:
+			currMatrix.rotateY(90.0f);
+			currMatrix.rotateX(90.0f);
+			break;
 		}
 
 		glUseProgram(theProgram);

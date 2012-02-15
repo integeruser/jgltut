@@ -36,111 +36,111 @@ public class ShaderPerspective02 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
+	private final float vertexData[] = {
+			 0.25f,  0.25f, -1.25f, 1.0f,
+			 0.25f, -0.25f, -1.25f, 1.0f,
+			-0.25f,  0.25f, -1.25f, 1.0f,
+	
+			 0.25f, -0.25f, -1.25f, 1.0f,
+			-0.25f, -0.25f, -1.25f, 1.0f,
+			-0.25f,  0.25f, -1.25f, 1.0f,
+	
+			 0.25f,  0.25f, -2.75f, 1.0f,
+			-0.25f,  0.25f, -2.75f, 1.0f,
+			 0.25f, -0.25f, -2.75f, 1.0f,
+	
+			 0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f,  0.25f, -2.75f, 1.0f,
+			-0.25f, -0.25f, -2.75f, 1.0f,
+	
+			-0.25f,  0.25f, -1.25f, 1.0f,
+			-0.25f, -0.25f, -1.25f, 1.0f,
+			-0.25f, -0.25f, -2.75f, 1.0f,
+	
+			-0.25f,  0.25f, -1.25f, 1.0f,
+			-0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f,  0.25f, -2.75f, 1.0f,
+	
+			 0.25f,  0.25f, -1.25f, 1.0f,
+			 0.25f, -0.25f, -2.75f, 1.0f,
+			 0.25f, -0.25f, -1.25f, 1.0f,
+	
+			 0.25f,  0.25f, -1.25f, 1.0f,
+			 0.25f,  0.25f, -2.75f, 1.0f,
+			 0.25f, -0.25f, -2.75f, 1.0f,
+	
+			 0.25f,  0.25f, -2.75f, 1.0f,
+			 0.25f,  0.25f, -1.25f, 1.0f,
+			-0.25f,  0.25f, -1.25f, 1.0f,
+	
+			 0.25f,  0.25f, -2.75f, 1.0f,
+			-0.25f,  0.25f, -1.25f, 1.0f,
+			-0.25f,  0.25f, -2.75f, 1.0f,
+	
+			 0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f, -0.25f, -1.25f, 1.0f,
+			 0.25f, -0.25f, -1.25f, 1.0f,
+	
+			 0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f, -0.25f, -1.25f, 1.0f,
+	
+	
+	
+	
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+	
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+	
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+	
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+	
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+	
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+	
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+	
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+	
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+	
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+	
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+	
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+	};
+	
 	private int theProgram;
 	private int offsetUniform;
 	private int vertexBufferObject;
 	private int vao;
-	
-	private final float vertexData[] = {
-		 0.25f,  0.25f, -1.25f, 1.0f,
-		 0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-
-		 0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-
-		 0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-		 0.25f, -0.25f, -2.75f, 1.0f,
-
-		 0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-
-		 0.25f,  0.25f, -1.25f, 1.0f,
-		 0.25f, -0.25f, -2.75f, 1.0f,
-		 0.25f, -0.25f, -1.25f, 1.0f,
-
-		 0.25f,  0.25f, -1.25f, 1.0f,
-		 0.25f,  0.25f, -2.75f, 1.0f,
-		 0.25f, -0.25f, -2.75f, 1.0f,
-
-		 0.25f,  0.25f, -2.75f, 1.0f,
-		 0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-
-		 0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-
-		 0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		 0.25f, -0.25f, -1.25f, 1.0f,
-
-		 0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-
-
-
-
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-	};
 	
 	private int frustumScaleUnif;
 	private int zNearUnif, zFarUnif;
@@ -171,13 +171,13 @@ public class ShaderPerspective02 extends GLWindow {
 	}
 	
 	private void initializeVertexBuffer() {
-		FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(vertexData.length);
-		tempFloatBuffer.put(vertexData);
-		tempFloatBuffer.flip();
+		FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+		vertexDataBuffer.put(vertexData);
+		vertexDataBuffer.flip();
 		
         vertexBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, tempFloatBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	

@@ -36,17 +36,17 @@ public class FragChangeColor04 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
+	private final float vertexPositions[] = {
+			 0.25f,  0.25f, 0.0f, 1.0f,
+			 0.25f, -0.25f, 0.0f, 1.0f,
+			-0.25f, -0.25f, 0.0f, 1.0f,
+	};
+	
 	private int theProgram;
 	private int elapsedTimeUniform;
 	private int positionBufferObject;
 	private int vao;
 	
-	private final float vertexPositions[] = {
-		 0.25f,  0.25f, 0.0f, 1.0f,
-		 0.25f, -0.25f, 0.0f, 1.0f,
-		-0.25f, -0.25f, 0.0f, 1.0f,
-	};
-
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -64,7 +64,6 @@ public class FragChangeColor04 extends GLWindow {
 	    int uniformLoopDuration = glGetUniformLocation(theProgram, "loopDuration");
 		int fragLoopDurUnf = glGetUniformLocation(theProgram, "fragLoopDuration");
 	    
-		
 	    glUseProgram(theProgram);
 	    glUniform1f(uniformLoopDuration, 5.0f);
 	    glUniform1f(fragLoopDurUnf, 10.0f);
@@ -72,13 +71,13 @@ public class FragChangeColor04 extends GLWindow {
 	}
 	
 	private void initializeVertexBuffer() {
-		FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
-		tempFloatBuffer.put(vertexPositions);
-		tempFloatBuffer.flip();
+		FloatBuffer vertexPositionsBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
+		vertexPositionsBuffer.put(vertexPositions);
+		vertexPositionsBuffer.flip();
 		
         positionBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, tempFloatBuffer, GL_STREAM_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, vertexPositionsBuffer, GL_STREAM_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	

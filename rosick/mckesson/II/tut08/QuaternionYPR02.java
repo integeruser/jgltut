@@ -29,7 +29,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2008.html
  * @author integeruser
  * 
- * SPACEBAR	- switches between right-multiplying the YPR values to the current orientation and left-multiplying them. 
+ * SPACE	- switches between right-multiplying the YPR values to the current orientation and left-multiplying them. 
  * W,S		- control the outer gimbal.
  * A,D 		- control the middle gimbal.
  * Q,E  	- control the inner gimbal.
@@ -188,9 +188,9 @@ public class QuaternionYPR02 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	private static boolean g_bRightMultiply = true;
-
 	private final float SMALL_ANGLE_INCREMENT = 9.0f;
+
+	private static boolean g_bRightMultiply = true;
 
 	private Mesh g_pShip;
 	private Quaternion g_orientation = new Quaternion(1.0f, 0.0f, 0.0f, 0.0f);

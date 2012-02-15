@@ -30,7 +30,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2008.html
  * @author integeruser
  * 
- * SPACEBAR	- toggles between three transforms: model-relative (yaw/pitch/roll-style), world-relative, and camera-relative.
+ * SPACE	- toggles between three transforms: model-relative (yaw/pitch/roll-style), world-relative, and camera-relative.
  * W,S		- control the outer gimbal.
  * A,D 		- control the middle gimbal.
  * Q,E  	- control the inner gimbal.
@@ -268,17 +268,17 @@ public class CameraRelative03 extends GLWindow {
 		WORLD_RELATIVE,
 		CAMERA_RELATIVE,
 
-		NUM_RELATIVES;
+		NUM_RELATIVES
 	};
 	
-	
+
+	private final float SMALL_ANGLE_INCREMENT = 9.0f;
+
 	private static Vec3 g_camTarget = new Vec3(0.0f, 10.0f, 0.0f);
 	private static Quaternion g_orientation = new Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
 	private static OffsetRelative g_iOffset = OffsetRelative.MODEL_RELATIVE;
 	// In spherical coordinates.
 	private static Vec3 g_sphereCamRelPos = new Vec3(90.0f, 0.0f, 66.0f);
-
-	private final float SMALL_ANGLE_INCREMENT = 9.0f;
 
 	private Mesh g_pShip;
 	private Mesh g_pPlane;
@@ -295,22 +295,22 @@ public class CameraRelative03 extends GLWindow {
 		Quaternion offset = new Quaternion(scalar, axis.get(X), axis.get(Y), axis.get(Z));
 
 		switch (g_iOffset) {
-			case MODEL_RELATIVE:
-				g_orientation = Quaternion.mul(g_orientation, offset);
-				break;
-			case WORLD_RELATIVE:
-				g_orientation = Quaternion.mul(offset, g_orientation);
-				break;
-			case CAMERA_RELATIVE: 
-				final Vec3 camPos = resolveCamPosition();
-				final Mat4 camMat = calcLookAtMatrix(camPos, g_camTarget, new Vec3(0.0f, 1.0f, 0.0f));
-	
-				Quaternion viewQuat = Glm.quatCast(camMat);
-				Quaternion invViewQuat = Glm.conjugate(viewQuat);
-	
-				final Quaternion worldQuat = invViewQuat.mul(offset.mul(viewQuat));
-				g_orientation = Quaternion.mul(worldQuat, g_orientation);
-				break;
+		case MODEL_RELATIVE:
+			g_orientation = Quaternion.mul(g_orientation, offset);
+			break;
+		case WORLD_RELATIVE:
+			g_orientation = Quaternion.mul(offset, g_orientation);
+			break;
+		case CAMERA_RELATIVE: 
+			final Vec3 camPos = resolveCamPosition();
+			final Mat4 camMat = calcLookAtMatrix(camPos, g_camTarget, new Vec3(0.0f, 1.0f, 0.0f));
+
+			Quaternion viewQuat = Glm.quatCast(camMat);
+			Quaternion invViewQuat = Glm.conjugate(viewQuat);
+
+			final Quaternion worldQuat = invViewQuat.mul(offset.mul(viewQuat));
+			g_orientation = Quaternion.mul(worldQuat, g_orientation);
+			break;
 		}
 
 		g_orientation = Glm.normalize(g_orientation);

@@ -30,7 +30,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2008.html
  * @author integeruser
  * 
- * SPACEBAR			- toggles between regular linear interpolation and slerp. 
+ * SPACE			- toggles between regular linear interpolation and slerp. 
  * Q,W,E,R,T,Y,U 	- cause the ship to interpolate to a new orientation.
  */
 public class Interpolation04 extends GLWindow {
@@ -177,25 +177,25 @@ public class Interpolation04 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
 	private static Quaternion g_Orients[] = {
-		new Quaternion(0.7071f, 0.7071f, 0.0f, 0.0f),
-		new Quaternion(0.5f, 0.5f, -0.5f, 0.5f),
-		new Quaternion(-0.4895f, -0.7892f, -0.3700f, -0.02514f),
-		new Quaternion(0.4895f, 0.7892f, 0.3700f, 0.02514f),
-
-		new Quaternion(0.3840f, -0.1591f, -0.7991f, -0.4344f),
-		new Quaternion(0.5537f, 0.5208f, 0.6483f, 0.0410f),
-		new Quaternion(0.0f, 0.0f, 1.0f, 0.0f),
+			new Quaternion(0.7071f, 0.7071f, 0.0f, 0.0f),
+			new Quaternion(0.5f, 0.5f, -0.5f, 0.5f),
+			new Quaternion(-0.4895f, -0.7892f, -0.3700f, -0.02514f),
+			new Quaternion(0.4895f, 0.7892f, 0.3700f, 0.02514f),
+	
+			new Quaternion(0.3840f, -0.1591f, -0.7991f, -0.4344f),
+			new Quaternion(0.5537f, 0.5208f, 0.6483f, 0.0410f),
+			new Quaternion(0.0f, 0.0f, 1.0f, 0.0f)
 	};
 
 	private static int g_OrientKeys[] = {
-		Keyboard.KEY_Q,
-		Keyboard.KEY_W,
-		Keyboard.KEY_E,
-		Keyboard.KEY_R,
-
-		Keyboard.KEY_T,
-		Keyboard.KEY_Y,
-		Keyboard.KEY_U,
+			Keyboard.KEY_Q,
+			Keyboard.KEY_W,
+			Keyboard.KEY_E,
+			Keyboard.KEY_R,
+	
+			Keyboard.KEY_T,
+			Keyboard.KEY_Y,
+			Keyboard.KEY_U
 	};
 	
 	private Mesh g_pShip;

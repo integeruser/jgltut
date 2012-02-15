@@ -35,17 +35,17 @@ public class VertPositionOffset02 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	private final float vertexPositions[] = {
+			0.25f,  0.25f, 0.0f, 1.0f,
+			0.25f, -0.25f, 0.0f, 1.0f,
+		   -0.25f, -0.25f, 0.0f, 1.0f,
+	};
 	
 	private int theProgram;
 	private int offsetLocation;
 	private int positionBufferObject;
 	private int vao;
-	
-	private final float vertexPositions[] = {
-		0.25f, 0.25f, 0.0f, 1.0f,
-		0.25f, -0.25f, 0.0f, 1.0f,
-		-0.25f, -0.25f, 0.0f, 1.0f,
-	};
 	
 
 		
@@ -63,13 +63,13 @@ public class VertPositionOffset02 extends GLWindow {
 	}
 	
 	private void initializeVertexBuffer() {
-		FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
-		tempFloatBuffer.put(vertexPositions);
-		tempFloatBuffer.flip();
+		FloatBuffer vertexPositionsBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
+		vertexPositionsBuffer.put(vertexPositions);
+		vertexPositionsBuffer.flip();
 		
         positionBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, tempFloatBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, vertexPositionsBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	
@@ -117,8 +117,10 @@ public class VertPositionOffset02 extends GLWindow {
 		final float fLoopDuration = 5.0f;
 	    final float fScale = 3.14159f * 2.0f / fLoopDuration;
 	    
-	    float fCurrTimeThroughLoop = (System.currentTimeMillis() % ((int) fLoopDuration * 1000)) / 1000.0f;
-	    
+		float fElapsedTime = (float) (getElapsedTime() / 1000.0);
+
+		float fCurrTimeThroughLoop = fElapsedTime % fLoopDuration;
+		
 	    fXOffset = (float) (Math.cos(fCurrTimeThroughLoop * fScale) * 0.5f);
 	    fYOffset = (float) (Math.sin(fCurrTimeThroughLoop * fScale) * 0.5f);
 	}

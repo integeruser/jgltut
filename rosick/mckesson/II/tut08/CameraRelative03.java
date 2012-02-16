@@ -46,7 +46,7 @@ public class CameraRelative03 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut08/data/";
+	private final String BASEPATH = "/rosick/mckesson/II/tut08/data/";
 	
 	
 	
@@ -274,14 +274,15 @@ public class CameraRelative03 extends GLWindow {
 
 	private final float SMALL_ANGLE_INCREMENT = 9.0f;
 
-	private static Vec3 g_camTarget = new Vec3(0.0f, 10.0f, 0.0f);
-	private static Quaternion g_orientation = new Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
-	private static OffsetRelative g_iOffset = OffsetRelative.MODEL_RELATIVE;
-	// In spherical coordinates.
-	private static Vec3 g_sphereCamRelPos = new Vec3(90.0f, 0.0f, 66.0f);
-
 	private Mesh g_pShip;
 	private Mesh g_pPlane;
+
+	private Vec3 g_camTarget = new Vec3(0.0f, 10.0f, 0.0f);
+	private Quaternion g_orientation = new Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
+	private OffsetRelative g_iOffset = OffsetRelative.MODEL_RELATIVE;
+	
+	// In spherical coordinates.
+	private Vec3 g_sphereCamRelPos = new Vec3(90.0f, 0.0f, 66.0f);
 	
 	
 	private void offsetOrientation(Vec3 _axis, float fAngDeg) {

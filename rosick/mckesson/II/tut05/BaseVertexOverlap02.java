@@ -30,9 +30,9 @@ public class BaseVertexOverlap02 extends GLWindow {
 		new BaseVertexOverlap02().start();
 	}
 	
-	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut05/data/";
-	private static final int FLOAT_SIZE = Float.SIZE / 8;
+
+	private final int FLOAT_SIZE = Float.SIZE / 8;
+	private final String BASEPATH = "/rosick/mckesson/II/tut05/data/";
 
 	
 	

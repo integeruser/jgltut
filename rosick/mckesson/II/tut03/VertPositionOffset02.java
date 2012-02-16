@@ -29,7 +29,7 @@ public class VertPositionOffset02 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut03/data/";
+	private final String BASEPATH = "/rosick/mckesson/II/tut03/data/";
 
 	
 	

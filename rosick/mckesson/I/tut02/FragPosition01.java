@@ -29,7 +29,7 @@ public class FragPosition01 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/I/tut02/data/";
+	private final String BASEPATH = "/rosick/mckesson/I/tut02/data/";
 
 	
 	

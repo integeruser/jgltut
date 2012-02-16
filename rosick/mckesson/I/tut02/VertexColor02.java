@@ -28,9 +28,9 @@ public class VertexColor02 extends GLWindow {
 		new VertexColor02().start();
 	}
 	
-	
-	private static final String BASEPATH = "/rosick/mckesson/I/tut02/data/";
-	private static final int FLOAT_SIZE = Float.SIZE / 8;
+
+	private final int FLOAT_SIZE = Float.SIZE / 8;
+	private final String BASEPATH = "/rosick/mckesson/I/tut02/data/";
 
 	
 	

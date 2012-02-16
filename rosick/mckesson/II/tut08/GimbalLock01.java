@@ -39,7 +39,7 @@ public class GimbalLock01 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut08/data/";
+	private final String BASEPATH = "/rosick/mckesson/II/tut08/data/";
 	
 	
 	

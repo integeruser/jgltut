@@ -29,7 +29,7 @@ public class OrthoCube01 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut04/data/";
+	private final String BASEPATH = "/rosick/mckesson/II/tut04/data/";
 
 	
 	

@@ -37,8 +37,8 @@ public class Rotation03 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut06/data/";
-	private static final int FLOAT_SIZE = Float.SIZE / 8;
+	private final int FLOAT_SIZE = Float.SIZE / 8;
+	private final String BASEPATH = "/rosick/mckesson/II/tut06/data/";
 
 	
 	

@@ -34,8 +34,8 @@ public class DepthClamping05 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut05/data/";
-	private static final int FLOAT_SIZE = Float.SIZE / 8;
+	private final int FLOAT_SIZE = Float.SIZE / 8;
+	private final String BASEPATH = "/rosick/mckesson/II/tut05/data/";
 
 	
 	
@@ -165,13 +165,13 @@ public class DepthClamping05 extends GLWindow {
 	private final int numberOfVertices = 36;
 	private final float fFrustumScale = 1.0f;
 	
-	private static boolean bDepthClampingActive;
-
 	private int theProgram;
 	private int offsetUniform, perspectiveMatrixUnif;
 	private int vertexBufferObject, indexBufferObject;
 	private int vao;
 	
+	private boolean bDepthClampingActive;
+
 	private float perspectiveMatrix[];
 	
 	

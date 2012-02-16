@@ -41,7 +41,7 @@ public class QuaternionYPR02 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut08/data/";
+	private final String BASEPATH = "/rosick/mckesson/II/tut08/data/";
 	
 	
 	
@@ -190,11 +190,11 @@ public class QuaternionYPR02 extends GLWindow {
 
 	private final float SMALL_ANGLE_INCREMENT = 9.0f;
 
-	private static boolean g_bRightMultiply = true;
-
 	private Mesh g_pShip;
 	private Quaternion g_orientation = new Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
-	
+
+	private boolean g_bRightMultiply = true;
+
 	
 	private void offsetOrientation(Vec3 _axis, float fAngDeg) {
 		float fAngRad = Framework.degToRad(fAngDeg);

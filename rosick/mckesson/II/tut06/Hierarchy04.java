@@ -45,8 +45,8 @@ public class Hierarchy04 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut06/data/";
-	private static final int FLOAT_SIZE = Float.SIZE / 8;
+	private final int FLOAT_SIZE = Float.SIZE / 8;
+	private final String BASEPATH = "/rosick/mckesson/II/tut06/data/";
 
 	
 
@@ -395,12 +395,6 @@ public class Hierarchy04 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private final float STANDARD_ANGLE_INCREMENT = 11.25f;
-	private final float SMALL_ANGLE_INCREMENT = 9.0f;
-	
-	private Hierarchy g_armature = new Hierarchy();
-	
-	
 	private class Hierarchy {
 		
 		private Vec3 posBase = new Vec3(3.0f, -5.0f, -40.0f);
@@ -675,6 +669,12 @@ public class Hierarchy04 extends GLWindow {
 			angFingerOpen = clamp(angFingerOpen, 9.0f, 90.0f);
 		}
 	}
+	
+	
+	private final float STANDARD_ANGLE_INCREMENT = 11.25f;
+	private final float SMALL_ANGLE_INCREMENT = 9.0f;
+	
+	private Hierarchy g_armature = new Hierarchy();
 	
 	
 	

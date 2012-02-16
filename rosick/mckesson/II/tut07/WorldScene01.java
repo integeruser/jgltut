@@ -48,7 +48,7 @@ public class WorldScene01 extends GLWindow {
 	}
 
 
-	private static final String BASEPATH = "/rosick/mckesson/II/tut07/data/";
+	private final String BASEPATH = "/rosick/mckesson/II/tut07/data/";
 
 	
 	
@@ -543,7 +543,7 @@ public class WorldScene01 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 
-	private static class TreeData {
+	private class TreeData {
 		float fXPos;
 		float fZPos;
 		float fTrunkHeight;
@@ -558,7 +558,7 @@ public class WorldScene01 extends GLWindow {
 	}
 
 
-	private static final TreeData g_forest[] = {
+	private final TreeData g_forest[] = {
 			new TreeData(-45.0f, -40.0f, 2.0f, 3.0f),
 			new TreeData(-42.0f, -35.0f, 2.0f, 3.0f),
 			new TreeData(-39.0f, -29.0f, 2.0f, 4.0f),
@@ -680,18 +680,18 @@ public class WorldScene01 extends GLWindow {
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
-	
-	private static boolean g_bDrawLookatPoint = false;
-	private static Vec3 g_camTarget = new Vec3(0.0f, 0.4f, 0.0f);
-	
-	// In spherical coordinates.
-	private static Vec3 g_sphereCamRelPos = new Vec3(67.5f, -46.0f, 150.0f);
-	
+		
 	private Mesh g_pConeMesh;
 	private Mesh g_pCylinderMesh;
 	private Mesh g_pCubeTintMesh;
 	private Mesh g_pCubeColorMesh;
 	private Mesh g_pPlaneMesh;
+	
+	private boolean g_bDrawLookatPoint = false;
+	private Vec3 g_camTarget = new Vec3(0.0f, 0.4f, 0.0f);
+	
+	// In spherical coordinates.
+	private Vec3 g_sphereCamRelPos = new Vec3(67.5f, -46.0f, 150.0f);
 	
 	
 	private Vec3 resolveCamPosition() {

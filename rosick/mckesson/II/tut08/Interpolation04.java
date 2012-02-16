@@ -40,7 +40,7 @@ public class Interpolation04 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut08/data/";
+	private final String BASEPATH = "/rosick/mckesson/II/tut08/data/";
 	
 	
 	
@@ -175,8 +175,10 @@ public class Interpolation04 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		
-	private static Quaternion g_Orients[] = {
+	
+	private Mesh g_pShip;
+	
+	private Quaternion g_Orients[] = {
 			new Quaternion(0.7071f, 0.7071f, 0.0f, 0.0f),
 			new Quaternion(0.5f, 0.5f, -0.5f, 0.5f),
 			new Quaternion(-0.4895f, -0.7892f, -0.3700f, -0.02514f),
@@ -187,7 +189,7 @@ public class Interpolation04 extends GLWindow {
 			new Quaternion(0.0f, 0.0f, 1.0f, 0.0f)
 	};
 
-	private static int g_OrientKeys[] = {
+	private int g_OrientKeys[] = {
 			Keyboard.KEY_Q,
 			Keyboard.KEY_W,
 			Keyboard.KEY_E,
@@ -197,9 +199,7 @@ public class Interpolation04 extends GLWindow {
 			Keyboard.KEY_Y,
 			Keyboard.KEY_U
 	};
-	
-	private Mesh g_pShip;
-	
+		
 	
 	private Vec4 vectorize(Quaternion theQuat) {
 		Vec4 ret = new Vec4();

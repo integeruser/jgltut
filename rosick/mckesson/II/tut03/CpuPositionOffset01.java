@@ -29,7 +29,7 @@ public class CpuPositionOffset01 extends GLWindow {
 	}
 	
 	
-	private final String BASEPATH = "/rosick/mckesson/II/tut03/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut03/data/";
 
 	
 	
@@ -53,8 +53,8 @@ public class CpuPositionOffset01 extends GLWindow {
 	
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "Standard.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "Standard.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "Standard.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "Standard.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 	}

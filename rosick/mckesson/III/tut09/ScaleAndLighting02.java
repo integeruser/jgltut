@@ -39,7 +39,7 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * @author integeruser
  * 
  * SPACE	- toggles between drawing the uncolored cylinder and the colored one.
- * T		- toggle between properly using the inverse-transpose and not using the inverse transpose.
+ * T		- toggles between properly using the inverse-transpose and not using the inverse transpose.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
  * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
@@ -57,7 +57,7 @@ public class ScaleAndLighting02 extends GLWindow {
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/III/tut09/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut09/data/";
 
 	
 	
@@ -114,8 +114,8 @@ public class ScaleAndLighting02 extends GLWindow {
 	}
 	
 	private void initializeProgram() {	
-		g_WhiteDiffuseColor =	loadProgram(BASEPATH + "DirVertexLighting_PN.vert",		BASEPATH + "ColorPassthrough.frag");
-		g_VertexDiffuseColor = 	loadProgram(BASEPATH + "DirVertexLighting_PCN.vert", 	BASEPATH + "ColorPassthrough.frag");
+		g_WhiteDiffuseColor =	loadProgram(TUTORIAL_DATAPATH + "DirVertexLighting_PN.vert",	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
+		g_VertexDiffuseColor = 	loadProgram(TUTORIAL_DATAPATH + "DirVertexLighting_PCN.vert", 	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
 	}
 	
 	
@@ -124,8 +124,8 @@ public class ScaleAndLighting02 extends GLWindow {
 		initializeProgram();
 		
 		try {
-			g_pCylinderMesh = new Mesh(BASEPATH + "UnitCylinder.xml");
-			g_pPlaneMesh 	= new Mesh(BASEPATH + "LargePlane.xml");
+			g_pCylinderMesh = new Mesh(TUTORIAL_DATAPATH + "UnitCylinder.xml");
+			g_pPlaneMesh 	= new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

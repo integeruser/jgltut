@@ -49,7 +49,7 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * T 		- toggles between the scaled and unscaled cylinder.
  * B 		- toggles the light's rotation on/off.
  * G 		- toggles between a diffuse color of (1, 1, 1) and a darker diffuse color of (0.2, 0.2, 0.2).
- * H 		- switch between Blinn, Phong and Gaussian specular. Pressing LEFT_SHIFT+H will switch between 
+ * H 		- switches between Blinn, Phong and Gaussian specular. Pressing LEFT_SHIFT+H will switch between 
  * 				diffuse+specular and specular only.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
@@ -68,7 +68,7 @@ public class GaussianSpecularLighting03 extends GLWindow {
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/III/tut11/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut11/data/";
 
 	
 	
@@ -120,12 +120,12 @@ public class GaussianSpecularLighting03 extends GLWindow {
 			
 	private ProgramPairs g_Programs[] = new ProgramPairs[LightingModel.LM_MAX_LIGHTING_MODEL.ordinal()];
 	private ShaderPairs g_ShaderFiles[] = new ShaderPairs[] {
-			new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "PhongLighting.frag"),
-			new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "PhongOnly.frag"),
-			new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "BlinnLighting.frag"),
-			new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "BlinnOnly.frag"),
-			new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "GaussianLighting.frag"),
-			new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "GaussianOnly.frag")
+			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "PhongLighting.frag"),
+			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "PhongOnly.frag"),
+			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "BlinnLighting.frag"),
+			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "BlinnOnly.frag"),
+			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "GaussianLighting.frag"),
+			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "GaussianOnly.frag")
 	};
 	
 	private UnlitProgData g_Unlit;
@@ -138,7 +138,7 @@ public class GaussianSpecularLighting03 extends GLWindow {
 
 	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer16 	= BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -191,7 +191,7 @@ public class GaussianSpecularLighting03 extends GLWindow {
 			g_Programs[iProg].colorProg = loadLitProgram(g_ShaderFiles[iProg].strColorVertShader, g_ShaderFiles[iProg].strFragmentShader);
 		}
 		
-		g_Unlit = loadUnlitProgram(BASEPATH + "PosTransform.vert", BASEPATH + "UniformColor.frag");
+		g_Unlit = loadUnlitProgram(TUTORIAL_DATAPATH + "PosTransform.vert", TUTORIAL_DATAPATH + "UniformColor.frag");
 	}
 	
 	
@@ -200,9 +200,9 @@ public class GaussianSpecularLighting03 extends GLWindow {
 		initializePrograms();
 		
 		try {
-			g_pCylinderMesh = new Mesh(BASEPATH + "UnitCylinder.xml");
-			g_pPlaneMesh 	= new Mesh(BASEPATH + "LargePlane.xml");
-			g_pCubeMesh 	= new Mesh(BASEPATH + "UnitCube.xml");
+			g_pCylinderMesh = new Mesh(TUTORIAL_DATAPATH + "UnitCylinder.xml");
+			g_pPlaneMesh 	= new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
+			g_pCubeMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

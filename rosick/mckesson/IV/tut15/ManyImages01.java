@@ -55,7 +55,7 @@ public class ManyImages01 extends GLWindow {
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/IV/tut15/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut15/data/";
 	
 	
 	
@@ -99,7 +99,6 @@ public class ManyImages01 extends GLWindow {
 		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
 
 		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
-		
 		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
 
 		int colorTextureUnif = glGetUniformLocation(data.theProgram, "colorTexture");
@@ -111,7 +110,7 @@ public class ManyImages01 extends GLWindow {
 	}
 		
 	private void initializePrograms() {	
-		g_program = loadProgram(BASEPATH + "PT.vert", BASEPATH + "Tex.frag");
+		g_program = loadProgram(TUTORIAL_DATAPATH + "PT.vert", TUTORIAL_DATAPATH + "Tex.frag");
 	}
 	
 	
@@ -120,8 +119,8 @@ public class ManyImages01 extends GLWindow {
 		initializePrograms();
 
 		try {
-			g_pCorridor = new Mesh(BASEPATH + "Corridor.xml");
-			g_pPlane = 	new Mesh(BASEPATH + "BigPlane.xml");
+			g_pCorridor = 	new Mesh(TUTORIAL_DATAPATH + "Corridor.xml");
+			g_pPlane = 		new Mesh(TUTORIAL_DATAPATH + "BigPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -379,7 +378,7 @@ public class ManyImages01 extends GLWindow {
 	
 	private void loadCheckerTexture() {
 		try	{
-			ImageSet pImageSet = Dds.loadFromFile(BASEPATH + "checker.dds");
+			ImageSet pImageSet = Dds.loadFromFile(TUTORIAL_DATAPATH + "checker.dds");
 
 			g_checkerTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_checkerTexture);

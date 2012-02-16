@@ -47,14 +47,14 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
  * Q,E		- raise and lower the camera, relative to its current orientation. 
  * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
- * P		- toggle pausing on/off.
+ * P		- toggles pausing on/off.
  * -,=		- rewind/jump forward time by 0.5 second (of real-time).
- * T		- toggle a display showing the look-at point.
+ * T		- toggles a display showing the look-at point.
  * G		- toggles the drawing of the light source.
- * 1		- switch back and forth between actual meshes and impostor spheres (the central blue sphere).
- * 2		- switch back and forth between actual meshes and impostor spheres (the orbiting grey sphere).
- * 3		- switch back and forth between actual meshes and impostor spheres (the black marble on the left).
- * 4		- switch back and forth between actual meshes and impostor spheres (the gold sphere on the right).
+ * 1		- switches back and forth between actual meshes and impostor spheres (the central blue sphere).
+ * 2		- switches back and forth between actual meshes and impostor spheres (the orbiting grey sphere).
+ * 3		- switches back and forth between actual meshes and impostor spheres (the black marble on the left).
+ * 4		- switches back and forth between actual meshes and impostor spheres (the gold sphere on the right).
  * L,J,H	- switch impostor.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
@@ -70,8 +70,9 @@ public class BasicImpostor01 extends GLWindow {
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/III/tut13/data/";
-	
+	private final String COMMON_DATAPATH = "/rosick/mckesson/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut13/data/";
+
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -108,9 +109,9 @@ public class BasicImpostor01 extends GLWindow {
 	private UnlitProgData g_Unlit;
 	
 	private String g_impShaderNames[] = new String[] {
-		BASEPATH + "BasicImpostor.vert", BASEPATH + "BasicImpostor.frag",
-		BASEPATH + "PerspImpostor.vert", BASEPATH + "PerspImpostor.frag",
-		BASEPATH + "DepthImpostor.vert", BASEPATH + "DepthImpostor.frag",
+		TUTORIAL_DATAPATH + "BasicImpostor.vert", TUTORIAL_DATAPATH + "BasicImpostor.frag",
+		TUTORIAL_DATAPATH + "PerspImpostor.vert", TUTORIAL_DATAPATH + "PerspImpostor.frag",
+		TUTORIAL_DATAPATH + "DepthImpostor.vert", TUTORIAL_DATAPATH + "DepthImpostor.frag",
 	};
 	
 	private int g_lightUniformBuffer;
@@ -193,14 +194,14 @@ public class BasicImpostor01 extends GLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_litMeshProg = loadLitMeshProgram(BASEPATH + "PN.vert", BASEPATH + "Lighting.frag");
+		g_litMeshProg = loadLitMeshProgram(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "Lighting.frag");
 
 		for (int iLoop = 0; iLoop < Impostors.IMP_NUM_IMPOSTORS.ordinal(); iLoop++) {
 			g_litImpProgs[iLoop] = new ProgramImposData();
 			g_litImpProgs[iLoop] = loadLitImposProgram(g_impShaderNames[iLoop * 2], g_impShaderNames[iLoop * 2 + 1]);
 		}
 
-		g_Unlit = loadUnlitProgram("/rosick/mckesson/data/" + "Unlit.vert", "/rosick/mckesson/data/" + "Unlit.frag");
+		g_Unlit = loadUnlitProgram(COMMON_DATAPATH + "Unlit.vert", COMMON_DATAPATH + "Unlit.frag");
 	}
 	
 	
@@ -209,9 +210,9 @@ public class BasicImpostor01 extends GLWindow {
 		initializePrograms();
 
 		try {
-			g_pPlaneMesh = 	new Mesh(BASEPATH + "LargePlane.xml");
-			g_pSphereMesh = new Mesh(BASEPATH + "UnitSphere.xml");
-			g_pCubeMesh = 	new Mesh(BASEPATH + "UnitCube.xml");
+			g_pPlaneMesh = 	new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
+			g_pSphereMesh = new Mesh(TUTORIAL_DATAPATH + "UnitSphere.xml");
+			g_pCubeMesh = 	new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

@@ -57,7 +57,7 @@ public class GammaCheckers02 extends GLWindow {
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/IV/tut16/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut16/data/";
 	
 	
 	
@@ -113,8 +113,8 @@ public class GammaCheckers02 extends GLWindow {
 	}
 		
 	private void initializePrograms() {	
-		g_progNoGamma = loadProgram(BASEPATH + "PT.vert", BASEPATH + "textureNoGamma.frag");
-		g_progGamma = loadProgram(BASEPATH + "PT.vert", BASEPATH + "textureGamma.frag");
+		g_progNoGamma = loadProgram(TUTORIAL_DATAPATH + "PT.vert", TUTORIAL_DATAPATH + "textureNoGamma.frag");
+		g_progGamma = loadProgram(TUTORIAL_DATAPATH + "PT.vert", TUTORIAL_DATAPATH + "textureGamma.frag");
 	}
 	
 	
@@ -123,8 +123,8 @@ public class GammaCheckers02 extends GLWindow {
 		initializePrograms();
 
 		try {
-			g_pCorridor = new Mesh(BASEPATH + "Corridor.xml");
-			g_pPlane = 	new Mesh(BASEPATH + "BigPlane.xml");
+			g_pCorridor = new Mesh(TUTORIAL_DATAPATH + "Corridor.xml");
+			g_pPlane = 	new Mesh(TUTORIAL_DATAPATH + "BigPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -314,7 +314,7 @@ public class GammaCheckers02 extends GLWindow {
 		
 	private void loadCheckerTexture() {
 		try	{
-			ImageSet pImageSet = Dds.loadFromFile(BASEPATH + "checker_linear.dds");
+			ImageSet pImageSet = Dds.loadFromFile(TUTORIAL_DATAPATH + "checker_linear.dds");
 
 			g_linearTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_linearTexture);
@@ -331,7 +331,7 @@ public class GammaCheckers02 extends GLWindow {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
 			glGenerateMipmap(GL_TEXTURE_2D);
 
-			pImageSet = Dds.loadFromFile(BASEPATH + "checker_gamma.dds");
+			pImageSet = Dds.loadFromFile(TUTORIAL_DATAPATH + "checker_gamma.dds");
 
 			g_gammaTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_gammaTexture);

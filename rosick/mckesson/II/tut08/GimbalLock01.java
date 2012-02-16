@@ -39,7 +39,7 @@ public class GimbalLock01 extends GLWindow {
 	}
 	
 	
-	private final String BASEPATH = "/rosick/mckesson/II/tut08/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut08/data/";
 	
 	
 	
@@ -62,8 +62,8 @@ public class GimbalLock01 extends GLWindow {
 	
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "ColorMultUniform.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "ColorMultUniform.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -94,7 +94,7 @@ public class GimbalLock01 extends GLWindow {
 				g_Gimbals[i] = new Mesh(g_strGimbalNames[i]);
 			}
 			
-			g_pObject = new Mesh(BASEPATH + "Ship.xml");
+			g_pObject = new Mesh(TUTORIAL_DATAPATH + "Ship.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -197,7 +197,7 @@ public class GimbalLock01 extends GLWindow {
 	private enum GimbalAxis {
 		GIMBAL_X_AXIS,
 		GIMBAL_Y_AXIS,
-		GIMBAL_Z_AXIS;
+		GIMBAL_Z_AXIS
 	};
 	
 	
@@ -210,9 +210,9 @@ public class GimbalLock01 extends GLWindow {
 	
 	private final float SMALL_ANGLE_INCREMENT = 9.0f;
 	private final String g_strGimbalNames[] = {
-			BASEPATH + "LargeGimbal.xml",
-			BASEPATH + "MediumGimbal.xml",
-			BASEPATH + "SmallGimbal.xml",
+			TUTORIAL_DATAPATH + "LargeGimbal.xml",
+			TUTORIAL_DATAPATH + "MediumGimbal.xml",
+			TUTORIAL_DATAPATH + "SmallGimbal.xml",
 	};
 	
 	private GimbalAngles g_angles = new GimbalAngles();

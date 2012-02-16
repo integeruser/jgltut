@@ -40,7 +40,7 @@ public class Interpolation04 extends GLWindow {
 	}
 	
 	
-	private final String BASEPATH = "/rosick/mckesson/II/tut08/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut08/data/";
 	
 	
 	
@@ -63,8 +63,8 @@ public class Interpolation04 extends GLWindow {
 	
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "ColorMultUniform.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "ColorMultUniform.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -91,7 +91,7 @@ public class Interpolation04 extends GLWindow {
 		initializeProgram();
 		
 		try {		
-			g_pShip = new Mesh(BASEPATH + "Ship.xml");
+			g_pShip = new Mesh(TUTORIAL_DATAPATH + "Ship.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

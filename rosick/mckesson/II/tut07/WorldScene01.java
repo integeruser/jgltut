@@ -48,7 +48,7 @@ public class WorldScene01 extends GLWindow {
 	}
 
 
-	private final String BASEPATH = "/rosick/mckesson/II/tut07/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut07/data/";
 
 	
 	
@@ -97,9 +97,9 @@ public class WorldScene01 extends GLWindow {
 	}
 
 	private void initializeProgram() {
-		uniformColor = 		loadProgram(BASEPATH + "PosOnlyWorldTransform.vert",	BASEPATH + "ColorUniform.frag");
-		objectColor = 		loadProgram(BASEPATH + "PosColorWorldTransform.vert", 	BASEPATH + "ColorPassthrough.frag");
-		uniformColorTint = 	loadProgram(BASEPATH + "PosColorWorldTransform.vert", 	BASEPATH + "ColorMultUniform.frag");
+		uniformColor = 		loadProgram(TUTORIAL_DATAPATH + "PosOnlyWorldTransform.vert",	TUTORIAL_DATAPATH + "ColorUniform.frag");
+		objectColor = 		loadProgram(TUTORIAL_DATAPATH + "PosColorWorldTransform.vert", 	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
+		uniformColorTint = 	loadProgram(TUTORIAL_DATAPATH + "PosColorWorldTransform.vert", 	TUTORIAL_DATAPATH + "ColorMultUniform.frag");
 	}
 
 	
@@ -108,11 +108,11 @@ public class WorldScene01 extends GLWindow {
 		initializeProgram();
 
 		try {
-			g_pConeMesh 		= new Mesh(BASEPATH + "UnitConeTint.xml");
-			g_pCylinderMesh 	= new Mesh(BASEPATH + "UnitCylinderTint.xml");
-			g_pCubeTintMesh 	= new Mesh(BASEPATH + "UnitCubeTint.xml");
-			g_pCubeColorMesh 	= new Mesh(BASEPATH + "UnitCubeColor.xml");
-			g_pPlaneMesh 		= new Mesh(BASEPATH + "UnitPlane.xml");
+			g_pConeMesh 		= new Mesh(TUTORIAL_DATAPATH + "UnitConeTint.xml");
+			g_pCylinderMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCylinderTint.xml");
+			g_pCubeTintMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCubeTint.xml");
+			g_pCubeColorMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCubeColor.xml");
+			g_pPlaneMesh 		= new Mesh(TUTORIAL_DATAPATH + "UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

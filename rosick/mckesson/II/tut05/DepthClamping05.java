@@ -35,7 +35,7 @@ public class DepthClamping05 extends GLWindow {
 	
 	
 	private final int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/II/tut05/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut05/data/";
 
 	
 	
@@ -181,8 +181,8 @@ public class DepthClamping05 extends GLWindow {
 		
 	private void initializeProgram() {			        
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "Standard.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "Standard.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "Standard.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "Standard.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -193,11 +193,10 @@ public class DepthClamping05 extends GLWindow {
 		float fzNear = 1.0f; float fzFar = 3.0f;
 		
 		perspectiveMatrix = new float[16];
-		
 		perspectiveMatrix[0] 	= fFrustumScale;
 		perspectiveMatrix[5] 	= fFrustumScale;
 		perspectiveMatrix[10] 	= (fzFar + fzNear) / (fzNear - fzFar);
-		perspectiveMatrix[11] 	= -1.0f;
+		perspectiveMatrix[11]	= -1.0f;
 		perspectiveMatrix[14] 	= (2 * fzFar * fzNear) / (fzNear - fzFar);
 
 		FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer(perspectiveMatrix.length);

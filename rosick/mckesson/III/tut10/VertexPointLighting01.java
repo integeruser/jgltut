@@ -61,7 +61,7 @@ public class VertexPointLighting01 extends GLWindow {
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/III/tut10/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut10/data/";
 
 	
 	
@@ -145,10 +145,10 @@ public class VertexPointLighting01 extends GLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_WhiteDiffuseColor =	loadLitProgram(BASEPATH + "PosVertexLighting_PN.vert",		BASEPATH + "ColorPassthrough.frag");		
-		g_VertexDiffuseColor = 	loadLitProgram(BASEPATH + "PosVertexLighting_PCN.vert", 	BASEPATH + "ColorPassthrough.frag");
+		g_WhiteDiffuseColor =	loadLitProgram(TUTORIAL_DATAPATH + "PosVertexLighting_PN.vert",		TUTORIAL_DATAPATH + "ColorPassthrough.frag");		
+		g_VertexDiffuseColor = 	loadLitProgram(TUTORIAL_DATAPATH + "PosVertexLighting_PCN.vert", 	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
 		
-		g_Unlit = loadUnlitProgram(BASEPATH + "PosTransform.vert", BASEPATH + "UniformColor.frag");
+		g_Unlit = loadUnlitProgram(TUTORIAL_DATAPATH + "PosTransform.vert", TUTORIAL_DATAPATH + "UniformColor.frag");
 	}
 	
 	
@@ -157,9 +157,9 @@ public class VertexPointLighting01 extends GLWindow {
 		initializePrograms();
 		
 		try {
-			g_pCylinderMesh = new Mesh(BASEPATH + "UnitCylinder.xml");
-			g_pPlaneMesh 	= new Mesh(BASEPATH + "LargePlane.xml");
-			g_pCubeMesh 	= new Mesh(BASEPATH + "UnitCube.xml");
+			g_pCylinderMesh = new Mesh(TUTORIAL_DATAPATH + "UnitCylinder.xml");
+			g_pPlaneMesh 	= new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
+			g_pCubeMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

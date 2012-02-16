@@ -37,7 +37,7 @@ public class Scale02 extends GLWindow {
 	
 	
 	private final int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/II/tut06/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut06/data/";
 
 	
 	
@@ -96,8 +96,8 @@ public class Scale02 extends GLWindow {
 		
 	private void initializeProgram() {	
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	BASEPATH + "PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	BASEPATH + "ColorPassthrough.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	TUTORIAL_DATAPATH + "PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	TUTORIAL_DATAPATH + "ColorPassthrough.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 			    

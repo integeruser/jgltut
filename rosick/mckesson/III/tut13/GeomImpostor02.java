@@ -45,9 +45,9 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
  * Q,E		- raise and lower the camera, relative to its current orientation. 
  * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
- * P		- toggle pausing on/off.
+ * P		- toggles pausing on/off.
  * -,=		- rewind/jump forward time by 0.5 second (of real-time).
- * T		- toggle a display showing the look-at point.
+ * T		- toggles a display showing the look-at point.
  * G		- toggles the drawing of the light source.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
@@ -63,8 +63,9 @@ public class GeomImpostor02 extends GLWindow {
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/III/tut13/data/";
-	
+	private final String COMMON_DATAPATH = "/rosick/mckesson/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut13/data/";
+
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -177,11 +178,11 @@ public class GeomImpostor02 extends GLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_litMeshProg = loadLitMeshProgram(BASEPATH + "PN.vert", BASEPATH + "Lighting.frag");
+		g_litMeshProg = loadLitMeshProgram(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "Lighting.frag");
 
-		g_litImpProg = loadLitImposProgram(BASEPATH + "GeomImpostor.vert", BASEPATH + "GeomImpostor.geom", BASEPATH + "GeomImpostor.frag");
+		g_litImpProg = loadLitImposProgram(TUTORIAL_DATAPATH + "GeomImpostor.vert", TUTORIAL_DATAPATH + "GeomImpostor.geom", TUTORIAL_DATAPATH + "GeomImpostor.frag");
 
-		g_Unlit = loadUnlitProgram("/rosick/mckesson/data/" + "Unlit.vert", "/rosick/mckesson/data/" + "Unlit.frag");
+		g_Unlit = loadUnlitProgram(COMMON_DATAPATH + "Unlit.vert", COMMON_DATAPATH + "Unlit.frag");
 	}
 	
 	
@@ -190,8 +191,8 @@ public class GeomImpostor02 extends GLWindow {
 		initializePrograms();
 
 		try {
-			g_pPlaneMesh = 	new Mesh(BASEPATH + "LargePlane.xml");
-			g_pCubeMesh = 	new Mesh(BASEPATH + "UnitCube.xml");
+			g_pPlaneMesh = 	new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
+			g_pCubeMesh = 	new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -637,15 +638,15 @@ public class GeomImpostor02 extends GLWindow {
 		glBindBuffer(GL_UNIFORM_BUFFER, g_materialArrayUniformBuffer);
 		
 		{			
-			FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(ubArray.size() * MaterialEntry.SIZE / FLOAT_SIZE);
+			FloatBuffer ubArrayBuffer = BufferUtils.createFloatBuffer(ubArray.size() * MaterialEntry.SIZE / FLOAT_SIZE);
 			
 			for (int i = 0; i < ubArray.size(); i++) {
-				ubArray.get(i).fillBuffer(tempFloatBuffer);
+				ubArray.get(i).fillBuffer(ubArrayBuffer);
 			}
 			
-			tempFloatBuffer.flip();
+			ubArrayBuffer.flip();
 			
-			glBufferData(GL_UNIFORM_BUFFER, tempFloatBuffer, GL_STATIC_DRAW);
+			glBufferData(GL_UNIFORM_BUFFER, ubArrayBuffer, GL_STATIC_DRAW);
 		}
 		
 		glBindBuffer(GL_UNIFORM_BUFFER, g_materialTerrainUniformBuffer);

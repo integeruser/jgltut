@@ -29,7 +29,7 @@ public class FragPosition01 extends GLWindow {
 	}
 	
 	
-	private final String BASEPATH = "/rosick/mckesson/I/tut02/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/I/tut02/data/";
 
 	
 	
@@ -53,8 +53,8 @@ public class FragPosition01 extends GLWindow {
 
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	BASEPATH + "FragPosition.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "FragPosition.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	TUTORIAL_DATAPATH + "FragPosition.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "FragPosition.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 	}

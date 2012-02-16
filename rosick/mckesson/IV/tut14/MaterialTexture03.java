@@ -52,12 +52,12 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
  * @author integeruser
  * 
- * P		- toggle pausing on/off.
+ * P		- toggles pausing on/off.
  * -,=		- rewind/jump forward time by 0.5 second (of real-time).
- * T		- toggle a display showing the look-at point.
+ * T		- toggles a display showing the look-at point.
  * G		- toggles the drawing of the light source.
- * Y		- switch between the infinity symbol and a flat plane.
- * SPACE	- switch between one of three rendering modes: fixed shininess with a Gaussian lookup-table, a texture-based shininess with a 
+ * Y		- switches between the infinity symbol and a flat plane.
+ * SPACE	- switches between one of three rendering modes: fixed shininess with a Gaussian lookup-table, a texture-based shininess with a 
  * 				Gaussian lookup-table, and a texture-based shininess with a shader-computed Gaussian term.
  * 1,2,3,4	- switch to progressively larger textures.
  * 8,9		- switch to the gold material/a material with a dark diffuse color and bright specular color.
@@ -78,8 +78,9 @@ public class MaterialTexture03 extends GLWindow {
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/IV/tut14/data/";
-	
+	private final String COMMON_DATAPATH = "/rosick/mckesson/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut14/data/";
+
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -119,9 +120,9 @@ public class MaterialTexture03 extends GLWindow {
 	private UnlitProgData g_Unlit;
 	
 	private ShaderPairs g_shaderPairs[] = new ShaderPairs[] {
-			new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "FixedShininess.frag"),
-			new ShaderPairs(BASEPATH + "PNT.vert", BASEPATH + "TextureShininess.frag"),
-			new ShaderPairs(BASEPATH + "PNT.vert", BASEPATH + "TextureCompute.frag")
+			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", 	TUTORIAL_DATAPATH + "FixedShininess.frag"),
+			new ShaderPairs(TUTORIAL_DATAPATH + "PNT.vert", TUTORIAL_DATAPATH + "TextureShininess.frag"),
+			new ShaderPairs(TUTORIAL_DATAPATH + "PNT.vert", TUTORIAL_DATAPATH + "TextureCompute.frag")
 	};
 	
 	private int g_lightUniformBuffer;
@@ -191,7 +192,7 @@ public class MaterialTexture03 extends GLWindow {
 			g_Programs[prog] = loadStandardProgram(g_shaderPairs[prog].vertShader, g_shaderPairs[prog].fragShader);
 		}
 
-		g_Unlit = loadUnlitProgram("/rosick/mckesson/data/" + "Unlit.vert", "/rosick/mckesson/data/" + "Unlit.frag");
+		g_Unlit = loadUnlitProgram(COMMON_DATAPATH + "Unlit.vert", COMMON_DATAPATH + "Unlit.frag");
 	}
 	
 	
@@ -200,9 +201,9 @@ public class MaterialTexture03 extends GLWindow {
 		initializePrograms();
 
 		try {
-			g_pObjectMesh = new Mesh("/rosick/mckesson/data/" + "Infinity.xml");
-			g_pCubeMesh = 	new Mesh(BASEPATH + "UnitCube.xml");
-			g_pPlaneMesh = 	new Mesh("/rosick/mckesson/data/" + "UnitPlane.xml");
+			g_pObjectMesh = new Mesh(COMMON_DATAPATH + "Infinity.xml");
+			g_pCubeMesh = 	new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
+			g_pPlaneMesh = 	new Mesh(COMMON_DATAPATH + "UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -672,13 +673,13 @@ public class MaterialTexture03 extends GLWindow {
 				
 		buildGaussianData(textureData, cosAngleResolution, shininessResolution);
 		
-		ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(textureData.length);
-		tempByteBuffer.put(textureData);
-		tempByteBuffer.flip();
+		ByteBuffer textureDataBuffer = BufferUtils.createByteBuffer(textureData.length);
+		textureDataBuffer.put(textureData);
+		textureDataBuffer.flip();
 		
 		int gaussTexture = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, gaussTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, cosAngleResolution, shininessResolution, 0, GL11.GL_RED, GL_UNSIGNED_BYTE, tempByteBuffer);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, cosAngleResolution, shininessResolution, 0, GL11.GL_RED, GL_UNSIGNED_BYTE, textureDataBuffer);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -691,7 +692,7 @@ public class MaterialTexture03 extends GLWindow {
 		ImageSet pImageSet;
 
 		try {
-			pImageSet = Dds.loadFromFile(BASEPATH + "main.dds");
+			pImageSet = Dds.loadFromFile(TUTORIAL_DATAPATH + "main.dds");
 			
 			SingleImage image = pImageSet.getImage(0, 0, 0);
 

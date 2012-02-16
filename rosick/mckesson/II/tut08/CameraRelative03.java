@@ -46,7 +46,7 @@ public class CameraRelative03 extends GLWindow {
 	}
 	
 	
-	private final String BASEPATH = "/rosick/mckesson/II/tut08/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut08/data/";
 	
 	
 	
@@ -69,8 +69,8 @@ public class CameraRelative03 extends GLWindow {
 
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "ColorMultUniform.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "ColorMultUniform.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -97,8 +97,8 @@ public class CameraRelative03 extends GLWindow {
 		initializeProgram();
 		
 		try {		
-			g_pShip = new Mesh(BASEPATH + "Ship.xml");
-			g_pPlane = new Mesh(BASEPATH + "UnitPlane.xml");
+			g_pShip = new Mesh(TUTORIAL_DATAPATH + "Ship.xml");
+			g_pPlane = new Mesh(TUTORIAL_DATAPATH + "UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -233,7 +233,7 @@ public class CameraRelative03 extends GLWindow {
 			currMatrix.applyMatrix(Glm.matCast(g_orientation));
 			currMatrix.rotateX(-90.0f);
 
-			//Set the base color for this object.
+			// Set the base color for this object.
 			glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
 			glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 

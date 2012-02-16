@@ -68,7 +68,7 @@ public class PhongLighting01 extends GLWindow {
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/III/tut11/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut11/data/";
 
 	
 	
@@ -166,16 +166,16 @@ public class PhongLighting01 extends GLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_WhiteNoPhong = 	loadLitProgram(BASEPATH + "PN.vert", 	BASEPATH + "NoPhong.frag");
-		g_ColorNoPhong = 	loadLitProgram(BASEPATH + "PCN.vert", 	BASEPATH + "NoPhong.frag");
+		g_WhiteNoPhong = 	loadLitProgram(TUTORIAL_DATAPATH + "PN.vert", 	TUTORIAL_DATAPATH + "NoPhong.frag");
+		g_ColorNoPhong = 	loadLitProgram(TUTORIAL_DATAPATH + "PCN.vert", 	TUTORIAL_DATAPATH + "NoPhong.frag");
 
-		g_WhitePhong = 		loadLitProgram(BASEPATH + "PN.vert", 	BASEPATH + "PhongLighting.frag");
-		g_ColorPhong = 		loadLitProgram(BASEPATH + "PCN.vert", 	BASEPATH + "PhongLighting.frag");
+		g_WhitePhong = 		loadLitProgram(TUTORIAL_DATAPATH + "PN.vert", 	TUTORIAL_DATAPATH + "PhongLighting.frag");
+		g_ColorPhong = 		loadLitProgram(TUTORIAL_DATAPATH + "PCN.vert", 	TUTORIAL_DATAPATH + "PhongLighting.frag");
 
-		g_WhitePhongOnly = 	loadLitProgram(BASEPATH + "PN.vert", 	BASEPATH + "PhongOnly.frag");
-		g_ColorPhongOnly = 	loadLitProgram(BASEPATH + "PCN.vert", 	BASEPATH + "PhongOnly.frag");
+		g_WhitePhongOnly = 	loadLitProgram(TUTORIAL_DATAPATH + "PN.vert", 	TUTORIAL_DATAPATH + "PhongOnly.frag");
+		g_ColorPhongOnly = 	loadLitProgram(TUTORIAL_DATAPATH + "PCN.vert", 	TUTORIAL_DATAPATH + "PhongOnly.frag");
 
-		g_Unlit = loadUnlitProgram(BASEPATH + "PosTransform.vert", BASEPATH + "UniformColor.frag");
+		g_Unlit = loadUnlitProgram(TUTORIAL_DATAPATH + "PosTransform.vert", TUTORIAL_DATAPATH + "UniformColor.frag");
 	}
 	
 	
@@ -184,9 +184,9 @@ public class PhongLighting01 extends GLWindow {
 		initializePrograms();
 		
 		try {
-			g_pCylinderMesh = new Mesh(BASEPATH + "UnitCylinder.xml");
-			g_pPlaneMesh 	= new Mesh(BASEPATH + "LargePlane.xml");
-			g_pCubeMesh 	= new Mesh(BASEPATH + "UnitCube.xml");
+			g_pCylinderMesh = new Mesh(TUTORIAL_DATAPATH + "UnitCylinder.xml");
+			g_pPlaneMesh 	= new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
+			g_pCubeMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -319,16 +319,16 @@ public class PhongLighting01 extends GLWindow {
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-						switch(g_eLightModel) {
-							case LM_DIFFUSE_AND_SPECULAR:
-								g_eLightModel = LightingModel.LM_PURE_DIFFUSE;
-								break;
-							case LM_PURE_DIFFUSE:
-								g_eLightModel = LightingModel.LM_DIFFUSE_AND_SPECULAR;
-								break;
-							case LM_SPECULAR_ONLY:
-								g_eLightModel = LightingModel.LM_PURE_DIFFUSE;
-								break;
+						switch (g_eLightModel) {
+						case LM_DIFFUSE_AND_SPECULAR:
+							g_eLightModel = LightingModel.LM_PURE_DIFFUSE;
+							break;
+						case LM_PURE_DIFFUSE:
+							g_eLightModel = LightingModel.LM_DIFFUSE_AND_SPECULAR;
+							break;
+						case LM_SPECULAR_ONLY:
+							g_eLightModel = LightingModel.LM_PURE_DIFFUSE;
+							break;
 						}
 					} else {
 						int index = g_eLightModel.ordinal() + 1;
@@ -382,18 +382,18 @@ public class PhongLighting01 extends GLWindow {
 		ProgramData pColorProg = null;		
 		
 		switch (g_eLightModel) {
-			case LM_PURE_DIFFUSE:
-				pWhiteProg = g_WhiteNoPhong;
-				pColorProg = g_ColorNoPhong;
-				break;
-			case LM_DIFFUSE_AND_SPECULAR:
-				pWhiteProg = g_WhitePhong;
-				pColorProg = g_ColorPhong;
-				break;
-			case LM_SPECULAR_ONLY:
-				pWhiteProg = g_WhitePhongOnly;
-				pColorProg = g_ColorPhongOnly;
-				break;
+		case LM_PURE_DIFFUSE:
+			pWhiteProg = g_WhiteNoPhong;
+			pColorProg = g_ColorNoPhong;
+			break;
+		case LM_DIFFUSE_AND_SPECULAR:
+			pWhiteProg = g_WhitePhong;
+			pColorProg = g_ColorPhong;
+			break;
+		case LM_SPECULAR_ONLY:
+			pWhiteProg = g_WhitePhongOnly;
+			pColorProg = g_ColorPhongOnly;
+			break;
 		}
 			
 		glUseProgram(pWhiteProg.theProgram);

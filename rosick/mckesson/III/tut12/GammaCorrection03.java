@@ -47,14 +47,14 @@ import rosick.mckesson.III.tut12.Scene.ProgramData;
  * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
  * Q,E		- raise and lower the camera, relative to its current orientation. 
  * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
- * P		- toggle pausing on/off.
+ * P		- toggles pausing on/off.
  * -,=		- rewind/jump forward time by one second (of real-time).
- * T		- toggle viewing of the current target point.
+ * T		- toggles viewing of the current target point.
  * 1,2,3	- timer commands affect both the sun and the other lights/only the sun/only the other lights.
- * L		- switch to hdr lighting. Pressing LEFT_SHIFT+L will switch to gamma version.
+ * L		- switches to hdr lighting. Pressing LEFT_SHIFT+L will switch to gamma version.
  * K 		- toggles gamma correction.
  * Y,H 		- raise and lower the gamma value (default 2.2).
- * SPACE	- print out the current sun-based time, in 24-hour notation.
+ * SPACE	- prints out the current sun-based time, in 24-hour notation.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
  * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
@@ -69,7 +69,7 @@ public class GammaCorrection03 extends GLWindow {
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/III/tut12/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut12/data/";
 	
 	
 	
@@ -101,11 +101,11 @@ public class GammaCorrection03 extends GLWindow {
 
 	private ProgramData g_Programs[] = new ProgramData[LightingProgramTypes.LP_MAX_LIGHTING_PROGRAM_TYPES.ordinal()];
 	private Shaders g_ShaderFiles[] = new Shaders[] {
-			new Shaders(BASEPATH + "PCN.vert", BASEPATH + "DiffuseSpecularGamma.frag"),
-			new Shaders(BASEPATH + "PCN.vert", BASEPATH + "DiffuseOnlyGamma.frag"),
+			new Shaders(TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "DiffuseSpecularGamma.frag"),
+			new Shaders(TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "DiffuseOnlyGamma.frag"),
 			
-			new Shaders(BASEPATH + "PN.vert", BASEPATH + "DiffuseSpecularMtlGamma.frag"),
-			new Shaders(BASEPATH + "PN.vert", BASEPATH + "DiffuseOnlyMtlGamma.frag")
+			new Shaders(TUTORIAL_DATAPATH + "PN.vert", 	TUTORIAL_DATAPATH + "DiffuseSpecularMtlGamma.frag"),
+			new Shaders(TUTORIAL_DATAPATH + "PN.vert", 	TUTORIAL_DATAPATH + "DiffuseOnlyMtlGamma.frag")
 	};
 	
 	private UnlitProgData g_Unlit;
@@ -172,7 +172,7 @@ public class GammaCorrection03 extends GLWindow {
 			g_Programs[iProg] = loadLitProgram(g_ShaderFiles[iProg].fileVertexShader, g_ShaderFiles[iProg].fileFragmentShader);
 		}
 
-		g_Unlit = loadUnlitProgram(BASEPATH + "PosTransform.vert", BASEPATH + "UniformColor.frag");
+		g_Unlit = loadUnlitProgram(TUTORIAL_DATAPATH + "PosTransform.vert", TUTORIAL_DATAPATH + "UniformColor.frag");
 	}
 	
 	
@@ -181,7 +181,7 @@ public class GammaCorrection03 extends GLWindow {
 		initializePrograms();
 
 		try {
-			g_pScene = new Scene(BASEPATH) {
+			g_pScene = new Scene(TUTORIAL_DATAPATH) {
 
 				@Override
 				ProgramData getProgram(LightingProgramTypes eType) {

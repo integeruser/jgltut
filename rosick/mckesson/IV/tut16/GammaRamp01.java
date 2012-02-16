@@ -47,7 +47,7 @@ public class GammaRamp01 extends GLWindow {
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/IV/tut16/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut16/data/";
 	
 	
 	
@@ -83,17 +83,17 @@ public class GammaRamp01 extends GLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	private void initializeProgram() {
-		int vertexShader = Framework.loadShader(GL_VERTEX_SHADER, BASEPATH + "screenCoords.vert");
+		int vertexShader = Framework.loadShader(GL_VERTEX_SHADER, TUTORIAL_DATAPATH + "screenCoords.vert");
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		
 		shaderList.add(vertexShader);
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	BASEPATH + "textureNoGamma.frag"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	TUTORIAL_DATAPATH + "textureNoGamma.frag"));
 
 		g_noGammaProgram = Framework.createProgram(shaderList);
 		glDeleteShader(shaderList.get(1));
 
 		shaderList.remove(1);
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	BASEPATH + "textureGamma.frag"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	TUTORIAL_DATAPATH + "textureGamma.frag"));
 
 		g_gammaProgram = Framework.createProgram(shaderList);
 		glDeleteShader(shaderList.get(1));
@@ -118,14 +118,13 @@ public class GammaRamp01 extends GLWindow {
 	
 	private void initializeVertexData() {
 		g_dataBufferObject = glGenBuffers();
-
 		glBindBuffer(GL_ARRAY_BUFFER, g_dataBufferObject);
 		
-		ShortBuffer tempShortBuffer = BufferUtils.createShortBuffer(vertexData.length);
-		tempShortBuffer.put(vertexData);
-		tempShortBuffer.flip();
+		ShortBuffer vertexDataBuffer = BufferUtils.createShortBuffer(vertexData.length);
+		vertexDataBuffer.put(vertexData);
+		vertexDataBuffer.flip();
 		
-		glBufferData(GL_ARRAY_BUFFER, tempShortBuffer, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
 
 		g_vao = glGenVertexArrays();
 
@@ -265,7 +264,7 @@ public class GammaRamp01 extends GLWindow {
 		
 		try {
 			/* Not in the original tutorial, needed for png loading */
-			BufferedImage bufferedImage = ImageIO.read(ClassLoader.class.getResourceAsStream(BASEPATH + "gamma_ramp.png"));			
+			BufferedImage bufferedImage = ImageIO.read(ClassLoader.class.getResourceAsStream(TUTORIAL_DATAPATH + "gamma_ramp.png"));			
 			ByteBuffer textureBuffer = byteBufferFromBufferedImage(bufferedImage);
 			/*                                                      */
 

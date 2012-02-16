@@ -29,7 +29,7 @@ public class ShaderPerspective02 extends GLWindow {
 	}
 	
 	
-	private final String BASEPATH = "/rosick/mckesson/II/tut04/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut04/data/";
 
 	
 	
@@ -152,8 +152,8 @@ public class ShaderPerspective02 extends GLWindow {
 	
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "ManualPerspective.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "StandardColors.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "ManualPerspective.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "StandardColors.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -212,7 +212,7 @@ public class ShaderPerspective02 extends GLWindow {
 		glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
 		glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, colorData);
 		
-		glDrawArrays(GL_TRIANGLES, 0, 3 * 12);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);

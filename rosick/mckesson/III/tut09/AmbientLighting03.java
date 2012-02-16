@@ -56,7 +56,7 @@ public class AmbientLighting03 extends GLWindow {
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/III/tut09/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut09/data/";
 
 	
 	
@@ -117,10 +117,10 @@ public class AmbientLighting03 extends GLWindow {
 	}
 	
 	private void initializeProgram() {	
-		g_WhiteDiffuseColor =		loadProgram(BASEPATH + "DirVertexLighting_PN.vert",		BASEPATH + "ColorPassthrough.frag");		
-		g_VertexDiffuseColor = 		loadProgram(BASEPATH + "DirVertexLighting_PCN.vert", 	BASEPATH + "ColorPassthrough.frag");
-		g_WhiteAmbDiffuseColor = 	loadProgram(BASEPATH + "DirAmbVertexLighting_PN.vert", 	BASEPATH + "ColorPassthrough.frag");
-		g_VertexAmbDiffuseColor = 	loadProgram(BASEPATH + "DirAmbVertexLighting_PCN.vert", BASEPATH + "ColorPassthrough.frag");
+		g_WhiteDiffuseColor =		loadProgram(TUTORIAL_DATAPATH + "DirVertexLighting_PN.vert",		TUTORIAL_DATAPATH + "ColorPassthrough.frag");		
+		g_VertexDiffuseColor = 		loadProgram(TUTORIAL_DATAPATH + "DirVertexLighting_PCN.vert", 		TUTORIAL_DATAPATH + "ColorPassthrough.frag");
+		g_WhiteAmbDiffuseColor = 	loadProgram(TUTORIAL_DATAPATH + "DirAmbVertexLighting_PN.vert", 	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
+		g_VertexAmbDiffuseColor = 	loadProgram(TUTORIAL_DATAPATH + "DirAmbVertexLighting_PCN.vert",	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
 	}
 	
 
@@ -129,8 +129,8 @@ public class AmbientLighting03 extends GLWindow {
 		initializeProgram();
 		
 		try {
-			g_pCylinderMesh = new Mesh(BASEPATH + "UnitCylinder.xml");
-			g_pPlaneMesh 	= new Mesh(BASEPATH + "LargePlane.xml");
+			g_pCylinderMesh = new Mesh(TUTORIAL_DATAPATH + "UnitCylinder.xml");
+			g_pPlaneMesh 	= new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

@@ -29,8 +29,7 @@ public class VertexColor02 extends GLWindow {
 	}
 	
 
-	private final int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/I/tut02/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/I/tut02/data/";
 
 	
 	
@@ -57,8 +56,8 @@ public class VertexColor02 extends GLWindow {
 
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "VertexColors.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "VertexColors.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "VertexColors.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "VertexColors.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 	}
@@ -97,7 +96,7 @@ public class VertexColor02 extends GLWindow {
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
-		glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, FLOAT_SIZE * 4 * 3);		
+		glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 48);		
 		
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 

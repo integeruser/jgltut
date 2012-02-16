@@ -47,11 +47,11 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
  * @author integeruser
  * 
- * P		- toggle pausing on/off.
+ * P		- toggles pausing on/off.
  * -,=		- rewind/jump forward time by 0.5 second (of real-time).
- * T		- toggle a display showing the look-at point.
+ * T		- toggles a display showing the look-at point.
  * G		- toggles the drawing of the light source.
- * SPACE	- toggle between shader-based Gaussian specular and texture-based specular.
+ * SPACE	- toggles between shader-based Gaussian specular and texture-based specular.
  * 1,2,3,4	- switch to progressively larger textures.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
@@ -70,8 +70,9 @@ public class BasicTexture01 extends GLWindow {
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/IV/tut14/data/";
-	
+	private final String COMMON_DATAPATH = "/rosick/mckesson/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut14/data/";
+
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -161,10 +162,10 @@ public class BasicTexture01 extends GLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_litShaderProg = loadStandardProgram(BASEPATH + "PN.vert", BASEPATH + "ShaderGaussian.frag");
-		g_litTextureProg = loadStandardProgram(BASEPATH + "PN.vert", BASEPATH + "TextureGaussian.frag");
+		g_litShaderProg = loadStandardProgram(TUTORIAL_DATAPATH + "PN.vert", 	TUTORIAL_DATAPATH + "ShaderGaussian.frag");
+		g_litTextureProg = loadStandardProgram(TUTORIAL_DATAPATH + "PN.vert", 	TUTORIAL_DATAPATH + "TextureGaussian.frag");
 
-		g_Unlit = loadUnlitProgram("/rosick/mckesson/data/" + "Unlit.vert", "/rosick/mckesson/data/" + "Unlit.frag");
+		g_Unlit = loadUnlitProgram(COMMON_DATAPATH + "Unlit.vert", COMMON_DATAPATH + "Unlit.frag");
 	}
 	
 	
@@ -173,8 +174,8 @@ public class BasicTexture01 extends GLWindow {
 		initializePrograms();
 		
 		try {
-			g_pObjectMesh = new Mesh("/rosick/mckesson/data/" + "Infinity.xml");
-			g_pCubeMesh = 	new Mesh(BASEPATH + "UnitCube.xml");
+			g_pObjectMesh = new Mesh(COMMON_DATAPATH + "Infinity.xml");
+			g_pCubeMesh = 	new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -213,9 +214,7 @@ public class BasicTexture01 extends GLWindow {
 		
 		// Bind the static buffers.
 		glBindBufferRange(GL_UNIFORM_BUFFER, g_lightBlockIndex, g_lightUniformBuffer, 0, LightBlock.SIZE);
-		
 		glBindBufferRange(GL_UNIFORM_BUFFER, g_projectionBlockIndex, g_projectionUniformBuffer, 0, ProjectionBlock.SIZE);
-
 		glBindBufferRange(GL_UNIFORM_BUFFER, g_materialBlockIndex, g_materialUniformBuffer, 0, MaterialBlock.SIZE);
 		
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -577,13 +576,13 @@ public class BasicTexture01 extends GLWindow {
 				
 		buildGaussianData(textureData, cosAngleResolution);
 		
-		ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(textureData.length);
-		tempByteBuffer.put(textureData);
-		tempByteBuffer.flip();
+		ByteBuffer textureDataBuffer = BufferUtils.createByteBuffer(textureData.length);
+		textureDataBuffer.put(textureData);
+		textureDataBuffer.flip();
 		
 		int gaussTexture = glGenTextures();
 		glBindTexture(GL_TEXTURE_1D, gaussTexture);
-		glTexImage1D(GL_TEXTURE_1D, 0, GL_R8, cosAngleResolution, 0, GL11.GL_RED, GL_UNSIGNED_BYTE, tempByteBuffer);
+		glTexImage1D(GL_TEXTURE_1D, 0, GL_R8, cosAngleResolution, 0, GL11.GL_RED, GL_UNSIGNED_BYTE, textureDataBuffer);
 		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_BASE_LEVEL, 0);
 		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAX_LEVEL, 0);
 		glBindTexture(GL_TEXTURE_1D, 0);

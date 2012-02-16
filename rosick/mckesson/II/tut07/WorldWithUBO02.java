@@ -52,7 +52,7 @@ public class WorldWithUBO02 extends GLWindow {
 
 	
 	private final int FLOAT_SIZE = Float.SIZE / 8;
-	private final String BASEPATH = "/rosick/mckesson/II/tut07/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut07/data/";
 
 	
 
@@ -105,9 +105,9 @@ public class WorldWithUBO02 extends GLWindow {
 	}
 
 	private void initializeProgram() {
-		uniformColor = 		loadProgram(BASEPATH + "PosOnlyWorldTransformUBO.vert",		BASEPATH + "ColorUniform.frag");
-		objectColor = 		loadProgram(BASEPATH + "PosColorWorldTransformUBO.vert", 	BASEPATH + "ColorPassthrough.frag");
-		uniformColorTint = 	loadProgram(BASEPATH + "PosColorWorldTransformUBO.vert", 	BASEPATH + "ColorMultUniform.frag");
+		uniformColor = 		loadProgram(TUTORIAL_DATAPATH + "PosOnlyWorldTransformUBO.vert",		TUTORIAL_DATAPATH + "ColorUniform.frag");
+		objectColor = 		loadProgram(TUTORIAL_DATAPATH + "PosColorWorldTransformUBO.vert", 	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
+		uniformColorTint = 	loadProgram(TUTORIAL_DATAPATH + "PosColorWorldTransformUBO.vert", 	TUTORIAL_DATAPATH + "ColorMultUniform.frag");
 		
 		g_GlobalMatricesUBO = glGenBuffers();	       
 		glBindBuffer(GL_UNIFORM_BUFFER, g_GlobalMatricesUBO);
@@ -122,11 +122,11 @@ public class WorldWithUBO02 extends GLWindow {
 		initializeProgram();
 
 		try {
-			g_pConeMesh 		= new Mesh(BASEPATH + "UnitConeTint.xml");
-			g_pCylinderMesh 	= new Mesh(BASEPATH + "UnitCylinderTint.xml");
-			g_pCubeTintMesh 	= new Mesh(BASEPATH + "UnitCubeTint.xml");
-			g_pCubeColorMesh 	= new Mesh(BASEPATH + "UnitCubeColor.xml");
-			g_pPlaneMesh 		= new Mesh(BASEPATH + "UnitPlane.xml");
+			g_pConeMesh 		= new Mesh(TUTORIAL_DATAPATH + "UnitConeTint.xml");
+			g_pCylinderMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCylinderTint.xml");
+			g_pCubeTintMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCubeTint.xml");
+			g_pCubeColorMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCubeColor.xml");
+			g_pPlaneMesh 		= new Mesh(TUTORIAL_DATAPATH + "UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -689,11 +689,11 @@ public class WorldWithUBO02 extends GLWindow {
 	private Mesh g_pCubeColorMesh;
 	private Mesh g_pPlaneMesh;
 	
-	private static boolean g_bDrawLookatPoint = false;
-	private static Vec3 g_camTarget = new Vec3(0.0f, 0.4f, 0.0f);
+	private boolean g_bDrawLookatPoint = false;
+	private Vec3 g_camTarget = new Vec3(0.0f, 0.4f, 0.0f);
 	
 	// In spherical coordinates.
-	private static Vec3 g_sphereCamRelPos = new Vec3(67.5f, -46.0f, 150.0f);
+	private Vec3 g_sphereCamRelPos = new Vec3(67.5f, -46.0f, 150.0f);
 	
 	
 	private Vec3 resolveCamPosition() {

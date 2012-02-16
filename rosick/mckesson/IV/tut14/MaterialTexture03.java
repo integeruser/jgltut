@@ -28,10 +28,10 @@ import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.framework.Timer;
 import rosick.jglsdk.framework.UniformBlockArray;
-import rosick.jglsdk.glimg.Dds;
 import rosick.jglsdk.glimg.ImageSet;
 import rosick.jglsdk.glimg.ImageSet.Dimensions;
 import rosick.jglsdk.glimg.ImageSet.SingleImage;
+import rosick.jglsdk.glimg.loaders.Dds;
 import rosick.jglsdk.glm.Glm;
 import rosick.jglsdk.glm.Mat3;
 import rosick.jglsdk.glm.Mat4;
@@ -52,12 +52,12 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
  * @author integeruser
  * 
- * P		- toggle pausing on/off.
+ * P		- toggles pausing on/off.
  * -,=		- rewind/jump forward time by 0.5 second (of real-time).
- * T		- toggle a display showing the look-at point.
+ * T		- toggles a display showing the look-at point.
  * G		- toggles the drawing of the light source.
- * Y		- switch between the infinity symbol and a flat plane.
- * SPACEBAR	- switch between one of three rendering modes: fixed shininess with a Gaussian lookup-table, a texture-based shininess with a 
+ * Y		- switches between the infinity symbol and a flat plane.
+ * SPACE	- switches between one of three rendering modes: fixed shininess with a Gaussian lookup-table, a texture-based shininess with a 
  * 				Gaussian lookup-table, and a texture-based shininess with a shader-computed Gaussian term.
  * 1,2,3,4	- switch to progressively larger textures.
  * 8,9		- switch to the gold material/a material with a dark diffuse color and bright specular color.
@@ -77,8 +77,10 @@ public class MaterialTexture03 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/IV/tut14/data/";
-	
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String COMMON_DATAPATH = "/rosick/mckesson/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut14/data/";
+
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -118,9 +120,9 @@ public class MaterialTexture03 extends GLWindow {
 	private UnlitProgData g_Unlit;
 	
 	private ShaderPairs g_shaderPairs[] = new ShaderPairs[] {
-		new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "FixedShininess.frag"),
-		new ShaderPairs(BASEPATH + "PNT.vert", BASEPATH + "TextureShininess.frag"),
-		new ShaderPairs(BASEPATH + "PNT.vert", BASEPATH + "TextureCompute.frag")
+			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", 	TUTORIAL_DATAPATH + "FixedShininess.frag"),
+			new ShaderPairs(TUTORIAL_DATAPATH + "PNT.vert", TUTORIAL_DATAPATH + "TextureShininess.frag"),
+			new ShaderPairs(TUTORIAL_DATAPATH + "PNT.vert", TUTORIAL_DATAPATH + "TextureCompute.frag")
 	};
 	
 	private int g_lightUniformBuffer;
@@ -133,8 +135,8 @@ public class MaterialTexture03 extends GLWindow {
 
 	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempFloatBuffer24 = BufferUtils.createFloatBuffer(24);
+	private FloatBuffer tempFloatBuffer16 	= BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer24 	= BufferUtils.createFloatBuffer(24);
 
 	
 	
@@ -190,7 +192,7 @@ public class MaterialTexture03 extends GLWindow {
 			g_Programs[prog] = loadStandardProgram(g_shaderPairs[prog].vertShader, g_shaderPairs[prog].fragShader);
 		}
 
-		g_Unlit = loadUnlitProgram("/rosick/mckesson/data/" + "Unlit.vert", "/rosick/mckesson/data/" + "Unlit.frag");
+		g_Unlit = loadUnlitProgram(COMMON_DATAPATH + "Unlit.vert", COMMON_DATAPATH + "Unlit.frag");
 	}
 	
 	
@@ -199,9 +201,9 @@ public class MaterialTexture03 extends GLWindow {
 		initializePrograms();
 
 		try {
-			g_pObjectMesh = new Mesh("/rosick/mckesson/data/" + "Infinity.xml");
-			g_pCubeMesh = 	new Mesh(BASEPATH + "UnitCube.xml");
-			g_pPlaneMesh = 	new Mesh("/rosick/mckesson/data/" + "UnitPlane.xml");
+			g_pObjectMesh = new Mesh(COMMON_DATAPATH + "Infinity.xml");
+			g_pCubeMesh = 	new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
+			g_pPlaneMesh = 	new Mesh(COMMON_DATAPATH + "UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -471,7 +473,7 @@ public class MaterialTexture03 extends GLWindow {
 		float specularShininess;
 		float padding[] = new float[3];
 
-		static final int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
+		static final int SIZE = (4 + 4 + 1 + 3) * FLOAT_SIZE;
 
 		@Override
 		public ByteBuffer fillBuffer(ByteBuffer buffer) {
@@ -510,7 +512,7 @@ public class MaterialTexture03 extends GLWindow {
 		float padding[] = new float[3];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * (Float.SIZE / 8);
+		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
@@ -530,7 +532,7 @@ public class MaterialTexture03 extends GLWindow {
 	private class ProjectionBlock implements Bufferable<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
+		static final int SIZE = 16 * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
@@ -549,7 +551,7 @@ public class MaterialTexture03 extends GLWindow {
 		MODE_TEXTURED,
 		MODE_TEXTURED_COMPUTE,
 
-		NUM_SHADER_MODES,
+		NUM_SHADER_MODES
 	};
 	
 	
@@ -562,9 +564,9 @@ public class MaterialTexture03 extends GLWindow {
 	private final float g_fLightAttenuation = 1.0f / (g_fHalfLightDistance * g_fHalfLightDistance);
 
 	private final String g_shaderModeNames[] = {
-		"Fixed Shininess with Gaussian Texture",
-		"Texture Shininess with Gaussian Texture",
-		"Texture Shininess with computed Gaussian",
+			"Fixed Shininess with Gaussian Texture",
+			"Texture Shininess with Gaussian Texture",
+			"Texture Shininess with computed Gaussian"
 	};
 	
 	private Mesh g_pObjectMesh;
@@ -591,22 +593,22 @@ public class MaterialTexture03 extends GLWindow {
 	// View/Object Setup
 	
 	private ObjectData g_initialObjectData = new ObjectData(
-		new Vec3(0.0f, 0.5f, 0.0f),
-		new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
+			new Vec3(0.0f, 0.5f, 0.0f),
+			new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
 	);
 
 	private ViewData g_initialViewData = new ViewData(
-		new Vec3(g_initialObjectData.position),
-		new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
-		10.0f,
-		0.0f
+			new Vec3(g_initialObjectData.position),
+			new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+			10.0f,
+			0.0f
 	);
 
 	private ViewScale g_viewScale = new ViewScale(	
-		1.5f, 70.0f,
-		1.5f, 0.5f,
-		0.0f, 0.0f,																	// No camera movement.
-		90.0f / 250.0f
+			1.5f, 70.0f,
+			1.5f, 0.5f,
+			0.0f, 0.0f,																// No camera movement.
+			90.0f / 250.0f
 	);
 
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);
@@ -671,13 +673,13 @@ public class MaterialTexture03 extends GLWindow {
 				
 		buildGaussianData(textureData, cosAngleResolution, shininessResolution);
 		
-		ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(textureData.length);
-		tempByteBuffer.put(textureData);
-		tempByteBuffer.flip();
+		ByteBuffer textureDataBuffer = BufferUtils.createByteBuffer(textureData.length);
+		textureDataBuffer.put(textureData);
+		textureDataBuffer.flip();
 		
 		int gaussTexture = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, gaussTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, cosAngleResolution, shininessResolution, 0, GL11.GL_RED, GL_UNSIGNED_BYTE, tempByteBuffer);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, cosAngleResolution, shininessResolution, 0, GL11.GL_RED, GL_UNSIGNED_BYTE, textureDataBuffer);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -690,7 +692,7 @@ public class MaterialTexture03 extends GLWindow {
 		ImageSet pImageSet;
 
 		try {
-			pImageSet = Dds.loadFromFile(BASEPATH + "main.dds");
+			pImageSet = Dds.loadFromFile(TUTORIAL_DATAPATH + "main.dds");
 			
 			SingleImage image = pImageSet.getImage(0, 0, 0);
 

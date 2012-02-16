@@ -36,54 +36,55 @@ public class Scale02 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut06/data/";
+	private final int FLOAT_SIZE = Float.SIZE / 8;
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut06/data/";
 
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		
-	private int theProgram;
-	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
-	private int vertexBufferObject, indexBufferObject;
-	private int vao;
 	
 	private final float vertexData[] = {
-		+1.0f, +1.0f, +1.0f,
-		-1.0f, -1.0f, +1.0f,
-		-1.0f, +1.0f, -1.0f,
-		+1.0f, -1.0f, -1.0f,
-
-		-1.0f, -1.0f, -1.0f,
-		+1.0f, +1.0f, -1.0f,
-		+1.0f, -1.0f, +1.0f,
-		-1.0f, +1.0f, +1.0f,
-
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
+			+1.0f, +1.0f, +1.0f,
+			-1.0f, -1.0f, +1.0f,
+			-1.0f, +1.0f, -1.0f,
+			+1.0f, -1.0f, -1.0f,
+	
+			-1.0f, -1.0f, -1.0f,
+			+1.0f, +1.0f, -1.0f,
+			+1.0f, -1.0f, +1.0f,
+			-1.0f, +1.0f, +1.0f,
+	
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+	
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f
 	};
 	
 	private final short indexData[] = {
-		0, 1, 2,
-		1, 0, 3,
-		2, 3, 0,
-		3, 2, 1,
-
-		5, 4, 6,
-		4, 5, 7,
-		7, 6, 4,
-		6, 7, 5,
+			0, 1, 2,
+			1, 0, 3,
+			2, 3, 0,
+			3, 2, 1,
+	
+			5, 4, 6,
+			4, 5, 7,
+			7, 6, 4,
+			6, 7, 5
 	};
 	
 	private final int numberOfVertices = 8;
 	
+	private int theProgram;
+	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
+	private int vertexBufferObject, indexBufferObject;
+	private int vao;
+
 	private Mat4 cameraToClipMatrix = new Mat4();
 	
 	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
@@ -95,8 +96,8 @@ public class Scale02 extends GLWindow {
 		
 	private void initializeProgram() {	
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	BASEPATH + "PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	BASEPATH + "ColorPassthrough.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	TUTORIAL_DATAPATH + "PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	TUTORIAL_DATAPATH + "ColorPassthrough.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 			    
@@ -117,23 +118,22 @@ public class Scale02 extends GLWindow {
 	}
 	
 	private void initializeVertexBuffer() {
-		FloatBuffer tempVertexBuffer = BufferUtils.createFloatBuffer(vertexData.length);
-		tempVertexBuffer.put(vertexData);
-		tempVertexBuffer.flip();
+		FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+		vertexDataBuffer.put(vertexData);
+		vertexDataBuffer.flip();
 		
         vertexBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, tempVertexBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
-		
-		ShortBuffer tempIndexBuffer = BufferUtils.createShortBuffer(indexData.length);
-		tempIndexBuffer.put(indexData);
-		tempIndexBuffer.flip();
+		ShortBuffer indexDataBuffer = BufferUtils.createShortBuffer(indexData.length);
+		indexDataBuffer.put(indexData);
+		indexDataBuffer.flip();
 		
         indexBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, tempIndexBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	
@@ -146,7 +146,7 @@ public class Scale02 extends GLWindow {
 		vao = glGenVertexArrays();
 		glBindVertexArray(vao);
 
-		int colorDataOffset = (Float.SIZE / 8) * 3 * numberOfVertices;
+		int colorDataOffset = FLOAT_SIZE * 3 * numberOfVertices;
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
@@ -239,11 +239,10 @@ public class Scale02 extends GLWindow {
 	
 	private class NullScale extends Instance {
 
-		public NullScale(Vec3 vec) {
+		NullScale(Vec3 vec) {
 			offset = vec;
 		}
 		
-
 		@Override
 		Vec3 calcScale(float fElapsedTime) {
 			return new Vec3(1.0f, 1.0f, 1.0f);
@@ -252,11 +251,10 @@ public class Scale02 extends GLWindow {
 	
 	private class StaticUniformScale extends Instance {
 
-		public StaticUniformScale(Vec3 vec) {
+		StaticUniformScale(Vec3 vec) {
 			offset = vec;
 		}
 		
-
 		@Override
 		Vec3 calcScale(float fElapsedTime) {
 			return new Vec3(4.0f, 4.0f, 4.0f);
@@ -265,11 +263,10 @@ public class Scale02 extends GLWindow {
 
 	private class StaticNonUniformScale extends Instance {
 
-		public StaticNonUniformScale(Vec3 vec) {
+		StaticNonUniformScale(Vec3 vec) {
 			offset = vec;
 		}
 		
-
 		@Override
 		Vec3 calcScale(float fElapsedTime) {
 			return new Vec3(0.5f, 1.0f, 10.0f);
@@ -280,12 +277,10 @@ public class Scale02 extends GLWindow {
 
 		final float fLoopDuration = 3.0f;
 		
-		
-		public DynamicUniformScale(Vec3 vec) {
+		DynamicUniformScale(Vec3 vec) {
 			offset = vec;
 		}
 		
-
 		@Override
 		Vec3 calcScale(float fElapsedTime) {
 			return new Vec3(Glm.mix(1.0f, 4.0f, calcLerpFactor(fElapsedTime, fLoopDuration)));
@@ -297,12 +292,10 @@ public class Scale02 extends GLWindow {
 		final float fXLoopDuration = 3.0f;
 		final float fZLoopDuration = 5.0f;
 
-		
-		public DynamicNonUniformScale(Vec3 vec) {
+		DynamicNonUniformScale(Vec3 vec) {
 			offset = vec;
 		}
 		
-
 		@Override
 		Vec3 calcScale(float fElapsedTime) {
 			return new Vec3(Glm.mix(1.0f, 0.5f, calcLerpFactor(fElapsedTime, fXLoopDuration)),

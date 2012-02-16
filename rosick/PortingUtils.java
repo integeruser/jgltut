@@ -34,14 +34,21 @@ public class PortingUtils {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	
-	public static long toLong(byte data[]) {
-		long value = 0;
+	public static int toInt(ArrayList<Character> data, int startIndex, int length) {
+		StringBuilder temp = new StringBuilder();
 		
-		for (int i = 0; i < data.length; i++) {
-		   value += (data[i] & 0xff) << (8 * i);
+		for (int i = startIndex; i < startIndex + length; i++) {
+			temp.append(data.get(i));
 		}
 		
-		return value;
+		byte bytes[] = temp.toString().getBytes();
+		long value = 0;
+		
+		for (int i = 0; i < bytes.length; i++) {
+		   value += (bytes[i] & 0xff) << (8 * i);
+		}
+		
+		return (int) value;
 	}
 	
 	
@@ -61,15 +68,5 @@ public class PortingUtils {
 		}
 
 		return bytes;
-	}
-	
-	public static byte[] toByteArray(ArrayList<Character> data, int start, int length) {
-		String temp = "";
-		
-		for (int i = start; i < start + length; i++) {
-			temp += data.get(i);
-		}
-		
-		return temp.getBytes();
 	}
 }

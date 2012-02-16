@@ -55,7 +55,7 @@ public abstract class Scene {
 	}
 	
 	
-	private static final int MATERIAL_COUNT = 6;
+	private final int MATERIAL_COUNT = 6;
 
 	private Mesh m_pTerrainMesh;
 	private Mesh m_pCubeMesh;
@@ -92,18 +92,18 @@ public abstract class Scene {
 		ArrayList<MaterialBlock> materials = new ArrayList<>();
 		getMaterials(materials);
 
-		FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(sizeMaterialUniformBuffer);
+		FloatBuffer materialsBuffer = BufferUtils.createFloatBuffer(sizeMaterialUniformBuffer);
 		
 		for (MaterialBlock materialBlock : materials) {
-			materialBlock.fillBuffer(tempFloatBuffer);
-			tempFloatBuffer.put(new float[m_sizeMaterialBlock / 4 - MaterialBlock.SIZE / 4]);
+			materialBlock.fillBuffer(materialsBuffer);
+			materialsBuffer.put(new float[m_sizeMaterialBlock / 4 - MaterialBlock.SIZE / 4]);			// The buffer size must be sizeMaterialUniformBuffer
 		}
 		
-		tempFloatBuffer.flip();
+		materialsBuffer.flip();
 
 		m_materialUniformBuffer = glGenBuffers();
 		glBindBuffer(GL_UNIFORM_BUFFER, m_materialUniformBuffer);
-		glBufferData(GL_UNIFORM_BUFFER, tempFloatBuffer, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, materialsBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 	
@@ -126,7 +126,7 @@ public abstract class Scene {
 		LP_MTL_COLOR_DIFFUSE_SPECULAR,
 		LP_MTL_COLOR_DIFFUSE,
 
-		LP_MAX_LIGHTING_PROGRAM_TYPES;
+		LP_MAX_LIGHTING_PROGRAM_TYPES
 	}
 	
 	

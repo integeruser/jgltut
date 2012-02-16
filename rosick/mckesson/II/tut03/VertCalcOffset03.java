@@ -29,23 +29,23 @@ public class VertCalcOffset03 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut03/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut03/data/";
 
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	private final float vertexPositions[] = {
+			0.25f,  0.25f, 0.0f, 1.0f,
+			0.25f, -0.25f, 0.0f, 1.0f,
+		   -0.25f, -0.25f, 0.0f, 1.0f,
+	};
 	
 	private int theProgram;
 	private int elapsedTimeUniform;
 	private int positionBufferObject;
 	private int vao;
-	
-	private final float vertexPositions[] = {
-		0.25f, 0.25f, 0.0f, 1.0f,
-		0.25f, -0.25f, 0.0f, 1.0f,
-		-0.25f, -0.25f, 0.0f, 1.0f,
-	};
 
 	
 	
@@ -54,8 +54,8 @@ public class VertCalcOffset03 extends GLWindow {
 	
 	private void initializeProgram() {
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "CalcOffset.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "Standard.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "CalcOffset.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "Standard.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -68,13 +68,13 @@ public class VertCalcOffset03 extends GLWindow {
 	}
 	
 	private void initializeVertexBuffer() {
-		FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
-		tempFloatBuffer.put(vertexPositions);
-		tempFloatBuffer.flip();
+		FloatBuffer vertexPositionsBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
+		vertexPositionsBuffer.put(vertexPositions);
+		vertexPositionsBuffer.flip();
 		
         positionBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, tempFloatBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, vertexPositionsBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	

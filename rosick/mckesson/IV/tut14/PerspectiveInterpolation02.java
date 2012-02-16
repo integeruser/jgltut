@@ -23,9 +23,9 @@ import rosick.jglsdk.glutil.MatrixStack;
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
  * @author integeruser
  *  
- * S		- switch meshes. 
- * P		- toggle between perspective-correct interpolation/window-space linear interpolation.
- * SPACEBAR	- reload meshes.
+ * S		- switches meshes. 
+ * P		- toggles between perspective-correct interpolation/window-space linear interpolation.
+ * SPACE	- reloads meshes.
  */
 public class PerspectiveInterpolation02 extends GLWindow {
 	
@@ -34,7 +34,7 @@ public class PerspectiveInterpolation02 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/IV/tut14/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut14/data/";
 	
 	
 	
@@ -74,8 +74,8 @@ public class PerspectiveInterpolation02 extends GLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_SmoothInterp = loadProgram(BASEPATH + "SmoothVertexColors.vert", BASEPATH + "SmoothVertexColors.frag");
-		g_LinearInterp = loadProgram(BASEPATH + "NoCorrectVertexColors.vert", BASEPATH + "NoCorrectVertexColors.frag");
+		g_SmoothInterp = loadProgram(TUTORIAL_DATAPATH + "SmoothVertexColors.vert", 	TUTORIAL_DATAPATH + "SmoothVertexColors.frag");
+		g_LinearInterp = loadProgram(TUTORIAL_DATAPATH + "NoCorrectVertexColors.vert", 	TUTORIAL_DATAPATH + "NoCorrectVertexColors.frag");
 
 		MatrixStack persMatrix = new MatrixStack();
 		persMatrix.perspective(60.0f, 1.0f, g_fzNear, g_fzFar);
@@ -93,8 +93,8 @@ public class PerspectiveInterpolation02 extends GLWindow {
 		initializePrograms();
 
 		try {
-			g_pRealHallway = new Mesh(BASEPATH + "RealHallway.xml");
-			g_pFauxHallway = new Mesh(BASEPATH + "FauxHallway.xml");
+			g_pRealHallway = new Mesh(TUTORIAL_DATAPATH + "RealHallway.xml");
+			g_pFauxHallway = new Mesh(TUTORIAL_DATAPATH + "FauxHallway.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -124,8 +124,8 @@ public class PerspectiveInterpolation02 extends GLWindow {
 											
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
 					// Reload
-					g_pRealHallway = new Mesh(BASEPATH + "RealHallway.xml");
-					g_pFauxHallway = new Mesh(BASEPATH + "FauxHallway.xml");
+					g_pRealHallway = new Mesh(TUTORIAL_DATAPATH + "RealHallway.xml");
+					g_pFauxHallway = new Mesh(TUTORIAL_DATAPATH + "FauxHallway.xml");
 					
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
@@ -162,9 +162,9 @@ public class PerspectiveInterpolation02 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	private static boolean g_bUseSmoothInterpolation = true;
-	private static boolean g_bUseFakeHallway;
-
 	private Mesh g_pRealHallway;
 	private Mesh g_pFauxHallway;
+
+	private boolean g_bUseSmoothInterpolation = true;
+	private boolean g_bUseFakeHallway;
 }

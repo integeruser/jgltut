@@ -30,19 +30,15 @@ public class BaseVertexOverlap02 extends GLWindow {
 		new BaseVertexOverlap02().start();
 	}
 	
-	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut05/data/";
+
+	private final int FLOAT_SIZE = Float.SIZE / 8;
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut05/data/";
 
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	private int theProgram;
-	private int offsetUniform, perspectiveMatrixUnif;
-	private int vertexBufferObject, indexBufferObject;
-	private int vao;
-	
+		
 	private final float RIGHT_EXTENT 	=	0.8f;
 	private final float LEFT_EXTENT  	=  -RIGHT_EXTENT;
 	private final float TOP_EXTENT   	=	0.20f;
@@ -52,120 +48,125 @@ public class BaseVertexOverlap02 extends GLWindow {
 	private final float REAR_EXTENT		=  -1.75f;
 		
 	private final float vertexData[] = {												
-		// Object 1 positions
-		LEFT_EXTENT,	TOP_EXTENT,		REAR_EXTENT,
-		LEFT_EXTENT,	MIDDLE_EXTENT,	FRONT_EXTENT,
-		RIGHT_EXTENT,	MIDDLE_EXTENT,	FRONT_EXTENT,
-		RIGHT_EXTENT,	TOP_EXTENT,		REAR_EXTENT,
-
-		LEFT_EXTENT,	BOTTOM_EXTENT,	REAR_EXTENT,
-		LEFT_EXTENT,	MIDDLE_EXTENT,	FRONT_EXTENT,
-		RIGHT_EXTENT,	MIDDLE_EXTENT,	FRONT_EXTENT,
-		RIGHT_EXTENT,	BOTTOM_EXTENT,	REAR_EXTENT,
-
-		LEFT_EXTENT,	TOP_EXTENT,		REAR_EXTENT,
-		LEFT_EXTENT,	MIDDLE_EXTENT,	FRONT_EXTENT,
-		LEFT_EXTENT,	BOTTOM_EXTENT,	REAR_EXTENT,
-
-		RIGHT_EXTENT,	TOP_EXTENT,		REAR_EXTENT,
-		RIGHT_EXTENT,	MIDDLE_EXTENT,	FRONT_EXTENT,
-		RIGHT_EXTENT,	BOTTOM_EXTENT,	REAR_EXTENT,
-
-		LEFT_EXTENT,	BOTTOM_EXTENT,	REAR_EXTENT,
-		LEFT_EXTENT,	TOP_EXTENT,		REAR_EXTENT,
-		RIGHT_EXTENT,	TOP_EXTENT,		REAR_EXTENT,
-		RIGHT_EXTENT,	BOTTOM_EXTENT,	REAR_EXTENT,
-
-		// Object 2 positions
-		TOP_EXTENT,		RIGHT_EXTENT,	REAR_EXTENT,
-		MIDDLE_EXTENT,	RIGHT_EXTENT,	FRONT_EXTENT,
-		MIDDLE_EXTENT,	LEFT_EXTENT,	FRONT_EXTENT,
-		TOP_EXTENT,		LEFT_EXTENT,	REAR_EXTENT,
-
-		BOTTOM_EXTENT,	RIGHT_EXTENT,	REAR_EXTENT,
-		MIDDLE_EXTENT,	RIGHT_EXTENT,	FRONT_EXTENT,
-		MIDDLE_EXTENT,	LEFT_EXTENT,	FRONT_EXTENT,
-		BOTTOM_EXTENT,	LEFT_EXTENT,	REAR_EXTENT,
-
-		TOP_EXTENT,		RIGHT_EXTENT,	REAR_EXTENT,
-		MIDDLE_EXTENT,	RIGHT_EXTENT,	FRONT_EXTENT,
-		BOTTOM_EXTENT,	RIGHT_EXTENT,	REAR_EXTENT,
-						
-		TOP_EXTENT,		LEFT_EXTENT,	REAR_EXTENT,
-		MIDDLE_EXTENT,	LEFT_EXTENT,	FRONT_EXTENT,
-		BOTTOM_EXTENT,	LEFT_EXTENT,	REAR_EXTENT,
-						
-		BOTTOM_EXTENT,	RIGHT_EXTENT,	REAR_EXTENT,
-		TOP_EXTENT,		RIGHT_EXTENT,	REAR_EXTENT,
-		TOP_EXTENT,		LEFT_EXTENT,	REAR_EXTENT,
-		BOTTOM_EXTENT,	LEFT_EXTENT,	REAR_EXTENT,
-
-		// Object 1 colors
-		0.75f, 0.75f, 1.0f, 1.0f, 													// GREEN
-		0.75f, 0.75f, 1.0f, 1.0f,
-		0.75f, 0.75f, 1.0f, 1.0f,
-		0.75f, 0.75f, 1.0f, 1.0f,
-
-		0.0f, 0.5f, 0.0f, 1.0f, 													// BLUE
-		0.0f, 0.5f, 0.0f, 1.0f,
-		0.0f, 0.5f, 0.0f, 1.0f,
-		0.0f, 0.5f, 0.0f, 1.0f,
-
-		1.0f, 0.0f, 0.0f, 1.0f, 													// RED
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f, 													// GREY
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-
-		0.5f, 0.5f, 0.0f, 1.0f, 													// BROWN
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-
-		// Object 2 colors
-		1.0f, 0.0f, 0.0f, 1.0f,														// RED
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-
-		0.5f, 0.5f, 0.0f, 1.0f, 													// BROWN
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-
-		0.0f, 0.5f, 0.0f, 1.0f,														// BLUE
-		0.0f, 0.5f, 0.0f, 1.0f,
-		0.0f, 0.5f, 0.0f, 1.0f,
-
-		0.75f, 0.75f, 1.0f, 1.0f, 													// GREEN
-		0.75f, 0.75f, 1.0f, 1.0f,
-		0.75f, 0.75f, 1.0f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f, 													// GREY
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
+			// Object 1 positions
+			LEFT_EXTENT,	TOP_EXTENT,		REAR_EXTENT,
+			LEFT_EXTENT,	MIDDLE_EXTENT,	FRONT_EXTENT,
+			RIGHT_EXTENT,	MIDDLE_EXTENT,	FRONT_EXTENT,
+			RIGHT_EXTENT,	TOP_EXTENT,		REAR_EXTENT,
+	
+			LEFT_EXTENT,	BOTTOM_EXTENT,	REAR_EXTENT,
+			LEFT_EXTENT,	MIDDLE_EXTENT,	FRONT_EXTENT,
+			RIGHT_EXTENT,	MIDDLE_EXTENT,	FRONT_EXTENT,
+			RIGHT_EXTENT,	BOTTOM_EXTENT,	REAR_EXTENT,
+	
+			LEFT_EXTENT,	TOP_EXTENT,		REAR_EXTENT,
+			LEFT_EXTENT,	MIDDLE_EXTENT,	FRONT_EXTENT,
+			LEFT_EXTENT,	BOTTOM_EXTENT,	REAR_EXTENT,
+	
+			RIGHT_EXTENT,	TOP_EXTENT,		REAR_EXTENT,
+			RIGHT_EXTENT,	MIDDLE_EXTENT,	FRONT_EXTENT,
+			RIGHT_EXTENT,	BOTTOM_EXTENT,	REAR_EXTENT,
+	
+			LEFT_EXTENT,	BOTTOM_EXTENT,	REAR_EXTENT,
+			LEFT_EXTENT,	TOP_EXTENT,		REAR_EXTENT,
+			RIGHT_EXTENT,	TOP_EXTENT,		REAR_EXTENT,
+			RIGHT_EXTENT,	BOTTOM_EXTENT,	REAR_EXTENT,
+	
+			// Object 2 positions
+			TOP_EXTENT,		RIGHT_EXTENT,	REAR_EXTENT,
+			MIDDLE_EXTENT,	RIGHT_EXTENT,	FRONT_EXTENT,
+			MIDDLE_EXTENT,	LEFT_EXTENT,	FRONT_EXTENT,
+			TOP_EXTENT,		LEFT_EXTENT,	REAR_EXTENT,
+	
+			BOTTOM_EXTENT,	RIGHT_EXTENT,	REAR_EXTENT,
+			MIDDLE_EXTENT,	RIGHT_EXTENT,	FRONT_EXTENT,
+			MIDDLE_EXTENT,	LEFT_EXTENT,	FRONT_EXTENT,
+			BOTTOM_EXTENT,	LEFT_EXTENT,	REAR_EXTENT,
+	
+			TOP_EXTENT,		RIGHT_EXTENT,	REAR_EXTENT,
+			MIDDLE_EXTENT,	RIGHT_EXTENT,	FRONT_EXTENT,
+			BOTTOM_EXTENT,	RIGHT_EXTENT,	REAR_EXTENT,
+							
+			TOP_EXTENT,		LEFT_EXTENT,	REAR_EXTENT,
+			MIDDLE_EXTENT,	LEFT_EXTENT,	FRONT_EXTENT,
+			BOTTOM_EXTENT,	LEFT_EXTENT,	REAR_EXTENT,
+							
+			BOTTOM_EXTENT,	RIGHT_EXTENT,	REAR_EXTENT,
+			TOP_EXTENT,		RIGHT_EXTENT,	REAR_EXTENT,
+			TOP_EXTENT,		LEFT_EXTENT,	REAR_EXTENT,
+			BOTTOM_EXTENT,	LEFT_EXTENT,	REAR_EXTENT,
+	
+			// Object 1 colors
+			0.75f, 0.75f, 1.0f, 1.0f, 													// GREEN
+			0.75f, 0.75f, 1.0f, 1.0f,
+			0.75f, 0.75f, 1.0f, 1.0f,
+			0.75f, 0.75f, 1.0f, 1.0f,
+	
+			0.0f, 0.5f, 0.0f, 1.0f, 													// BLUE
+			0.0f, 0.5f, 0.0f, 1.0f,
+			0.0f, 0.5f, 0.0f, 1.0f,
+			0.0f, 0.5f, 0.0f, 1.0f,
+	
+			1.0f, 0.0f, 0.0f, 1.0f, 													// RED
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+	
+			0.8f, 0.8f, 0.8f, 1.0f, 													// GREY
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+	
+			0.5f, 0.5f, 0.0f, 1.0f, 													// BROWN
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+	
+			// Object 2 colors
+			1.0f, 0.0f, 0.0f, 1.0f,														// RED
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+	
+			0.5f, 0.5f, 0.0f, 1.0f, 													// BROWN
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+	
+			0.0f, 0.5f, 0.0f, 1.0f,														// BLUE
+			0.0f, 0.5f, 0.0f, 1.0f,
+			0.0f, 0.5f, 0.0f, 1.0f,
+	
+			0.75f, 0.75f, 1.0f, 1.0f, 													// GREEN
+			0.75f, 0.75f, 1.0f, 1.0f,
+			0.75f, 0.75f, 1.0f, 1.0f,
+	
+			0.8f, 0.8f, 0.8f, 1.0f, 													// GREY
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f
 	};
 	
 	private final short indexData[] = {	
-		0, 2, 1,
-		3, 2, 0,
-
-		4, 5, 6,
-		6, 7, 4,
-
-		8, 9, 10,
-		11, 13, 12,
-
-		14, 16, 15,
-		17, 16, 14,
+			0, 2, 1,
+			3, 2, 0,
+	
+			4, 5, 6,
+			6, 7, 4,
+	
+			8, 9, 10,
+			11, 13, 12,
+	
+			14, 16, 15,
+			17, 16, 14
 	};
 	
 	private final int numberOfVertices = 36;
 	private final float fFrustumScale = 1.0f;
 
+	private int theProgram;
+	private int offsetUniform, perspectiveMatrixUnif;
+	private int vertexBufferObject, indexBufferObject;
+	private int vao;
+	
 	private float perspectiveMatrix[];
 	
 
@@ -175,8 +176,8 @@ public class BaseVertexOverlap02 extends GLWindow {
 	
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "Standard.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "Standard.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "Standard.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "Standard.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -187,7 +188,6 @@ public class BaseVertexOverlap02 extends GLWindow {
 		float fzNear = 1.0f; float fzFar = 3.0f;
 		
 		perspectiveMatrix = new float[16];
-		
 		perspectiveMatrix[0] 	= fFrustumScale;
 		perspectiveMatrix[5] 	= fFrustumScale;
 		perspectiveMatrix[10] 	= (fzFar + fzNear) / (fzNear - fzFar);
@@ -204,23 +204,22 @@ public class BaseVertexOverlap02 extends GLWindow {
 	}
 	
 	private void initializeVertexBuffer() {
-		FloatBuffer tempVertexBuffer = BufferUtils.createFloatBuffer(vertexData.length);
-		tempVertexBuffer.put(vertexData);
-		tempVertexBuffer.flip();
+		FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+		vertexDataBuffer.put(vertexData);
+		vertexDataBuffer.flip();
 		
         vertexBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, tempVertexBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
-		
-		ShortBuffer tempIndexBuffer = BufferUtils.createShortBuffer(indexData.length);
-		tempIndexBuffer.put(indexData);
-		tempIndexBuffer.flip();
+		ShortBuffer indexDataBuffer = BufferUtils.createShortBuffer(indexData.length);
+		indexDataBuffer.put(indexData);
+		indexDataBuffer.flip();
 		
         indexBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, tempIndexBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	
@@ -233,7 +232,7 @@ public class BaseVertexOverlap02 extends GLWindow {
 		vao = glGenVertexArrays();
 		glBindVertexArray(vao);
 
-		int colorDataOffset = (Float.SIZE / 8) * 3 * numberOfVertices;
+		int colorDataOffset = FLOAT_SIZE * 3 * numberOfVertices;
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

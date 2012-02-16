@@ -24,10 +24,10 @@ import rosick.PortingUtils.Bufferable;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.framework.Timer;
-import rosick.jglsdk.glimg.Dds;
 import rosick.jglsdk.glimg.ImageSet;
 import rosick.jglsdk.glimg.ImageSet.Dimensions;
 import rosick.jglsdk.glimg.ImageSet.SingleImage;
+import rosick.jglsdk.glimg.loaders.Dds;
 import rosick.jglsdk.glm.Glm;
 import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Vec3;
@@ -42,9 +42,9 @@ import rosick.jglsdk.glutil.MatrixStack;
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2015.html
  * @author integeruser
  * 
- * SPACEBAR		- toggle between loaded/constructed texture.
- * Y			- toggle between plane/corridor mesh.
- * P			- toggle pausing on/off.
+ * SPACE		- toggles between loaded/constructed texture.
+ * Y			- toggles between plane/corridor mesh.
+ * P			- toggles pausing on/off.
  * 1,2,3,4,5,6	- switch filtering technique.
  */
 public class ManyImages01 extends GLWindow {
@@ -54,7 +54,8 @@ public class ManyImages01 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/IV/tut15/data/";
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut15/data/";
 	
 	
 	
@@ -98,7 +99,6 @@ public class ManyImages01 extends GLWindow {
 		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
 
 		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
-		
 		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
 
 		int colorTextureUnif = glGetUniformLocation(data.theProgram, "colorTexture");
@@ -110,7 +110,7 @@ public class ManyImages01 extends GLWindow {
 	}
 		
 	private void initializePrograms() {	
-		g_program = loadProgram(BASEPATH + "PT.vert", BASEPATH + "Tex.frag");
+		g_program = loadProgram(TUTORIAL_DATAPATH + "PT.vert", TUTORIAL_DATAPATH + "Tex.frag");
 	}
 	
 	
@@ -119,8 +119,8 @@ public class ManyImages01 extends GLWindow {
 		initializePrograms();
 
 		try {
-			g_pCorridor = new Mesh(BASEPATH + "Corridor.xml");
-			g_pPlane = 	new Mesh(BASEPATH + "BigPlane.xml");
+			g_pCorridor = 	new Mesh(TUTORIAL_DATAPATH + "Corridor.xml");
+			g_pPlane = 		new Mesh(TUTORIAL_DATAPATH + "BigPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -205,21 +205,11 @@ public class ManyImages01 extends GLWindow {
 
 		modelMatrix.applyMatrix(worldToCamMat);	
 
-		modelMatrix.push();
-
 		glUseProgram(g_program.theProgram);
 		glUniformMatrix4(g_program.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
 		glActiveTexture(GL_TEXTURE0 + g_colorTexUnit);
-		glBindTexture(GL_TEXTURE_2D,
-			g_useMipmapTexture ? g_mipmapTestTexture : g_checkerTexture);
-
-		/* Not in the original tutorial, needed for LWJGL */
-		if (!g_useMipmapTexture) {
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-		/*                                                */
-		
+		glBindTexture(GL_TEXTURE_2D, g_useMipmapTexture ? g_mipmapTestTexture : g_checkerTexture);		
 		glBindSampler(g_colorTexUnit, g_samplers[g_currSampler]);
 
 		if (g_drawCorridor) {
@@ -258,7 +248,7 @@ public class ManyImages01 extends GLWindow {
 	private class ProjectionBlock implements Bufferable<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
+		static final int SIZE = 16 * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
@@ -275,15 +265,15 @@ public class ManyImages01 extends GLWindow {
 	private final int NUM_SAMPLERS = 6;
 
 	private final byte mipmapColors[] = {
-			(byte) 0xFF, (byte) 0xFF, 0x00,
-			(byte) 0xFF, 0x00, (byte) 0xFF,
-			0x00, (byte) 0xFF, (byte) 0xFF,
-			(byte) 0xFF, 0x00, 0x00,
-			0x00, (byte) 0xFF, 0x00,
-			0x00, 0x00, (byte) 0xFF,
-			0x00, 0x00, 0x00,
-			(byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
-		};
+			(byte) 0xFF, (byte) 0xFF, 		 0x00,
+			(byte) 0xFF, 		0x00, (byte) 0xFF,
+				   0x00, (byte) 0xFF, (byte) 0xFF,
+			(byte) 0xFF, 		0x00, 		 0x00,
+				   0x00, (byte) 0xFF, 		 0x00,
+				   0x00, 		0x00, (byte) 0xFF,
+				   0x00, 		0x00, 		 0x00,
+			(byte) 0xFF, (byte) 0xFF, (byte) 0xFF
+	};
 	
 	private final String g_samplerNames[] = {
 			"Nearest",
@@ -291,8 +281,8 @@ public class ManyImages01 extends GLWindow {
 			"Linear with nearest mipmaps",
 			"Linear with linear mipmaps",
 			"Low anisotropic",
-			"Max anisotropic",
-		};
+			"Max anisotropic"
+	};
 	
 	private Mesh g_pPlane;
 	private Mesh g_pCorridor;
@@ -388,7 +378,7 @@ public class ManyImages01 extends GLWindow {
 	
 	private void loadCheckerTexture() {
 		try	{
-			ImageSet pImageSet = Dds.loadFromFile(BASEPATH + "checker.dds");
+			ImageSet pImageSet = Dds.loadFromFile(TUTORIAL_DATAPATH + "checker.dds");
 
 			g_checkerTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_checkerTexture);
@@ -403,6 +393,7 @@ public class ManyImages01 extends GLWindow {
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
+			glGenerateMipmap(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		} catch (Exception e) {
 			e.printStackTrace();

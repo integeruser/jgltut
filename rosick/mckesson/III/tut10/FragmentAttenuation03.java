@@ -42,6 +42,22 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * 10. Plane Lights
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2010.html
  * @author integeruser
+ * 
+ * I,J,K,L  - control the light's position. Holding LEFT_SHIFT with these keys will move in smaller increments.
+ * SPACE	- toggles between drawing the uncolored cylinder and the colored one.
+ * O,U		- increase/decrease the attenuation constant.
+ * Y 		- toggles the drawing of the light source.
+ * T 		- toggles between the scaled and unscaled cylinder.
+ * B 		- toggles the light's rotation on/off.
+ * H 		- swaps between the linear and quadratic interpolation functions.
+ * 
+ * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING				- rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + LEFT_CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
+ * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
  */
 public class FragmentAttenuation03 extends GLWindow {
 	
@@ -50,8 +66,9 @@ public class FragmentAttenuation03 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/III/tut10/data/";
-	
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut10/data/";
+
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -96,7 +113,7 @@ public class FragmentAttenuation03 extends GLWindow {
 
 	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer16 	= BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -144,10 +161,10 @@ public class FragmentAttenuation03 extends GLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_FragWhiteDiffuseColor =	loadLitProgram(BASEPATH + "FragLightAtten_PN.vert",		BASEPATH + "FragLightAtten.frag");		
-		g_FragVertexDiffuseColor = 	loadLitProgram(BASEPATH + "FragLightAtten_PCN.vert", 	BASEPATH + "FragLightAtten.frag");
+		g_FragWhiteDiffuseColor =	loadLitProgram(TUTORIAL_DATAPATH + "FragLightAtten_PN.vert",	TUTORIAL_DATAPATH + "FragLightAtten.frag");		
+		g_FragVertexDiffuseColor = 	loadLitProgram(TUTORIAL_DATAPATH + "FragLightAtten_PCN.vert", 	TUTORIAL_DATAPATH + "FragLightAtten.frag");
 		
-		g_Unlit = loadUnlitProgram(BASEPATH + "PosTransform.vert", BASEPATH + "UniformColor.frag");
+		g_Unlit = loadUnlitProgram(TUTORIAL_DATAPATH + "PosTransform.vert", TUTORIAL_DATAPATH + "UniformColor.frag");
 	}
 	
 	
@@ -156,9 +173,9 @@ public class FragmentAttenuation03 extends GLWindow {
 		initializePrograms();
 		
 		try {
-			g_pCylinderMesh = new Mesh(BASEPATH + "UnitCylinder.xml");
-			g_pPlaneMesh 	= new Mesh(BASEPATH + "LargePlane.xml");
-			g_pCubeMesh 	= new Mesh(BASEPATH + "UnitCube.xml");
+			g_pCylinderMesh = new Mesh(TUTORIAL_DATAPATH + "UnitCylinder.xml");
+			g_pPlaneMesh 	= new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
+			g_pCubeMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -434,7 +451,7 @@ public class FragmentAttenuation03 extends GLWindow {
 		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(tempFloatBuffer16));
 		glBindBuffer(GL_UNIFORM_BUFFER, g_unprojectionUniformBuffer);	
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, unprojData.fillAndFlipBuffer(BufferUtils.createByteBuffer(18 * (Float.SIZE / 8))));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, unprojData.fillAndFlipBuffer(BufferUtils.createByteBuffer(18 * FLOAT_SIZE)));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	
 		glViewport(0, 0, width, height);
@@ -448,7 +465,7 @@ public class FragmentAttenuation03 extends GLWindow {
 	private class ProjectionBlock extends BufferableData<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
+		static final int SIZE = 16 * FLOAT_SIZE;
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -460,7 +477,7 @@ public class FragmentAttenuation03 extends GLWindow {
 		Mat4 clipToCameraMatrix;
 		Vec2 windowSize;
 		
-		static final int SIZE = 18 * (Float.SIZE / 8);
+		static final int SIZE = 18 * FLOAT_SIZE;
 				
 		@Override
 		public ByteBuffer fillBuffer(ByteBuffer buffer) {
@@ -477,40 +494,40 @@ public class FragmentAttenuation03 extends GLWindow {
 	}
 	
 	
-	private static boolean g_bDrawColoredCyl;
-	private static boolean g_bDrawLight;
-	private static boolean g_bScaleCyl;
-	private static boolean g_bUseRSquare;
-	private static float g_fLightHeight = 1.5f;
-	private static float g_fLightRadius = 1.0f;
-	private static float g_fLightAttenuation = 1.0f;
-
-	private Timer g_LightTimer = new Timer(Timer.Type.TT_LOOP, 5.0f);
-	
 	private Mesh g_pCylinderMesh;
 	private Mesh g_pPlaneMesh;
 	private Mesh g_pCubeMesh;
+	
+	private Timer g_LightTimer = new Timer(Timer.Type.TT_LOOP, 5.0f);
+
+	private boolean g_bDrawColoredCyl;
+	private boolean g_bDrawLight;
+	private boolean g_bScaleCyl;
+	private boolean g_bUseRSquare;
+	private float g_fLightHeight = 1.5f;
+	private float g_fLightRadius = 1.0f;
+	private float g_fLightAttenuation = 1.0f;
 	
 	
 	// View/Object Setup
 	
 	private ViewData g_initialViewData = new ViewData(
-		new Vec3(0.0f, 0.5f, 0.0f),
-		new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
-		5.0f,
-		0.0f
+			new Vec3(0.0f, 0.5f, 0.0f),
+			new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+			5.0f,
+			0.0f
 	);
 
 	private ViewScale g_viewScale = new ViewScale(	
-		3.0f, 20.0f,
-		1.5f, 0.5f,
-		0.0f, 0.0f,																	// No camera movement.
-		90.0f / 250.0f
+			3.0f, 20.0f,
+			1.5f, 0.5f,
+			0.0f, 0.0f,																// No camera movement.
+			90.0f / 250.0f
 	);
 	
 	private ObjectData g_initialObjectData = new ObjectData(
-		new Vec3(0.0f, 0.5f, 0.0f),
-		new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
+			new Vec3(0.0f, 0.5f, 0.0f),
+			new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
 	);
 
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);

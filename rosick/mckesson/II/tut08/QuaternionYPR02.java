@@ -29,7 +29,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2008.html
  * @author integeruser
  * 
- * SPACEBAR	- switches between right-multiplying the YPR values to the current orientation and left-multiplying them. 
+ * SPACE	- switches between right-multiplying the YPR values to the current orientation and left-multiplying them. 
  * W,S		- control the outer gimbal.
  * A,D 		- control the middle gimbal.
  * Q,E  	- control the inner gimbal.
@@ -41,7 +41,7 @@ public class QuaternionYPR02 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/II/tut08/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut08/data/";
 	
 	
 	
@@ -64,8 +64,8 @@ public class QuaternionYPR02 extends GLWindow {
 	
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "ColorMultUniform.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "ColorMultUniform.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -92,7 +92,7 @@ public class QuaternionYPR02 extends GLWindow {
 		initializeProgram();
 		
 		try {		
-			g_pShip = new Mesh(BASEPATH + "Ship.xml");
+			g_pShip = new Mesh(TUTORIAL_DATAPATH + "Ship.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -188,13 +188,13 @@ public class QuaternionYPR02 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	private static boolean g_bRightMultiply = true;
-
 	private final float SMALL_ANGLE_INCREMENT = 9.0f;
 
 	private Mesh g_pShip;
 	private Quaternion g_orientation = new Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
-	
+
+	private boolean g_bRightMultiply = true;
+
 	
 	private void offsetOrientation(Vec3 _axis, float fAngDeg) {
 		float fAngRad = Framework.degToRad(fAngDeg);

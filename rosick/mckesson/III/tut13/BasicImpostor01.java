@@ -47,14 +47,14 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
  * Q,E		- raise and lower the camera, relative to its current orientation. 
  * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
- * P		- toggle pausing on/off.
+ * P		- toggles pausing on/off.
  * -,=		- rewind/jump forward time by 0.5 second (of real-time).
- * T		- toggle a display showing the look-at point.
+ * T		- toggles a display showing the look-at point.
  * G		- toggles the drawing of the light source.
- * 1		- switch back and forth between actual meshes and impostor spheres (the central blue sphere).
- * 2		- switch back and forth between actual meshes and impostor spheres (the orbiting grey sphere).
- * 3		- switch back and forth between actual meshes and impostor spheres (the black marble on the left).
- * 4		- switch back and forth between actual meshes and impostor spheres (the gold sphere on the right).
+ * 1		- switches back and forth between actual meshes and impostor spheres (the central blue sphere).
+ * 2		- switches back and forth between actual meshes and impostor spheres (the orbiting grey sphere).
+ * 3		- switches back and forth between actual meshes and impostor spheres (the black marble on the left).
+ * 4		- switches back and forth between actual meshes and impostor spheres (the gold sphere on the right).
  * L,J,H	- switch impostor.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
@@ -69,8 +69,10 @@ public class BasicImpostor01 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/III/tut13/data/";
-	
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String COMMON_DATAPATH = "/rosick/mckesson/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut13/data/";
+
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -107,9 +109,9 @@ public class BasicImpostor01 extends GLWindow {
 	private UnlitProgData g_Unlit;
 	
 	private String g_impShaderNames[] = new String[] {
-		BASEPATH + "BasicImpostor.vert", BASEPATH + "BasicImpostor.frag",
-		BASEPATH + "PerspImpostor.vert", BASEPATH + "PerspImpostor.frag",
-		BASEPATH + "DepthImpostor.vert", BASEPATH + "DepthImpostor.frag",
+		TUTORIAL_DATAPATH + "BasicImpostor.vert", TUTORIAL_DATAPATH + "BasicImpostor.frag",
+		TUTORIAL_DATAPATH + "PerspImpostor.vert", TUTORIAL_DATAPATH + "PerspImpostor.frag",
+		TUTORIAL_DATAPATH + "DepthImpostor.vert", TUTORIAL_DATAPATH + "DepthImpostor.frag",
 	};
 	
 	private int g_lightUniformBuffer;
@@ -124,8 +126,8 @@ public class BasicImpostor01 extends GLWindow {
 
 	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempFloatBuffer24 = BufferUtils.createFloatBuffer(24);
+	private FloatBuffer tempFloatBuffer16 	= BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer24 	= BufferUtils.createFloatBuffer(24);
 
 	
 	
@@ -192,14 +194,14 @@ public class BasicImpostor01 extends GLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_litMeshProg = loadLitMeshProgram(BASEPATH + "PN.vert", BASEPATH + "Lighting.frag");
+		g_litMeshProg = loadLitMeshProgram(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "Lighting.frag");
 
 		for (int iLoop = 0; iLoop < Impostors.IMP_NUM_IMPOSTORS.ordinal(); iLoop++) {
 			g_litImpProgs[iLoop] = new ProgramImposData();
 			g_litImpProgs[iLoop] = loadLitImposProgram(g_impShaderNames[iLoop * 2], g_impShaderNames[iLoop * 2 + 1]);
 		}
 
-		g_Unlit = loadUnlitProgram("/rosick/mckesson/data/" + "Unlit.vert", "/rosick/mckesson/data/" + "Unlit.frag");
+		g_Unlit = loadUnlitProgram(COMMON_DATAPATH + "Unlit.vert", COMMON_DATAPATH + "Unlit.frag");
 	}
 	
 	
@@ -208,9 +210,9 @@ public class BasicImpostor01 extends GLWindow {
 		initializePrograms();
 
 		try {
-			g_pPlaneMesh = 	new Mesh(BASEPATH + "LargePlane.xml");
-			g_pSphereMesh = new Mesh(BASEPATH + "UnitSphere.xml");
-			g_pCubeMesh = 	new Mesh(BASEPATH + "UnitCube.xml");
+			g_pPlaneMesh = 	new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
+			g_pSphereMesh = new Mesh(TUTORIAL_DATAPATH + "UnitSphere.xml");
+			g_pCubeMesh = 	new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -247,7 +249,7 @@ public class BasicImpostor01 extends GLWindow {
 		
 		g_imposterVBO = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, g_imposterVBO);
-		glBufferData(GL_ARRAY_BUFFER, 4 * (Float.SIZE / 8), GL_STATIC_DRAW);	
+		glBufferData(GL_ARRAY_BUFFER, 4 * FLOAT_SIZE, GL_STATIC_DRAW);	
 		
 		g_imposterVAO = glGenVertexArrays();
 		glBindVertexArray(g_imposterVAO);
@@ -472,7 +474,7 @@ public class BasicImpostor01 extends GLWindow {
 		float specularShininess;
 		float padding[] = new float[3];
 
-		static final int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
+		static final int SIZE = (4 + 4 + 1 + 3) * FLOAT_SIZE;
 
 		@Override
 		public ByteBuffer fillBuffer(ByteBuffer buffer) {
@@ -511,7 +513,7 @@ public class BasicImpostor01 extends GLWindow {
 		float padding[] = new float[3];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * (Float.SIZE / 8);
+		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
@@ -531,7 +533,7 @@ public class BasicImpostor01 extends GLWindow {
 	private class ProjectionBlock implements Bufferable<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
+		static final int SIZE = 16 * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
@@ -563,6 +565,7 @@ public class BasicImpostor01 extends GLWindow {
 	private Mesh g_pCubeMesh;
 	
 	private Timer g_sphereTimer = new Timer(Timer.Type.TT_LOOP, 6.0f);
+	
 	private Impostors g_currImpostor = Impostors.IMP_BASIC;
 
 	private boolean g_drawImposter[] = {false, false, false, false};
@@ -575,17 +578,17 @@ public class BasicImpostor01 extends GLWindow {
 	// View/Object Setup
 	
 	private ViewData g_initialViewData = new ViewData(
-		new Vec3(0.0f, 30.0f, 25.0f),
-		new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
-		10.0f,
-		0.0f
+			new Vec3(0.0f, 30.0f, 25.0f),
+			new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+			10.0f,
+			0.0f
 	);
 
 	private ViewScale g_viewScale = new ViewScale(	
-		3.0f, 70.0f,
-		3.5f, 1.5f,
-		5.0f, 1.0f,
-		90.0f / 250.0f
+			3.0f, 70.0f,
+			3.5f, 1.5f,
+			5.0f, 1.0f,
+			90.0f / 250.0f
 	);
 
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);
@@ -595,7 +598,6 @@ public class BasicImpostor01 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
-	
 	private enum MaterialNames {
 		MTL_TERRAIN,
 		MTL_BLUE_SHINY,

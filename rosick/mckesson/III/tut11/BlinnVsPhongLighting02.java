@@ -17,7 +17,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import rosick.GLWindow;
-import rosick.PortingUtils.Bufferable;
+import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.framework.Timer;
@@ -42,14 +42,14 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * @author integeruser
  * 
  * I,J,K,L  - control the light's position. Holding LEFT_SHIFT with these keys will move in smaller increments.
- * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
+ * SPACE	- toggles between drawing the uncolored cylinder and the colored one.
  * U,O      - control the specular value. They raise and low the specular exponent. Using LEFT_SHIFT in combination 
  * 				with them will raise/lower the exponent by smaller amounts.
  * Y 		- toggles the drawing of the light source.
  * T 		- toggles between the scaled and unscaled cylinder.
  * B 		- toggles the light's rotation on/off.
  * G 		- toggles between a diffuse color of (1, 1, 1) and a darker diffuse color of (0.2, 0.2, 0.2).
- * H 		- switch between Blinn and Phong specular. Pressing LEFT_SHIFT+H will switch between diffuse+specular 
+ * H 		- switches between Blinn and Phong specular. Pressing LEFT_SHIFT+H will switch between diffuse+specular 
  * 				and specular only.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
@@ -67,8 +67,9 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/III/tut11/data/";
-	
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut11/data/";
+
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -107,7 +108,7 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 		String strColorVertShader;
 		String strFragmentShader;
 		
-		public ShaderPairs(String strWhiteVertShader, String strColorVertShader, String strFragmentShader) {
+		ShaderPairs(String strWhiteVertShader, String strColorVertShader, String strFragmentShader) {
 			this.strWhiteVertShader = strWhiteVertShader;
 			this.strColorVertShader = strColorVertShader;
 			this.strFragmentShader = strFragmentShader;
@@ -119,10 +120,10 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 			
 	private ProgramPairs g_Programs[] = new ProgramPairs[LightingModel.LM_MAX_LIGHTING_MODEL.ordinal()];
 	private ShaderPairs g_ShaderFiles[] = new ShaderPairs[] {
-		new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "PhongLighting.frag"),
-		new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "PhongOnly.frag"),
-		new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "BlinnLighting.frag"),
-		new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "PCN.vert", BASEPATH + "BlinnOnly.frag")
+			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "PhongLighting.frag"),
+			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "PhongOnly.frag"),
+			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "BlinnLighting.frag"),
+			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "BlinnOnly.frag")
 	};
 	
 	private UnlitProgData g_Unlit;
@@ -135,7 +136,7 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 
 	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer16 	= BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -188,7 +189,7 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 			g_Programs[iProg].colorProg = loadLitProgram(g_ShaderFiles[iProg].strColorVertShader, g_ShaderFiles[iProg].strFragmentShader);
 		}
 		
-		g_Unlit = loadUnlitProgram(BASEPATH + "PosTransform.vert", BASEPATH + "UniformColor.frag");
+		g_Unlit = loadUnlitProgram(TUTORIAL_DATAPATH + "PosTransform.vert", TUTORIAL_DATAPATH + "UniformColor.frag");
 	}
 	
 	
@@ -197,9 +198,9 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 		initializePrograms();
 		
 		try {
-			g_pCylinderMesh = new Mesh(BASEPATH + "UnitCylinder.xml");
-			g_pPlaneMesh 	= new Mesh(BASEPATH + "LargePlane.xml");
-			g_pCubeMesh 	= new Mesh(BASEPATH + "UnitCube.xml");
+			g_pCylinderMesh = new Mesh(TUTORIAL_DATAPATH + "UnitCylinder.xml");
+			g_pPlaneMesh 	= new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
+			g_pCubeMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -493,15 +494,10 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+	private class ProjectionBlock extends BufferableData<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
-
-		@Override
-		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillAndFlipBuffer(buffer);
-		}
+		static final int SIZE = 16 * FLOAT_SIZE;
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -516,57 +512,56 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 		LM_BLINN_SPECULAR,
 		LM_BLINN_ONLY,
 
-		LM_MAX_LIGHTING_MODEL,
+		LM_MAX_LIGHTING_MODEL
 	};
 	
 	
-	private static LightingModel g_eLightModel = LightingModel.LM_BLINN_SPECULAR;
-	private static final String strLightModelNames[] = {
-		"Phong Specular.",
-		"Phong Only.",
-		"Blinn Specular.",
-		"Blinn Only.",
+	private final String strLightModelNames[] = {
+			"Phong Specular.",
+			"Phong Only.",
+			"Blinn Specular.",
+			"Blinn Only."
 	};
-	
-	private static boolean g_bDrawColoredCyl;
-	private static boolean g_bDrawLightSource;
-	private static boolean g_bScaleCyl;
-	private static boolean g_bDrawDark;
-
-	private static float g_fLightHeight = 1.5f;
-	private static float g_fLightRadius = 1.0f;
-	
-	private final float g_fLightAttenuation = 1.2f;
 	
 	private final Vec4 g_darkColor = new Vec4(0.2f, 0.2f, 0.2f, 1.0f);
 	private final Vec4 g_lightColor = new Vec4(1.0f);
+	private final float g_fLightAttenuation = 1.2f;
 
-	private Timer g_LightTimer = new Timer(Timer.Type.TT_LOOP, 5.0f);
-	
 	private Mesh g_pCylinderMesh;
 	private Mesh g_pPlaneMesh;
 	private Mesh g_pCubeMesh;
+	
+	private Timer g_LightTimer = new Timer(Timer.Type.TT_LOOP, 5.0f);
+
+	private LightingModel g_eLightModel = LightingModel.LM_BLINN_SPECULAR;
+	
+	private boolean g_bDrawColoredCyl;
+	private boolean g_bDrawLightSource;
+	private boolean g_bScaleCyl;
+	private boolean g_bDrawDark;
+	private float g_fLightHeight = 1.5f;
+	private float g_fLightRadius = 1.0f;
 	
 	
 	// View/Object Setup
 	
 	private ViewData g_initialViewData = new ViewData(
-		new Vec3(0.0f, 0.5f, 0.0f),
-		new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
-		5.0f,
-		0.0f
+			new Vec3(0.0f, 0.5f, 0.0f),
+			new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+			5.0f,
+			0.0f
 	);
 
 	private ViewScale g_viewScale = new ViewScale(	
-		3.0f, 20.0f,
-		1.5f, 0.5f,
-		0.0f, 0.0f,																	// No camera movement.
-		90.0f / 250.0f
+			3.0f, 20.0f,
+			1.5f, 0.5f,
+			0.0f, 0.0f,																// No camera movement.
+			90.0f / 250.0f
 	);
 	
 	private ObjectData g_initialObjectData = new ObjectData(
-		new Vec3(0.0f, 0.5f, 0.0f),
-		new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
+			new Vec3(0.0f, 0.5f, 0.0f),
+			new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
 	);
 
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);
@@ -588,11 +583,8 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	private static MaterialParams g_matParams = new MaterialParams();
-
-	
-	private static class MaterialParams {
+		
+	private class MaterialParams {
 
 		private float m_fPhongExponent;
 		private float m_fBlinnExponent;
@@ -622,43 +614,43 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 					m_fBlinnExponent += 0.1f;
 				}
 				break;
-		}
-					
-		clampParam();
+			}
+
+			clampParam();
 		}
 		
 		void decrement(boolean bIsLarge) {
 			switch (g_eLightModel) {
-				case LM_PHONG_SPECULAR:
-				case LM_PHONG_ONLY:
-					if (bIsLarge) {
-						m_fPhongExponent -= 0.5f;
-					} else {
-						m_fPhongExponent -= 0.1f;
-					}
-					break;
-				case LM_BLINN_SPECULAR:
-				case LM_BLINN_ONLY:
-					if (bIsLarge) {
-						m_fBlinnExponent -= 0.5f;
-					} else {
-						m_fBlinnExponent -= 0.1f;
-					}
-					break;
+			case LM_PHONG_SPECULAR:
+			case LM_PHONG_ONLY:
+				if (bIsLarge) {
+					m_fPhongExponent -= 0.5f;
+				} else {
+					m_fPhongExponent -= 0.1f;
+				}
+				break;
+			case LM_BLINN_SPECULAR:
+			case LM_BLINN_ONLY:
+				if (bIsLarge) {
+					m_fBlinnExponent -= 0.5f;
+				} else {
+					m_fBlinnExponent -= 0.1f;
+				}
+				break;
 			}
-						
+
 			clampParam();
 		}
 		
 		
 		float getSpecularValue() {
 			switch (g_eLightModel) {
-				case LM_PHONG_SPECULAR:
-				case LM_PHONG_ONLY:
-					return m_fPhongExponent;
-				case LM_BLINN_SPECULAR:
-				case LM_BLINN_ONLY:
-					return m_fBlinnExponent;
+			case LM_PHONG_SPECULAR:
+			case LM_PHONG_ONLY:
+				return m_fPhongExponent;
+			case LM_BLINN_SPECULAR:
+			case LM_BLINN_ONLY:
+				return m_fBlinnExponent;
 			}
 
 			float fStopComplaint = 0.0f;
@@ -668,19 +660,22 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 
 		private void clampParam() {
 			switch (g_eLightModel) {
-				case LM_PHONG_SPECULAR:
-				case LM_PHONG_ONLY:
-					if (m_fPhongExponent <= 0.0f) {
-						m_fPhongExponent = 0.0001f;
-					}
-					break;
-				case LM_BLINN_SPECULAR:
-				case LM_BLINN_ONLY:
-					if (m_fBlinnExponent <= 0.0f) {
-						m_fBlinnExponent = 0.0001f;
-					}
-					break;
+			case LM_PHONG_SPECULAR:
+			case LM_PHONG_ONLY:
+				if (m_fPhongExponent <= 0.0f) {
+					m_fPhongExponent = 0.0001f;
+				}
+				break;
+			case LM_BLINN_SPECULAR:
+			case LM_BLINN_ONLY:
+				if (m_fBlinnExponent <= 0.0f) {
+					m_fBlinnExponent = 0.0001f;
+				}
+				break;
 			}
-		}		
+		}	
 	}
+	
+	
+	private MaterialParams g_matParams = new MaterialParams();
 }

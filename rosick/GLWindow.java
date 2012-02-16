@@ -15,7 +15,7 @@ import org.lwjgl.opengl.Util;
  * @author integeruser
  */
 public class GLWindow {
-	
+		
 	// Measured in milliseconds
 	private double elapsedTime; 
 	private double lastFrameDuration;

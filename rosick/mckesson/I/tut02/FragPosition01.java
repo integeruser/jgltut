@@ -29,23 +29,23 @@ public class FragPosition01 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/I/tut02/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/I/tut02/data/";
 
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+	private final float vertexData[] = {
+			0.75f, 0.75f, 0.0f, 1.0f,
+			0.75f, -0.75f, 0.0f, 1.0f,
+		   -0.75f, -0.75f, 0.0f, 1.0f,
+	};
+	
 	private int theProgram; 
 	private int vertexBufferObject;
 	private int vao;
 	
-	private final float vertexData[] = {											// 3 positions and 3 colors
-	    0.75f, 0.75f, 0.0f, 1.0f,
-	    0.75f, -0.75f, 0.0f, 1.0f,
-	    -0.75f, -0.75f, 0.0f, 1.0f,
-	};
-
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -53,20 +53,20 @@ public class FragPosition01 extends GLWindow {
 
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	BASEPATH + "FragPosition.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "FragPosition.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	TUTORIAL_DATAPATH + "FragPosition.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "FragPosition.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 	}
 	
 	private void initializeVertexBuffer() {
-		FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(vertexData.length);
-		tempFloatBuffer.put(vertexData);
-		tempFloatBuffer.flip();
+		FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+		vertexDataBuffer.put(vertexData);
+		vertexDataBuffer.flip();
 		
         vertexBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, tempFloatBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	

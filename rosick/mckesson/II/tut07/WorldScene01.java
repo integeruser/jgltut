@@ -48,7 +48,7 @@ public class WorldScene01 extends GLWindow {
 	}
 
 
-	private static final String BASEPATH = "/rosick/mckesson/II/tut07/data/";
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut07/data/";
 
 	
 	
@@ -97,9 +97,9 @@ public class WorldScene01 extends GLWindow {
 	}
 
 	private void initializeProgram() {
-		uniformColor = 		loadProgram(BASEPATH + "PosOnlyWorldTransform.vert",	BASEPATH + "ColorUniform.frag");
-		objectColor = 		loadProgram(BASEPATH + "PosColorWorldTransform.vert", 	BASEPATH + "ColorPassthrough.frag");
-		uniformColorTint = 	loadProgram(BASEPATH + "PosColorWorldTransform.vert", 	BASEPATH + "ColorMultUniform.frag");
+		uniformColor = 		loadProgram(TUTORIAL_DATAPATH + "PosOnlyWorldTransform.vert",	TUTORIAL_DATAPATH + "ColorUniform.frag");
+		objectColor = 		loadProgram(TUTORIAL_DATAPATH + "PosColorWorldTransform.vert", 	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
+		uniformColorTint = 	loadProgram(TUTORIAL_DATAPATH + "PosColorWorldTransform.vert", 	TUTORIAL_DATAPATH + "ColorMultUniform.frag");
 	}
 
 	
@@ -108,11 +108,11 @@ public class WorldScene01 extends GLWindow {
 		initializeProgram();
 
 		try {
-			g_pConeMesh 		= new Mesh(BASEPATH + "UnitConeTint.xml");
-			g_pCylinderMesh 	= new Mesh(BASEPATH + "UnitCylinderTint.xml");
-			g_pCubeTintMesh 	= new Mesh(BASEPATH + "UnitCubeTint.xml");
-			g_pCubeColorMesh 	= new Mesh(BASEPATH + "UnitCubeColor.xml");
-			g_pPlaneMesh 		= new Mesh(BASEPATH + "UnitPlane.xml");
+			g_pConeMesh 		= new Mesh(TUTORIAL_DATAPATH + "UnitConeTint.xml");
+			g_pCylinderMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCylinderTint.xml");
+			g_pCubeTintMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCubeTint.xml");
+			g_pCubeColorMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCubeColor.xml");
+			g_pPlaneMesh 		= new Mesh(TUTORIAL_DATAPATH + "UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -128,6 +128,7 @@ public class WorldScene01 extends GLWindow {
 		glDepthRange(0.0f, 1.0f);
 		glEnable(GL_DEPTH_CLAMP);
 	}
+	
 
 	@Override
 	protected void update() {
@@ -542,7 +543,7 @@ public class WorldScene01 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 
-	private static class TreeData {
+	private class TreeData {
 		float fXPos;
 		float fZPos;
 		float fTrunkHeight;
@@ -557,111 +558,110 @@ public class WorldScene01 extends GLWindow {
 	}
 
 
-	private static final TreeData g_forest[] = {
-		new TreeData (-45.0f, -40.0f, 2.0f, 3.0f),
-		new TreeData (-42.0f, -35.0f, 2.0f, 3.0f),
-		new TreeData (-39.0f, -29.0f, 2.0f, 4.0f),
-		new TreeData (-44.0f, -26.0f, 3.0f, 3.0f),
-		new TreeData (-40.0f, -22.0f, 2.0f, 4.0f),
-		new TreeData (-36.0f, -15.0f, 3.0f, 3.0f),
-		new TreeData (-41.0f, -11.0f, 2.0f, 3.0f),
-		new TreeData (-37.0f, -6.0f, 3.0f, 3.0f),
-		new TreeData (-45.0f, 0.0f, 2.0f, 3.0f),
-		new TreeData (-39.0f, 4.0f, 3.0f, 4.0f),
-		new TreeData (-36.0f, 8.0f, 2.0f, 3.0f),
-		new TreeData (-44.0f, 13.0f, 3.0f, 3.0f),
-		new TreeData (-42.0f, 17.0f, 2.0f, 3.0f),
-		new TreeData (-38.0f, 23.0f, 3.0f, 4.0f),
-		new TreeData (-41.0f, 27.0f, 2.0f, 3.0f),
-		new TreeData (-39.0f, 32.0f, 3.0f, 3.0f),
-		new TreeData (-44.0f, 37.0f, 3.0f, 4.0f),
-		new TreeData (-36.0f, 42.0f, 2.0f, 3.0f),
+	private final TreeData g_forest[] = {
+			new TreeData(-45.0f, -40.0f, 2.0f, 3.0f),
+			new TreeData(-42.0f, -35.0f, 2.0f, 3.0f),
+			new TreeData(-39.0f, -29.0f, 2.0f, 4.0f),
+			new TreeData(-44.0f, -26.0f, 3.0f, 3.0f),
+			new TreeData(-40.0f, -22.0f, 2.0f, 4.0f),
+			new TreeData(-36.0f, -15.0f, 3.0f, 3.0f),
+			new TreeData(-41.0f, -11.0f, 2.0f, 3.0f),
+			new TreeData(-37.0f, -6.0f, 3.0f, 3.0f),
+			new TreeData(-45.0f, 0.0f, 2.0f, 3.0f),
+			new TreeData(-39.0f, 4.0f, 3.0f, 4.0f),
+			new TreeData(-36.0f, 8.0f, 2.0f, 3.0f),
+			new TreeData(-44.0f, 13.0f, 3.0f, 3.0f),
+			new TreeData(-42.0f, 17.0f, 2.0f, 3.0f),
+			new TreeData(-38.0f, 23.0f, 3.0f, 4.0f),
+			new TreeData(-41.0f, 27.0f, 2.0f, 3.0f),
+			new TreeData(-39.0f, 32.0f, 3.0f, 3.0f),
+			new TreeData(-44.0f, 37.0f, 3.0f, 4.0f),
+			new TreeData(-36.0f, 42.0f, 2.0f, 3.0f),
 
-		new TreeData (-32.0f, -45.0f, 2.0f, 3.0f),
-		new TreeData (-30.0f, -42.0f, 2.0f, 4.0f),
-		new TreeData (-34.0f, -38.0f, 3.0f, 5.0f),
-		new TreeData (-33.0f, -35.0f, 3.0f, 4.0f),
-		new TreeData (-29.0f, -28.0f, 2.0f, 3.0f),
-		new TreeData (-26.0f, -25.0f, 3.0f, 5.0f),
-		new TreeData (-35.0f, -21.0f, 3.0f, 4.0f),
-		new TreeData (-31.0f, -17.0f, 3.0f, 3.0f),
-		new TreeData (-28.0f, -12.0f, 2.0f, 4.0f),
-		new TreeData (-29.0f, -7.0f, 3.0f, 3.0f),
-		new TreeData (-26.0f, -1.0f, 2.0f, 4.0f),
-		new TreeData (-32.0f, 6.0f, 2.0f, 3.0f),
-		new TreeData (-30.0f, 10.0f, 3.0f, 5.0f),
-		new TreeData (-33.0f, 14.0f, 2.0f, 4.0f),
-		new TreeData (-35.0f, 19.0f, 3.0f, 4.0f),
-		new TreeData (-28.0f, 22.0f, 2.0f, 3.0f),
-		new TreeData (-33.0f, 26.0f, 3.0f, 3.0f),
-		new TreeData (-29.0f, 31.0f, 3.0f, 4.0f),
-		new TreeData (-32.0f, 38.0f, 2.0f, 3.0f),
-		new TreeData (-27.0f, 41.0f, 3.0f, 4.0f),
-		new TreeData (-31.0f, 45.0f, 2.0f, 4.0f),
-		new TreeData (-28.0f, 48.0f, 3.0f, 5.0f),
+			new TreeData(-32.0f, -45.0f, 2.0f, 3.0f),
+			new TreeData(-30.0f, -42.0f, 2.0f, 4.0f),
+			new TreeData(-34.0f, -38.0f, 3.0f, 5.0f),
+			new TreeData(-33.0f, -35.0f, 3.0f, 4.0f),
+			new TreeData(-29.0f, -28.0f, 2.0f, 3.0f),
+			new TreeData(-26.0f, -25.0f, 3.0f, 5.0f),
+			new TreeData(-35.0f, -21.0f, 3.0f, 4.0f),
+			new TreeData(-31.0f, -17.0f, 3.0f, 3.0f),
+			new TreeData(-28.0f, -12.0f, 2.0f, 4.0f),
+			new TreeData(-29.0f, -7.0f, 3.0f, 3.0f),
+			new TreeData(-26.0f, -1.0f, 2.0f, 4.0f),
+			new TreeData(-32.0f, 6.0f, 2.0f, 3.0f),
+			new TreeData(-30.0f, 10.0f, 3.0f, 5.0f),
+			new TreeData(-33.0f, 14.0f, 2.0f, 4.0f),
+			new TreeData(-35.0f, 19.0f, 3.0f, 4.0f),
+			new TreeData(-28.0f, 22.0f, 2.0f, 3.0f),
+			new TreeData(-33.0f, 26.0f, 3.0f, 3.0f),
+			new TreeData(-29.0f, 31.0f, 3.0f, 4.0f),
+			new TreeData(-32.0f, 38.0f, 2.0f, 3.0f),
+			new TreeData(-27.0f, 41.0f, 3.0f, 4.0f),
+			new TreeData(-31.0f, 45.0f, 2.0f, 4.0f),
+			new TreeData(-28.0f, 48.0f, 3.0f, 5.0f),
 
-		new TreeData (-25.0f, -48.0f, 2.0f, 3.0f),
-		new TreeData (-20.0f, -42.0f, 3.0f, 4.0f),
-		new TreeData (-22.0f, -39.0f, 2.0f, 3.0f),
-		new TreeData (-19.0f, -34.0f, 2.0f, 3.0f),
-		new TreeData (-23.0f, -30.0f, 3.0f, 4.0f),
-		new TreeData (-24.0f, -24.0f, 2.0f, 3.0f),
-		new TreeData (-16.0f, -21.0f, 2.0f, 3.0f),
-		new TreeData (-17.0f, -17.0f, 3.0f, 3.0f),
-		new TreeData (-25.0f, -13.0f, 2.0f, 4.0f),
-		new TreeData (-23.0f, -8.0f, 2.0f, 3.0f),
-		new TreeData (-17.0f, -2.0f, 3.0f, 3.0f),
-		new TreeData (-16.0f, 1.0f, 2.0f, 3.0f),
-		new TreeData (-19.0f, 4.0f, 3.0f, 3.0f),
-		new TreeData (-22.0f, 8.0f, 2.0f, 4.0f),
-		new TreeData (-21.0f, 14.0f, 2.0f, 3.0f),
-		new TreeData (-16.0f, 19.0f, 2.0f, 3.0f),
-		new TreeData (-23.0f, 24.0f, 3.0f, 3.0f),
-		new TreeData (-18.0f, 28.0f, 2.0f, 4.0f),
-		new TreeData (-24.0f, 31.0f, 2.0f, 3.0f),
-		new TreeData (-20.0f, 36.0f, 2.0f, 3.0f),
-		new TreeData (-22.0f, 41.0f, 3.0f, 3.0f),
-		new TreeData (-21.0f, 45.0f, 2.0f, 3.0f),
+			new TreeData(-25.0f, -48.0f, 2.0f, 3.0f),
+			new TreeData(-20.0f, -42.0f, 3.0f, 4.0f),
+			new TreeData(-22.0f, -39.0f, 2.0f, 3.0f),
+			new TreeData(-19.0f, -34.0f, 2.0f, 3.0f),
+			new TreeData(-23.0f, -30.0f, 3.0f, 4.0f),
+			new TreeData(-24.0f, -24.0f, 2.0f, 3.0f),
+			new TreeData(-16.0f, -21.0f, 2.0f, 3.0f),
+			new TreeData(-17.0f, -17.0f, 3.0f, 3.0f),
+			new TreeData(-25.0f, -13.0f, 2.0f, 4.0f),
+			new TreeData(-23.0f, -8.0f, 2.0f, 3.0f),
+			new TreeData(-17.0f, -2.0f, 3.0f, 3.0f),
+			new TreeData(-16.0f, 1.0f, 2.0f, 3.0f),
+			new TreeData(-19.0f, 4.0f, 3.0f, 3.0f),
+			new TreeData(-22.0f, 8.0f, 2.0f, 4.0f),
+			new TreeData(-21.0f, 14.0f, 2.0f, 3.0f),
+			new TreeData(-16.0f, 19.0f, 2.0f, 3.0f),
+			new TreeData(-23.0f, 24.0f, 3.0f, 3.0f),
+			new TreeData(-18.0f, 28.0f, 2.0f, 4.0f),
+			new TreeData(-24.0f, 31.0f, 2.0f, 3.0f),
+			new TreeData(-20.0f, 36.0f, 2.0f, 3.0f),
+			new TreeData(-22.0f, 41.0f, 3.0f, 3.0f),
+			new TreeData(-21.0f, 45.0f, 2.0f, 3.0f),
 
-		new TreeData (-12.0f, -40.0f, 2.0f, 4.0f),
-		new TreeData (-11.0f, -35.0f, 3.0f, 3.0f),
-		new TreeData (-10.0f, -29.0f, 1.0f, 3.0f),
-		new TreeData (-9.0f, -26.0f, 2.0f, 2.0f),
-		new TreeData (-6.0f, -22.0f, 2.0f, 3.0f),
-		new TreeData (-15.0f, -15.0f, 1.0f, 3.0f),
-		new TreeData (-8.0f, -11.0f, 2.0f, 3.0f),
-		new TreeData (-14.0f, -6.0f, 2.0f, 4.0f),
-		new TreeData (-12.0f, 0.0f, 2.0f, 3.0f),
-		new TreeData (-7.0f, 4.0f, 2.0f, 2.0f),
-		new TreeData (-13.0f, 8.0f, 2.0f, 2.0f),
-		new TreeData (-9.0f, 13.0f, 1.0f, 3.0f),
-		new TreeData (-13.0f, 17.0f, 3.0f, 4.0f),
-		new TreeData (-6.0f, 23.0f, 2.0f, 3.0f),
-		new TreeData (-12.0f, 27.0f, 1.0f, 2.0f),
-		new TreeData (-8.0f, 32.0f, 2.0f, 3.0f),
-		new TreeData (-10.0f, 37.0f, 3.0f, 3.0f),
-		new TreeData (-11.0f, 42.0f, 2.0f, 2.0f),
+			new TreeData(-12.0f, -40.0f, 2.0f, 4.0f),
+			new TreeData(-11.0f, -35.0f, 3.0f, 3.0f),
+			new TreeData(-10.0f, -29.0f, 1.0f, 3.0f),
+			new TreeData(-9.0f, -26.0f, 2.0f, 2.0f),
+			new TreeData(-6.0f, -22.0f, 2.0f, 3.0f),
+			new TreeData(-15.0f, -15.0f, 1.0f, 3.0f),
+			new TreeData(-8.0f, -11.0f, 2.0f, 3.0f),
+			new TreeData(-14.0f, -6.0f, 2.0f, 4.0f),
+			new TreeData(-12.0f, 0.0f, 2.0f, 3.0f),
+			new TreeData(-7.0f, 4.0f, 2.0f, 2.0f),
+			new TreeData(-13.0f, 8.0f, 2.0f, 2.0f),
+			new TreeData(-9.0f, 13.0f, 1.0f, 3.0f),
+			new TreeData(-13.0f, 17.0f, 3.0f, 4.0f),
+			new TreeData(-6.0f, 23.0f, 2.0f, 3.0f),
+			new TreeData(-12.0f, 27.0f, 1.0f, 2.0f),
+			new TreeData(-8.0f, 32.0f, 2.0f, 3.0f),
+			new TreeData(-10.0f, 37.0f, 3.0f, 3.0f),
+			new TreeData(-11.0f, 42.0f, 2.0f, 2.0f),
 
+			new TreeData(15.0f, 5.0f, 2.0f, 3.0f),
+			new TreeData(15.0f, 10.0f, 2.0f, 3.0f),
+			new TreeData(15.0f, 15.0f, 2.0f, 3.0f),
+			new TreeData(15.0f, 20.0f, 2.0f, 3.0f),
+			new TreeData(15.0f, 25.0f, 2.0f, 3.0f),
+			new TreeData(15.0f, 30.0f, 2.0f, 3.0f),
+			new TreeData(15.0f, 35.0f, 2.0f, 3.0f),
+			new TreeData(15.0f, 40.0f, 2.0f, 3.0f),
+			new TreeData(15.0f, 45.0f, 2.0f, 3.0f),
 
-		new TreeData (15.0f, 5.0f, 2.0f, 3.0f),
-		new TreeData (15.0f, 10.0f, 2.0f, 3.0f),
-		new TreeData (15.0f, 15.0f, 2.0f, 3.0f),
-		new TreeData (15.0f, 20.0f, 2.0f, 3.0f),
-		new TreeData (15.0f, 25.0f, 2.0f, 3.0f),
-		new TreeData (15.0f, 30.0f, 2.0f, 3.0f),
-		new TreeData (15.0f, 35.0f, 2.0f, 3.0f),
-		new TreeData (15.0f, 40.0f, 2.0f, 3.0f),
-		new TreeData (15.0f, 45.0f, 2.0f, 3.0f),
-
-		new TreeData (25.0f, 5.0f, 2.0f, 3.0f),
-		new TreeData (25.0f, 10.0f, 2.0f, 3.0f),
-		new TreeData (25.0f, 15.0f, 2.0f, 3.0f),
-		new TreeData (25.0f, 20.0f, 2.0f, 3.0f),
-		new TreeData (25.0f, 25.0f, 2.0f, 3.0f),
-		new TreeData (25.0f, 30.0f, 2.0f, 3.0f),
-		new TreeData (25.0f, 35.0f, 2.0f, 3.0f),
-		new TreeData (25.0f, 40.0f, 2.0f, 3.0f),
-		new TreeData (25.0f, 45.0f, 2.0f, 3.0f),
+			new TreeData(25.0f, 5.0f, 2.0f, 3.0f),
+			new TreeData(25.0f, 10.0f, 2.0f, 3.0f),
+			new TreeData(25.0f, 15.0f, 2.0f, 3.0f),
+			new TreeData(25.0f, 20.0f, 2.0f, 3.0f),
+			new TreeData(25.0f, 25.0f, 2.0f, 3.0f),
+			new TreeData(25.0f, 30.0f, 2.0f, 3.0f),
+			new TreeData(25.0f, 35.0f, 2.0f, 3.0f),
+			new TreeData(25.0f, 40.0f, 2.0f, 3.0f),
+			new TreeData(25.0f, 45.0f, 2.0f, 3.0f), 
 	};
 
 
@@ -680,18 +680,18 @@ public class WorldScene01 extends GLWindow {
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
-	
-	private static boolean g_bDrawLookatPoint = false;
-	private static Vec3 g_camTarget = new Vec3(0.0f, 0.4f, 0.0f);
-	
-	// In spherical coordinates.
-	private static Vec3 g_sphereCamRelPos = new Vec3(67.5f, -46.0f, 150.0f);
-	
+		
 	private Mesh g_pConeMesh;
 	private Mesh g_pCylinderMesh;
 	private Mesh g_pCubeTintMesh;
 	private Mesh g_pCubeColorMesh;
 	private Mesh g_pPlaneMesh;
+	
+	private boolean g_bDrawLookatPoint = false;
+	private Vec3 g_camTarget = new Vec3(0.0f, 0.4f, 0.0f);
+	
+	// In spherical coordinates.
+	private Vec3 g_sphereCamRelPos = new Vec3(67.5f, -46.0f, 150.0f);
 	
 	
 	private Vec3 resolveCamPosition() {

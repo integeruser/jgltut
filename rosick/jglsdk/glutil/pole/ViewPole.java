@@ -43,6 +43,7 @@ public class ViewPole extends ViewProvider {
 	
 	private ViewData m_initialView;
 	private MouseButtons m_actionButton;
+	private boolean m_bRightKeyboardCtrls;
 	
 	// Used when rotating.
 	private boolean m_bIsDragging;
@@ -67,14 +68,20 @@ public class ViewPole extends ViewProvider {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	public ViewPole(ViewData initialView, ViewScale viewScale) {
-		this(initialView, viewScale, MouseButtons.MB_LEFT_BTN);
+		this(initialView, viewScale, MouseButtons.MB_LEFT_BTN, false);
 	}
 	
 	public ViewPole(ViewData initialView, ViewScale viewScale, MouseButtons actionButton) {
+		this(initialView, viewScale, actionButton, false);
+	}
+	
+	public ViewPole(ViewData initialView, ViewScale viewScale, MouseButtons actionButton, boolean bRightKeyboardCtrls) {
 		m_currView = initialView;
 		m_viewScale = viewScale;
 		m_initialView = initialView;
 		m_actionButton = actionButton;
+		
+		m_bRightKeyboardCtrls = bRightKeyboardCtrls;
 	}
 
 
@@ -129,36 +136,70 @@ public class ViewPole extends ViewProvider {
 	
 	@Override
 	public void charPress(int key, boolean isShiftPressed, float lastFrameDuration) {
-		switch (key) {
-			case Keyboard.KEY_W: offsetTargetPos(TargetOffsetDir.DIR_FORWARD, 
-					isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
-					lastFrameDuration); 
-			break;
-			
-			case Keyboard.KEY_S: offsetTargetPos(TargetOffsetDir.DIR_BACKWARD, 
-					isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
-					lastFrameDuration); 
-			break;
-			
-			case Keyboard.KEY_D: offsetTargetPos(TargetOffsetDir.DIR_RIGHT, 
-					isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
-					lastFrameDuration); 
-			break;
-			
-			case Keyboard.KEY_A: offsetTargetPos(TargetOffsetDir.DIR_LEFT, 
-					isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
-					lastFrameDuration); 
-			break;
-			
-			case Keyboard.KEY_E: offsetTargetPos(TargetOffsetDir.DIR_UP, 
-					isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
-					lastFrameDuration); 
-			break;
-			
-			case Keyboard.KEY_Q: offsetTargetPos(TargetOffsetDir.DIR_DOWN, 
-					isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
-					lastFrameDuration); 
-			break;
+		if (m_bRightKeyboardCtrls) {
+			switch (key) {
+				case Keyboard.KEY_I: offsetTargetPos(TargetOffsetDir.DIR_FORWARD, 
+						isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+						lastFrameDuration); 
+				break;
+				
+				case Keyboard.KEY_K: offsetTargetPos(TargetOffsetDir.DIR_BACKWARD, 
+						isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+						lastFrameDuration); 
+				break;
+				
+				case Keyboard.KEY_L: offsetTargetPos(TargetOffsetDir.DIR_RIGHT, 
+						isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+						lastFrameDuration); 
+				break;
+				
+				case Keyboard.KEY_J: offsetTargetPos(TargetOffsetDir.DIR_LEFT, 
+						isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+						lastFrameDuration); 
+				break;
+				
+				case Keyboard.KEY_O: offsetTargetPos(TargetOffsetDir.DIR_UP, 
+						isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+						lastFrameDuration); 
+				break;
+				
+				case Keyboard.KEY_U: offsetTargetPos(TargetOffsetDir.DIR_DOWN, 
+						isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+						lastFrameDuration); 
+				break;
+			}
+		} else {
+			switch (key) {
+				case Keyboard.KEY_W: offsetTargetPos(TargetOffsetDir.DIR_FORWARD, 
+						isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+						lastFrameDuration); 
+				break;
+				
+				case Keyboard.KEY_S: offsetTargetPos(TargetOffsetDir.DIR_BACKWARD, 
+						isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+						lastFrameDuration); 
+				break;
+				
+				case Keyboard.KEY_D: offsetTargetPos(TargetOffsetDir.DIR_RIGHT, 
+						isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+						lastFrameDuration); 
+				break;
+				
+				case Keyboard.KEY_A: offsetTargetPos(TargetOffsetDir.DIR_LEFT, 
+						isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+						lastFrameDuration); 
+				break;
+				
+				case Keyboard.KEY_E: offsetTargetPos(TargetOffsetDir.DIR_UP, 
+						isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+						lastFrameDuration); 
+				break;
+				
+				case Keyboard.KEY_Q: offsetTargetPos(TargetOffsetDir.DIR_DOWN, 
+						isShiftPressed ? m_viewScale.smallPosOffset : m_viewScale.largePosOffset, 
+						lastFrameDuration); 
+				break;
+			}
 		}
 	};
 

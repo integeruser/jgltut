@@ -51,7 +51,6 @@ public class ImageCreator {
 			}
 
 			//Allocate the memory for our data.
-			int bpp = calcBytesPerPixel(m_format);
 			for(int level = 0; level < mipmapCount; ++level)
 			{
 				Dimensions mipmapDims = modifySizeForMipmap(new Dimensions(m_dims), level);
@@ -104,7 +103,7 @@ public class ImageCreator {
 	}
 
 
-	static Dimensions modifySizeForMipmap(Dimensions origDim, int mipmapLevel) {
+	public static Dimensions modifySizeForMipmap(Dimensions origDim, int mipmapLevel) {
 		for(int iLoop = 0; iLoop < mipmapLevel; iLoop++) {
 			origDim.width /= 2;
 			origDim.height /= 2;
@@ -115,7 +114,7 @@ public class ImageCreator {
 	}
 
 
-	static int calcBytesPerPixel(ImageFormat fmt) {
+	public static int calcBytesPerPixel(ImageFormat fmt) {
 		int bytesPerPixel = 0;
 		switch(fmt.depth()) {
 		case BD_COMPRESSED:			return 0;
@@ -207,7 +206,8 @@ public class ImageCreator {
 		if((faceIx < 0) || (m_faceCount <= faceIx))
 			throw new FaceIndexOutOfBoundsException();
 
-		int imageOffset = arrayIx * faceIx * m_imageSizes.get(mipmapLevel);
+		//int imageOffset = arrayIx * faceIx * m_imageSizes.get(mipmapLevel);
+		int imageOffset = ((arrayIx * m_faceCount) + faceIx) * m_imageSizes.get(mipmapLevel);
 
 		ArrayList<Integer> pMipmapData = m_imageData.get(mipmapLevel);
 		//pMipmapData += imageOffset;

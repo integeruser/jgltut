@@ -36,9 +36,6 @@ import rosick.mckesson.III.tut12.Scene.LightingProgramTypes;
 import rosick.mckesson.III.tut12.Scene.ProgramData;
 
 
-// Some graphics card (like my Radeon HD3870) generates an OpenGL error. Don't worry, the tutorial works fine anyway.
-
-
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
@@ -51,13 +48,13 @@ import rosick.mckesson.III.tut12.Scene.ProgramData;
  * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
  * Q,E		- raise and lower the camera, relative to its current orientation. 
  * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
- * P		- toggle pausing on/off.
+ * P		- toggles pausing on/off.
  * -,=		- rewind/jump forward time by one second (of real-time).
- * T		- toggle viewing of the current target point.
+ * T		- toggles viewing of the current target point.
  * 1,2,3	- timer commands affect both the sun and the other lights/only the sun/only the other lights.
- * L		- switch to day-optimized lighting. Pressing LEFT_SHIFT+L will switch to a night-time optimized version.
- * K 		- switch to HDR lighting.
- * SPACEBAR - print out the current sun-based time, in 24-hour notation.
+ * L		- switches to day-optimized lighting. Pressing LEFT_SHIFT+L will switch to a night-time optimized version.
+ * K 		- switches to HDR lighting.
+ * SPACE	- prints out the current sun-based time, in 24-hour notation.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
  * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
@@ -71,7 +68,8 @@ public class HDRLighting02 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/III/tut12/data/";
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut12/data/";
 	
 	
 	
@@ -97,17 +95,17 @@ public class HDRLighting02 extends GLWindow {
 	}
 	
 		
-	private final int g_materialBlockIndex 		= 0;
-	private final int g_lightBlockIndex 		= 1;
-	private final int g_projectionBlockIndex 	= 2;
+	private final int g_materialBlockIndex = 0;
+	private final int g_lightBlockIndex = 1;
+	private final int g_projectionBlockIndex = 2;
 
 	private ProgramData g_Programs[] = new ProgramData[LightingProgramTypes.LP_MAX_LIGHTING_PROGRAM_TYPES.ordinal()];
 	private Shaders g_ShaderFiles[] = new Shaders[] {
-		new Shaders(BASEPATH + "PCN.vert", BASEPATH + "DiffuseSpecularHDR.frag"),
-		new Shaders(BASEPATH + "PCN.vert", BASEPATH + "DiffuseOnlyHDR.frag"),
-		
-		new Shaders(BASEPATH + "PN.vert", BASEPATH + "DiffuseSpecularMtlHDR.frag"),
-		new Shaders(BASEPATH + "PN.vert", BASEPATH + "DiffuseOnlyMtlHDR.frag"),
+			new Shaders(TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "DiffuseSpecularHDR.frag"),
+			new Shaders(TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "DiffuseOnlyHDR.frag"),
+			
+			new Shaders(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "DiffuseSpecularMtlHDR.frag"),
+			new Shaders(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "DiffuseOnlyMtlHDR.frag")
 	};
 	
 	private UnlitProgData g_Unlit;
@@ -120,8 +118,8 @@ public class HDRLighting02 extends GLWindow {
 	private MatrixStack modelMatrix = new MatrixStack();
 
 	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempFloatBuffer40 = BufferUtils.createFloatBuffer(40);
+	private FloatBuffer tempFloatBuffer16 	= BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer40 	= BufferUtils.createFloatBuffer(40);
 
 	
 	
@@ -159,7 +157,9 @@ public class HDRLighting02 extends GLWindow {
 		int lightBlock = glGetUniformBlockIndex(data.theProgram, "Light");
 		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
 
-		glUniformBlockBinding(data.theProgram, materialBlock, g_materialBlockIndex);
+		if (materialBlock != GL_INVALID_INDEX) {									// Can be optimized out.
+			glUniformBlockBinding(data.theProgram, materialBlock, g_materialBlockIndex);
+		}
 		glUniformBlockBinding(data.theProgram, lightBlock, g_lightBlockIndex);
 		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
 
@@ -172,7 +172,7 @@ public class HDRLighting02 extends GLWindow {
 			g_Programs[iProg] = loadLitProgram(g_ShaderFiles[iProg].fileVertexShader, g_ShaderFiles[iProg].fileFragmentShader);
 		}
 
-		g_Unlit = loadUnlitProgram(BASEPATH + "PosTransform.vert", BASEPATH + "UniformColor.frag");
+		g_Unlit = loadUnlitProgram(TUTORIAL_DATAPATH + "PosTransform.vert", TUTORIAL_DATAPATH + "UniformColor.frag");
 	}
 	
 	
@@ -181,7 +181,7 @@ public class HDRLighting02 extends GLWindow {
 		initializePrograms();
 
 		try {
-			g_pScene = new Scene(BASEPATH) {
+			g_pScene = new Scene(TUTORIAL_DATAPATH) {
 
 				@Override
 				ProgramData getProgram(LightingProgramTypes eType) {
@@ -446,7 +446,7 @@ public class HDRLighting02 extends GLWindow {
 	private class ProjectionBlock implements Bufferable<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
+		static final int SIZE = 16 * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
@@ -474,17 +474,17 @@ public class HDRLighting02 extends GLWindow {
 	// View/Object Setup
 	
 	private ViewData g_initialViewData = new ViewData(
-		new Vec3(-59.5f, 44.0f, 95.0f),
-		new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
-		50.0f,
-		0.0f
+			new Vec3(-59.5f, 44.0f, 95.0f),
+			new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+			50.0f,
+			0.0f
 	);
 
 	private ViewScale g_viewScale = new ViewScale(	
-		3.0f, 80.0f,
-		4.0f, 1.0f,
-		5.0f, 1.0f,
-		90.0f / 250.0f
+			3.0f, 80.0f,
+			4.0f, 1.0f,
+			5.0f, 1.0f,
+			90.0f / 250.0f
 	);
 
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);
@@ -492,13 +492,13 @@ public class HDRLighting02 extends GLWindow {
 	
 	private void setupDaytimeLighting() {
 		SunlightValue values[] = {
-			new SunlightValue( 0.0f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
-			new SunlightValue( 4.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
-			new SunlightValue( 6.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.10f, 1.0f), 	new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
-			new SunlightValue( 8.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
-			new SunlightValue(18.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
-			new SunlightValue(19.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.1f, 1.0f), 	new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
-			new SunlightValue(20.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
+				new SunlightValue( 0.0f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
+				new SunlightValue( 4.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
+				new SunlightValue( 6.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.10f, 1.0f), 	new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+				new SunlightValue( 8.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+				new SunlightValue(18.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+				new SunlightValue(19.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.1f, 1.0f), 	new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+				new SunlightValue(20.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
 		};
 
 		g_lights.setSunlightValues(values, 7);
@@ -510,13 +510,13 @@ public class HDRLighting02 extends GLWindow {
 
 	private void setupNighttimeLighting() {
 		SunlightValue values[] = {
-			new SunlightValue( 0.0f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
-			new SunlightValue( 4.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
-			new SunlightValue( 6.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.10f, 1.0f), 	new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
-			new SunlightValue( 8.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f),	new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
-			new SunlightValue(18.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
-			new SunlightValue(19.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.1f, 1.0f), 	new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
-			new SunlightValue(20.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor)
+				new SunlightValue( 0.0f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
+				new SunlightValue( 4.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor),
+				new SunlightValue( 6.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.10f, 1.0f), 	new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+				new SunlightValue( 8.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f),	new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+				new SunlightValue(18.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 	new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+				new SunlightValue(19.5f/24.0f, new Vec4(0.15f, 0.05f, 0.05f, 1.0f), new Vec4(0.3f, 0.1f, 0.1f, 1.0f), 	new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+				new SunlightValue(20.5f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	g_skyDaylightColor)
 		};
 
 		g_lights.setSunlightValues(values, 7);

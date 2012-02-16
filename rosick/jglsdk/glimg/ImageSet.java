@@ -23,12 +23,12 @@ public class ImageSet {
 
 
 	public static class Dimensions {
-		int numDimensions;	// <The number of dimensions of an image. Can be 1, 2, or 3.
+		public int numDimensions;	// <The number of dimensions of an image. Can be 1, 2, or 3.
 		public int width;			// <The width of the image. Always valid.
 		public int height;			// <The height of the image. Only valid if numDimensions is 2 or 3.
-		int depth;			// <The depth of the image. Only valid if numDimensions is 3.
+		public int depth;			// <The depth of the image. Only valid if numDimensions is 3.
 
-		Dimensions(Dimensions dimensions) {
+		public Dimensions(Dimensions dimensions) {
 			numDimensions = dimensions.numDimensions;
 			width = dimensions.width;
 			height = dimensions.height;
@@ -57,20 +57,25 @@ public class ImageSet {
 	
 	
 	public static class ImageSetImpl {
+		private ImageFormat m_format;
 		private Dimensions m_dimensions;
 		private ArrayList<Integer> m_imageSizes;
 		private ArrayList<ArrayList<Integer>> m_imageData;
 		private int m_mipmapCount;
+		private int m_faceCount;
+
 		
 		public ImageSetImpl(ImageFormat format, Dimensions dimensions,
 				int mipmapCount, int arrayCount, int faceCount,
 				ArrayList<ArrayList<Integer>> imageData,
 				ArrayList<Integer> imageSizes) {
 
+			m_format = format;
 			m_dimensions = dimensions;
 			m_imageData = imageData;
 			m_imageSizes = imageSizes;
 			m_mipmapCount = mipmapCount;
+			m_faceCount = faceCount;
 		}
 
 		public Dimensions getDimensions(int mipmapLevel) {
@@ -89,7 +94,9 @@ public class ImageSet {
 
 		public ByteBuffer getImageData(int mipmapLevel, int arrayIx, int faceIx) {
 
-			int imageOffset = arrayIx * faceIx * m_imageSizes.get(mipmapLevel);			
+			//int imageOffset = arrayIx * faceIx * m_imageSizes.get(mipmapLevel);			
+			
+			int imageOffset = ((arrayIx * m_faceCount) + faceIx) * m_imageSizes.get(mipmapLevel);
 			ArrayList<Integer> temp = m_imageData.get(imageOffset);
 			
 			ByteBuffer tempBuffer = BufferUtils.createByteBuffer(temp.size());
@@ -105,6 +112,10 @@ public class ImageSet {
 
 		public int getMipmapCount() {
 			return m_mipmapCount;
+		}
+
+		public ImageFormat getFormat() {
+			return m_format;
 		}
 	}
 
@@ -141,5 +152,11 @@ public class ImageSet {
 	
 	public int getMipmapCount() {
 		return m_pImpl.getMipmapCount();
+	}
+
+
+	
+	public ImageFormat getFormat() {
+		return m_pImpl.getFormat();
 	}
 }

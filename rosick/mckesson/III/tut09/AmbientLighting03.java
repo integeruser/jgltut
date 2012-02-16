@@ -15,7 +15,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import rosick.GLWindow;
-import rosick.PortingUtils.Bufferable;
+import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.glm.Mat3;
@@ -28,6 +28,7 @@ import rosick.jglsdk.glutil.pole.MousePole.*;
 import rosick.jglsdk.glutil.pole.ObjectPole;
 import rosick.jglsdk.glutil.pole.ViewPole;
 
+
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
@@ -36,7 +37,7 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2009.html
  * @author integeruser
  * 
- * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
+ * SPACE	- toggles between drawing the uncolored cylinder and the colored one.
  * T		- toggles ambient lighting on and off.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
@@ -54,8 +55,9 @@ public class AmbientLighting03 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/III/tut09/data/";
-	
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut09/data/";
+
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -88,7 +90,7 @@ public class AmbientLighting03 extends GLWindow {
 
 	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer16 	= BufferUtils.createFloatBuffer(16);
 	
 	
 	
@@ -115,10 +117,10 @@ public class AmbientLighting03 extends GLWindow {
 	}
 	
 	private void initializeProgram() {	
-		g_WhiteDiffuseColor =		loadProgram(BASEPATH + "DirVertexLighting_PN.vert",		BASEPATH + "ColorPassthrough.frag");		
-		g_VertexDiffuseColor = 		loadProgram(BASEPATH + "DirVertexLighting_PCN.vert", 	BASEPATH + "ColorPassthrough.frag");
-		g_WhiteAmbDiffuseColor = 	loadProgram(BASEPATH + "DirAmbVertexLighting_PN.vert", 	BASEPATH + "ColorPassthrough.frag");
-		g_VertexAmbDiffuseColor = 	loadProgram(BASEPATH + "DirAmbVertexLighting_PCN.vert", BASEPATH + "ColorPassthrough.frag");
+		g_WhiteDiffuseColor =		loadProgram(TUTORIAL_DATAPATH + "DirVertexLighting_PN.vert",		TUTORIAL_DATAPATH + "ColorPassthrough.frag");		
+		g_VertexDiffuseColor = 		loadProgram(TUTORIAL_DATAPATH + "DirVertexLighting_PCN.vert", 		TUTORIAL_DATAPATH + "ColorPassthrough.frag");
+		g_WhiteAmbDiffuseColor = 	loadProgram(TUTORIAL_DATAPATH + "DirAmbVertexLighting_PN.vert", 	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
+		g_VertexAmbDiffuseColor = 	loadProgram(TUTORIAL_DATAPATH + "DirAmbVertexLighting_PCN.vert",	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
 	}
 	
 
@@ -127,8 +129,8 @@ public class AmbientLighting03 extends GLWindow {
 		initializeProgram();
 		
 		try {
-			g_pCylinderMesh = new Mesh(BASEPATH + "UnitCylinder.xml");
-			g_pPlaneMesh 	= new Mesh(BASEPATH + "LargePlane.xml");
+			g_pCylinderMesh = new Mesh(TUTORIAL_DATAPATH + "UnitCylinder.xml");
+			g_pPlaneMesh 	= new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -311,15 +313,10 @@ public class AmbientLighting03 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+	private class ProjectionBlock extends BufferableData<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
-
-		@Override
-		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillAndFlipBuffer(buffer);
-		}
+		static final int SIZE = 16 * FLOAT_SIZE;
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -328,34 +325,34 @@ public class AmbientLighting03 extends GLWindow {
 	}
 	
 	
-	private static boolean g_bDrawColoredCyl = true;
-	private static boolean g_bShowAmbient;
-	
 	private Mesh g_pCylinderMesh;
 	private Mesh g_pPlaneMesh;
 	
 	private Vec4 g_lightDirection = new Vec4(0.866f, 0.5f, 0.0f, 0.0f);
+
+	private boolean g_bDrawColoredCyl = true;
+	private boolean g_bShowAmbient;
 	
 	
 	// View/Object Setup
 	
 	private ViewData g_initialViewData = new ViewData(
-		new Vec3(0.0f, 0.5f, 0.0f),
-		new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
-		5.0f,
-		0.0f
+			new Vec3(0.0f, 0.5f, 0.0f),
+			new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+			5.0f,
+			0.0f
 	);
 
 	private ViewScale g_viewScale = new ViewScale(	
-		3.0f, 20.0f,
-		1.5f, 0.5f,
-		0.0f, 0.0f,																	// No camera movement.
-		90.0f / 250.0f
+			3.0f, 20.0f,
+			1.5f, 0.5f,
+			0.0f, 0.0f,																// No camera movement.
+			90.0f / 250.0f
 	);
 	
 	private ObjectData g_initialObjectData = new ObjectData(
-		new Vec3(0.0f, 0.5f, 0.0f),
-		new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
+			new Vec3(0.0f, 0.5f, 0.0f),
+			new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
 	);
 
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);

@@ -28,26 +28,26 @@ public class VertexColor02 extends GLWindow {
 		new VertexColor02().start();
 	}
 	
-	
-	private static final String BASEPATH = "/rosick/mckesson/I/tut02/data/";
+
+	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/I/tut02/data/";
 
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+	private final float vertexData[] = {													
+			 0.0f,    0.5f, 0.0f, 1.0f,
+			 0.5f, -0.366f, 0.0f, 1.0f,
+			-0.5f, -0.366f, 0.0f, 1.0f,
+			 1.0f,    0.0f, 0.0f, 1.0f,
+			 0.0f,    1.0f, 0.0f, 1.0f,
+			 0.0f,    0.0f, 1.0f, 1.0f,
+	};
+	
 	private int theProgram; 
 	private int vertexBufferObject;
 	private int vao;
-	
-	private final float vertexData[] = {													
-		 0.0f,    0.5f, 0.0f, 1.0f,
-		 0.5f, -0.366f, 0.0f, 1.0f,
-		-0.5f, -0.366f, 0.0f, 1.0f,
-		 1.0f,    0.0f, 0.0f, 1.0f,
-		 0.0f,    1.0f, 0.0f, 1.0f,
-		 0.0f,    0.0f, 1.0f, 1.0f,
-	};
 	
 	
 	
@@ -56,20 +56,20 @@ public class VertexColor02 extends GLWindow {
 
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	BASEPATH + "VertexColors.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, BASEPATH + "VertexColors.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "VertexColors.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "VertexColors.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 	}
 	
 	private void initializeVertexBuffer() {
-		FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(vertexData.length);
-		tempFloatBuffer.put(vertexData);
-		tempFloatBuffer.flip();
+		FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+		vertexDataBuffer.put(vertexData);
+		vertexDataBuffer.flip();
 		
         vertexBufferObject = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, tempFloatBuffer, GL_STATIC_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	
@@ -96,8 +96,8 @@ public class VertexColor02 extends GLWindow {
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
-		glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, (Float.SIZE / 8) * 4 * 3);	// 48 = 4 (the size of a float) * 4 (the number of floats in a vec4) * 3 (the number of vec4's in the position data)
-
+		glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 48);		
+		
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glDisableVertexAttribArray(0);

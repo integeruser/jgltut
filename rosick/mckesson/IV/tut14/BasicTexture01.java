@@ -51,7 +51,7 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * -,=		- rewind/jump forward time by 0.5 second (of real-time).
  * T		- toggle a display showing the look-at point.
  * G		- toggles the drawing of the light source.
- * SPACEBAR	- toggle between shader-based Gaussian specular and texture-based specular.
+ * SPACE	- toggle between shader-based Gaussian specular and texture-based specular.
  * 1,2,3,4	- switch to progressively larger textures.
  * 
  * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
@@ -69,7 +69,8 @@ public class BasicTexture01 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/IV/tut14/data/";
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String BASEPATH = "/rosick/mckesson/IV/tut14/data/";
 	
 	
 	
@@ -109,8 +110,8 @@ public class BasicTexture01 extends GLWindow {
 
 	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempFloatBuffer24 = BufferUtils.createFloatBuffer(24);
+	private FloatBuffer tempFloatBuffer16 	= BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer24 	= BufferUtils.createFloatBuffer(24);
 
 	
 	
@@ -432,7 +433,7 @@ public class BasicTexture01 extends GLWindow {
 		float specularShininess;
 		float padding[] = new float[3];
 
-		static final int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
+		static final int SIZE = (4 + 4 + 1 + 3) * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -465,7 +466,7 @@ public class BasicTexture01 extends GLWindow {
 		float padding[] = new float[3];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * (Float.SIZE / 8);
+		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
@@ -485,7 +486,7 @@ public class BasicTexture01 extends GLWindow {
 	private class ProjectionBlock implements Bufferable<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
+		static final int SIZE = 16 * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
@@ -524,22 +525,22 @@ public class BasicTexture01 extends GLWindow {
 	// View/Object Setup
 	
 	private ObjectData g_initialObjectData = new ObjectData(
-		new Vec3(0.0f, 0.5f, 0.0f),
-		new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
+			new Vec3(0.0f, 0.5f, 0.0f),
+			new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
 	);
 
 	private ViewData g_initialViewData = new ViewData(
-		new Vec3(g_initialObjectData.position),
-		new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
-		10.0f,
-		0.0f
+			new Vec3(g_initialObjectData.position),
+			new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+			10.0f,
+			0.0f
 	);
 
 	private ViewScale g_viewScale = new ViewScale(	
-		1.5f, 70.0f,
-		1.5f, 0.5f,
-		0.0f, 0.0f,																	// No camera movement.
-		90.0f / 250.0f
+			1.5f, 70.0f,
+			1.5f, 0.5f,
+			0.0f, 0.0f,																// No camera movement.
+			90.0f / 250.0f
 	);
 
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);

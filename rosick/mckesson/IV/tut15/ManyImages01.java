@@ -42,9 +42,9 @@ import rosick.jglsdk.glutil.MatrixStack;
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2015.html
  * @author integeruser
  * 
- * SPACEBAR		- toggle between loaded/constructed texture.
- * Y			- toggle between plane/corridor mesh.
- * P			- toggle pausing on/off.
+ * SPACE		- toggles between loaded/constructed texture.
+ * Y			- toggles between plane/corridor mesh.
+ * P			- toggles pausing on/off.
  * 1,2,3,4,5,6	- switch filtering technique.
  */
 public class ManyImages01 extends GLWindow {
@@ -54,7 +54,8 @@ public class ManyImages01 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/IV/tut15/data/";
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String BASEPATH = "/rosick/mckesson/IV/tut15/data/";
 	
 	
 	
@@ -248,7 +249,7 @@ public class ManyImages01 extends GLWindow {
 	private class ProjectionBlock implements Bufferable<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
+		static final int SIZE = 16 * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
@@ -265,15 +266,15 @@ public class ManyImages01 extends GLWindow {
 	private final int NUM_SAMPLERS = 6;
 
 	private final byte mipmapColors[] = {
-			(byte) 0xFF, (byte) 0xFF, 0x00,
-			(byte) 0xFF, 0x00, (byte) 0xFF,
-			0x00, (byte) 0xFF, (byte) 0xFF,
-			(byte) 0xFF, 0x00, 0x00,
-			0x00, (byte) 0xFF, 0x00,
-			0x00, 0x00, (byte) 0xFF,
-			0x00, 0x00, 0x00,
-			(byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
-		};
+			(byte) 0xFF, (byte) 0xFF, 		 0x00,
+			(byte) 0xFF, 		0x00, (byte) 0xFF,
+				   0x00, (byte) 0xFF, (byte) 0xFF,
+			(byte) 0xFF, 		0x00, 		 0x00,
+				   0x00, (byte) 0xFF, 		 0x00,
+				   0x00, 		0x00, (byte) 0xFF,
+				   0x00, 		0x00, 		 0x00,
+			(byte) 0xFF, (byte) 0xFF, (byte) 0xFF
+	};
 	
 	private final String g_samplerNames[] = {
 			"Nearest",
@@ -281,8 +282,8 @@ public class ManyImages01 extends GLWindow {
 			"Linear with nearest mipmaps",
 			"Linear with linear mipmaps",
 			"Low anisotropic",
-			"Max anisotropic",
-		};
+			"Max anisotropic"
+	};
 	
 	private Mesh g_pPlane;
 	private Mesh g_pCorridor;
@@ -389,11 +390,11 @@ public class ManyImages01 extends GLWindow {
 
 				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_RGB8, dims.width, dims.height, 0,
 					GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData());
-				glGenerateMipmap(GL_TEXTURE_2D);
 			}
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
+			glGenerateMipmap(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -57,7 +57,7 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * T		- toggle a display showing the look-at point.
  * G		- toggles the drawing of the light source.
  * Y		- switch between the infinity symbol and a flat plane.
- * SPACEBAR	- switch between one of three rendering modes: fixed shininess with a Gaussian lookup-table, a texture-based shininess with a 
+ * SPACE	- switch between one of three rendering modes: fixed shininess with a Gaussian lookup-table, a texture-based shininess with a 
  * 				Gaussian lookup-table, and a texture-based shininess with a shader-computed Gaussian term.
  * 1,2,3,4	- switch to progressively larger textures.
  * 8,9		- switch to the gold material/a material with a dark diffuse color and bright specular color.
@@ -77,7 +77,8 @@ public class MaterialTexture03 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/IV/tut14/data/";
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String BASEPATH = "/rosick/mckesson/IV/tut14/data/";
 	
 	
 	
@@ -118,9 +119,9 @@ public class MaterialTexture03 extends GLWindow {
 	private UnlitProgData g_Unlit;
 	
 	private ShaderPairs g_shaderPairs[] = new ShaderPairs[] {
-		new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "FixedShininess.frag"),
-		new ShaderPairs(BASEPATH + "PNT.vert", BASEPATH + "TextureShininess.frag"),
-		new ShaderPairs(BASEPATH + "PNT.vert", BASEPATH + "TextureCompute.frag")
+			new ShaderPairs(BASEPATH + "PN.vert", BASEPATH + "FixedShininess.frag"),
+			new ShaderPairs(BASEPATH + "PNT.vert", BASEPATH + "TextureShininess.frag"),
+			new ShaderPairs(BASEPATH + "PNT.vert", BASEPATH + "TextureCompute.frag")
 	};
 	
 	private int g_lightUniformBuffer;
@@ -133,8 +134,8 @@ public class MaterialTexture03 extends GLWindow {
 
 	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempFloatBuffer24 = BufferUtils.createFloatBuffer(24);
+	private FloatBuffer tempFloatBuffer16 	= BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer24 	= BufferUtils.createFloatBuffer(24);
 
 	
 	
@@ -471,7 +472,7 @@ public class MaterialTexture03 extends GLWindow {
 		float specularShininess;
 		float padding[] = new float[3];
 
-		static final int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
+		static final int SIZE = (4 + 4 + 1 + 3) * FLOAT_SIZE;
 
 		@Override
 		public ByteBuffer fillBuffer(ByteBuffer buffer) {
@@ -510,7 +511,7 @@ public class MaterialTexture03 extends GLWindow {
 		float padding[] = new float[3];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * (Float.SIZE / 8);
+		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
@@ -530,7 +531,7 @@ public class MaterialTexture03 extends GLWindow {
 	private class ProjectionBlock implements Bufferable<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
+		static final int SIZE = 16 * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
@@ -549,7 +550,7 @@ public class MaterialTexture03 extends GLWindow {
 		MODE_TEXTURED,
 		MODE_TEXTURED_COMPUTE,
 
-		NUM_SHADER_MODES,
+		NUM_SHADER_MODES
 	};
 	
 	
@@ -562,9 +563,9 @@ public class MaterialTexture03 extends GLWindow {
 	private final float g_fLightAttenuation = 1.0f / (g_fHalfLightDistance * g_fHalfLightDistance);
 
 	private final String g_shaderModeNames[] = {
-		"Fixed Shininess with Gaussian Texture",
-		"Texture Shininess with Gaussian Texture",
-		"Texture Shininess with computed Gaussian",
+			"Fixed Shininess with Gaussian Texture",
+			"Texture Shininess with Gaussian Texture",
+			"Texture Shininess with computed Gaussian"
 	};
 	
 	private Mesh g_pObjectMesh;
@@ -591,22 +592,22 @@ public class MaterialTexture03 extends GLWindow {
 	// View/Object Setup
 	
 	private ObjectData g_initialObjectData = new ObjectData(
-		new Vec3(0.0f, 0.5f, 0.0f),
-		new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
+			new Vec3(0.0f, 0.5f, 0.0f),
+			new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
 	);
 
 	private ViewData g_initialViewData = new ViewData(
-		new Vec3(g_initialObjectData.position),
-		new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
-		10.0f,
-		0.0f
+			new Vec3(g_initialObjectData.position),
+			new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+			10.0f,
+			0.0f
 	);
 
 	private ViewScale g_viewScale = new ViewScale(	
-		1.5f, 70.0f,
-		1.5f, 0.5f,
-		0.0f, 0.0f,																	// No camera movement.
-		90.0f / 250.0f
+			1.5f, 70.0f,
+			1.5f, 0.5f,
+			0.0f, 0.0f,																// No camera movement.
+			90.0f / 250.0f
 	);
 
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);

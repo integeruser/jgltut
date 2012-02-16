@@ -46,7 +46,8 @@ public class GammaRamp01 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/IV/tut16/data/";
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String BASEPATH = "/rosick/mckesson/IV/tut16/data/";
 	
 	
 	
@@ -239,7 +240,7 @@ public class GammaRamp01 extends GLWindow {
 	private class ProjectionBlock implements Bufferable<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
+		static final int SIZE = 16 * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
@@ -253,10 +254,9 @@ public class GammaRamp01 extends GLWindow {
 	}
 		
 	
+	private boolean g_useGammaCorrect[] = {false, false};
 	private int g_textures[] = new int[2];
 	private int g_samplerObj;
-
-	private boolean g_useGammaCorrect[] = {false, false};
 
 	
 	private void loadTextures() {

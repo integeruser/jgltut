@@ -62,7 +62,8 @@ public class GeomImpostor02 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/III/tut13/data/";
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String BASEPATH = "/rosick/mckesson/III/tut13/data/";
 	
 	
 	
@@ -109,8 +110,8 @@ public class GeomImpostor02 extends GLWindow {
 
 	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempFloatBuffer24 = BufferUtils.createFloatBuffer(24);
+	private FloatBuffer tempFloatBuffer16 	= BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer24 	= BufferUtils.createFloatBuffer(24);
 
 	
 	
@@ -227,7 +228,7 @@ public class GeomImpostor02 extends GLWindow {
 		
 		g_imposterVBO = glGenBuffers();	       
 		glBindBuffer(GL_ARRAY_BUFFER, g_imposterVBO);
-		glBufferData(GL_ARRAY_BUFFER, NUMBER_OF_SPHERES * 4 * (Float.SIZE / 8), GL_STREAM_DRAW);	
+		glBufferData(GL_ARRAY_BUFFER, NUMBER_OF_SPHERES * 4 * FLOAT_SIZE, GL_STREAM_DRAW);	
 		
 		g_imposterVAO = glGenVertexArrays();
 		glBindVertexArray(g_imposterVAO);
@@ -393,7 +394,7 @@ public class GeomImpostor02 extends GLWindow {
 			glBindBuffer(GL_ARRAY_BUFFER, g_imposterVBO);
 			
 			{				
-				FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(NUMBER_OF_SPHERES * VertexData.SIZE / (Float.SIZE / 8));
+				FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(NUMBER_OF_SPHERES * VertexData.SIZE / FLOAT_SIZE);
 				
 				for (VertexData vertexData : posSizeArray) {
 					vertexData.fillBuffer(tempFloatBuffer);
@@ -490,14 +491,13 @@ public class GeomImpostor02 extends GLWindow {
 		}
 	}
 	
-	
 	private class LightBlock extends BufferableData<FloatBuffer> {
 		Vec4 ambientIntensity;
 		float lightAttenuation;
 		float padding[] = new float[3];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * (Float.SIZE / 8);
+		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
@@ -517,7 +517,7 @@ public class GeomImpostor02 extends GLWindow {
 	private class ProjectionBlock implements Bufferable<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
+		static final int SIZE = 16 * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
@@ -549,17 +549,17 @@ public class GeomImpostor02 extends GLWindow {
 	// View/Object Setup
 	
 	private ViewData g_initialViewData = new ViewData(
-		new Vec3(0.0f, 30.0f, 25.0f),
-		new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
-		10.0f,
-		0.0f
+			new Vec3(0.0f, 30.0f, 25.0f),
+			new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+			10.0f,
+			0.0f
 	);
 
 	private ViewScale g_viewScale = new ViewScale(	
-		3.0f, 70.0f,
-		3.5f, 1.5f,
-		5.0f, 1.0f,
-		90.0f / 250.0f
+			3.0f, 70.0f,
+			3.5f, 1.5f,
+			5.0f, 1.0f,
+			90.0f / 250.0f
 	);
 
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);
@@ -573,7 +573,7 @@ public class GeomImpostor02 extends GLWindow {
 		Vec3 cameraPosition;
 		float sphereRadius;
 		
-		static final int SIZE = 4 * (Float.SIZE / 8);
+		static final int SIZE = 4 * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -585,13 +585,13 @@ public class GeomImpostor02 extends GLWindow {
 	}
 	
 	
-	private static class MaterialEntry extends BufferableData<FloatBuffer> {
+	private class MaterialEntry extends BufferableData<FloatBuffer> {
 		Vec4 diffuseColor;
 		Vec4 specularColor;
 		float specularShininess;
 		float padding[] = new float[3];
 
-		static final int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
+		static final int SIZE = (4 + 4 + 1 + 3) * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -637,7 +637,7 @@ public class GeomImpostor02 extends GLWindow {
 		glBindBuffer(GL_UNIFORM_BUFFER, g_materialArrayUniformBuffer);
 		
 		{			
-			FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(ubArray.size() * MaterialEntry.SIZE / (Float.SIZE / 8));
+			FloatBuffer tempFloatBuffer = BufferUtils.createFloatBuffer(ubArray.size() * MaterialEntry.SIZE / FLOAT_SIZE);
 			
 			for (int i = 0; i < ubArray.size(); i++) {
 				ubArray.get(i).fillBuffer(tempFloatBuffer);
@@ -656,7 +656,7 @@ public class GeomImpostor02 extends GLWindow {
 			mtl.specularColor = new Vec4(0.5f, 0.5f, 0.5f, 1.0f);
 			mtl.specularShininess = 0.6f;
 			
-			glBufferData(GL_UNIFORM_BUFFER, mtl.fillAndFlipBuffer(BufferUtils.createFloatBuffer(MaterialEntry.SIZE / (Float.SIZE / 8))), GL_STATIC_DRAW);
+			glBufferData(GL_UNIFORM_BUFFER, mtl.fillAndFlipBuffer(BufferUtils.createFloatBuffer(MaterialEntry.SIZE / FLOAT_SIZE)), GL_STATIC_DRAW);
 		}
 		
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);

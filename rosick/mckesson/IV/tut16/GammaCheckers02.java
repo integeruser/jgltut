@@ -34,6 +34,21 @@ import rosick.jglsdk.glm.Vec3;
 import rosick.jglsdk.glutil.MatrixStack;
 
 
+/**
+ * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * 
+ * IV. Texturing
+ * 16. Gamma and Textures
+ * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2016.html
+ * @author integeruser
+ * 
+ * A		- toggles gamma correction.
+ * G		- switches to a texture who's mipmaps were properly generated.
+ * SPACE	- presses A and G keys.
+ * Y		- toggles between plane/corridor mesh.
+ * P		- toggles pausing on/off.
+ * 1,2		- respectively select linear mipmap filtering and anisotropic filtering (using the maximum possible anisotropy).
+ */
 public class GammaCheckers02 extends GLWindow {
 	
 	public static void main(String[] args) {		
@@ -41,7 +56,8 @@ public class GammaCheckers02 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/IV/tut16/data/";
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String BASEPATH = "/rosick/mckesson/IV/tut16/data/";
 	
 	
 	
@@ -86,7 +102,6 @@ public class GammaCheckers02 extends GLWindow {
 		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
 
 		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
-		
 		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
 
 		int colorTextureUnif = glGetUniformLocation(data.theProgram, "colorTexture");
@@ -249,7 +264,7 @@ public class GammaCheckers02 extends GLWindow {
 	private class ProjectionBlock implements Bufferable<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
+		static final int SIZE = 16 * FLOAT_SIZE;
 
 		@Override
 		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
@@ -310,12 +325,12 @@ public class GammaCheckers02 extends GLWindow {
 
 				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL21.GL_SRGB8, dims.width, dims.height, 0,
 						GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData());
-				glGenerateMipmap(GL_TEXTURE_2D);
 			}
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
-		
+			glGenerateMipmap(GL_TEXTURE_2D);
+
 			pImageSet = Dds.loadFromFile(BASEPATH + "checker_gamma.dds");
 
 			g_gammaTexture = glGenTextures();
@@ -328,11 +343,12 @@ public class GammaCheckers02 extends GLWindow {
 				/* Changed GL_SRGB8 with GL_RGB8 */
 				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_RGB8, dims.width, dims.height, 0,
 						GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData());
-				glGenerateMipmap(GL_TEXTURE_2D);
 			}
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
+			glGenerateMipmap(GL_TEXTURE_2D);
+
 			glBindTexture(GL_TEXTURE_2D, 0);		
 		} catch (Exception e) {
 			e.printStackTrace();

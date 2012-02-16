@@ -23,9 +23,9 @@ import rosick.jglsdk.glutil.MatrixStack;
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
  * @author integeruser
  *  
- * S		- switch meshes. 
- * P		- toggle between perspective-correct interpolation/window-space linear interpolation.
- * SPACEBAR	- reload meshes.
+ * S		- switchs meshes. 
+ * P		- toggles between perspective-correct interpolation/window-space linear interpolation.
+ * SPACE	- reloads meshes.
  */
 public class PerspectiveInterpolation02 extends GLWindow {
 	
@@ -34,7 +34,7 @@ public class PerspectiveInterpolation02 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/IV/tut14/data/";
+	private final String BASEPATH = "/rosick/mckesson/IV/tut14/data/";
 	
 	
 	
@@ -162,9 +162,9 @@ public class PerspectiveInterpolation02 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	private static boolean g_bUseSmoothInterpolation = true;
-	private static boolean g_bUseFakeHallway;
-
 	private Mesh g_pRealHallway;
 	private Mesh g_pFauxHallway;
+
+	private boolean g_bUseSmoothInterpolation = true;
+	private boolean g_bUseFakeHallway;
 }

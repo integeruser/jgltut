@@ -148,7 +148,7 @@ public class LightManager {
 		TIMER_LIGHTS,
 		TIMER_ALL,
 		
-		NUM_TIMER_TYPES,
+		NUM_TIMER_TYPES
 	};
 	
 		
@@ -273,7 +273,7 @@ public class LightManager {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	public static class TimedLinearInterpolatorFloat extends WeightedLinearInterpolatorFloat {
+	public class TimedLinearInterpolatorFloat extends WeightedLinearInterpolatorFloat {
 
 		public void setValues(ArrayList<MaxIntensityData> data) {
 			setValues(data, true);
@@ -284,7 +284,7 @@ public class LightManager {
 
 			for (MaxIntensityData curr : data) {				
 				Data temp = new Data();
-				temp.data = LightManager.getValue(curr);
+				temp.data = getValue(curr);
 				temp.weight = LightManager.getTime(curr);
 
 				m_values.add(temp);
@@ -306,7 +306,7 @@ public class LightManager {
 		}
 	}
 		
-	public static class TimedLinearInterpolatorVec4 extends WeightedLinearInterpolatorVec4 {
+	public class TimedLinearInterpolatorVec4 extends WeightedLinearInterpolatorVec4 {
 
 		public void setValues(ArrayList<LightVectorData> data) {
 			setValues(data, true);
@@ -383,7 +383,7 @@ public class LightManager {
 	}
 	
 	
-	public static float getValue(MaxIntensityData data) {
+	public float getValue(MaxIntensityData data) {
 		return data.first;
 	}
 

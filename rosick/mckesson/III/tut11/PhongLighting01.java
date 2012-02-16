@@ -17,7 +17,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import rosick.GLWindow;
-import rosick.PortingUtils.Bufferable;
+import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.framework.Timer;
@@ -42,7 +42,7 @@ import rosick.jglsdk.glutil.pole.ViewPole;
  * @author integeruser
  *
  * I,J,K,L  - control the light's position. Holding LEFT_SHIFT with these keys will move in smaller increments.
- * SPACEBAR - toggles between drawing the uncolored cylinder and the colored one.
+ * SPACE	- toggles between drawing the uncolored cylinder and the colored one.
  * U,O      - control the specular value. They raise and low the specular exponent. Using LEFT_SHIFT in combination 
  * 				with them will raise/lower the exponent by smaller amounts.
  * Y 		- toggles the drawing of the light source.
@@ -67,8 +67,9 @@ public class PhongLighting01 extends GLWindow {
 	}
 	
 	
-	private static final String BASEPATH = "/rosick/mckesson/III/tut11/data/";
-	
+	private final static int FLOAT_SIZE = Float.SIZE / 8;
+	private final String BASEPATH = "/rosick/mckesson/III/tut11/data/";
+
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -118,7 +119,7 @@ public class PhongLighting01 extends GLWindow {
 
 	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
 	private FloatBuffer tempFloatBuffer9 	= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer tempFloatBuffer16 	= BufferUtils.createFloatBuffer(16);
 
 	
 	
@@ -501,15 +502,10 @@ public class PhongLighting01 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+	private class ProjectionBlock extends BufferableData<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * (Float.SIZE / 8);
-
-		@Override
-		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillAndFlipBuffer(buffer);
-		}
+		static final int SIZE = 16 * FLOAT_SIZE;
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -523,57 +519,56 @@ public class PhongLighting01 extends GLWindow {
 		LM_DIFFUSE_AND_SPECULAR,
 		LM_SPECULAR_ONLY,
 
-		LM_MAX_LIGHTING_MODEL;
+		LM_MAX_LIGHTING_MODEL
 	};
 	
-	
-	private static LightingModel g_eLightModel = LightingModel.LM_DIFFUSE_AND_SPECULAR;
-	private static final String strLightModelNames[] = {
-		"Diffuse only.",
-		"Specular + diffuse.",
-		"Specular only.",
-	};
-	
-	private static boolean g_bDrawColoredCyl;
-	private static boolean g_bDrawLightSource;
-	private static boolean g_bScaleCyl;
-	private static boolean g_bDrawDark;
 
-	private static float g_fLightHeight = 1.5f;
-	private static float g_fLightRadius = 1.0f;
-	
-	private static float g_fShininessFactor = 4.0f;
-	private final float g_fLightAttenuation = 1.2f;
+	private final String strLightModelNames[] = {
+			"Diffuse only.",
+			"Specular + diffuse.",
+			"Specular only."
+	};
 	
 	private final Vec4 g_darkColor = new Vec4(0.2f, 0.2f, 0.2f, 1.0f);
 	private final Vec4 g_lightColor = new Vec4(1.0f);
-
-	private Timer g_LightTimer = new Timer(Timer.Type.TT_LOOP, 5.0f);
+	private final float g_fLightAttenuation = 1.2f;
 	
 	private Mesh g_pCylinderMesh;
 	private Mesh g_pPlaneMesh;
 	private Mesh g_pCubeMesh;
 	
+	private Timer g_LightTimer = new Timer(Timer.Type.TT_LOOP, 5.0f);
+
+	private LightingModel g_eLightModel = LightingModel.LM_DIFFUSE_AND_SPECULAR;	
+
+	private boolean g_bDrawColoredCyl;
+	private boolean g_bDrawLightSource;
+	private boolean g_bScaleCyl;
+	private boolean g_bDrawDark;
+	private float g_fLightHeight = 1.5f;
+	private float g_fLightRadius = 1.0f;
+	private float g_fShininessFactor = 4.0f;
+	
 	
 	// View/Object Setup
 	
 	private ViewData g_initialViewData = new ViewData(
-		new Vec3(0.0f, 0.5f, 0.0f),
-		new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
-		5.0f,
-		0.0f
+			new Vec3(0.0f, 0.5f, 0.0f),
+			new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+			5.0f,
+			0.0f
 	);
 
 	private ViewScale g_viewScale = new ViewScale(	
-		3.0f, 20.0f,
-		1.5f, 0.5f,
-		0.0f, 0.0f,																	// No camera movement.
-		90.0f / 250.0f
+			3.0f, 20.0f,
+			1.5f, 0.5f,
+			0.0f, 0.0f,																// No camera movement.
+			90.0f / 250.0f
 	);
 	
 	private ObjectData g_initialObjectData = new ObjectData(
-		new Vec3(0.0f, 0.5f, 0.0f),
-		new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
+			new Vec3(0.0f, 0.5f, 0.0f),
+			new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
 	);
 
 	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);

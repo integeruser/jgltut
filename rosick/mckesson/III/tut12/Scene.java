@@ -55,7 +55,7 @@ public abstract class Scene {
 	}
 	
 	
-	private static final int MATERIAL_COUNT = 6;
+	private final int MATERIAL_COUNT = 6;
 
 	private Mesh m_pTerrainMesh;
 	private Mesh m_pCubeMesh;
@@ -126,7 +126,7 @@ public abstract class Scene {
 		LP_MTL_COLOR_DIFFUSE_SPECULAR,
 		LP_MTL_COLOR_DIFFUSE,
 
-		LP_MAX_LIGHTING_PROGRAM_TYPES;
+		LP_MAX_LIGHTING_PROGRAM_TYPES
 	}
 	
 	

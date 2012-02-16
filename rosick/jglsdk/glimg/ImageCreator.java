@@ -51,7 +51,6 @@ public class ImageCreator {
 			}
 
 			//Allocate the memory for our data.
-			int bpp = calcBytesPerPixel(m_format);
 			for(int level = 0; level < mipmapCount; ++level)
 			{
 				Dimensions mipmapDims = modifySizeForMipmap(new Dimensions(m_dims), level);

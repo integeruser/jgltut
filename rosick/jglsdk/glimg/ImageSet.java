@@ -57,6 +57,7 @@ public class ImageSet {
 	
 	
 	public static class ImageSetImpl {
+		private ImageFormat m_format;
 		private Dimensions m_dimensions;
 		private ArrayList<Integer> m_imageSizes;
 		private ArrayList<ArrayList<Integer>> m_imageData;
@@ -69,6 +70,7 @@ public class ImageSet {
 				ArrayList<ArrayList<Integer>> imageData,
 				ArrayList<Integer> imageSizes) {
 
+			m_format = format;
 			m_dimensions = dimensions;
 			m_imageData = imageData;
 			m_imageSizes = imageSizes;
@@ -111,6 +113,10 @@ public class ImageSet {
 		public int getMipmapCount() {
 			return m_mipmapCount;
 		}
+
+		public ImageFormat getFormat() {
+			return m_format;
+		}
 	}
 
 
@@ -146,5 +152,11 @@ public class ImageSet {
 	
 	public int getMipmapCount() {
 		return m_pImpl.getMipmapCount();
+	}
+
+
+	
+	public ImageFormat getFormat() {
+		return m_pImpl.getFormat();
 	}
 }

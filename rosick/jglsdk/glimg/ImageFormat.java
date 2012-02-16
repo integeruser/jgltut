@@ -94,8 +94,9 @@ public class ImageFormat {
 		public PixelComponents eFormat;	//<The components stored by a pixel.
 		public ComponentOrder eOrder;		//<The order of the components of the pixel.
 		public Bitdepth eBitdepth;			//<The bitdepth of each pixel component.
-
-		int lineAlignment;			//<The byte alignment of a horizontal line of pixel data.
+		public int lineAlignment;			//<The byte alignment of a horizontal line of pixel data.
+		
+		public UncheckedImageFormat() {}
 		
 		public UncheckedImageFormat(PixelDataType eType, PixelComponents eFormat,
 				ComponentOrder eOrder, Bitdepth eBitdepth, int lineAlignment) {

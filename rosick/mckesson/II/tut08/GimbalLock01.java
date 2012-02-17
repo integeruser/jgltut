@@ -3,8 +3,6 @@ package rosick.mckesson.II.tut08;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -245,7 +243,7 @@ public class GimbalLock01 extends GLWindow {
 
 		glUseProgram(theProgram);
 		// Set the base color for this object.
-		glUniform4f(baseColorUnif, baseColor.get(X), baseColor.get(Y), baseColor.get(Z), baseColor.get(W));
+		glUniform4f(baseColorUnif, baseColor.x, baseColor.y, baseColor.z, baseColor.w);
 		glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 		
 		g_Gimbals[eAxis.ordinal()].render();

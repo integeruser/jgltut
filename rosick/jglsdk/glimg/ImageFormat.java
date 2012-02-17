@@ -17,7 +17,7 @@ public class ImageFormat {
 		DT_SHARED_EXP_FLOAT,				///<Image data are floats, but each pixel uses the same exponent.
 		DT_NUM_UNCOMPRESSED_TYPES,
 
-		DT_COMPRESSED_BC1,// = DT_NUM_UNCOMPRESSED_TYPES,	///<Image data is compressed with DXT1/BC1 compression. Unsigned normalized integers.
+		DT_COMPRESSED_BC1,					///<Image data is compressed with DXT1/BC1 compression. Unsigned normalized integers.
 		DT_COMPRESSED_BC2,					///<Image data is compressed with DXT3/BC2 compression. Unsigned normalized integers.
 		DT_COMPRESSED_BC3,					///<Image data is compressed with DXT5/BC3 compression. Unsigned normalized integers.
 		DT_COMPRESSED_UNSIGNED_BC4,			///<Image is compressed with BC4 compression (1-component), with unsigned normalized integers.
@@ -67,7 +67,7 @@ public class ImageFormat {
 		BD_PER_COMP_32,					///<Each component takes up 32 bits.
 		BD_NUM_PER_COMPONENT,			
 
-		BD_PACKED_16_BIT_565,// = BD_NUM_PER_COMPONENT,///<The first and third components take up 5 bits, while the second takes up 6.
+		BD_PACKED_16_BIT_565,			///<The first and third components take up 5 bits, while the second takes up 6.
 		BD_PACKED_16_BIT_5551,			///<The first three components take up 5 bits, and the last takes up 1.
 		BD_PACKED_16_BIT_4444,			///<Each component takes up 4 bits.
 
@@ -88,15 +88,16 @@ public class ImageFormat {
 	};
 	
 	
-	
 	public static class UncheckedImageFormat {
-		public PixelDataType eType;		//<The type of pixel data.
-		public PixelComponents eFormat;	//<The components stored by a pixel.
+		public PixelDataType eType;			//<The type of pixel data.
+		public PixelComponents eFormat;		//<The components stored by a pixel.
 		public ComponentOrder eOrder;		//<The order of the components of the pixel.
 		public Bitdepth eBitdepth;			//<The bitdepth of each pixel component.
 		public int lineAlignment;			//<The byte alignment of a horizontal line of pixel data.
 		
-		public UncheckedImageFormat() {}
+		
+		public UncheckedImageFormat() {
+		}
 		
 		public UncheckedImageFormat(PixelDataType eType, PixelComponents eFormat,
 				ComponentOrder eOrder, Bitdepth eBitdepth, int lineAlignment) {
@@ -109,38 +110,35 @@ public class ImageFormat {
 	}
 	
 	
+	private UncheckedImageFormat fmt;
+
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
 	public ImageFormat(UncheckedImageFormat fmt) {
 		this.fmt = fmt;
 	}
 	
 
-
-
-	public Bitdepth depth() {
-		return fmt.eBitdepth;
-	};
 	
-	
-	private UncheckedImageFormat fmt;
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-
-	public PixelComponents components() {
-		return fmt.eFormat;
-	}
-
-
-
-
-	
-	public PixelDataType type() {
-		return fmt.eType;
-	}
-
-
-
-
-	
 	public int alignByteCount(int byteCount) {
 		return (byteCount + (fmt.lineAlignment - 1)) / fmt.lineAlignment;
 	}
+	
+		
+	public PixelDataType type() {
+		return fmt.eType;
+	}
+	
+	public PixelComponents components() {
+		return fmt.eFormat;
+	}
+	
+	public Bitdepth depth() {
+		return fmt.eBitdepth;
+	};
 }

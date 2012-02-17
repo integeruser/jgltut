@@ -1,27 +1,44 @@
 package rosick.jglsdk.glm;
 
+import java.nio.FloatBuffer;
+
+import rosick.PortingUtils.BufferableData;
+
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
  * @author integeruser
  */
-public class Vec2 extends Vec {
-
+public class Vec2 extends BufferableData<FloatBuffer> {
+	
+	public float x, y;
+	
+	
 	public Vec2() {
-		vector = new float[2];
 	}
 	
 	public Vec2(float x, float y) {
-		vector = new float[2];
-		vector[X] = x;
-		vector[Y] = y;
+		this.x = x;
+		this.y = y;
 	}
 	
 	public Vec2(Vec2 vec) {
-		vector = new float[2];
-		vector[X] = vec.vector[X];
-		vector[Y] = vec.vector[Y];
+		this.x = vec.x;
+		this.y = vec.y;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
+	
+	@Override
+	public FloatBuffer fillBuffer(FloatBuffer buffer) {
+		buffer.put(x);
+		buffer.put(y);
+		
+		return buffer;
 	}
 	
 	
@@ -30,38 +47,38 @@ public class Vec2 extends Vec {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
 	public Vec2 add(Vec2 vec) {
-		vector[X] += vec.vector[X];
-		vector[Y] += vec.vector[Y];
+		x += vec.x;
+		y += vec.y;
 		
 		return this;
 	}
 	
 	public Vec2 sub(Vec2 vec) {
-		vector[X] -= vec.vector[X];
-		vector[Y] -= vec.vector[Y];
+		x -= vec.x;
+		y -= vec.y;
 		
 		return this;
 	}
 	
 	public Vec2 mul(Vec2 vec) {
-		vector[X] *= vec.vector[X];
-		vector[Y] *= vec.vector[Y];
+		x *= vec.x;
+		y *= vec.y;
 		
 		return this;
 	}
 	
 	
 	public Vec2 scale(float scalar) {
-		vector[X] *= scalar;
-		vector[Y] *= scalar;
+		x *= scalar;
+		y *= scalar;
 		
 		return this;
 	}
 	
 
 	public Vec2 negate() {
-		vector[X] = -vector[X];
-		vector[Y] = -vector[Y];
+		x = -x;
+		y = -y;
 
 		return this;
 	}
@@ -69,7 +86,7 @@ public class Vec2 extends Vec {
 	
 	@Override
 	public String toString() {
-		return "X: " + vector[X] + ", Y: " + vector[Y];
+		return "X: " + x + ", Y: " + y;
 	}
 
 	
@@ -108,4 +125,5 @@ public class Vec2 extends Vec {
 		
 		return res.negate();
 	}
+
 }

@@ -7,8 +7,6 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -21,6 +19,7 @@ import rosick.GLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
+import rosick.jglsdk.framework.MousePole;
 import rosick.jglsdk.framework.Timer;
 import rosick.jglsdk.glm.Glm;
 import rosick.jglsdk.glm.Mat3;
@@ -30,9 +29,7 @@ import rosick.jglsdk.glm.Vec2;
 import rosick.jglsdk.glm.Vec3;
 import rosick.jglsdk.glm.Vec4;
 import rosick.jglsdk.glutil.MatrixStack;
-import rosick.jglsdk.glutil.pole.MousePole.*;
-import rosick.jglsdk.glutil.pole.ObjectPole;
-import rosick.jglsdk.glutil.pole.ViewPole;
+import rosick.jglsdk.glutil.MousePoles.*;
 
 
 /**
@@ -220,25 +217,25 @@ public class FragmentAttenuation03 extends GLWindow {
 			if (eventButton != -1) {
 				if (Mouse.getEventButtonState()) {
 					// Mouse down
-					Framework.forwardMouseButton(g_viewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
-					Framework.forwardMouseButton(g_objtPole, eventButton, true, Mouse.getX(), Mouse.getY());	
+					MousePole.forwardMouseButton(g_viewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseButton(g_objtPole, eventButton, true, Mouse.getX(), Mouse.getY());	
 				} else {
 					// Mouse up
-					Framework.forwardMouseButton(g_viewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
-					Framework.forwardMouseButton(g_objtPole, eventButton, false, Mouse.getX(), Mouse.getY());
+					MousePole.forwardMouseButton(g_viewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseButton(g_objtPole, eventButton, false, Mouse.getX(), Mouse.getY());
 				}
 			} else {
 				// Mouse moving or mouse scrolling
 				int dWheel = Mouse.getDWheel();
 				
 				if (dWheel != 0) {
-					Framework.forwardMouseWheel(g_viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
-					Framework.forwardMouseWheel(g_objtPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
+					MousePole.forwardMouseWheel(g_viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
+					MousePole.forwardMouseWheel(g_objtPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
 				}
 				
 				if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)) {
-					Framework.forwardMouseMotion(g_viewPole, Mouse.getX(), Mouse.getY());			
-					Framework.forwardMouseMotion(g_objtPole, Mouse.getX(), Mouse.getY());
+					MousePole.forwardMouseMotion(g_viewPole, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseMotion(g_objtPole, Mouse.getX(), Mouse.getY());
 				}
 			}
 		}
@@ -420,7 +417,7 @@ public class FragmentAttenuation03 extends GLWindow {
 			if (g_bDrawLight) {
 				modelMatrix.push();
 
-				modelMatrix.translate(worldLightPos.get(X), worldLightPos.get(Y), worldLightPos.get(Z));
+				modelMatrix.translate(worldLightPos.x, worldLightPos.y, worldLightPos.z);
 				modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
 				glUseProgram(g_Unlit.theProgram);
@@ -485,10 +482,10 @@ public class FragmentAttenuation03 extends GLWindow {
 				buffer.putFloat(f);
 			}
 			
-			for (float f : windowSize.get()) {
-				buffer.putInt((int) f);												// the shader uses an int vector
-			}
-			
+			// The shader uses an int vector.
+			buffer.putInt((int) windowSize.x);												
+			buffer.putInt((int) windowSize.y);												
+
 			return buffer;
 		}
 	}
@@ -539,8 +536,8 @@ public class FragmentAttenuation03 extends GLWindow {
 
 		Vec4 ret = new Vec4(0.0f, g_fLightHeight, 0.0f, 1.0f);
 
-		ret.set(X, (float) (Math.cos(fCurrTimeThroughLoop * (3.14159f * 2.0f)) * g_fLightRadius));
-		ret.set(Z, (float) (Math.sin(fCurrTimeThroughLoop * (3.14159f * 2.0f)) * g_fLightRadius));
+		ret.x = (float) (Math.cos(fCurrTimeThroughLoop * (3.14159f * 2.0f)) * g_fLightRadius);
+		ret.z = (float) (Math.sin(fCurrTimeThroughLoop * (3.14159f * 2.0f)) * g_fLightRadius);
 
 		return ret;
 	}

@@ -1,7 +1,5 @@
 package rosick.mckesson.III.tut12;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -575,8 +573,8 @@ public class LightManager {
 	Vec4 getSunlightDirection() {
 		float angle = 2.0f * 3.14159f * m_sunTimer.getAlpha();
 		Vec4 sunDirection = new Vec4(0.0f);
-		sunDirection.set(X, (float) Math.sin(angle));
-		sunDirection.set(Y, (float) Math.cos(angle));
+		sunDirection.x = (float) Math.sin(angle);
+		sunDirection.y = (float) Math.cos(angle);
 
 		// Keep the sun from being perfectly centered overhead.
 		sunDirection = Mat4.mul(Glm.rotate(new Mat4(1.0f), 5.0f, new Vec3(0.0f, 1.0f, 0.0f)), sunDirection);

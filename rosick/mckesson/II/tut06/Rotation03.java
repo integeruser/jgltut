@@ -5,8 +5,6 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
@@ -320,17 +318,17 @@ public class Rotation03 extends GLWindow {
 			axis = Glm.normalize(axis);
 
 			Mat3 theMat = new Mat3(1.0f);
-			theMat.set(0, (axis.get(X) * axis.get(X)) + ((1 - axis.get(X) * axis.get(X)) * fCos));
-			theMat.set(3, axis.get(X) * axis.get(Y) * (fInvCos) - (axis.get(Z) * fSin));
-			theMat.set(6, axis.get(X) * axis.get(Z) * (fInvCos) + (axis.get(Y) * fSin));
+			theMat.set(0, (axis.x * axis.x) + ((1 - axis.x * axis.x) * fCos));
+			theMat.set(3, axis.x * axis.y * (fInvCos) - (axis.z * fSin));
+			theMat.set(6, axis.x * axis.z * (fInvCos) + (axis.y * fSin));
 
-			theMat.set(1, axis.get(X) * axis.get(Y) * (fInvCos) + (axis.get(Z) * fSin));
-			theMat.set(4, (axis.get(Y) * axis.get(Y)) + ((1 - axis.get(Y) * axis.get(Y)) * fCos));
-			theMat.set(7, axis.get(Y) * axis.get(Z) * (fInvCos) - (axis.get(X) * fSin));
+			theMat.set(1, axis.x * axis.y * (fInvCos) + (axis.z * fSin));
+			theMat.set(4, (axis.y * axis.y) + ((1 - axis.y * axis.y) * fCos));
+			theMat.set(7, axis.y * axis.z * (fInvCos) - (axis.x * fSin));
 
-			theMat.set(2, axis.get(X) * axis.get(Z) * (fInvCos) - (axis.get(Y) * fSin));
-			theMat.set(5, axis.get(Y) * axis.get(Z) * (fInvCos) + (axis.get(X) * fSin));
-			theMat.set(8, (axis.get(Z) * axis.get(Z)) + ((1 - axis.get(Z) * axis.get(Z)) * fCos));
+			theMat.set(2, axis.x * axis.z * (fInvCos) - (axis.y * fSin));
+			theMat.set(5, axis.y * axis.z * (fInvCos) + (axis.x * fSin));
+			theMat.set(8, (axis.z * axis.z) + ((1 - axis.z * axis.z) * fCos));
 			return theMat;
 		}
 	}

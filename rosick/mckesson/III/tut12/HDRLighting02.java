@@ -7,8 +7,6 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -17,16 +15,16 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import rosick.GLWindow;
-import rosick.PortingUtils.Bufferable;
+import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.framework.MousePole;
 import rosick.jglsdk.framework.Timer;
 import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Quaternion;
 import rosick.jglsdk.glm.Vec3;
 import rosick.jglsdk.glm.Vec4;
 import rosick.jglsdk.glutil.MatrixStack;
-import rosick.jglsdk.glutil.pole.MousePole.*;
-import rosick.jglsdk.glutil.pole.ViewPole;
+import rosick.jglsdk.glutil.MousePoles.*;
 import rosick.mckesson.III.tut12.LightManager.LightBlock;
 import rosick.mckesson.III.tut12.LightManager.LightBlockHDR;
 import rosick.mckesson.III.tut12.LightManager.SunlightValue;
@@ -236,21 +234,21 @@ public class HDRLighting02 extends GLWindow {
 			if (eventButton != -1) {
 				if (Mouse.getEventButtonState()) {
 					// Mouse down
-					Framework.forwardMouseButton(g_viewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseButton(g_viewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
 				} else {
 					// Mouse up
-					Framework.forwardMouseButton(g_viewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseButton(g_viewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
 				}
 			} else {
 				// Mouse moving or mouse scrolling
 				int dWheel = Mouse.getDWheel();
 				
 				if (dWheel != 0) {
-					Framework.forwardMouseWheel(g_viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
+					MousePole.forwardMouseWheel(g_viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
 				}
 				
 				if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)) {
-					Framework.forwardMouseMotion(g_viewPole, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseMotion(g_viewPole, Mouse.getX(), Mouse.getY());			
 				}
 			}
 		}
@@ -337,7 +335,7 @@ public class HDRLighting02 extends GLWindow {
 		
 		Vec4 bkg = g_lights.getBackgroundColor();
 
-		glClearColor(bkg.get(X), bkg.get(Y), bkg.get(Z), bkg.get(W));
+		glClearColor(bkg.x, bkg.y, bkg.z, bkg.w);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -443,22 +441,17 @@ public class HDRLighting02 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private class ProjectionBlock implements Bufferable<FloatBuffer> {
+	private class ProjectionBlock extends BufferableData<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
 		static final int SIZE = 16 * FLOAT_SIZE;
-
-		@Override
-		public FloatBuffer fillAndFlipBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillAndFlipBuffer(buffer);
-		}
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			return cameraToClipMatrix.fillBuffer(buffer);
 		}
 	}
-		
+	
 	
 	private final Vec4 g_skyDaylightColor = new Vec4(0.65f, 0.65f, 1.0f, 1.0f);
 

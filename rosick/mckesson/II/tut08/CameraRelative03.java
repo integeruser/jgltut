@@ -3,8 +3,6 @@ package rosick.mckesson.II.tut08;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -134,35 +132,35 @@ public class CameraRelative03 extends GLWindow {
 		if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
 			offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), (float) (SMALL_ANGLE_INCREMENT * lastFrameDuration));
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
-			offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), (float) -(SMALL_ANGLE_INCREMENT * lastFrameDuration));
+			offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), (float) (-SMALL_ANGLE_INCREMENT * lastFrameDuration));
 		}
 		
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-				g_sphereCamRelPos.set(Y, (float) (g_sphereCamRelPos.get(Y) - 1.125f * lastFrameDuration));
+				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y - 1.125f * lastFrameDuration);
 			} else {
-				g_sphereCamRelPos.set(Y, (float) (g_sphereCamRelPos.get(Y) - 11.25f * lastFrameDuration));
+				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y - 11.25f * lastFrameDuration);
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-				g_sphereCamRelPos.set(Y, (float) (g_sphereCamRelPos.get(Y) + 1.125f * lastFrameDuration));
+				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y + 1.125f * lastFrameDuration);
 			} else {
-				g_sphereCamRelPos.set(Y, (float) (g_sphereCamRelPos.get(Y) + 11.25f * lastFrameDuration));
+				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y + 11.25f * lastFrameDuration);
 			}
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-				g_sphereCamRelPos.set(X, (float) (g_sphereCamRelPos.get(X) - 1.125f * lastFrameDuration));	
+				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x - 1.125f * lastFrameDuration);	
 			} else {
-				g_sphereCamRelPos.set(X, (float) (g_sphereCamRelPos.get(X) - 11.25f * lastFrameDuration));
+				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x - 11.25f * lastFrameDuration);
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-				g_sphereCamRelPos.set(X, (float) (g_sphereCamRelPos.get(X) + 1.125f * lastFrameDuration));
+				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x + 1.125f * lastFrameDuration);
 			} else {
-				g_sphereCamRelPos.set(X, (float) (g_sphereCamRelPos.get(X) + 11.25f * lastFrameDuration));
+				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x + 11.25f * lastFrameDuration);
 			}
 		}
 
@@ -197,7 +195,7 @@ public class CameraRelative03 extends GLWindow {
 		}
 
 
-		g_sphereCamRelPos.set(Y, Glm.clamp(g_sphereCamRelPos.get(Y), -78.75f, 10.0f));
+		g_sphereCamRelPos.y = Glm.clamp(g_sphereCamRelPos.y, -78.75f, 10.0f);
 	}
 	
 
@@ -293,7 +291,7 @@ public class CameraRelative03 extends GLWindow {
 		
 		float scalar = (float) Math.cos(fAngRad / 2.0f);
 
-		Quaternion offset = new Quaternion(scalar, axis.get(X), axis.get(Y), axis.get(Z));
+		Quaternion offset = new Quaternion(scalar, axis.x, axis.y, axis.z);
 
 		switch (g_iOffset) {
 		case MODEL_RELATIVE:
@@ -334,8 +332,8 @@ public class CameraRelative03 extends GLWindow {
 	
 	
 	private Vec3 resolveCamPosition() {
-		float phi = Framework.degToRad(g_sphereCamRelPos.get(X));
-		float theta = Framework.degToRad(g_sphereCamRelPos.get(Y) + 90.0f);
+		float phi = Framework.degToRad(g_sphereCamRelPos.x);
+		float theta = Framework.degToRad(g_sphereCamRelPos.y + 90.0f);
 
 		float fSinTheta = (float) Math.sin(theta);
 		float fCosTheta = (float) Math.cos(theta);
@@ -344,7 +342,7 @@ public class CameraRelative03 extends GLWindow {
 
 		Vec3 dirToCamera = new Vec3(fSinTheta * fCosPhi, fCosTheta, fSinTheta * fSinPhi);
 		
-		return (dirToCamera.scale(g_sphereCamRelPos.get(Z))).add(g_camTarget);
+		return (dirToCamera.scale(g_sphereCamRelPos.z)).add(g_camTarget);
 	}
 	
 	

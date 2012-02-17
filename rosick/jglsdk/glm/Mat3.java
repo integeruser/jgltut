@@ -1,6 +1,8 @@
 package rosick.jglsdk.glm;
 
-import static rosick.jglsdk.glm.Vec.*;
+import java.nio.FloatBuffer;
+
+import rosick.PortingUtils.BufferableData;
 
 
 /**
@@ -8,7 +10,10 @@ import static rosick.jglsdk.glm.Vec.*;
  * 
  * @author integeruser
  */
-public class Mat3 extends Mat {
+public class Mat3 extends BufferableData<FloatBuffer> {
+	
+	public float matrix[];
+
 	
 	public Mat3() {
 		matrix = new float[9];
@@ -50,26 +55,55 @@ public class Mat3 extends Mat {
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
+	
+	@Override
+	public FloatBuffer fillBuffer(FloatBuffer buffer) {
+		buffer.put(matrix);
+		
+		return buffer;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	public float[] get() {
+		return matrix;
+	}
+	
+	public float get(int index) {
+		return matrix[index];
+	}
+	
+	
+	public void set(int index, float value) {
+		matrix[index] = value;
+	}
+	
+	public void set(int columnIndex, int rowIndex, float value) {
+		matrix[columnIndex * 3 + rowIndex] = value;
+	}
+	
 	
 	public Vec3 getColumn(int columnIndex) {		
 		int offset = (columnIndex * 3);
 		
 		Vec3 res = new Vec3();
-		res.vector[X] = matrix[offset];
-		res.vector[Y] = matrix[offset + 1];
-		res.vector[Z] = matrix[offset + 2];
+		res.x = matrix[offset];
+		res.y = matrix[offset + 1];
+		res.z = matrix[offset + 2];
 		
 		return res;
 	}
-	
-	
+		
 	public void setColumn(int columnIndex, Vec3 vec) {
 		int offset = (columnIndex * 3);
 		
-		matrix[offset]     = vec.vector[X];
-		matrix[offset + 1] = vec.vector[Y];
-		matrix[offset + 2] = vec.vector[Z];
+		matrix[offset]     = vec.x;
+		matrix[offset + 1] = vec.y;
+		matrix[offset + 2] = vec.z;
 	}
 	
 	

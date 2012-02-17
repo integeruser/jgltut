@@ -17,14 +17,14 @@ import org.lwjgl.input.Mouse;
 import rosick.GLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
+import rosick.jglsdk.framework.MousePole;
 import rosick.jglsdk.framework.Timer;
 import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Quaternion;
 import rosick.jglsdk.glm.Vec3;
 import rosick.jglsdk.glm.Vec4;
 import rosick.jglsdk.glutil.MatrixStack;
-import rosick.jglsdk.glutil.pole.MousePole.*;
-import rosick.jglsdk.glutil.pole.ViewPole;
+import rosick.jglsdk.glutil.MousePoles.*;
 import rosick.mckesson.III.tut12.LightManager.LightBlock;
 import rosick.mckesson.III.tut12.LightManager.LightBlockGamma;
 import rosick.mckesson.III.tut12.LightManager.SunlightValueHDR;
@@ -234,21 +234,21 @@ public class GammaCorrection03 extends GLWindow {
 			if (eventButton != -1) {
 				if (Mouse.getEventButtonState()) {
 					// Mouse down
-					Framework.forwardMouseButton(g_viewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseButton(g_viewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
 				} else {
 					// Mouse up
-					Framework.forwardMouseButton(g_viewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseButton(g_viewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
 				}
 			} else {
 				// Mouse moving or mouse scrolling
 				int dWheel = Mouse.getDWheel();
 				
 				if (dWheel != 0) {
-					Framework.forwardMouseWheel(g_viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
+					MousePole.forwardMouseWheel(g_viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
 				}
 				
 				if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)) {
-					Framework.forwardMouseMotion(g_viewPole, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseMotion(g_viewPole, Mouse.getX(), Mouse.getY());			
 				}
 			}
 		}

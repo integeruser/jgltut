@@ -5,8 +5,6 @@ import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
-import rosick.jglsdk.glimg.ImageSet.Dimensions;
-
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
@@ -15,19 +13,15 @@ import rosick.jglsdk.glimg.ImageSet.Dimensions;
  */
 public class ImageSet {
 
-	private ImageSetImpl m_pImpl;
-	
-	public ImageSet(ImageSetImpl pImpl) {
-		m_pImpl = pImpl;
-	}
-
-
 	public static class Dimensions {
-		public int numDimensions;	// <The number of dimensions of an image. Can be 1, 2, or 3.
-		public int width;			// <The width of the image. Always valid.
-		public int height;			// <The height of the image. Only valid if numDimensions is 2 or 3.
-		public int depth;			// <The depth of the image. Only valid if numDimensions is 3.
+		public int numDimensions;													// The number of dimensions of an image. Can be 1, 2, or 3.
+		public int width;															// The width of the image. Always valid.
+		public int height;															// The height of the image. Only valid if numDimensions is 2 or 3.
+		public int depth;															// The depth of the image. Only valid if numDimensions is 3.
 
+		public Dimensions() {
+		}
+		
 		public Dimensions(Dimensions dimensions) {
 			numDimensions = dimensions.numDimensions;
 			width = dimensions.width;
@@ -35,19 +29,16 @@ public class ImageSet {
 			depth = dimensions.depth;
 		}
 
-		public Dimensions() {
-			// TODO Auto-generated constructor stub
-		}
 
 		// Computes the number of rows of pixel data in the image.
 		int numLines() {
 			switch (numDimensions) {
-				case 1:
-					return 1;
-				case 2:
-					return height;
-				case 3:
-					return depth * height;
+			case 1:
+				return 1;
+			case 2:
+				return height;
+			case 3:
+				return depth * height;
 			}
 
 			// Should not be possible.
@@ -78,12 +69,9 @@ public class ImageSet {
 			m_faceCount = faceCount;
 		}
 
-		public Dimensions getDimensions(int mipmapLevel) {
-			return modifySizeForMipmap(m_dimensions, mipmapLevel);
-		}
-
+		
 		private Dimensions modifySizeForMipmap(Dimensions origDim, int mipmapLevel) {
-			for(int iLoop = 0; iLoop < mipmapLevel; iLoop++) {
+			for (int iLoop = 0; iLoop < mipmapLevel; iLoop++) {
 				origDim.width /= 2;
 				origDim.height /= 2;
 				origDim.depth /= 2;
@@ -92,10 +80,20 @@ public class ImageSet {
 			return origDim;
 		}
 
-		public ByteBuffer getImageData(int mipmapLevel, int arrayIx, int faceIx) {
+		
+		public int getMipmapCount() {
+			return m_mipmapCount;
+		}
 
-			//int imageOffset = arrayIx * faceIx * m_imageSizes.get(mipmapLevel);			
-			
+		public ImageFormat getFormat() {
+			return m_format;
+		}
+		
+		public Dimensions getDimensions(int mipmapLevel) {
+			return modifySizeForMipmap(m_dimensions, mipmapLevel);
+		}
+
+		public ByteBuffer getImageData(int mipmapLevel, int arrayIx, int faceIx) {		
 			int imageOffset = ((arrayIx * m_faceCount) + faceIx) * m_imageSizes.get(mipmapLevel);
 			ArrayList<Integer> temp = m_imageData.get(imageOffset);
 			
@@ -109,18 +107,8 @@ public class ImageSet {
 			
 			return tempBuffer;
 		}
-
-		public int getMipmapCount() {
-			return m_mipmapCount;
-		}
-
-		public ImageFormat getFormat() {
-			return m_format;
-		}
 	}
 
-
-	
 	
 	public static class SingleImage {
 		private ImageSetImpl m_pImpl;
@@ -139,24 +127,37 @@ public class ImageSet {
 			return m_pImpl.getDimensions(m_mipmapLevel);
 		}
 
-
 		public ByteBuffer getImageData() {
 			return m_pImpl.getImageData(m_mipmapLevel, m_arrayIx, m_faceIx);
 		}
 	}
+
 	
-	public SingleImage getImage(int mipmapLevel, int arrayIx, int faceIx) {
-		return new SingleImage(m_pImpl, mipmapLevel, arrayIx, faceIx);		
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private ImageSetImpl m_pImpl;
+	
+	
+	public ImageSet(ImageSetImpl pImpl) {
+		m_pImpl = pImpl;
 	}
 
+
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	public int getMipmapCount() {
 		return m_pImpl.getMipmapCount();
 	}
-
-
 	
 	public ImageFormat getFormat() {
 		return m_pImpl.getFormat();
+	}
+	
+	public SingleImage getImage(int mipmapLevel, int arrayIx, int faceIx) {
+		return new SingleImage(m_pImpl, mipmapLevel, arrayIx, faceIx);		
 	}
 }

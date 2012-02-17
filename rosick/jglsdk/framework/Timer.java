@@ -13,7 +13,7 @@ public class Timer {
 	public enum Type {
 		TT_LOOP,
 		TT_SINGLE,
-		TT_INFINITE,
+		TT_INFINITE
 	};
 	
 	

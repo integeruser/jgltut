@@ -16,6 +16,39 @@ import rosick.jglsdk.glimg.ImageSet.ImageSetImpl;
  */
 public class ImageCreator {
 	
+	public class BadFaceCountException extends RuntimeException {
+		private static final long serialVersionUID = -4120563516856357626L;
+	}
+
+	public class CubemapsMustBe2DException extends RuntimeException {
+		private static final long serialVersionUID = 4034128602806705190L;
+	}
+
+	public class No3DTextureArrayException extends RuntimeException {
+		private static final long serialVersionUID = -9001483779340494905L;
+	}
+
+	public class NoImagesSpecifiedException extends RuntimeException {
+		private static final long serialVersionUID = 3390815114957601365L;
+	}
+
+	public class ImageSetAlreadyCreatedException extends RuntimeException {
+		private static final long serialVersionUID = -7707381545866051896L;
+	}
+
+	public class MipmapLayerOutOfBoundsException extends RuntimeException {
+		private static final long serialVersionUID = 5160364349781356398L;
+	}
+
+	public class FaceIndexOutOfBoundsException extends RuntimeException {
+		private static final long serialVersionUID = 5885166000035279615L;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
 	private ImageFormat m_format;
 	private Dimensions m_dims;
 	private int m_mipmapCount;
@@ -24,7 +57,7 @@ public class ImageCreator {
 	private ArrayList<ArrayList<Integer>> m_imageData;
 	private ArrayList<Integer> m_imageSizes;
 
-
+	
 	public ImageCreator(ImageFormat format, Dimensions dimensions, int mipmapCount, int arrayCount, int faceCount) throws CubemapsMustBe2DException, BadFaceCountException, No3DTextureArrayException, NoImagesSpecifiedException {
 			m_format = format;
 			m_dims = new Dimensions(dimensions);
@@ -66,45 +99,16 @@ public class ImageCreator {
 	}
 	
 	
-
-
-	private int calcImageByteSize(ImageFormat fmt, Dimensions dims) {
-		/*
-		if(fmt.type().ordinal() >= PixelDataType.DT_NUM_UNCOMPRESSED_TYPES.ordinal())
-		{
-			//Compressed texture.
-		
-			CompressedBlockData cdata = GetBlockCompressionData(fmt.Type());
-			size_t width = (dims.width + (cdata.dims.width - 1)) / cdata.dims.width;
-			size_t height = 0;
-			if(dims.numDimensions > 1)
-				height = (dims.height + (cdata.dims.height - 1)) / cdata.dims.height;
-			else
-			{
-				assert(cdata.dims.numDimensions >= 2);
-				height = cdata.dims.height;
-			}
-
-			return width * height * cdata.byteCount;
-		}
-		else
-		{
-		*/
-			int bpp = calcBytesPerPixel(fmt);
-			int lineByteSize = fmt.alignByteCount(bpp * dims.width);
-
-			if(dims.numDimensions > 1)
-				lineByteSize *= dims.height;
-			if(dims.numDimensions == 3)
-				lineByteSize *= dims.depth;
-
-			return lineByteSize;
-		//}
-	}
-
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	static PixelComponents g_twoCompFormats[] = {PixelComponents.FMT_COLOR_RG, PixelComponents.FMT_DEPTH_X};
+	static PixelComponents g_threeCompFormats[] = {PixelComponents.FMT_COLOR_RGB, PixelComponents.FMT_COLOR_RGB_sRGB};
+	static PixelComponents g_fourCompFormats[] = {PixelComponents.FMT_COLOR_RGBX, PixelComponents.FMT_COLOR_RGBA,
+			PixelComponents.FMT_COLOR_RGBX_sRGB, PixelComponents.FMT_COLOR_RGBA_sRGB};
 
 	public static Dimensions modifySizeForMipmap(Dimensions origDim, int mipmapLevel) {
-		for(int iLoop = 0; iLoop < mipmapLevel; iLoop++) {
+		for (int iLoop = 0; iLoop < mipmapLevel; iLoop++) {
 			origDim.width /= 2;
 			origDim.height /= 2;
 			origDim.depth /= 2;
@@ -141,8 +145,18 @@ public class ImageCreator {
 
 		return bytesPerPixel;
 	}
-
-
+	
+	
+	private static boolean isOneOfThese(PixelComponents testValue, PixelComponents testArray[]) {
+		for (PixelComponents loop : testArray) {
+			if (testValue == loop) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	private static int componentCount(PixelComponents eFormat) {
 		if (isOneOfThese(eFormat, g_twoCompFormats))
 			return 2;
@@ -157,36 +171,9 @@ public class ImageCreator {
 	}
 	
 	
-	static PixelComponents g_twoCompFormats[] = {PixelComponents.FMT_COLOR_RG, PixelComponents.FMT_DEPTH_X};
-	static PixelComponents g_threeCompFormats[] = {PixelComponents.FMT_COLOR_RGB, PixelComponents.FMT_COLOR_RGB_sRGB};
-	static PixelComponents g_fourCompFormats[] = {PixelComponents.FMT_COLOR_RGBX, PixelComponents.FMT_COLOR_RGBA,
-			PixelComponents.FMT_COLOR_RGBX_sRGB, PixelComponents.FMT_COLOR_RGBA_sRGB};
 
-	static boolean isOneOfThese(PixelComponents testValue, PixelComponents testArray[]) {
-		for (PixelComponents loop : testArray) {
-			if (testValue == loop) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-
-	public class BadFaceCountException extends RuntimeException {}
-	
-	public class CubemapsMustBe2DException extends RuntimeException {}
-
-	public class No3DTextureArrayException extends RuntimeException {}
-	
-	public class NoImagesSpecifiedException extends RuntimeException {}
-
-	public class ImageSetAlreadyCreatedException extends RuntimeException {}
-
-	public class MipmapLayerOutOfBoundsException extends RuntimeException {}
-
-	public class FaceIndexOutOfBoundsException extends RuntimeException {}
-
-
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	public void setImageData(ArrayList<Character> pixelData, int startIndex,
 			boolean isTopLeft, int mipmapLevel, int arrayIx, int faceIx) {
@@ -222,8 +209,58 @@ public class ImageCreator {
 	}
 
 
+	public ImageSet createImage() {
+		if (m_imageData.isEmpty())
+			throw new ImageSetAlreadyCreatedException();
 
+		ImageSetImpl pImageData = new ImageSetImpl(m_format, m_dims,
+			m_mipmapCount, m_arrayCount, m_faceCount, m_imageData, m_imageSizes);
 
+		ImageSet pImageSet = new ImageSet(pImageData);
+
+		return pImageSet;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private int calcImageByteSize(ImageFormat fmt, Dimensions dims) {
+		/*
+		if(fmt.type().ordinal() >= PixelDataType.DT_NUM_UNCOMPRESSED_TYPES.ordinal())
+		{
+			//Compressed texture.
+		
+			CompressedBlockData cdata = GetBlockCompressionData(fmt.Type());
+			size_t width = (dims.width + (cdata.dims.width - 1)) / cdata.dims.width;
+			size_t height = 0;
+			if(dims.numDimensions > 1)
+				height = (dims.height + (cdata.dims.height - 1)) / cdata.dims.height;
+			else
+			{
+				assert(cdata.dims.numDimensions >= 2);
+				height = cdata.dims.height;
+			}
+
+			return width * height * cdata.byteCount;
+		}
+		else
+		{
+		*/
+			int bpp = calcBytesPerPixel(fmt);
+			int lineByteSize = fmt.alignByteCount(bpp * dims.width);
+
+			if(dims.numDimensions > 1)
+				lineByteSize *= dims.height;
+			if(dims.numDimensions == 3)
+				lineByteSize *= dims.depth;
+
+			return lineByteSize;
+		//}
+	}
+	
+	
 	private void copyImageFlipped(ArrayList<Character> pixelData,
 			int startIndex, ArrayList<Integer> pDstData, int imageOffset,
 			int mipmapLevel) {
@@ -235,14 +272,12 @@ public class ImageCreator {
 				m_imageSizes.get(mipmapLevel));
 		}		
 	}
-
-
+	
+	
 	private void copyPixelsFlipped(ArrayList<Integer> pMipmapData,
 			int imageOffset, Dimensions dims, ImageFormat format,
 			int mipmapLevel, ArrayList<Character> pixelData, int startIndex,
 			int imageSize) {
-
-
 		//Flip the data. Copy line by line.
 		int numLines = dims.numLines();
 		int lineByteSize = format.alignByteCount(calcBytesPerPixel(format) * dims.width);
@@ -263,22 +298,5 @@ public class ImageCreator {
 		}
 
 		//return static_cast<const unsigned char *>(pixelData) + imageSize;
-	}
-
-
-
-
-	public ImageSet createImage() {
-		if (m_imageData.isEmpty())
-			throw new ImageSetAlreadyCreatedException();
-
-		ImageSetImpl pImageData = new ImageSetImpl(m_format, m_dims,
-			m_mipmapCount, m_arrayCount, m_faceCount, m_imageData, m_imageSizes);
-
-		ImageSet pImageSet = new ImageSet(pImageData);
-
-		return pImageSet;
-		
-		
 	}
 }

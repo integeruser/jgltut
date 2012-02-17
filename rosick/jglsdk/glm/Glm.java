@@ -145,31 +145,31 @@ public class Glm {
 		Quaternion res = new Quaternion();
 
 		switch (biggestIndex) {
-			case 0:
-				res.w = biggestVal; 
-				res.x = (mat.matrix[6] - mat.matrix[9]) * mult;
-				res.y = (mat.matrix[8] - mat.matrix[2]) * mult;
-				res.z = (mat.matrix[1] - mat.matrix[4]) * mult;
-				break;
-			case 1:
-				res.w = (mat.matrix[6] - mat.matrix[9]) * mult;
-				res.x = biggestVal;
-				res.y = (mat.matrix[1] + mat.matrix[4]) * mult;
-				res.z = (mat.matrix[8] + mat.matrix[2]) * mult;
-				break;
-			case 2:
-				res.w = (mat.matrix[8] - mat.matrix[2]) * mult;
-				res.x = (mat.matrix[1] + mat.matrix[4]) * mult;
-				res.y = biggestVal;
-				res.z = (mat.matrix[6] + mat.matrix[9]) * mult;
-				break;
-			case 3:
-				res.w = (mat.matrix[1] - mat.matrix[4]) * mult;
-				res.x = (mat.matrix[8] + mat.matrix[2]) * mult;
-				res.y = (mat.matrix[6] + mat.matrix[9]) * mult;
-				res.z = biggestVal;
-				break;
-		}   
+		case 0:
+			res.w = biggestVal;
+			res.x = (mat.matrix[6] - mat.matrix[9]) * mult;
+			res.y = (mat.matrix[8] - mat.matrix[2]) * mult;
+			res.z = (mat.matrix[1] - mat.matrix[4]) * mult;
+			break;
+		case 1:
+			res.w = (mat.matrix[6] - mat.matrix[9]) * mult;
+			res.x = biggestVal;
+			res.y = (mat.matrix[1] + mat.matrix[4]) * mult;
+			res.z = (mat.matrix[8] + mat.matrix[2]) * mult;
+			break;
+		case 2:
+			res.w = (mat.matrix[8] - mat.matrix[2]) * mult;
+			res.x = (mat.matrix[1] + mat.matrix[4]) * mult;
+			res.y = biggestVal;
+			res.z = (mat.matrix[6] + mat.matrix[9]) * mult;
+			break;
+		case 3:
+			res.w = (mat.matrix[1] - mat.matrix[4]) * mult;
+			res.x = (mat.matrix[8] + mat.matrix[2]) * mult;
+			res.y = (mat.matrix[6] + mat.matrix[9]) * mult;
+			res.z = biggestVal;
+			break;
+		}  
 		
 		return res;
 	}
@@ -250,17 +250,15 @@ public class Glm {
 	}
 	
 		
-	public static Mat4 translate(Mat4 mat, Vec3 vec) {
-		Mat4 res = new Mat4(mat);	
-		
-		Vec4 temp = new Vec4();
+	public static Mat4 translate(Mat4 mat, Vec3 vec) {		
 		Vec4 temp0 = mat.getColumn(0).scale(vec.x);
 		Vec4 temp1 = mat.getColumn(1).scale(vec.y);
 		Vec4 temp2 = mat.getColumn(2).scale(vec.z);
 		Vec4 temp3 = mat.getColumn(3);
 
-		temp = temp0.add(temp1).add(temp2).add(temp3);
+		Vec4 temp = temp0.add(temp1).add(temp2).add(temp3);
 		
+		Mat4 res = new Mat4(mat);	
 		res.setColumn(3, temp);
 		
 		return res;
@@ -321,11 +319,11 @@ public class Glm {
 
 		Mat4 res = new Mat4(0.0f);
 
-		res.matrix[0] = (2.0f * zNear) / (right - left);
-		res.matrix[5] = (2.0f * zNear) / (top - bottom);
-		res.matrix[10] = - (zFar + zNear) / (zFar - zNear);
-		res.matrix[11] = - 1.0f;
-		res.matrix[14] = - (2.0f * zFar * zNear) / (zFar - zNear);
+		res.matrix[0] 	=  (2.0f * zNear) / (right - left);
+		res.matrix[5] 	=  (2.0f * zNear) / (top - bottom);
+		res.matrix[10] 	= -(zFar + zNear) / (zFar - zNear);
+		res.matrix[11] 	= -1.0f;
+		res.matrix[14] 	= -(2.0f * zFar * zNear) / (zFar - zNear);
 
 		return res;
 	}
@@ -340,22 +338,22 @@ public class Glm {
 		
 		Mat4 res = new Mat4(0.0f);
 
-		res.matrix[0] = 1 - 2 * quat.y * quat.y - 2 * quat.z * quat.z;
-		res.matrix[1] = 2 * quat.x * quat.y + 2 * quat.w * quat.z;
-		res.matrix[2] = 2 * quat.x * quat.z - 2 * quat.w * quat.y;
+		res.matrix[0] 	= 1 - 2 * quat.y * quat.y - 2 * quat.z * quat.z;
+		res.matrix[1] 	= 2 * quat.x * quat.y + 2 * quat.w * quat.z;
+		res.matrix[2] 	= 2 * quat.x * quat.z - 2 * quat.w * quat.y;
 
-		res.matrix[4] = 2 * quat.x * quat.y - 2 * quat.w * quat.z;
-		res.matrix[5] = 1 - 2 * quat.x * quat.x - 2 * quat.z * quat.z;
-		res.matrix[6] = 2 * quat.y * quat.z + 2 * quat.w * quat.x;
+		res.matrix[4] 	= 2 * quat.x * quat.y - 2 * quat.w * quat.z;
+		res.matrix[5] 	= 1 - 2 * quat.x * quat.x - 2 * quat.z * quat.z;
+		res.matrix[6] 	= 2 * quat.y * quat.z + 2 * quat.w * quat.x;
 
-		res.matrix[8] = 2 * quat.x * quat.z + 2 * quat.w * quat.y;
-		res.matrix[9] = 2 * quat.y * quat.z - 2 * quat.w * quat.x;
-		res.matrix[10] = 1 - 2 * quat.x * quat.x - 2 * quat.y * quat.y;
+		res.matrix[8] 	= 2 * quat.x * quat.z + 2 * quat.w * quat.y;
+		res.matrix[9] 	= 2 * quat.y * quat.z - 2 * quat.w * quat.x;
+		res.matrix[10] 	= 1 - 2 * quat.x * quat.x - 2 * quat.y * quat.y;
 		
-	    res.matrix[12] = 0.0f;
-	    res.matrix[13] = 0.0f;
-	    res.matrix[14] = 0.0f;
-	    res.matrix[15] = 1.0f;
+	    res.matrix[12] 	= 0.0f;
+	    res.matrix[13] 	= 0.0f;
+	    res.matrix[14] 	= 0.0f;
+	    res.matrix[15] 	= 1.0f;
 	    
 		return res;
 	}
@@ -371,17 +369,17 @@ public class Glm {
         Vec3 temp = Vec3.scale(axis, 1.0f - c);
 
         Mat4 rotate = new Mat4();
-		rotate.set(0, c + temp.x * axis.x);
-		rotate.set(1, 0 + temp.x * axis.y + s * axis.z);
-		rotate.set(2, 0 + 0 + temp.x * axis.z - s * axis.y);
+		rotate.set(0, 	c + temp.x * axis.x);
+		rotate.set(1, 	0 + temp.x * axis.y + s * axis.z);
+		rotate.set(2, 	0 + 0 + temp.x * axis.z - s * axis.y);
 
-		rotate.set(4, 0 + temp.y * axis.x - s * axis.z);
-		rotate.set(5, c + temp.y * axis.y);
-		rotate.set(6, 0 + temp.y * axis.z + s * axis.x);
+		rotate.set(4, 	0 + temp.y * axis.x - s * axis.z);
+		rotate.set(5, 	c + temp.y * axis.y);
+		rotate.set(6, 	0 + temp.y * axis.z + s * axis.x);
 		
-		rotate.set(8, 0 + temp.z * axis.x + s * axis.y);
-		rotate.set(9, 0 + temp.z * axis.y - s * axis.x);
-		rotate.set(10, c + temp.z * axis.z);
+		rotate.set(8, 	0 + temp.z * axis.x + s * axis.y);
+		rotate.set(9, 	0 + temp.z * axis.y - s * axis.x);
+		rotate.set(10, 	c + temp.z * axis.z);
 
 	    Mat4 result = new Mat4();
 	    result.setColumn(0, Vec4.scale(m.getColumn(0), rotate.matrix[0]).add(Vec4.scale(m.getColumn(1), rotate.matrix[1])).add(Vec4.scale(m.getColumn(2), rotate.matrix[2])));

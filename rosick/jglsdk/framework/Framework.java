@@ -74,7 +74,6 @@ public class Framework {
 	
 	private static final float fDegToRad = 3.14159f * 2.0f / 360.0f;
 
-	
 	public static float degToRad(float fAngDeg) {
 		return fAngDeg * fDegToRad;
 	}

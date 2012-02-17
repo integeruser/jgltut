@@ -22,7 +22,7 @@ public class MatrixStack {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
 	public MatrixStack() {
-		matrices = new float[1600];													// 100 matrices		
+		matrices = new float[160];													// 10 matrices		
 		currentMatrix = new Mat4(1.0f);
 				
 		firstIndexUsable = 0;
@@ -73,13 +73,7 @@ public class MatrixStack {
 	
 	
 	public void clear() {
-		currentMatrix.clear(1);
-
-		firstIndexUsable = 0;
-	}
-	
-	public void clear(Mat4 mat) {
-		currentMatrix = new Mat4(mat);
+		currentMatrix.clear(1.0f);
 
 		firstIndexUsable = 0;
 	}

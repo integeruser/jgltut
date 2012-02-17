@@ -237,7 +237,8 @@ public class WorldWithUBO02 extends GLWindow {
 		{
 			final Vec3 camPos = resolveCamPosition();
 	
-			camMatrix.clear(calcLookAtMatrix(camPos, g_camTarget, new Vec3(0.0f, 1.0f, 0.0f)));
+			camMatrix.clear();
+			camMatrix.setMatrix(calcLookAtMatrix(camPos, g_camTarget, new Vec3(0.0f, 1.0f, 0.0f)));
 			
 			glBindBuffer(GL_UNIFORM_BUFFER, g_GlobalMatricesUBO);
 			glBufferSubData(GL_UNIFORM_BUFFER, MAT_SIZE, camMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));

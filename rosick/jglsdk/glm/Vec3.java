@@ -1,87 +1,105 @@
 package rosick.jglsdk.glm;
 
+import java.nio.FloatBuffer;
+
+import rosick.PortingUtils.BufferableData;
+
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
  * @author integeruser
  */
-public class Vec3 extends Vec {
-
+public class Vec3 extends BufferableData<FloatBuffer> {
+	
+	public float x, y, z;
+	
+	
 	public Vec3() {
-		vector = new float[3];
 	}
 	
 	public Vec3(float f) {
-		vector = new float[3];
-		vector[X] = f;
-		vector[Y] = f;
-		vector[Z] = f;
+		x = f;
+		y = f;
+		z = f;
 	}
 	
 	public Vec3(float x, float y, float z) {
-		vector = new float[3];
-		vector[X] = x;
-		vector[Y] = y;
-		vector[Z] = z;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 	
 	public Vec3(Vec3 vec) {
-		vector = new float[3];
-		vector[X] = vec.vector[X];
-		vector[Y] = vec.vector[Y];
-		vector[Z] = vec.vector[Z];
+		x = vec.x;
+		y = vec.y;
+		z = vec.z;
 	}
 	
 	public Vec3(Vec4 vec) {
-		vector = new float[3];
-		vector[X] = vec.vector[X];
-		vector[Y] = vec.vector[Y];
-		vector[Z] = vec.vector[Z];	
+		x = vec.x;
+		y = vec.y;
+		z = vec.z;	
 	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
+	
+
+	@Override
+	public FloatBuffer fillBuffer(FloatBuffer buffer) {
+		buffer.put(x);
+		buffer.put(y);
+		buffer.put(z);
+
+		return buffer;
+	}
+	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 
 	public Vec3 add(Vec3 vec) {
-		vector[X] += vec.vector[X];
-		vector[Y] += vec.vector[Y];
-		vector[Z] += vec.vector[Z];
+		x += vec.x;
+		y += vec.y;
+		z += vec.z;
 		
 		return this;
 	}
 	
 	public Vec3 sub(Vec3 vec) {
-		vector[X] -= vec.vector[X];
-		vector[Y] -= vec.vector[Y];
-		vector[Z] -= vec.vector[Z];
+		x -= vec.x;
+		y -= vec.y;
+		z -= vec.z;
 		
 		return this;
 	}
 	
 	public Vec3 mul(Vec3 vec) {
-		vector[X] *= vec.vector[X];
-		vector[Y] *= vec.vector[Y];
-		vector[Z] *= vec.vector[Z];
+		x *= vec.x;
+		y *= vec.y;
+		z *= vec.z;
 		
 		return this;
 	}
 	
 	
 	public Vec3 scale(float scalar) {
-		vector[X] *= scalar;
-		vector[Y] *= scalar;
-		vector[Z] *= scalar;
+		x *= scalar;
+		y *= scalar;
+		z *= scalar;
 		
 		return this;
 	}
 	
 
 	public Vec3 negate() {
-		vector[X] = -vector[X];
-		vector[Y] = -vector[Y];
-		vector[Z] = -vector[Z];
+		x = -x;
+		y = -y;
+		z = -z;
 
 		return this;
 	}
@@ -89,7 +107,7 @@ public class Vec3 extends Vec {
 	
 	@Override
 	public String toString() {
-		return "X: " + vector[X] + ", Y: " + vector[Y] + ", Z: " + vector[Z];
+		return "X: " + x + ", Y: " + y + ", Z: " + z;
 	}
 
 	

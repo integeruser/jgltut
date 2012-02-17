@@ -3,8 +3,6 @@ package rosick.mckesson.II.tut08;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
-import static rosick.jglsdk.glm.Vec4.*;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -204,10 +202,10 @@ public class Interpolation04 extends GLWindow {
 	private Vec4 vectorize(Quaternion theQuat) {
 		Vec4 ret = new Vec4();
 
-		ret.set(X, theQuat.get(X));
-		ret.set(Y, theQuat.get(Y));
-		ret.set(Z, theQuat.get(Z));
-		ret.set(W, theQuat.get(W));
+		ret.x = theQuat.x;
+		ret.y = theQuat.y;
+		ret.z = theQuat.z;
+		ret.w = theQuat.w;
 
 		return ret;
 	}
@@ -220,7 +218,7 @@ public class Interpolation04 extends GLWindow {
 
 		interp = Glm.normalize(interp);
 		
-		return new Quaternion(interp.get(W), interp.get(X), interp.get(Y), interp.get(Z));
+		return new Quaternion(interp.w, interp.x, interp.y, interp.z);
 	}
 	
 	

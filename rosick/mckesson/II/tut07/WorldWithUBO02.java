@@ -7,8 +7,6 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -149,63 +147,63 @@ public class WorldWithUBO02 extends GLWindow {
 		float lastFrameDuration = (float) (getLastFrameDuration() * 5 / 1000.0);
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-			g_camTarget.set(Z, (float) (g_camTarget.get(Z) - 4.0f * lastFrameDuration));
+			g_camTarget.z = (float) (g_camTarget.z - 4.0f * lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			g_camTarget.set(Z, (float) (g_camTarget.get(Z) + 4.0f * lastFrameDuration));
+			g_camTarget.z = (float) (g_camTarget.z + 4.0f * lastFrameDuration);
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			g_camTarget.set(X, (float) (g_camTarget.get(X) + 4.0f * lastFrameDuration));
+			g_camTarget.x = (float) (g_camTarget.x + 4.0f * lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-			g_camTarget.set(X, (float) (g_camTarget.get(X) - 4.0f * lastFrameDuration));
+			g_camTarget.x = (float) (g_camTarget.x - 4.0f * lastFrameDuration);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
-			g_camTarget.set(Y, (float) (g_camTarget.get(Y) - 4.0f * lastFrameDuration));
+			g_camTarget.y = (float) (g_camTarget.y - 4.0f * lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-			g_camTarget.set(Y, (float) (g_camTarget.get(Y) + 4.0f * lastFrameDuration));
+			g_camTarget.y = (float) (g_camTarget.y + 4.0f * lastFrameDuration);
 		}
 
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-				g_sphereCamRelPos.set(Y, (float) (g_sphereCamRelPos.get(Y) - 1.125f * lastFrameDuration));
+				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y - 1.125f * lastFrameDuration);
 			} else {
-				g_sphereCamRelPos.set(Y, (float) (g_sphereCamRelPos.get(Y) - 11.25f * lastFrameDuration));
+				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y - 11.25f * lastFrameDuration);
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-				g_sphereCamRelPos.set(Y, (float) (g_sphereCamRelPos.get(Y) + 1.125f * lastFrameDuration));
+				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y + 1.125f * lastFrameDuration);
 			} else {
-				g_sphereCamRelPos.set(Y, (float) (g_sphereCamRelPos.get(Y) + 11.25f * lastFrameDuration));
+				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y + 11.25f * lastFrameDuration);
 			}
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-				g_sphereCamRelPos.set(X, (float) (g_sphereCamRelPos.get(X) - 1.125f * lastFrameDuration));
+				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x - 1.125f * lastFrameDuration);
 			} else {
-				g_sphereCamRelPos.set(X, (float) (g_sphereCamRelPos.get(X) - 11.25f * lastFrameDuration));
+				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x - 11.25f * lastFrameDuration);
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-				g_sphereCamRelPos.set(X, (float) (g_sphereCamRelPos.get(X) + 1.125f * lastFrameDuration));
+				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x + 1.125f * lastFrameDuration);
 			} else {
-				g_sphereCamRelPos.set(X, (float) (g_sphereCamRelPos.get(X) + 11.25f * lastFrameDuration));
+				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x + 11.25f * lastFrameDuration);
 			}
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-				g_sphereCamRelPos.set(Z, (float) (g_sphereCamRelPos.get(Z) - 0.5f * lastFrameDuration));
+				g_sphereCamRelPos.z = (float) (g_sphereCamRelPos.z - 0.5f * lastFrameDuration);
 			} else {
-				g_sphereCamRelPos.set(Z, (float) (g_sphereCamRelPos.get(Z) - 5.0f * lastFrameDuration));
+				g_sphereCamRelPos.z = (float) (g_sphereCamRelPos.z - 5.0f * lastFrameDuration);
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_U)) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-				g_sphereCamRelPos.set(Z, (float) (g_sphereCamRelPos.get(Z) + 0.5f * lastFrameDuration));
+				g_sphereCamRelPos.z = (float) (g_sphereCamRelPos.z + 0.5f * lastFrameDuration);
 			} else {
-				g_sphereCamRelPos.set(Z, (float) (g_sphereCamRelPos.get(Z) + 5.0f * lastFrameDuration));
+				g_sphereCamRelPos.z = (float) (g_sphereCamRelPos.z + 5.0f * lastFrameDuration);
 			}
 		}
 		
@@ -224,9 +222,9 @@ public class WorldWithUBO02 extends GLWindow {
 		}
 		
 		
-		g_sphereCamRelPos.set(Y, Glm.clamp(g_sphereCamRelPos.get(Y), -78.75f, -1.0f));
-		g_camTarget.set(Y, g_camTarget.get(Y) > 0.0f ? g_camTarget.get(Y) : 0.0f);
-		g_sphereCamRelPos.set(Z, g_sphereCamRelPos.get(Z) > 5.0f ? g_sphereCamRelPos.get(Z) : 5.0f);
+		g_sphereCamRelPos.y = Glm.clamp(g_sphereCamRelPos.y, -78.75f, -1.0f);
+		g_camTarget.y = g_camTarget.y > 0.0f ? g_camTarget.y : 0.0f;
+		g_sphereCamRelPos.z = g_sphereCamRelPos.z > 5.0f ? g_sphereCamRelPos.z : 5.0f;
 	}
 
 
@@ -697,8 +695,8 @@ public class WorldWithUBO02 extends GLWindow {
 	
 	
 	private Vec3 resolveCamPosition() {
-		float phi = Framework.degToRad(g_sphereCamRelPos.get(X));
-		float theta = Framework.degToRad(g_sphereCamRelPos.get(Y) + 90.0f);
+		float phi = Framework.degToRad(g_sphereCamRelPos.x);
+		float theta = Framework.degToRad(g_sphereCamRelPos.y + 90.0f);
 
 		float fSinTheta = (float) Math.sin(theta);
 		float fCosTheta = (float) Math.cos(theta);
@@ -707,7 +705,7 @@ public class WorldWithUBO02 extends GLWindow {
 
 		Vec3 dirToCamera = new Vec3(fSinTheta * fCosPhi, fCosTheta, fSinTheta * fSinPhi);
 		
-		return (dirToCamera.scale(g_sphereCamRelPos.get(Z))).add(g_camTarget);
+		return (dirToCamera.scale(g_sphereCamRelPos.z)).add(g_camTarget);
 	}
 	
 	

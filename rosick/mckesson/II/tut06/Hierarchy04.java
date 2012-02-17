@@ -5,8 +5,6 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
@@ -374,9 +372,9 @@ public class Hierarchy04 extends GLWindow {
 		
 		void scale(Vec3 scaleVec) {
 			Mat4 scaleMat = new Mat4(1.0f);
-			scaleMat.set(0, scaleVec.get(X));
-			scaleMat.set(5, scaleVec.get(Y));
-			scaleMat.set(10, scaleVec.get(Z));
+			scaleMat.set(0, scaleVec.x);
+			scaleMat.set(5, scaleVec.y);
+			scaleMat.set(10, scaleVec.z);
 
 			currentMatrix.mul(scaleMat);
 		}

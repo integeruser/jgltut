@@ -1,7 +1,5 @@
 package rosick.jglsdk.glutil.pole;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import rosick.jglsdk.glm.Glm;
 import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Quaternion;
@@ -72,8 +70,8 @@ public class ObjectPole extends Pole {
 	
 			switch (m_RotateMode) {
 				case RM_DUAL_AXIS: {
-					Quaternion rot = calcRotationQuat(Axis.AXIS_Y.ordinal(), iDiff.get(X) * m_rotateScale);
-					rot = Glm.normalize(calcRotationQuat(Axis.AXIS_X.ordinal(), - iDiff.get(Y) * m_rotateScale).mul(rot));	// Y axis is different in LWJGL
+					Quaternion rot = calcRotationQuat(Axis.AXIS_Y.ordinal(), iDiff.x * m_rotateScale);
+					rot = Glm.normalize(calcRotationQuat(Axis.AXIS_X.ordinal(), - iDiff.y * m_rotateScale).mul(rot));	// Y axis is different in LWJGL
 					rotateViewDegrees(rot);
 					break;
 				}	
@@ -83,12 +81,12 @@ public class ObjectPole extends Pole {
 	
 					Axis eAxis;
 					float degAngle;
-					if (Math.abs(iInitDiff.get(X)) > Math.abs(iInitDiff.get(Y))) {
+					if (Math.abs(iInitDiff.x) > Math.abs(iInitDiff.y)) {
 						eAxis = Axis.AXIS_Y;
-						degAngle = iInitDiff.get(X) * m_rotateScale;
+						degAngle = iInitDiff.x * m_rotateScale;
 					} else {
 						eAxis = Axis.AXIS_X;
-						degAngle = iInitDiff.get(Y) * m_rotateScale;
+						degAngle = iInitDiff.y * m_rotateScale;
 					}
 	
 					Quaternion rot = calcRotationQuat(eAxis.ordinal(), degAngle);
@@ -97,7 +95,7 @@ public class ObjectPole extends Pole {
 				}
 				
 				case RM_SPIN: {
-					rotateViewDegrees(calcRotationQuat(Axis.AXIS_Z.ordinal(), - iDiff.get(X) * m_rotateScale));
+					rotateViewDegrees(calcRotationQuat(Axis.AXIS_Z.ordinal(), - iDiff.x * m_rotateScale));
 					break;
 				}
 			}

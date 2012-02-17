@@ -7,8 +7,6 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -337,7 +335,7 @@ public class HDRLighting02 extends GLWindow {
 		
 		Vec4 bkg = g_lights.getBackgroundColor();
 
-		glClearColor(bkg.get(X), bkg.get(Y), bkg.get(Z), bkg.get(W));
+		glClearColor(bkg.x, bkg.y, bkg.z, bkg.w);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

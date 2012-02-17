@@ -7,8 +7,6 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -478,13 +476,18 @@ public class BasicImpostor01 extends GLWindow {
 
 		@Override
 		public ByteBuffer fillBuffer(ByteBuffer buffer) {
-			for (int i = 0; i < 4; i++) {
-				buffer.putFloat(diffuseColor.get(i));
-			}
-			for (int i = 0; i < 4; i++) {
-				buffer.putFloat(specularColor.get(i));
-			}
+			buffer.putFloat(diffuseColor.x);
+			buffer.putFloat(diffuseColor.y);
+			buffer.putFloat(diffuseColor.z);
+			buffer.putFloat(diffuseColor.w);
+
+			buffer.putFloat(specularColor.x);
+			buffer.putFloat(specularColor.y);
+			buffer.putFloat(specularColor.z);
+			buffer.putFloat(specularColor.w);
+
 			buffer.putFloat(specularShininess);
+			
 			for (int i = 0; i < 3; i++) {
 				buffer.putFloat(padding[i]);
 			}
@@ -714,8 +717,8 @@ public class BasicImpostor01 extends GLWindow {
 
 		Vec4 ret = new Vec4(0.0f, g_lightHeight, 0.0f, 1.0f);
 
-		ret.set(X, (float) (Math.cos(timeThroughLoop * fScale) * 20.0f));
-		ret.set(Z, (float) (Math.sin(timeThroughLoop * fScale) * 20.0f));
+		ret.x = (float) (Math.cos(timeThroughLoop * fScale) * 20.0f);
+		ret.z = (float) (Math.sin(timeThroughLoop * fScale) * 20.0f);
 
 		return ret;
 	}

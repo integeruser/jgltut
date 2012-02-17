@@ -168,7 +168,7 @@ public class ManyImages01 extends GLWindow {
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_P) {
 					g_camTimer.togglePause();
 					
-				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9  ) {
+				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_SAMPLERS) {
 						System.out.println("Sampler: " + g_samplerNames[number]);

@@ -3,8 +3,6 @@ package rosick.mckesson.II.tut08;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -204,7 +202,7 @@ public class QuaternionYPR02 extends GLWindow {
 		
 		float scalar = (float) Math.cos(fAngRad / 2.0f);
 
-		Quaternion offset = new Quaternion(scalar, axis.get(X), axis.get(Y), axis.get(Z));
+		Quaternion offset = new Quaternion(scalar, axis.x, axis.y, axis.z);
 
 		if (g_bRightMultiply) {
 			g_orientation = Quaternion.mul(g_orientation, offset);

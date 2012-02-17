@@ -1,7 +1,5 @@
 package rosick.jglsdk.glutil;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import rosick.jglsdk.glm.Glm;
 import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Vec3;
@@ -125,7 +123,7 @@ public class MatrixStack {
 	}
 
 	public void scale(Vec3 vec) {
-		scale(vec.get(X), vec.get(Y), vec.get(Z));
+		scale(vec.x, vec.y, vec.z);
 	}
 
 	
@@ -141,7 +139,7 @@ public class MatrixStack {
 	}
 
 	public void translate(Vec3 vec) {
-		translate(vec.get(X), vec.get(Y), vec.get(Z));
+		translate(vec.x, vec.y, vec.z);
 	}
 	
 	

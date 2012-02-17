@@ -5,8 +5,6 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
@@ -227,9 +225,9 @@ public class Scale02 extends GLWindow {
 			Vec3 theScale = calcScale(fElapsedTime);
 			Mat4 theMat = new Mat4(1.0f);
 			
-			theMat.set(0, 	theScale.get(X));
-			theMat.set(5, 	theScale.get(Y));
-			theMat.set(10, 	theScale.get(Z));
+			theMat.set(0, 	theScale.x);
+			theMat.set(5, 	theScale.y);
+			theMat.set(10, 	theScale.z);
 			theMat.setColumn(3, new Vec4(offset, 1.0f));
 			
 			return theMat;

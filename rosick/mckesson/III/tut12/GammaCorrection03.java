@@ -7,8 +7,6 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -355,7 +353,7 @@ public class GammaCorrection03 extends GLWindow {
 
 		Vec4 bkg = gammaCorrect(g_lights.getBackgroundColor(), gamma);
 
-		glClearColor(bkg.get(X), bkg.get(Y), bkg.get(Z), bkg.get(W));
+		glClearColor(bkg.x, bkg.y, bkg.z, bkg.w);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -553,10 +551,10 @@ public class GammaCorrection03 extends GLWindow {
 	
 	private Vec4 gammaCorrect(Vec4 input, float gamma) {
 		Vec4 ret = new Vec4();
-		ret.set(X, (float) Math.pow(input.get(X), 1.0f / gamma));
-		ret.set(Y, (float) Math.pow(input.get(Y), 1.0f / gamma));
-		ret.set(Z, (float) Math.pow(input.get(Z), 1.0f / gamma));
-		ret.set(W, input.get(W));
+		ret.x = (float) Math.pow(input.x, 1.0f / gamma);
+		ret.y = (float) Math.pow(input.y, 1.0f / gamma);
+		ret.z = (float) Math.pow(input.z, 1.0f / gamma);
+		ret.w = input.w;
 
 		return ret;
 	}

@@ -1,7 +1,5 @@
 package rosick.jglsdk.glm;
 
-import static rosick.jglsdk.glm.Vec4.*;
-
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
@@ -67,25 +65,25 @@ public class Mat4 extends Mat {
 	public Mat4(Vec4 column0, Vec4 column1, Vec4 column2, Vec4 column3) {
 		matrix = new float[16];
 
-		matrix[0] = column0.vector[X];
-		matrix[1] = column0.vector[Y];
-		matrix[2] = column0.vector[Z];
-		matrix[3] = column0.vector[W];
+		matrix[0] = column0.x;
+		matrix[1] = column0.y;
+		matrix[2] = column0.z;
+		matrix[3] = column0.w;
 		
-		matrix[4] = column1.vector[X];
-		matrix[5] = column1.vector[Y];
-		matrix[6] = column1.vector[Z];
-		matrix[7] = column1.vector[W];
+		matrix[4] = column1.x;
+		matrix[5] = column1.y;
+		matrix[6] = column1.z;
+		matrix[7] = column1.w;
 		
-		matrix[8] = column2.vector[X];
-		matrix[9] = column2.vector[Y];
-		matrix[10] = column2.vector[Z];
-		matrix[11] = column2.vector[W];
+		matrix[8] = column2.x;
+		matrix[9] = column2.y;
+		matrix[10] = column2.z;
+		matrix[11] = column2.w;
 		
-		matrix[12] = column3.vector[X];
-		matrix[13] = column3.vector[Y];
-		matrix[14] = column3.vector[Z];
-		matrix[15] = column3.vector[W];
+		matrix[12] = column3.x;
+		matrix[13] = column3.y;
+		matrix[14] = column3.z;
+		matrix[15] = column3.w;
 	}
 	
 	
@@ -97,10 +95,10 @@ public class Mat4 extends Mat {
 		int offset = (columnIndex * 4);
 		
 		Vec4 res = new Vec4();
-		res.vector[X] = matrix[offset];
-		res.vector[Y] = matrix[offset + 1];
-		res.vector[Z] = matrix[offset + 2];
-		res.vector[W] = matrix[offset + 3];
+		res.x = matrix[offset];
+		res.y = matrix[offset + 1];
+		res.z = matrix[offset + 2];
+		res.w = matrix[offset + 3];
 		
 		return res;
 	}
@@ -113,10 +111,10 @@ public class Mat4 extends Mat {
 	public void setColumn(int columnIndex, Vec4 vec) {
 		int offset = (columnIndex * 4);
 		
-		matrix[offset]     = vec.vector[X];
-		matrix[offset + 1] = vec.vector[Y];
-		matrix[offset + 2] = vec.vector[Z];
-		matrix[offset + 3] = vec.vector[W];
+		matrix[offset]     = vec.x;
+		matrix[offset + 1] = vec.y;
+		matrix[offset + 2] = vec.z;
+		matrix[offset + 3] = vec.w;
 	}
 	
 	
@@ -198,10 +196,26 @@ public class Mat4 extends Mat {
 		Vec4 res = new Vec4();
 		
 		for (int i = 0; i < 4; i++) {
-			res.vector[X] += mat.matrix[4*i + 0] * vec.get(i);
-			res.vector[Y] += mat.matrix[4*i + 1] * vec.get(i);
-			res.vector[Z] += mat.matrix[4*i + 2] * vec.get(i);
-			res.vector[W] += mat.matrix[4*i + 3] * vec.get(i);
+			float temp = 0;
+			switch (i) {
+			case 0:
+				temp = vec.x;
+				break;
+			case 1:
+				temp = vec.y;
+				break;
+			case 2:
+				temp = vec.z;
+				break;
+			case 3:
+				temp = vec.w;
+				break;
+			}
+			
+			res.x += mat.matrix[4*i + 0] * temp;
+			res.y += mat.matrix[4*i + 1] * temp;
+			res.z += mat.matrix[4*i + 2] * temp;
+			res.w += mat.matrix[4*i + 3] * temp;
 		}
 
 		return res;

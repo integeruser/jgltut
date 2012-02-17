@@ -1,39 +1,58 @@
 package rosick.jglsdk.glm;
 
+import java.nio.FloatBuffer;
+
+import rosick.PortingUtils.BufferableData;
+
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
  * @author integeruser
  */
-public class Quaternion extends Vec {
+public class Quaternion extends BufferableData<FloatBuffer> {
+	
+	public float w, x, y, z;
+
 	
 	public Quaternion() {
-		vector = new float[4];
 	}
 	
 	public Quaternion(float w, float x, float y, float z) {
-		vector = new float[4];
-		vector[X] = x;
-		vector[Y] = y;
-		vector[Z] = z;
-		vector[W] = w;
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.w = w;
 	}
 	
 	public Quaternion(Quaternion quat) {
-		vector = new float[4];
-		vector[X] = quat.vector[X];
-		vector[Y] = quat.vector[Y];
-		vector[Z] = quat.vector[Z];
-		vector[W] = quat.vector[W];
+		x = quat.x;
+		y = quat.y;
+		z = quat.z;
+		w = quat.w;
 	}
 	
 	public Quaternion(float w, Vec3 vec) {
-		vector = new float[4];
-		vector[X] = vec.vector[X];
-		vector[Y] = vec.vector[Y];
-		vector[Z] = vec.vector[Z];
-		vector[W] = w;
+		x = vec.x;
+		y = vec.y;
+		z = vec.z;
+		this.w = w;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
+	
+
+	@Override
+	public FloatBuffer fillBuffer(FloatBuffer buffer) {
+		buffer.put(w);
+		buffer.put(x);
+		buffer.put(y);
+		buffer.put(z);
+
+		return buffer;
 	}
 	
 	
@@ -42,33 +61,33 @@ public class Quaternion extends Vec {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	public Quaternion add(Quaternion quat) {
-		vector[X] += quat.vector[X];
-		vector[Y] += quat.vector[Y];
-		vector[Z] += quat.vector[Z];
-		vector[W] += quat.vector[W];
+		x += quat.x;
+		y += quat.y;
+		z += quat.z;
+		w += quat.w;
 
 		return this;
 	}
 	
 	public Quaternion sub(Quaternion quat) {
-		vector[X] -= quat.vector[X];
-		vector[Y] -= quat.vector[Y];
-		vector[Z] -= quat.vector[Z];
-		vector[W] -= quat.vector[W];
+		x -= quat.x;
+		y -= quat.y;
+		z -= quat.z;
+		w -= quat.w;
 
 		return this;
 	}
 	
 	public Quaternion mul(Quaternion quat) {	
-		float x = (vector[X] * quat.vector[W]) + (vector[W] * quat.vector[X]) + (vector[Y] * quat.vector[Z]) - (vector[Z] * quat.vector[Y]);
-		float y = (vector[Y] * quat.vector[W]) + (vector[W] * quat.vector[Y]) + (vector[Z] * quat.vector[X]) - (vector[X] * quat.vector[Z]);
-		float z = (vector[Z] * quat.vector[W]) + (vector[W] * quat.vector[Z]) + (vector[X] * quat.vector[Y]) - (vector[Y] * quat.vector[X]);
-		float w = (vector[W] * quat.vector[W]) - (vector[X] * quat.vector[X]) - (vector[Y] * quat.vector[Y]) - (vector[Z] * quat.vector[Z]);
+		float newX = (x * quat.w) + (w * quat.x) + (y * quat.z) - (z * quat.y);
+		float newY = (y * quat.w) + (w * quat.y) + (z * quat.x) - (x * quat.z);
+		float newZ = (z * quat.w) + (w * quat.z) + (x * quat.y) - (y * quat.x);
+		float newW = (w * quat.w) - (x * quat.x) - (y * quat.y) - (z * quat.z);
 		
-		vector[X] = x;
-		vector[Y] = y;
-		vector[Z] = z;
-		vector[W] = w;
+		x = newX;
+		y = newY;
+		z = newZ;
+		w = newW;
 
 		return this;
 	}
@@ -76,12 +95,12 @@ public class Quaternion extends Vec {
 	public Vec3 mul(Vec3 v) {	
 		float two = 2.0f;
 		Vec3 uv, uuv;
-		Vec3 QuatVector = new Vec3(vector[X], vector[Y], vector[Z]);
+		Vec3 quatVector = new Vec3(x, y, z);
 
-		uv = Glm.cross(QuatVector, v);
-		uuv = Glm.cross(QuatVector, uv);
+		uv = Glm.cross(quatVector, v);
+		uuv = Glm.cross(quatVector, uv);
 			
-		uv.scale(two * vector[W]); 
+		uv.scale(two * w); 
 		uuv.scale(two); 
 
 		return v.add(uv).add(uuv);
@@ -89,28 +108,28 @@ public class Quaternion extends Vec {
 	
 	
 	public Quaternion scale(float scalar) {
-		vector[X] *= scalar;
-		vector[Y] *= scalar;
-		vector[Z] *= scalar;
-		vector[W] *= scalar;
+		x *= scalar;
+		y *= scalar;
+		z *= scalar;
+		w *= scalar;
 
 		return this;
 	}
 	
 	
 	public Quaternion negate() {
-		vector[X] = -vector[X];
-		vector[Y] = -vector[Y];
-		vector[Z] = -vector[Z];
-		vector[W] = -vector[W];
+		x = -x;
+		y = -y;
+		z = -z;
+		w = -w;
 
 		return this;
 	}
 	
 	public Quaternion conjugate() {
-		vector[X] = -vector[X];
-		vector[Y] = -vector[Y];
-		vector[Z] = -vector[Z];
+		x = -x;
+		y = -y;
+		z = -z;
 
 		return this;
 	}

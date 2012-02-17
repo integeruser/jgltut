@@ -1,7 +1,5 @@
 package rosick.jglsdk.glutil.pole;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import org.lwjgl.input.Keyboard;
 
 import rosick.jglsdk.glm.Glm;
@@ -257,8 +255,8 @@ public class ViewPole extends ViewProvider {
 	
 	private void onDragRotate(Vec2 ptCurr) {
 		Vec2 iDiff = Vec2.sub(ptCurr, m_startDragMouseLoc);
-		int iXDiff = (int) iDiff.get(X);
-		int iYDiff = (int) - iDiff.get(Y);											// Y axis is different in LWJGL
+		int iXDiff = (int) iDiff.x;
+		int iYDiff = (int) - iDiff.y;											// Y axis is different in LWJGL
 		
 		switch (m_RotateMode) {
 			case RM_DUAL_AXIS_ROTATE:

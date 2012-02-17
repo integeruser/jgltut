@@ -47,7 +47,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * SPACE	- presses A and G keys.
  * Y		- toggles between plane/corridor mesh.
  * P		- toggles pausing on/off.
- * 1,2		- respectively select linear mipmap filtering and anisotropic filtering (using the maximum possible anisotropy).
+ * 1,2		- select linear mipmap filtering and anisotropic filtering (using the maximum possible anisotropy).
  */
 public class GammaCheckers02 extends GLWindow {
 	
@@ -161,17 +161,22 @@ public class GammaCheckers02 extends GLWindow {
 	@Override
 	protected void update() {		
 		while (Keyboard.next()) {
+			boolean particularKeyPressed = false;
+			
 			if (Keyboard.getEventKeyState()) {
 				if (Keyboard.getEventKey() == Keyboard.KEY_A) {
 					g_drawGammaProgram = !g_drawGammaProgram;
+					particularKeyPressed = true;
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
 					g_drawGammaTexture = !g_drawGammaTexture;
-										
+					particularKeyPressed = true;
+		
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
 					g_drawGammaProgram = !g_drawGammaProgram;
 					g_drawGammaTexture = !g_drawGammaTexture;
-				
+					particularKeyPressed = true;
+
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
 					g_drawCorridor = !g_drawCorridor;
 										
@@ -189,9 +194,11 @@ public class GammaCheckers02 extends GLWindow {
 					leaveMainLoop();
 				}
 				
-				System.out.println("----");
-				System.out.println("Rendering:\t\t" + (g_drawGammaProgram ? "Gamma" : "Linear"));
-				System.out.println("Mipmap Generation:\t" + (g_drawGammaTexture ? "Gamma" : "Linear"));
+				if (particularKeyPressed) {
+					System.out.println("----");
+					System.out.println("Rendering:\t\t" + (g_drawGammaProgram ? "Gamma" : "Linear"));
+					System.out.println("Mipmap Generation:\t" + (g_drawGammaTexture ? "Gamma" : "Linear"));
+				}
 			}
 		}
 	}

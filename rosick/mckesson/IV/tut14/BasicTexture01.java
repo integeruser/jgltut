@@ -10,8 +10,6 @@ import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL33.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -280,7 +278,7 @@ public class BasicTexture01 extends GLWindow {
 						System.out.println("Shader");
 					}
 					
-				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9  ) {
+				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_GAUSS_TEXTURES) {
 						System.out.println("Angle Resolution: "+ calcCosAngResolution(number));
@@ -605,8 +603,8 @@ public class BasicTexture01 extends GLWindow {
 
 		Vec4 ret = new Vec4(0.0f, g_lightHeight, 0.0f, 1.0f);
 
-		ret.set(X, (float) (Math.cos(timeThroughLoop * fScale) * g_lightRadius));
-		ret.set(Z, (float) (Math.sin(timeThroughLoop * fScale) * g_lightRadius));
+		ret.x = (float) (Math.cos(timeThroughLoop * fScale) * g_lightRadius);
+		ret.z = (float) (Math.sin(timeThroughLoop * fScale) * g_lightRadius);
 
 		return ret;
 	}

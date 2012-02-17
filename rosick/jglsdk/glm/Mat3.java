@@ -1,7 +1,5 @@
 package rosick.jglsdk.glm;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
@@ -56,9 +54,9 @@ public class Mat3 extends Mat {
 		int offset = (columnIndex * 3);
 		
 		Vec3 res = new Vec3();
-		res.vector[X] = matrix[offset];
-		res.vector[Y] = matrix[offset + 1];
-		res.vector[Z] = matrix[offset + 2];
+		res.x = matrix[offset];
+		res.y = matrix[offset + 1];
+		res.z = matrix[offset + 2];
 		
 		return res;
 	}
@@ -67,9 +65,9 @@ public class Mat3 extends Mat {
 	public void setColumn(int columnIndex, Vec3 vec) {
 		int offset = (columnIndex * 3);
 		
-		matrix[offset]     = vec.vector[X];
-		matrix[offset + 1] = vec.vector[Y];
-		matrix[offset + 2] = vec.vector[Z];
+		matrix[offset]     = vec.x;
+		matrix[offset + 1] = vec.y;
+		matrix[offset + 2] = vec.z;
 	}
 	
 	

@@ -7,8 +7,6 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import static rosick.jglsdk.glm.Vec.*;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -694,8 +692,8 @@ public class GeomImpostor02 extends GLWindow {
 
 		Vec4 ret = new Vec4(0.0f, g_lightHeight, 0.0f, 1.0f);
 
-		ret.set(X, (float) (Math.cos(timeThroughLoop * fScale) * 20.0f));
-		ret.set(Z, (float) (Math.sin(timeThroughLoop * fScale) * 20.0f));
+		ret.x = (float) (Math.cos(timeThroughLoop * fScale) * 20.0f);
+		ret.z = (float) (Math.sin(timeThroughLoop * fScale) * 20.0f);
 
 		return ret;
 	}

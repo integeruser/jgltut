@@ -1,7 +1,7 @@
 OpenGL tutorials with LWJGL
 ===========================
 
-This project is a port of McKesson's excellent OpenGL tutorials to Java using LWJGL and it is distributed in the hope that it will be useful.
+This project is a port of McKesson's OpenGL tutorials to Java using LWJGL and it is distributed in the hope that it will be useful.
 
 [Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html) is the book where to start; you can find the original code
 [here](https://bitbucket.org/alfonse/gltut/wiki/Home).  

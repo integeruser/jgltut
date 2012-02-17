@@ -1,12 +1,19 @@
 package rosick.jglsdk.glm;
 
+import java.nio.FloatBuffer;
+
+import rosick.PortingUtils.BufferableData;
+
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
  * @author integeruser
  */
-public class Mat4 extends Mat {
+public class Mat4 extends BufferableData<FloatBuffer> {
+	
+	public float matrix[];
+
 	
 	public Mat4() {
 		matrix = new float[16];
@@ -89,8 +96,38 @@ public class Mat4 extends Mat {
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
+	
+	@Override
+	public FloatBuffer fillBuffer(FloatBuffer buffer) {
+		buffer.put(matrix);
+		
+		return buffer;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+	public float[] get() {
+		return matrix;
+	}
+	
+	public float get(int index) {
+		return matrix[index];
+	}
+	
+	
+	public void set(int index, float value) {
+		matrix[index] = value;
+	}
+	
+	public void set(int columnIndex, int rowIndex, float value) {
+		matrix[columnIndex * 4 + rowIndex] = value;
+	}
+	
+	
 	public Vec4 getColumn(int columnIndex) {		
 		int offset = (columnIndex * 4);
 		
@@ -102,12 +139,7 @@ public class Mat4 extends Mat {
 		
 		return res;
 	}
-	
-	
-	public void set(int columnIndex, int rowIndex, float value) {
-		matrix[columnIndex * 4 + rowIndex] = value;
-	}
-	
+		
 	public void setColumn(int columnIndex, Vec4 vec) {
 		int offset = (columnIndex * 4);
 		

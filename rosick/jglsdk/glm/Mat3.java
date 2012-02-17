@@ -1,12 +1,19 @@
 package rosick.jglsdk.glm;
 
+import java.nio.FloatBuffer;
+
+import rosick.PortingUtils.BufferableData;
+
 
 /**
  * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
  * 
  * @author integeruser
  */
-public class Mat3 extends Mat {
+public class Mat3 extends BufferableData<FloatBuffer> {
+	
+	public float matrix[];
+
 	
 	public Mat3() {
 		matrix = new float[9];
@@ -48,7 +55,37 @@ public class Mat3 extends Mat {
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
+	
+	@Override
+	public FloatBuffer fillBuffer(FloatBuffer buffer) {
+		buffer.put(matrix);
+		
+		return buffer;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	public float[] get() {
+		return matrix;
+	}
+	
+	public float get(int index) {
+		return matrix[index];
+	}
+	
+	
+	public void set(int index, float value) {
+		matrix[index] = value;
+	}
+	
+	public void set(int columnIndex, int rowIndex, float value) {
+		matrix[columnIndex * 3 + rowIndex] = value;
+	}
+	
 	
 	public Vec3 getColumn(int columnIndex) {		
 		int offset = (columnIndex * 3);
@@ -60,8 +97,7 @@ public class Mat3 extends Mat {
 		
 		return res;
 	}
-	
-	
+		
 	public void setColumn(int columnIndex, Vec3 vec) {
 		int offset = (columnIndex * 3);
 		

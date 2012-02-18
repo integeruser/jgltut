@@ -291,15 +291,15 @@ public class GammaCorrection03 extends GLWindow {
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_1) {
 					g_eTimerMode = TimerTypes.TIMER_ALL;
-					System.out.println("All.");
+					System.out.printf("All\n");
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_2) {
 					g_eTimerMode = TimerTypes.TIMER_SUN;
-					System.out.println("Sun.");
+					System.out.printf("Sun\n");
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_3) {
 					g_eTimerMode = TimerTypes.TIMER_LIGHTS;
-					System.out.println("Lights.");
+					System.out.printf("Lights\n");
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_L) {
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
@@ -311,21 +311,21 @@ public class GammaCorrection03 extends GLWindow {
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_K) {
 					g_isGammaCorrect = !g_isGammaCorrect;
 					if (g_isGammaCorrect) {
-						System.out.println("Gamma on!");
+						System.out.printf("Gamma on!\n");
 					} else {
-						System.out.println("Gamma off!");
+						System.out.printf("Gamma off!\n");
 					}
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
 					g_gammaValue += 0.1f;
-					System.out.println("Gamma: " + g_gammaValue);
+					System.out.printf("Gamma: %f\n", g_gammaValue);
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
 					g_gammaValue -= 0.1f;
 					if (g_gammaValue < 1.0f) {
 						g_gammaValue = 1.0f;	
 					}
-					System.out.println("Gamma: " + g_gammaValue);
+					System.out.printf("Gamma: %f\n", g_gammaValue);
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
 					float sunAlpha = g_lights.getSunTime();
@@ -334,7 +334,7 @@ public class GammaCorrection03 extends GLWindow {
 					int sunHours = (int) sunTimeHours;
 					float sunTimeMinutes = (sunTimeHours - sunHours) * 60.0f;
 					int sunMinutes = (int) sunTimeMinutes;
-					System.out.format("%02d:%02d\n", sunHours, sunMinutes);
+					System.out.printf("%02d:%02d\n", sunHours, sunMinutes);
 					
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {

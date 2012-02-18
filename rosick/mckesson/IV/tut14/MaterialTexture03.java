@@ -299,18 +299,18 @@ public class MaterialTexture03 extends GLWindow {
 					int index = (g_eMode.ordinal() + 1) % ShaderMode.NUM_SHADER_MODES.ordinal();
 					g_eMode = ShaderMode.values()[index];
 
-					System.out.println(g_shaderModeNames[g_eMode.ordinal()]);
+					System.out.printf("%s\n", g_shaderModeNames[g_eMode.ordinal()]);
 					
 				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_GAUSS_TEXTURES) {
-						System.out.println("Angle Resolution: "+ calcCosAngResolution(number));
+						System.out.printf("Angle Resolution: %d\n", calcCosAngResolution(number));
 						g_currTexture = number;
 					}
 					
 					if (number >= (9 - NUM_MATERIALS)) {
 						number = number - (9 - NUM_MATERIALS);
-						System.out.println("Material number " + number);
+						System.out.printf("Material number %d\n", number);
 						g_currMaterial = number;
 					}
 					

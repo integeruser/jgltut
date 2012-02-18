@@ -195,9 +195,9 @@ public class GammaCheckers02 extends GLWindow {
 				}
 				
 				if (particularKeyPressed) {
-					System.out.println("----");
-					System.out.println("Rendering:\t\t" + (g_drawGammaProgram ? "Gamma" : "Linear"));
-					System.out.println("Mipmap Generation:\t" + (g_drawGammaTexture ? "Gamma" : "Linear"));
+					System.out.printf("----\n");
+					System.out.printf("Rendering:\t\t%s\n", g_drawGammaProgram ? "Gamma" : "Linear");
+					System.out.printf("Mipmap Generation:\t%s\n", g_drawGammaTexture ? "Gamma" : "Linear");
 				}
 			}
 		}

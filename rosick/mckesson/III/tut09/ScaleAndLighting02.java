@@ -192,9 +192,9 @@ public class ScaleAndLighting02 extends GLWindow {
 					g_bDoInvTranspose = !g_bDoInvTranspose;
 					
 					if (g_bDoInvTranspose) {
-						System.out.println("Doing Inverse Transpose.");
+						System.out.printf("Doing Inverse Transpose.\n");
 					} else {
-						System.out.println("Bad lighting.");
+						System.out.printf("Bad lighting.\n");
 					}
 				}
 				

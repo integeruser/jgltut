@@ -197,9 +197,9 @@ public class AmbientLighting03 extends GLWindow {
 					g_bShowAmbient = !g_bShowAmbient;
 					
 					if (g_bShowAmbient) {
-						System.out.println("Ambient Lighting On.");
+						System.out.printf("Ambient Lighting On.\n");
 					} else {
-						System.out.println("Ambient Lighting Off.");
+						System.out.printf("Ambient Lighting Off.\n");
 					}
 				}
 				

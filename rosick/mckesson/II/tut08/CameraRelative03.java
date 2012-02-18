@@ -175,15 +175,15 @@ public class CameraRelative03 extends GLWindow {
 					g_iOffset = OffsetRelative.values()[ordinal];
 					
 					switch (g_iOffset) {
-						case MODEL_RELATIVE: 	
-							System.out.println("Model Relative"); 
-							break;
-						case WORLD_RELATIVE: 	
-							System.out.println("World Relative"); 
-							break;
-						case CAMERA_RELATIVE: 	
-							System.out.println("Camera Relative"); 
-							break;
+					case MODEL_RELATIVE:
+						System.out.printf("Model Relative\n");
+						break;
+					case WORLD_RELATIVE:
+						System.out.printf("World Relative\n");
+						break;
+					case CAMERA_RELATIVE:
+						System.out.printf("Camera Relative\n");
+						break;
 					}
 				}
 				

@@ -171,7 +171,7 @@ public class ManyImages01 extends GLWindow {
 				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_SAMPLERS) {
-						System.out.println("Sampler: " + g_samplerNames[number]);
+						System.out.printf("Sampler: %s\n", g_samplerNames[number]);
 						g_currSampler = number;
 					}
 					
@@ -321,7 +321,7 @@ public class ManyImages01 extends GLWindow {
 		// Max anisotropic
 		float maxAniso = glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
 
-		System.out.println("Maximum anisotropy: " + maxAniso);
+		System.out.printf("Maximum anisotropy: %f\n", maxAniso);
 
 		glSamplerParameteri(g_samplers[5], GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glSamplerParameteri(g_samplers[5], GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);

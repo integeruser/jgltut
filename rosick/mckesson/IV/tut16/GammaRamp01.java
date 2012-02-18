@@ -165,17 +165,17 @@ public class GammaRamp01 extends GLWindow {
 				if (Keyboard.getEventKey() == Keyboard.KEY_1) {
 					g_useGammaCorrect[0] = !g_useGammaCorrect[0];
 					if (g_useGammaCorrect[0]) {
-						System.out.println("Top:\tsRGB texture.");
+						System.out.printf("Top:\tsRGB texture.\n");
 					} else {
-						System.out.println("Top:\tlinear texture.");
+						System.out.printf("Top:\tlinear texture.\n");
 					}
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_2) {
 					g_useGammaCorrect[1] = !g_useGammaCorrect[1];
 					if (g_useGammaCorrect[1]) {
-						System.out.println("Bottom:\tsRGB texture.");
+						System.out.printf("Bottom:\tsRGB texture.\n");
 					} else {
-						System.out.println("Bottom:\tlinear texture.");
+						System.out.printf("Bottom:\tlinear texture.\n");
 					}
 					
 					

@@ -352,11 +352,11 @@ public class PhongLighting01 extends GLWindow {
 		}
 		
 		if (bChangedShininess) {
-			System.out.println("Shiny: " + g_fShininessFactor);
+			System.out.printf("Shiny: %f\n", g_fShininessFactor);
 		}
 		
 		if (bChangedLightModel) {
-			System.out.println(strLightModelNames[g_eLightModel.ordinal()]);
+			System.out.printf("%s\n", strLightModelNames[g_eLightModel.ordinal()]);
 		}
 	}
 	

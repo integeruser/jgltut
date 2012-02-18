@@ -359,11 +359,11 @@ public class BlinnVsPhongLighting02 extends GLWindow {
 		}
 		
 		if (bChangedShininess) {
-			System.out.println("Shiny: " + g_matParams.getSpecularValue());
+			System.out.printf("Shiny: %f\n", (float) g_matParams.getSpecularValue());
 		}
 		
 		if (bChangedLightModel) {
-			System.out.println(strLightModelNames[g_eLightModel.ordinal()]);
+			System.out.printf("%s\n", strLightModelNames[g_eLightModel.ordinal()]);
 		}
 	}
 	

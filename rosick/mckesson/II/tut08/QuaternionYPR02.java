@@ -134,7 +134,7 @@ public class QuaternionYPR02 extends GLWindow {
 			if (Keyboard.getEventKeyState()) {
 				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
 					g_bRightMultiply = !g_bRightMultiply;
-					System.out.println(g_bRightMultiply ? "Right-multiply" : "Left-multiply");
+					System.out.printf(g_bRightMultiply ? "Right-multiply\n" : "Left-multiply\n");
 				}
 				
 				

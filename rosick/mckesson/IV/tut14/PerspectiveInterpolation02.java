@@ -109,17 +109,17 @@ public class PerspectiveInterpolation02 extends GLWindow {
 				if (Keyboard.getEventKey() == Keyboard.KEY_S) {
 					g_bUseFakeHallway = !g_bUseFakeHallway;
 					if (g_bUseFakeHallway) {
-						System.out.println("Fake Hallway.");
+						System.out.printf("Fake Hallway.\n");
 					} else {
-						System.out.println("Real Hallway.");
+						System.out.printf("Real Hallway.\n");
 					}
 					
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_P) {
 					g_bUseSmoothInterpolation = !g_bUseSmoothInterpolation;
 					if (g_bUseSmoothInterpolation) {
-						System.out.println("Perspective correct interpolation.");
+						System.out.printf("Perspective correct interpolation.\n");
 					} else {
-						System.out.println("Just linear interpolation.");
+						System.out.printf("Just linear interpolation.\n");
 					}
 											
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {

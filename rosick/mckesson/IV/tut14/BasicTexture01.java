@@ -271,15 +271,15 @@ public class BasicTexture01 extends GLWindow {
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
 					g_bUseTexture = !g_bUseTexture;
 					if (g_bUseTexture) {
-						System.out.println("Texture");
+						System.out.printf("Texture\n");
 					} else {
-						System.out.println("Shader");
+						System.out.printf("Shader\n");
 					}
 					
 				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_GAUSS_TEXTURES) {
-						System.out.println("Angle Resolution: "+ calcCosAngResolution(number));
+						System.out.printf("Angle Resolution: %d\n", calcCosAngResolution(number));
 						g_currTexture = number;
 					}
 					

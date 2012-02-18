@@ -306,9 +306,9 @@ public class FragmentAttenuation03 extends GLWindow {
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
 					g_bUseRSquare = !g_bUseRSquare;
 					if (g_bUseRSquare) {
-						System.out.println("Inverse Squared Attenuation");
+						System.out.printf("Inverse Squared Attenuation\n");
 					} else {
-						System.out.println("Plain Inverse Attenuation");
+						System.out.printf("Plain Inverse Attenuation\n");
 					}					
 				
 				
@@ -328,7 +328,7 @@ public class FragmentAttenuation03 extends GLWindow {
 		}
 
 		if (bChangedAtten) {
-			System.out.println("Atten: " + g_fLightAttenuation);
+			System.out.printf("Atten: %f\n", g_fLightAttenuation);
 		}
 	}
 	

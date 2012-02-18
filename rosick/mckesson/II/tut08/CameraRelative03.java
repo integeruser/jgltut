@@ -32,9 +32,9 @@ import rosick.jglsdk.glutil.MatrixStack;
  * W,S		- control the outer gimbal.
  * A,D 		- control the middle gimbal.
  * Q,E  	- control the inner gimbal.
- * I,K      - move the camera up and down, relative to a center point. Holding LEFT_SHIFT with these keys will move 
+ * I,K      - move the camera up and down, relative to a center point. Holding SHIFT with these keys will move 
  * 				the camera in smaller increments.
- * J,L 		- move the camera left and right around the center point. Holding LEFT_SHIFT with these keys will move 
+ * J,L 		- move the camera left and right around the center point. Holding SHIFT with these keys will move 
  * 				the camera in smaller increments.
  */
 public class CameraRelative03 extends LWJGLWindow {
@@ -138,7 +138,7 @@ public class CameraRelative03 extends LWJGLWindow {
 		
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y - 1.125f * lastFrameDuration);
 			} else {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y - 11.25f * lastFrameDuration);
@@ -146,7 +146,7 @@ public class CameraRelative03 extends LWJGLWindow {
 			
 			changedY = true;
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y + 1.125f * lastFrameDuration);
 			} else {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y + 11.25f * lastFrameDuration);
@@ -156,13 +156,13 @@ public class CameraRelative03 extends LWJGLWindow {
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x - 1.125f * lastFrameDuration);	
 			} else {
 				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x - 11.25f * lastFrameDuration);
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x + 1.125f * lastFrameDuration);
 			} else {
 				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x + 11.25f * lastFrameDuration);

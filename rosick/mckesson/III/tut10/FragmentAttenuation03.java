@@ -48,13 +48,13 @@ import rosick.jglsdk.glutil.MousePoles.*;
  * B 		- toggles the light's rotation on/off.
  * H 		- swaps between the linear and quadratic interpolation functions.
  * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING				- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
+ * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING			- rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT	- spin the object.
+ * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
  */
 public class FragmentAttenuation03 extends LWJGLWindow {
 	
@@ -244,13 +244,13 @@ public class FragmentAttenuation03 extends LWJGLWindow {
 		float lastFrameDuration = (float) (getLastFrameDuration() * 5 / 1000.0);
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightRadius -= 0.05f * lastFrameDuration;
 			} else {
 				g_fLightRadius -= 0.2f * lastFrameDuration;
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightRadius += 0.05f * lastFrameDuration;
 			} else {
 				g_fLightRadius += 0.2f * lastFrameDuration;
@@ -258,13 +258,13 @@ public class FragmentAttenuation03 extends LWJGLWindow {
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightHeight += 0.05f * lastFrameDuration;
 			} else {
 				g_fLightHeight += 0.2f * lastFrameDuration;
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightHeight -= 0.05f * lastFrameDuration;
 			} else {
 				g_fLightHeight -= 0.2f * lastFrameDuration;
@@ -292,7 +292,7 @@ public class FragmentAttenuation03 extends LWJGLWindow {
 					break;
 					
 				case Keyboard.KEY_O:
-					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 						g_fLightAttenuation *= 1.1f;
 					} else {
 						g_fLightAttenuation *= 1.5f;
@@ -302,7 +302,7 @@ public class FragmentAttenuation03 extends LWJGLWindow {
 					break;
 					
 				case Keyboard.KEY_U:
-					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 						g_fLightAttenuation /= 1.1f; 
 					} else {
 						g_fLightAttenuation /= 1.5f; 

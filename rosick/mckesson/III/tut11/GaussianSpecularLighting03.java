@@ -38,24 +38,24 @@ import rosick.jglsdk.glutil.MousePoles.*;
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2011.html
  * @author integeruser
  * 
- * I,J,K,L  - control the light's position. Holding LEFT_SHIFT with these keys will move in smaller increments.
+ * I,J,K,L  - control the light's position. Holding SHIFT with these keys will move in smaller increments.
  * SPACE	- toggles between drawing the uncolored cylinder and the colored one.
- * U,O      - control the specular value. They raise and low the specular exponent. Using LEFT_SHIFT in combination 
+ * U,O      - control the specular value. They raise and low the specular exponent. Using SHIFT in combination 
  * 				with them will raise/lower the exponent by smaller amounts.
  * Y 		- toggles the drawing of the light source.
  * T 		- toggles between the scaled and unscaled cylinder.
  * B 		- toggles the light's rotation on/off.
  * G 		- toggles between a diffuse color of (1, 1, 1) and a darker diffuse color of (0.2, 0.2, 0.2).
- * H 		- switches between Blinn, Phong and Gaussian specular. Pressing LEFT_SHIFT+H will switch between 
+ * H 		- switches between Blinn, Phong and Gaussian specular. Pressing SHIFT+H will switch between 
  * 				diffuse+specular and specular only.
  * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING				- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
+ * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING			- rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT	- spin the object.
+ * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
  */
 public class GaussianSpecularLighting03 extends LWJGLWindow {
 	
@@ -264,13 +264,13 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 		float lastFrameDuration = (float) (getLastFrameDuration() * 5 / 1000.0);
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightRadius -= 0.05f * lastFrameDuration;
 			} else {
 				g_fLightRadius -= 0.2f * lastFrameDuration;
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightRadius += 0.05f * lastFrameDuration;
 			} else {
 				g_fLightRadius += 0.2f * lastFrameDuration;
@@ -278,13 +278,13 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightHeight += 0.05f * lastFrameDuration;
 			} else {
 				g_fLightHeight += 0.2f * lastFrameDuration;
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightHeight -= 0.05f * lastFrameDuration;
 			} else {
 				g_fLightHeight -= 0.2f * lastFrameDuration;
@@ -309,7 +309,7 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 					break;
 					
 				case Keyboard.KEY_O:
-					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 						g_matParams.increment(false);
 					} else {
 						g_matParams.increment(true);
@@ -319,7 +319,7 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 					break;
 
 				case Keyboard.KEY_U:
-					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 						g_matParams.decrement(false);
 					} else {
 						g_matParams.decrement(true);
@@ -345,7 +345,7 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 					break;
 					
 				case Keyboard.KEY_H:
-					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 						int index;
 						if (g_eLightModel.ordinal() % 2 != 0) {
 							index = g_eLightModel.ordinal() - 1;

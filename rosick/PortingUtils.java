@@ -12,8 +12,8 @@ import java.util.ArrayList;
 public class PortingUtils {
 
 	private static interface Bufferable<T extends Buffer> {	
-		public T fillAndFlipBuffer(T buffer);
 		public T fillBuffer(T buffer);
+		public T fillAndFlipBuffer(T buffer);
 	}
 		
 	public static abstract class BufferableData<T extends Buffer> implements Bufferable<T> {		

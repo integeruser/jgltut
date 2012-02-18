@@ -19,7 +19,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL12;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -47,7 +47,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * P			- toggles pausing on/off.
  * 1,2,3,4,5,6	- switch filtering technique.
  */
-public class ManyImages01 extends GLWindow {
+public class ManyImages01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new ManyImages01().start();

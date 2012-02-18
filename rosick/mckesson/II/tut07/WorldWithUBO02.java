@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.glm.Glm;
@@ -42,7 +42,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * In addition, if you hold down the LEFT_SHIFT key while pressing any of the last six keys, then 
  * 		the affected control will be much slower.
  */
-public class WorldWithUBO02 extends GLWindow {
+public class WorldWithUBO02 extends LWJGLWindow {
 
 	public static void main(String[] args) {		
 		new WorldWithUBO02().start(800, 800);

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.glm.Mat4;
@@ -30,7 +30,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * A,D 		- control the middle gimbal.
  * Q,E  	- control the inner gimbal.
  */
-public class GimbalLock01 extends GLWindow {
+public class GimbalLock01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new GimbalLock01().start();

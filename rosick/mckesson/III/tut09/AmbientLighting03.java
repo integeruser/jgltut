@@ -14,7 +14,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -47,7 +47,7 @@ import rosick.jglsdk.glutil.MousePoles.*;
  * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
  * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
  */
-public class AmbientLighting03 extends GLWindow {
+public class AmbientLighting03 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new AmbientLighting03().start();

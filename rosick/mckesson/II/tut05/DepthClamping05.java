@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 
 
@@ -27,7 +27,7 @@ import rosick.jglsdk.framework.Framework;
  * 
  * SPACE	- toggles depth clamping on/off.
  */
-public class DepthClamping05 extends GLWindow {
+public class DepthClamping05 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new DepthClamping05().start();

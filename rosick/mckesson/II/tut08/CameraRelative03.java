@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.glm.Glm;
@@ -37,7 +37,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * J,L 		- move the camera left and right around the center point. Holding LEFT_SHIFT with these keys will move 
  * 				the camera in smaller increments.
  */
-public class CameraRelative03 extends GLWindow {
+public class CameraRelative03 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new CameraRelative03().start();

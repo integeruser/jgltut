@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 
 
 /**
@@ -22,7 +22,7 @@ import rosick.GLWindow;
  * http://www.arcsynthesis.org/gltut/Basics/Tutorial%2001.html
  * @author integeruser
  */
-public class HelloTriangle01 extends GLWindow {
+public class HelloTriangle01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {
 		new HelloTriangle01().start();

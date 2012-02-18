@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.framework.Timer;
@@ -31,7 +31,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * SPACE			- toggles between regular linear interpolation and slerp. 
  * Q,W,E,R,T,Y,U 	- cause the ship to interpolate to a new orientation.
  */
-public class Interpolation04 extends GLWindow {
+public class Interpolation04 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new Interpolation04().start();

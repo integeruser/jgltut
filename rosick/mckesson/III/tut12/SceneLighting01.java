@@ -15,7 +15,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.MousePole;
@@ -57,7 +57,7 @@ import rosick.mckesson.III.tut12.Scene.ProgramData;
  * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
  * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
  */
-public class SceneLighting01 extends GLWindow {
+public class SceneLighting01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new SceneLighting01().start(800, 800);

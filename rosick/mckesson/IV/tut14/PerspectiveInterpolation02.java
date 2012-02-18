@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.glutil.MatrixStack;
@@ -27,7 +27,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * P		- toggles between perspective-correct interpolation/window-space linear interpolation.
  * SPACE	- reloads meshes.
  */
-public class PerspectiveInterpolation02 extends GLWindow {
+public class PerspectiveInterpolation02 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new PerspectiveInterpolation02().start();

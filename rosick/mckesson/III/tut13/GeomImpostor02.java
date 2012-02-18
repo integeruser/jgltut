@@ -14,7 +14,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -52,7 +52,7 @@ import rosick.jglsdk.glutil.MousePoles.*;
  * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
  * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
  */
-public class GeomImpostor02 extends GLWindow {
+public class GeomImpostor02 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new GeomImpostor02().start();

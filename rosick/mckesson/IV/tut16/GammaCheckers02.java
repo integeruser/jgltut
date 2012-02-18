@@ -19,7 +19,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL21;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -49,7 +49,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * P		- toggles pausing on/off.
  * 1,2		- select linear mipmap filtering and anisotropic filtering (using the maximum possible anisotropy).
  */
-public class GammaCheckers02 extends GLWindow {
+public class GammaCheckers02 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new GammaCheckers02().start();

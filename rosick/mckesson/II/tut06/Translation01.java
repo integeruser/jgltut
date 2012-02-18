@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Vec3;
@@ -26,7 +26,7 @@ import rosick.jglsdk.glm.Vec4;
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2006.html
  * @author integeruser
  */
-public class Translation01 extends GLWindow {
+public class Translation01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new Translation01().start();

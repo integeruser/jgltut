@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.glm.Glm;
@@ -32,7 +32,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * A,D 		- control the middle gimbal.
  * Q,E  	- control the inner gimbal.
  */
-public class QuaternionYPR02 extends GLWindow {
+public class QuaternionYPR02 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new QuaternionYPR02().start();

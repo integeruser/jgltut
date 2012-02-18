@@ -261,9 +261,6 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 		}
 		
 		
-		boolean bChangedShininess = false;
-		boolean bChangedLightModel = false;
-		
 		float lastFrameDuration = (float) (getLastFrameDuration() * 5 / 1000.0);
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
@@ -293,10 +290,19 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 				g_fLightHeight -= 0.2f * lastFrameDuration;
 			}
 		}
+		
+		
+		if (g_fLightRadius < 0.2f) {
+			g_fLightRadius = 0.2f;
+		}
 
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
+				boolean bChangedShininess = false;
+				boolean bChangedLightModel = false;
+				
+				
 				switch (Keyboard.getEventKey()) {
 				case Keyboard.KEY_SPACE:
 					g_bDrawColoredCyl = !g_bDrawColoredCyl;
@@ -361,20 +367,16 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 					leaveMainLoop();
 					break;
 				}
+				
+				
+				if (bChangedShininess) {
+					System.out.printf("Shiny: %f\n", (float) g_matParams.getSpecularValue());
+				}
+				
+				if (bChangedLightModel) {
+					System.out.printf("%s\n", strLightModelNames[g_eLightModel.ordinal()]);
+				}
 			}
-		}
-		
-		
-		if (g_fLightRadius < 0.2f) {
-			g_fLightRadius = 0.2f;
-		}
-		
-		if (bChangedShininess) {
-			System.out.printf("Shiny: %f\n", (float) g_matParams.getSpecularValue());
-		}
-		
-		if (bChangedLightModel) {
-			System.out.printf("%s\n", strLightModelNames[g_eLightModel.ordinal()]);
 		}
 	}
 	

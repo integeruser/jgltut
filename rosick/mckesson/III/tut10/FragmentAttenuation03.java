@@ -241,7 +241,6 @@ public class FragmentAttenuation03 extends LWJGLWindow {
 		}
 		
 		
-		boolean bChangedAtten = false;
 		float lastFrameDuration = (float) (getLastFrameDuration() * 5 / 1000.0);
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
@@ -272,9 +271,21 @@ public class FragmentAttenuation03 extends LWJGLWindow {
 			}
 		}
 		
+		
+		if (g_fLightRadius < 0.2f) {
+			g_fLightRadius = 0.2f;
+		}
+		
+		if (g_fLightAttenuation < 0.1f) {
+			g_fLightAttenuation = 0.1f;
+		}
+		
 
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
+				boolean bChangedAtten = false;
+
+				
 				switch (Keyboard.getEventKey()) {
 				case Keyboard.KEY_SPACE:
 					g_bDrawColoredCyl = !g_bDrawColoredCyl;
@@ -326,20 +337,12 @@ public class FragmentAttenuation03 extends LWJGLWindow {
 					leaveMainLoop();
 					break;
 				}
+				
+				
+				if (bChangedAtten) {
+					System.out.printf("Atten: %f\n", g_fLightAttenuation);
+				}
 			}
-		}
-		
-		
-		if (g_fLightRadius < 0.2f) {
-			g_fLightRadius = 0.2f;
-		}
-		
-		if (g_fLightAttenuation < 0.1f) {
-			g_fLightAttenuation = 0.1f;
-		}
-
-		if (bChangedAtten) {
-			System.out.printf("Atten: %f\n", g_fLightAttenuation);
 		}
 	}
 	

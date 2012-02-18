@@ -114,7 +114,6 @@ public class Interpolation04 extends LWJGLWindow {
 					leaveMainLoop();
 				}
 				
-				
 				else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
 					boolean bSlerp = g_orient.toggleSlerp();
 					System.out.printf(bSlerp ? "Slerp\n" : "Lerp\n");

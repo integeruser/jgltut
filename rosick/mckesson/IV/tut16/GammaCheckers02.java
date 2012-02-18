@@ -201,13 +201,13 @@ public class GammaCheckers02 extends LWJGLWindow {
 						g_currSampler = number;
 					}
 				}
-
-				
-				if (particularKeyPressed) {
-					System.out.printf("----\n");
-					System.out.printf("Rendering:\t\t%s\n", g_drawGammaProgram ? "Gamma" : "Linear");
-					System.out.printf("Mipmap Generation:\t%s\n", g_drawGammaTexture ? "Gamma" : "Linear");
-				}
+			}
+			
+			
+			if (particularKeyPressed) {
+				System.out.printf("----\n");
+				System.out.printf("Rendering:\t\t%s\n", g_drawGammaProgram ? "Gamma" : "Linear");
+				System.out.printf("Mipmap Generation:\t%s\n", g_drawGammaTexture ? "Gamma" : "Linear");
 			}
 		}
 	}

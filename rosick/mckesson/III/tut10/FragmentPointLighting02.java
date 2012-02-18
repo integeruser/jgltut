@@ -248,6 +248,11 @@ public class FragmentPointLighting02 extends LWJGLWindow {
 			}
 		}
 		
+		
+		if (g_fLightRadius < 0.2f) {
+			g_fLightRadius = 0.2f;
+		}
+		
 
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
@@ -277,11 +282,6 @@ public class FragmentPointLighting02 extends LWJGLWindow {
 					break;
 				}
 			}
-		}
-		
-		
-		if (g_fLightRadius < 0.2f) {
-			g_fLightRadius = 0.2f;
 		}
 	}
 	

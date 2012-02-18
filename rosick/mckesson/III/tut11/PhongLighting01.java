@@ -244,10 +244,7 @@ public class PhongLighting01 extends LWJGLWindow {
 			}
 		}
 		
-		
-		boolean bChangedShininess = false;
-		boolean bChangedLightModel = false;
-		
+			
 		float lastFrameDuration = (float) (getLastFrameDuration() * 5 / 1000.0);
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
@@ -277,10 +274,21 @@ public class PhongLighting01 extends LWJGLWindow {
 				g_fLightHeight -= 0.2f * lastFrameDuration;
 			}
 		}
+		
+		if (g_fLightRadius < 0.2f) {
+			g_fLightRadius = 0.2f;
+		}
+		
+		if (g_fShininessFactor <= 0.0f) {
+			g_fShininessFactor = 0.0001f;
+		}
 
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
+				boolean bChangedShininess = false;
+				boolean bChangedLightModel = false;
+				
 				switch (Keyboard.getEventKey()) {
 				case Keyboard.KEY_SPACE:
 					g_bDrawColoredCyl = !g_bDrawColoredCyl;
@@ -348,24 +356,16 @@ public class PhongLighting01 extends LWJGLWindow {
 					leaveMainLoop();
 					break;
 				}
+				
+				
+				if (bChangedShininess) {
+					System.out.printf("Shiny: %f\n", g_fShininessFactor);
+				}
+				
+				if (bChangedLightModel) {
+					System.out.printf("%s\n", strLightModelNames[g_eLightModel.ordinal()]);
+				}
 			}
-		}
-		
-		
-		if (g_fLightRadius < 0.2f) {
-			g_fLightRadius = 0.2f;
-		}
-		
-		if (g_fShininessFactor <= 0.0f) {
-			g_fShininessFactor = 0.0001f;
-		}
-		
-		if (bChangedShininess) {
-			System.out.printf("Shiny: %f\n", g_fShininessFactor);
-		}
-		
-		if (bChangedLightModel) {
-			System.out.printf("%s\n", strLightModelNames[g_eLightModel.ordinal()]);
 		}
 	}
 	

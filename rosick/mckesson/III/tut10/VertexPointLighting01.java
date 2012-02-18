@@ -246,6 +246,11 @@ public class VertexPointLighting01 extends LWJGLWindow {
 		}
 		
 		
+		if (g_fLightRadius < 0.2f) {
+			g_fLightRadius = 0.2f;
+		}
+		
+		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
 				switch (Keyboard.getEventKey()) {
@@ -266,11 +271,6 @@ public class VertexPointLighting01 extends LWJGLWindow {
 					break;
 				}
 			}
-		}
-		
-		
-		if (g_fLightRadius < 0.2f) {
-			g_fLightRadius = 0.2f;
 		}
 	}
 	

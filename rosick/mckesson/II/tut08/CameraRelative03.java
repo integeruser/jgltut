@@ -115,6 +115,7 @@ public class CameraRelative03 extends LWJGLWindow {
 	
 	@Override
 	protected void update() {
+		boolean changedY = false;
 		float lastFrameDuration = (float) (getLastFrameDuration() * 5 / 1000.0);
 	
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
@@ -142,12 +143,16 @@ public class CameraRelative03 extends LWJGLWindow {
 			} else {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y - 11.25f * lastFrameDuration);
 			}
+			
+			changedY = true;
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y + 1.125f * lastFrameDuration);
 			} else {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y + 11.25f * lastFrameDuration);
 			}
+			
+			changedY = true;
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
@@ -164,6 +169,11 @@ public class CameraRelative03 extends LWJGLWindow {
 			}
 		}
 
+		
+		if (changedY) {
+			g_sphereCamRelPos.y = Glm.clamp(g_sphereCamRelPos.y, -78.75f, 10.0f);
+		}
+		
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
@@ -195,9 +205,6 @@ public class CameraRelative03 extends LWJGLWindow {
 				}
 			}
 		}
-
-
-		g_sphereCamRelPos.y = Glm.clamp(g_sphereCamRelPos.y, -78.75f, 10.0f);
 	}
 	
 

@@ -311,45 +311,58 @@ public class BasicImpostor01 extends LWJGLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_P:
 					g_sphereTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_MINUS) {
+				case Keyboard.KEY_MINUS:
 					g_sphereTimer.rewind(0.5f);
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_EQUALS) {
-					g_sphereTimer.fastForward(0.5f);
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
-					g_bDrawCameraPos = !g_bDrawCameraPos;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
-					g_bDrawLights = !g_bDrawLights;
+					break;
 
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_1) {
+				case Keyboard.KEY_EQUALS:
+					g_sphereTimer.fastForward(0.5f);
+					break;
+					
+				case Keyboard.KEY_T:
+					g_bDrawCameraPos = !g_bDrawCameraPos;
+					break;
+					
+				case Keyboard.KEY_G:
+					g_bDrawLights = !g_bDrawLights;
+					break;
+					
+				case Keyboard.KEY_1:
 					g_drawImposter[0] = !g_drawImposter[0];
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_2) {
+				case Keyboard.KEY_2:
 					g_drawImposter[1] = !g_drawImposter[1];
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_3) {
+					break;
+
+				case Keyboard.KEY_3:
 					g_drawImposter[2] = !g_drawImposter[2];
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_4) {
+				case Keyboard.KEY_4:
 					g_drawImposter[3] = !g_drawImposter[3];
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_L) {
+				case Keyboard.KEY_L:
 					g_currImpostor = Impostors.IMP_BASIC;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_J) {
+					break;
+				
+				case Keyboard.KEY_J:
 					g_currImpostor = Impostors.IMP_PERSPECTIVE;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
+					break;
+				
+				case Keyboard.KEY_H:
 					g_currImpostor = Impostors.IMP_DEPTH;
+					break;
 					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

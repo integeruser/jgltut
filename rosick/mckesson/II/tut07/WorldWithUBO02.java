@@ -210,13 +210,14 @@ public class WorldWithUBO02 extends LWJGLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_bDrawLookatPoint = !g_bDrawLookatPoint;
-				}
-				
-				
-				else if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

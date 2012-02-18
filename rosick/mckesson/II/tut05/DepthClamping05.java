@@ -262,7 +262,8 @@ public class DepthClamping05 extends LWJGLWindow {
 	protected void update() {		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE: 
 					if (bDepthClampingActive) {
 						glDisable(GL_DEPTH_CLAMP);
 					} else {
@@ -270,11 +271,11 @@ public class DepthClamping05 extends LWJGLWindow {
 					}
 					
 					bDepthClampingActive = !bDepthClampingActive;	
-				}
+					break;
 				
-				
-				else if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

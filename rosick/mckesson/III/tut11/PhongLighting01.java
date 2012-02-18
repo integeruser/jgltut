@@ -281,10 +281,12 @@ public class PhongLighting01 extends LWJGLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_bDrawColoredCyl = !g_bDrawColoredCyl;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_O) {
+				case Keyboard.KEY_O:
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 						g_fShininessFactor += 0.1f;
 					} else {
@@ -292,8 +294,9 @@ public class PhongLighting01 extends LWJGLWindow {
 					}
 					
 					bChangedShininess = true;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_U) {
+					break;
+
+				case Keyboard.KEY_U:
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 						g_fShininessFactor -= 0.1f;
 					} else {
@@ -301,20 +304,25 @@ public class PhongLighting01 extends LWJGLWindow {
 					}
 					
 					bChangedShininess = true;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+				case Keyboard.KEY_Y:
 					g_bDrawLightSource = !g_bDrawLightSource;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+				case Keyboard.KEY_T:
 					g_bScaleCyl = !g_bScaleCyl;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_B) {
+				case Keyboard.KEY_B:
 					g_LightTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
+				case Keyboard.KEY_G:
 					g_bDrawDark = !g_bDrawDark;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
+				case Keyboard.KEY_H:
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 						switch (g_eLightModel) {
 						case LM_DIFFUSE_AND_SPECULAR:
@@ -334,10 +342,11 @@ public class PhongLighting01 extends LWJGLWindow {
 					}
 				
 					bChangedLightModel = true;
-				
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

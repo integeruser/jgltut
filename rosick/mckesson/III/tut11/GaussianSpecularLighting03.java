@@ -297,10 +297,12 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_bDrawColoredCyl = !g_bDrawColoredCyl;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_O) {
+				case Keyboard.KEY_O:
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 						g_matParams.increment(false);
 					} else {
@@ -308,8 +310,9 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 					}
 					
 					bChangedShininess = true;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_U) {
+					break;
+
+				case Keyboard.KEY_U:
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 						g_matParams.decrement(false);
 					} else {
@@ -317,20 +320,25 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 					}
 					
 					bChangedShininess = true;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+				case Keyboard.KEY_Y:
 					g_bDrawLightSource = !g_bDrawLightSource;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+				case Keyboard.KEY_T:
 					g_bScaleCyl = !g_bScaleCyl;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_B) {
+				case Keyboard.KEY_B:
 					g_LightTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
+				case Keyboard.KEY_G:
 					g_bDrawDark = !g_bDrawDark;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
+				case Keyboard.KEY_H:
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 						int index;
 						if (g_eLightModel.ordinal() % 2 != 0) {
@@ -347,10 +355,11 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 					}
 				
 					bChangedLightModel = true;
-				
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

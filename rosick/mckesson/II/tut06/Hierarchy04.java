@@ -275,8 +275,10 @@ public class Hierarchy04 extends LWJGLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}	

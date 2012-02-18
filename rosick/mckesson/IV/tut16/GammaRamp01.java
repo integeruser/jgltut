@@ -162,25 +162,30 @@ public class GammaRamp01 extends LWJGLWindow {
 	protected void update() {		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_1) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_1:
 					g_useGammaCorrect[0] = !g_useGammaCorrect[0];
+					
 					if (g_useGammaCorrect[0]) {
 						System.out.printf("Top:\tsRGB texture.\n");
 					} else {
 						System.out.printf("Top:\tlinear texture.\n");
 					}
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_2) {
+				case Keyboard.KEY_2:
 					g_useGammaCorrect[1] = !g_useGammaCorrect[1];
+					
 					if (g_useGammaCorrect[1]) {
 						System.out.printf("Bottom:\tsRGB texture.\n");
 					} else {
 						System.out.printf("Bottom:\tlinear texture.\n");
 					}
+					break;
 					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

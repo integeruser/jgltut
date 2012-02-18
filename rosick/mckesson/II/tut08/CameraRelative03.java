@@ -167,7 +167,8 @@ public class CameraRelative03 extends LWJGLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					int ordinal = g_iOffset.ordinal();
 					ordinal += 1;
 					ordinal = ordinal % OffsetRelative.NUM_RELATIVES.ordinal();
@@ -185,11 +186,12 @@ public class CameraRelative03 extends LWJGLWindow {
 						System.out.printf("Camera Relative\n");
 						break;
 					}
-				}
-				
-				
-				else if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+					
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

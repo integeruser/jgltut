@@ -164,35 +164,44 @@ public class GammaCheckers02 extends LWJGLWindow {
 			boolean particularKeyPressed = false;
 			
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_A) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_A:
 					g_drawGammaProgram = !g_drawGammaProgram;
 					particularKeyPressed = true;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
+				case Keyboard.KEY_G:
 					g_drawGammaTexture = !g_drawGammaTexture;
 					particularKeyPressed = true;
-		
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+					break;
+					
+				case Keyboard.KEY_SPACE:
 					g_drawGammaProgram = !g_drawGammaProgram;
 					g_drawGammaTexture = !g_drawGammaTexture;
 					particularKeyPressed = true;
+					break;
 
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+				case Keyboard.KEY_Y:
 					g_drawCorridor = !g_drawCorridor;
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_P) {
-					g_camTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
+				case Keyboard.KEY_P:
+					g_camTimer.togglePause();
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
+					leaveMainLoop();
+					break;
+				}
+				
+				
+				if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_SAMPLERS) {
 						g_currSampler = number;
 					}
-					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-					leaveMainLoop();
 				}
+
 				
 				if (particularKeyPressed) {
 					System.out.printf("----\n");

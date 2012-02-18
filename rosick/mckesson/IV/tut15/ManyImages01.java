@@ -159,25 +159,31 @@ public class ManyImages01 extends LWJGLWindow {
 	protected void update() {		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_useMipmapTexture = !g_useMipmapTexture;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+				case Keyboard.KEY_Y:
 					g_drawCorridor = !g_drawCorridor;
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_P) {
-					g_camTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
+				case Keyboard.KEY_P:
+					g_camTimer.togglePause();
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
+					leaveMainLoop();
+					break;
+				}
+				
+				
+				if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_SAMPLERS) {
 						System.out.printf("Sampler: %s\n", g_samplerNames[number]);
 						g_currSampler = number;
 					}
-					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-					leaveMainLoop();
 				}
 			}
 		}

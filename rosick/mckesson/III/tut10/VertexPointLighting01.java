@@ -248,18 +248,22 @@ public class VertexPointLighting01 extends LWJGLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_bDrawColoredCyl = !g_bDrawColoredCyl;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+				case Keyboard.KEY_Y:
 					g_bDrawLight = !g_bDrawLight;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_B) {
+				case Keyboard.KEY_B:
 					g_LightTimer.togglePause();
-
-				
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

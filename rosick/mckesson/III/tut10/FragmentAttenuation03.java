@@ -275,45 +275,56 @@ public class FragmentAttenuation03 extends LWJGLWindow {
 
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_bDrawColoredCyl = !g_bDrawColoredCyl;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_O) {
+				case Keyboard.KEY_O:
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 						g_fLightAttenuation *= 1.1f;
 					} else {
 						g_fLightAttenuation *= 1.5f;
 					}
-					bChangedAtten = true;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_U) {
+					bChangedAtten = true;
+					break;
+					
+				case Keyboard.KEY_U:
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 						g_fLightAttenuation /= 1.1f; 
 					} else {
 						g_fLightAttenuation /= 1.5f; 
 					}
+					
 					bChangedAtten = true;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+					break;
+				
+				case Keyboard.KEY_Y:
 					g_bDrawLight = !g_bDrawLight;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+				case Keyboard.KEY_T:
 					g_bScaleCyl = !g_bScaleCyl;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_B) {
+				case Keyboard.KEY_B:
 					g_LightTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
+				case Keyboard.KEY_H:
 					g_bUseRSquare = !g_bUseRSquare;
+					
 					if (g_bUseRSquare) {
 						System.out.printf("Inverse Squared Attenuation\n");
 					} else {
 						System.out.printf("Plain Inverse Attenuation\n");
-					}					
-				
-				
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+					}	
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

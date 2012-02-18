@@ -251,24 +251,30 @@ public class FragmentPointLighting02 extends LWJGLWindow {
 
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_bDrawColoredCyl = !g_bDrawColoredCyl;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+				case Keyboard.KEY_Y:
 					g_bDrawLight = !g_bDrawLight;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
-					g_bScaleCyl = !g_bScaleCyl;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
-					g_bUseFragmentLighting = !g_bUseFragmentLighting;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_B) {
-					g_LightTimer.togglePause();
+					break;
 
-				
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+				case Keyboard.KEY_T:
+					g_bScaleCyl = !g_bScaleCyl;
+					break;
+					
+				case Keyboard.KEY_H:
+					g_bUseFragmentLighting = !g_bUseFragmentLighting;
+					break;
+					
+				case Keyboard.KEY_B:
+					g_LightTimer.togglePause();
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

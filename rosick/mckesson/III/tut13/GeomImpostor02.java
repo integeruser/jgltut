@@ -295,24 +295,30 @@ public class GeomImpostor02 extends LWJGLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_P:
 					g_sphereTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_MINUS) {
+				case Keyboard.KEY_MINUS:
 					g_sphereTimer.rewind(0.5f);
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_EQUALS) {
+					break;
+
+				case Keyboard.KEY_EQUALS:
 					g_sphereTimer.fastForward(0.5f);
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+				case Keyboard.KEY_T:
 					g_bDrawCameraPos = !g_bDrawCameraPos;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
+				case Keyboard.KEY_G:
 					g_bDrawLights = !g_bDrawLights;
+					break;
 					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

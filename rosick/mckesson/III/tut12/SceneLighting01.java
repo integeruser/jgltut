@@ -275,38 +275,47 @@ public class SceneLighting01 extends LWJGLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_P:
 					g_lights.togglePause(g_eTimerMode);
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_MINUS) {
+				case Keyboard.KEY_MINUS:
 					g_lights.rewindTime(g_eTimerMode, 1.0f);
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_EQUALS) {
+					break;
+
+				case Keyboard.KEY_EQUALS:
 					g_lights.fastForwardTime(g_eTimerMode, 1.0f);
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+				case Keyboard.KEY_T:
 					g_bDrawCameraPos = !g_bDrawCameraPos;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_1) {
+				case Keyboard.KEY_1:
 					g_eTimerMode = TimerTypes.TIMER_ALL;
 					System.out.printf("All\n");
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_2) {
+				case Keyboard.KEY_2:
 					g_eTimerMode = TimerTypes.TIMER_SUN;
 					System.out.printf("Sun\n");
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_3) {
+					break;
+
+				case Keyboard.KEY_3:
 					g_eTimerMode = TimerTypes.TIMER_LIGHTS;
 					System.out.printf("Lights\n");
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_L) {
+				case Keyboard.KEY_L:
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 						setupNighttimeLighting();
 					} else {
 						setupDaytimeLighting();
 					}
-						
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+					break;
+					
+				case Keyboard.KEY_SPACE:
 					float sunAlpha = g_lights.getSunTime();
 					float sunTimeHours = sunAlpha * 24.0f + 12.0f;
 					sunTimeHours = sunTimeHours > 24.0f ? sunTimeHours - 24.0f : sunTimeHours;
@@ -314,10 +323,11 @@ public class SceneLighting01 extends LWJGLWindow {
 					float sunTimeMinutes = (sunTimeHours - sunHours) * 60.0f;
 					int sunMinutes = (int) sunTimeMinutes;
 					System.out.printf("%02d:%02d\n", sunHours, sunMinutes);
-					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+					break;
+				
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

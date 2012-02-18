@@ -134,13 +134,14 @@ public class GimbalLock01 extends LWJGLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_bDrawGimbals = !g_bDrawGimbals;
-				}
-				
-				
-				else if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

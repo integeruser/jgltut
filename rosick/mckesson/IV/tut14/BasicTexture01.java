@@ -253,39 +253,48 @@ public class BasicTexture01 extends LWJGLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_P:
 					g_lightTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_MINUS) {
+				case Keyboard.KEY_MINUS:
 					g_lightTimer.rewind(0.5f);
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_EQUALS) {
+					break;
+					
+				case Keyboard.KEY_EQUALS:
 					g_lightTimer.fastForward(0.5f);
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+					break;
+
+				case Keyboard.KEY_T:
 					g_bDrawCameraPos = !g_bDrawCameraPos;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
+				case Keyboard.KEY_G:
 					g_bDrawLights = !g_bDrawLights;
-				
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+					break;
+					
+				case Keyboard.KEY_SPACE:
 					g_bUseTexture = !g_bUseTexture;
 					if (g_bUseTexture) {
 						System.out.printf("Texture\n");
 					} else {
 						System.out.printf("Shader\n");
 					}
+					break;
 					
-				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
+				case Keyboard.KEY_ESCAPE:
+					leaveMainLoop();
+					break;
+				}
+					
+				
+				if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_GAUSS_TEXTURES) {
 						System.out.printf("Angle Resolution: %d\n", calcCosAngResolution(number));
 						g_currTexture = number;
 					}
-					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-					leaveMainLoop();
 				}
 			}
 		}

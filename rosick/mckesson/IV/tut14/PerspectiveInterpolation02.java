@@ -106,30 +106,36 @@ public class PerspectiveInterpolation02 extends LWJGLWindow {
 	protected void update() {
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_S) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_S:
 					g_bUseFakeHallway = !g_bUseFakeHallway;
+
 					if (g_bUseFakeHallway) {
 						System.out.printf("Fake Hallway.\n");
 					} else {
 						System.out.printf("Real Hallway.\n");
 					}
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+					break;
+
+				case Keyboard.KEY_P:
 					g_bUseSmoothInterpolation = !g_bUseSmoothInterpolation;
+
 					if (g_bUseSmoothInterpolation) {
 						System.out.printf("Perspective correct interpolation.\n");
 					} else {
 						System.out.printf("Just linear interpolation.\n");
 					}
-											
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+					break;
+
+				case Keyboard.KEY_SPACE:
 					// Reload
 					g_pRealHallway = new Mesh(TUTORIAL_DATAPATH + "RealHallway.xml");
 					g_pFauxHallway = new Mesh(TUTORIAL_DATAPATH + "FauxHallway.xml");
-					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+					break;
+
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

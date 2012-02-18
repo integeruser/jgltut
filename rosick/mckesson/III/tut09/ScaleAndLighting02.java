@@ -185,10 +185,12 @@ public class ScaleAndLighting02 extends LWJGLWindow {
 
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_bScaleCyl = !g_bScaleCyl;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+				case Keyboard.KEY_T:
 					g_bDoInvTranspose = !g_bDoInvTranspose;
 					
 					if (g_bDoInvTranspose) {
@@ -196,11 +198,11 @@ public class ScaleAndLighting02 extends LWJGLWindow {
 					} else {
 						System.out.printf("Bad lighting.\n");
 					}
-				}
-				
-				
-				else if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

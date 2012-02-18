@@ -277,31 +277,45 @@ public class MaterialTexture03 extends LWJGLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_P:
 					g_lightTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_MINUS) {
+				case Keyboard.KEY_MINUS:
 					g_lightTimer.rewind(0.5f);
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_EQUALS) {
+					break;
+					
+				case Keyboard.KEY_EQUALS:
 					g_lightTimer.fastForward(0.5f);
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+					break;
+
+				case Keyboard.KEY_T:
 					g_bDrawCameraPos = !g_bDrawCameraPos;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
+				case Keyboard.KEY_G:
 					g_bDrawLights = !g_bDrawLights;
+					break;
 				
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+				case Keyboard.KEY_Y:
 					g_bUseInfinity = !g_bUseInfinity;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				case Keyboard.KEY_SPACE:
 					int index = (g_eMode.ordinal() + 1) % ShaderMode.NUM_SHADER_MODES.ordinal();
 					g_eMode = ShaderMode.values()[index];
 
 					System.out.printf("%s\n", g_shaderModeNames[g_eMode.ordinal()]);
+					break;
 					
-				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
+				case Keyboard.KEY_ESCAPE:
+					leaveMainLoop();
+					break;
+				}
+
+				
+				if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_GAUSS_TEXTURES) {
 						System.out.printf("Angle Resolution: %d\n", calcCosAngResolution(number));
@@ -313,10 +327,6 @@ public class MaterialTexture03 extends LWJGLWindow {
 						System.out.printf("Material number %d\n", number);
 						g_currMaterial = number;
 					}
-					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-					leaveMainLoop();
 				}
 			}
 		}

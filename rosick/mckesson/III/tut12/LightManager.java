@@ -3,10 +3,9 @@ package rosick.mckesson.III.tut12;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import rosick.PortingUtils.BufferableData;
-import rosick.jglsdk.framework.Interpolators.LightInterpolatorVec3;
+import rosick.jglsdk.framework.Interpolators.ConstVelLinearInterpolatorVec3;
 import rosick.jglsdk.framework.Interpolators.WeightedLinearInterpolatorFloat;
 import rosick.jglsdk.framework.Interpolators.WeightedLinearInterpolatorVec4;
 import rosick.jglsdk.framework.Timer;
@@ -149,7 +148,13 @@ public class LightManager {
 		NUM_TIMER_TYPES
 	};
 	
+	
+	private class LightInterpolatorVec3 extends ConstVelLinearInterpolatorVec3 {}
+	private class ExtraTimerMap extends HashMap<String, Timer> {
+		private static final long serialVersionUID = 5833419449862029409L;
+	}
 		
+	
 	private final int NUMBER_OF_LIGHTS = 4;
 	private final int NUMBER_OF_POINT_LIGHTS = NUMBER_OF_LIGHTS - 1;
 	
@@ -167,7 +172,7 @@ public class LightManager {
 	private ArrayList<Vec4> m_lightIntensity;
 	private ArrayList<Timer> m_lightTimers;
 	
-	private Map<String, Timer> m_extraTimers;
+	private ExtraTimerMap m_extraTimers;
 	
 
 	
@@ -186,7 +191,7 @@ public class LightManager {
 		m_lightIntensity = new ArrayList<>();
 		m_lightTimers = new ArrayList<>();
 		
-		m_extraTimers = new HashMap<>();
+		m_extraTimers = new ExtraTimerMap();
 				 
 		m_lightPos.add(new LightInterpolatorVec3());
 		m_lightPos.add(new LightInterpolatorVec3());

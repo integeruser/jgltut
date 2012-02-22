@@ -203,6 +203,4 @@ public class Interpolators {
 			return Glm.length(Vec3.sub(rhs, lhs));
 		}
 	}
-	
-	public static class LightInterpolatorVec3 extends ConstVelLinearInterpolatorVec3 {}
 }

@@ -1,5 +1,5 @@
-OpenGL 3.3+ tutorials with LWJGL
-================================
+OpenGL 3.3 tutorials with LWJGL
+===============================
 
 This project is a port of McKesson's OpenGL tutorials to Java using LWJGL and it is distributed in the hope that it will be useful.
 

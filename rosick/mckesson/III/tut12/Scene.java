@@ -68,11 +68,7 @@ public abstract class Scene {
 	
 	private FloatBuffer tempFloatBuffer9 = BufferUtils.createFloatBuffer(9);
 	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-	
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 	
 	Scene(String basepath) {
 		m_pTerrainMesh 	= new Mesh(basepath + "Ground.xml");

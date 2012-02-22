@@ -174,10 +174,6 @@ public class LightManager {
 	
 	private ExtraTimerMap m_extraTimers;
 	
-
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	LightManager() {
 		m_sunTimer = new Timer(Timer.Type.TT_LOOP, 30.0f);

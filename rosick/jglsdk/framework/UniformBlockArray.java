@@ -24,10 +24,6 @@ public class UniformBlockArray<T extends BufferableData<ByteBuffer>> {
 	private int blockSize;
 	
 	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
 	public UniformBlockArray(int blockSize, int arrayCount) {
 		this.arrayCount = arrayCount;
 		this.blockSize = blockSize;

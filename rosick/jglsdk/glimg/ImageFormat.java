@@ -112,10 +112,7 @@ public class ImageFormat {
 	
 	private UncheckedImageFormat fmt;
 
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+		
 	public ImageFormat(UncheckedImageFormat fmt) {
 		this.fmt = fmt;
 	}

@@ -132,11 +132,7 @@ public class ImageSet {
 		}
 	}
 
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+			
 	private ImageSetImpl m_pImpl;
 	
 	

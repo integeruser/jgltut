@@ -53,4 +53,5 @@ I decided to create the push() and pop() methods in MatrixStack.java, and call t
 Distribution
 ------------
 
-This project is released under MIT license. See the [license](https://github.com/rosickteam/OpenGL/blob/master/LICENSE.txt) for further information.
+This project is licensed under a [Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/).  
+The LWJGL license can be found [here](http://lwjgl.org/license.php).

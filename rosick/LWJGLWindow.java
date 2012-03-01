@@ -6,6 +6,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.Util;
 
 
@@ -34,11 +35,15 @@ public class LWJGLWindow {
 	
 	public final void start(int width, int height) {		
 		try {
-			Display.setTitle("GLWindow by rosickteam");
+			Display.setTitle("LWJGLWindow by rosickteam");
 			Display.setDisplayMode(new DisplayMode(width, height));
 			Display.setResizable(true);
 			Display.setVSyncEnabled(true);
 			Display.create();
+
+			if (!GLContext.getCapabilities().OpenGL33) {
+				System.err.printf("You must have at least OpenGL 3.3 to run this tutorial.\n");
+			}
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 			System.exit(0);

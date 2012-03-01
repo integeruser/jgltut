@@ -10,15 +10,11 @@ import java.util.ArrayList;
  * @author integeruser
  */
 public class PortingUtils {
+	
+	public static abstract class BufferableData<T extends Buffer> {		
+		
+		public abstract T fillBuffer(T buffer);
 
-	private static interface Bufferable<T extends Buffer> {	
-		public T fillBuffer(T buffer);
-		public T fillAndFlipBuffer(T buffer);
-	}
-		
-	public static abstract class BufferableData<T extends Buffer> implements Bufferable<T> {		
-		
-		@Override
 		public T fillAndFlipBuffer(T buffer) {
 			buffer.clear();
 			fillBuffer(buffer);

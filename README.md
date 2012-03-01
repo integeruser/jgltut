@@ -1,15 +1,15 @@
-OpenGL tutorials with LWJGL
-===========================
+OpenGL 3.3 tutorials with LWJGL
+===============================
 
 This project is a port of McKesson's OpenGL tutorials to Java using LWJGL and it is distributed in the hope that it will be useful.
 
-[Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html) is the book where to start; you can find the original code
+[Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html) is the book where to start; you can find the original c++ source code
 [here](https://bitbucket.org/alfonse/gltut/wiki/Home).  
-The author occasionally updates his book by adding new tutorials: we will update this project in the same manner as soon as we can.
+The author occasionally updates his book by adding new tutorials: we will update this project as soon as we can.
 
 Tutorials ported so far: 16.2 of 16.3
 
-To suggest a feature, report a bug, or general discussion: [github issue tracker](https://github.com/rosickteam/OpenGL/issues).  
+To suggest a feature, report a bug, or general discussion please use the [issue tracker](https://github.com/rosickteam/OpenGL/issues).  
 Happy coding! 
 
 Francesco & Marco
@@ -53,4 +53,5 @@ I decided to create the push() and pop() methods in MatrixStack.java, and call t
 Distribution
 ------------
 
-This project is released under MIT license. See the [license](https://github.com/rosickteam/OpenGL/blob/master/LICENSE.txt) for further information.
+This project is licensed under a [Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/).  
+The LWJGL license can be found [here](http://lwjgl.org/license.php).

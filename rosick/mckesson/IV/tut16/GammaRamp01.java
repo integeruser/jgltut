@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL21.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL33.*;
@@ -19,7 +20,6 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL21;
 
 import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
@@ -275,7 +275,7 @@ public class GammaRamp01 extends LWJGLWindow {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
 			glBindTexture(GL_TEXTURE_2D, g_textures[1]);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL21.GL_SRGB8, bufferedImage.getWidth(), bufferedImage.getHeight(), 0,
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, bufferedImage.getWidth(), bufferedImage.getHeight(), 0,
 					GL_RGB, GL_UNSIGNED_BYTE, textureBuffer);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);

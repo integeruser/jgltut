@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.glm.Glm;
@@ -32,7 +32,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * A,D 		- control the middle gimbal.
  * Q,E  	- control the inner gimbal.
  */
-public class QuaternionYPR02 extends GLWindow {
+public class QuaternionYPR02 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new QuaternionYPR02().start();
@@ -132,14 +132,15 @@ public class QuaternionYPR02 extends GLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_bRightMultiply = !g_bRightMultiply;
-					System.out.println(g_bRightMultiply ? "Right-multiply" : "Left-multiply");
-				}
-				
-				
-				else if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+					System.out.printf(g_bRightMultiply ? "Right-multiply\n" : "Left-multiply\n");
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

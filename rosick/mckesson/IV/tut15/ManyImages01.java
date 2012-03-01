@@ -19,7 +19,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL12;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -47,7 +47,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * P			- toggles pausing on/off.
  * 1,2,3,4,5,6	- switch filtering technique.
  */
-public class ManyImages01 extends GLWindow {
+public class ManyImages01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new ManyImages01().start();
@@ -159,25 +159,31 @@ public class ManyImages01 extends GLWindow {
 	protected void update() {		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_useMipmapTexture = !g_useMipmapTexture;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+				case Keyboard.KEY_Y:
 					g_drawCorridor = !g_drawCorridor;
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_P) {
-					g_camTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
+				case Keyboard.KEY_P:
+					g_camTimer.togglePause();
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
+					leaveMainLoop();
+					break;
+				}
+				
+				
+				if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_SAMPLERS) {
-						System.out.println("Sampler: " + g_samplerNames[number]);
+						System.out.printf("Sampler: %s\n", g_samplerNames[number]);
 						g_currSampler = number;
 					}
-					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-					leaveMainLoop();
 				}
 			}
 		}
@@ -321,7 +327,7 @@ public class ManyImages01 extends GLWindow {
 		// Max anisotropic
 		float maxAniso = glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
 
-		System.out.println("Maximum anisotropy: " + maxAniso);
+		System.out.printf("Maximum anisotropy: %f\n", maxAniso);
 
 		glSamplerParameteri(g_samplers[5], GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glSamplerParameteri(g_samplers[5], GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -389,6 +395,7 @@ public class ManyImages01 extends GLWindow {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
 			glGenerateMipmap(GL_TEXTURE_2D);
+
 			glBindTexture(GL_TEXTURE_2D, 0);
 		} catch (Exception e) {
 			e.printStackTrace();

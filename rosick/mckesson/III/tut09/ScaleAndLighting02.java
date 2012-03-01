@@ -14,7 +14,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -40,15 +40,15 @@ import rosick.jglsdk.glutil.MousePoles.*;
  * SPACE	- toggles between drawing the uncolored cylinder and the colored one.
  * T		- toggles between properly using the inverse-transpose and not using the inverse transpose.
  * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING				- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
+ * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING			- rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT	- spin the object.
+ * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
  */
-public class ScaleAndLighting02 extends GLWindow {
+public class ScaleAndLighting02 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new ScaleAndLighting02().start();
@@ -185,22 +185,24 @@ public class ScaleAndLighting02 extends GLWindow {
 
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_bScaleCyl = !g_bScaleCyl;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+				case Keyboard.KEY_T:
 					g_bDoInvTranspose = !g_bDoInvTranspose;
 					
 					if (g_bDoInvTranspose) {
-						System.out.println("Doing Inverse Transpose.");
+						System.out.printf("Doing Inverse Transpose.\n");
 					} else {
-						System.out.println("Bad lighting.");
+						System.out.printf("Bad lighting.\n");
 					}
-				}
-				
-				
-				else if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.glm.Mat3;
 import rosick.jglsdk.glm.Mat4;
@@ -36,7 +36,7 @@ import rosick.jglsdk.glm.Vec4;
  *	Wrist Spin		Z				C
  *	Finger     		Q				E
  */
-public class Hierarchy04 extends GLWindow {
+public class Hierarchy04 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new Hierarchy04().start(800, 800);
@@ -275,8 +275,10 @@ public class Hierarchy04 extends GLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}	

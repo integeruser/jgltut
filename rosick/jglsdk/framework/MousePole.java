@@ -47,11 +47,11 @@ public class MousePole {
 	
 	
 	private static MouseModifiers calc_glut_modifiers() {		
-		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 			return MouseModifiers.MM_KEY_SHIFT;
 		}
 		
-		if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+		if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
 			return MouseModifiers.MM_KEY_CTRL;
 		}
 		

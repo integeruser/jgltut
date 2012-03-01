@@ -19,7 +19,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -58,15 +58,15 @@ import rosick.jglsdk.glutil.MousePoles.*;
  * 1,2,3,4	- switch to progressively larger textures.
  * 8,9		- switch to the gold material/a material with a dark diffuse color and bright specular color.
  * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING				- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
+ * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING			- rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT	- spin the object.
+ * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
  */
-public class MaterialTexture03 extends GLWindow {
+public class MaterialTexture03 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new MaterialTexture03().start();
@@ -277,46 +277,56 @@ public class MaterialTexture03 extends GLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_P:
 					g_lightTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_MINUS) {
+				case Keyboard.KEY_MINUS:
 					g_lightTimer.rewind(0.5f);
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_EQUALS) {
+					break;
+					
+				case Keyboard.KEY_EQUALS:
 					g_lightTimer.fastForward(0.5f);
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+					break;
+
+				case Keyboard.KEY_T:
 					g_bDrawCameraPos = !g_bDrawCameraPos;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
+				case Keyboard.KEY_G:
 					g_bDrawLights = !g_bDrawLights;
+					break;
 				
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+				case Keyboard.KEY_Y:
 					g_bUseInfinity = !g_bUseInfinity;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				case Keyboard.KEY_SPACE:
 					int index = (g_eMode.ordinal() + 1) % ShaderMode.NUM_SHADER_MODES.ordinal();
 					g_eMode = ShaderMode.values()[index];
 
-					System.out.println(g_shaderModeNames[g_eMode.ordinal()]);
+					System.out.printf("%s\n", g_shaderModeNames[g_eMode.ordinal()]);
+					break;
 					
-				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
+				case Keyboard.KEY_ESCAPE:
+					leaveMainLoop();
+					break;
+				}
+
+				
+				if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_GAUSS_TEXTURES) {
-						System.out.println("Angle Resolution: "+ calcCosAngResolution(number));
+						System.out.printf("Angle Resolution: %d\n", calcCosAngResolution(number));
 						g_currTexture = number;
 					}
 					
 					if (number >= (9 - NUM_MATERIALS)) {
 						number = number - (9 - NUM_MATERIALS);
-						System.out.println("Material number " + number);
+						System.out.printf("Material number %d\n", number);
 						g_currMaterial = number;
 					}
-					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-					leaveMainLoop();
 				}
 			}
 		}

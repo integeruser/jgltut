@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.glm.Glm;
@@ -36,10 +36,10 @@ import rosick.jglsdk.glutil.MatrixStack;
  * Rotate camera vertically around target		I				K
  * Move camera towards/away from target			U				O
  * 
- * In addition, if you hold down the LEFT_SHIFT key while pressing any of the last six keys, then 
+ * In addition, if you hold down the SHIFT key while pressing any of the last six keys, then 
  * 		the affected control will be much slower.
  */
-public class WorldScene01 extends GLWindow {
+public class WorldScene01 extends LWJGLWindow {
 
 	public static void main(String[] args) {		
 		new WorldScene01().start(800, 800);
@@ -152,13 +152,13 @@ public class WorldScene01 extends GLWindow {
 
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y - 1.125f * lastFrameDuration);
 			} else {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y - 11.25f * lastFrameDuration);
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y + 1.125f * lastFrameDuration);
 			} else {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y + 11.25f * lastFrameDuration);
@@ -166,13 +166,13 @@ public class WorldScene01 extends GLWindow {
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x - 1.125f * lastFrameDuration);
 			} else {
 				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x - 11.25f * lastFrameDuration);
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x + 1.125f * lastFrameDuration);
 			} else {
 				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x + 11.25f * lastFrameDuration);
@@ -180,13 +180,13 @@ public class WorldScene01 extends GLWindow {
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.z = (float) (g_sphereCamRelPos.z - 0.5f * lastFrameDuration);
 			} else {
 				g_sphereCamRelPos.z = (float) (g_sphereCamRelPos.z - 5.0f * lastFrameDuration);
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_U)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.z = (float) (g_sphereCamRelPos.z + 0.5f * lastFrameDuration);
 			} else {
 				g_sphereCamRelPos.z = (float) (g_sphereCamRelPos.z + 5.0f * lastFrameDuration);
@@ -196,13 +196,14 @@ public class WorldScene01 extends GLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_bDrawLookatPoint = !g_bDrawLookatPoint;
-				}
-				
-				
-				else if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

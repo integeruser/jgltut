@@ -14,7 +14,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -38,26 +38,26 @@ import rosick.jglsdk.glutil.MousePoles.*;
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2011.html
  * @author integeruser
  *
- * I,J,K,L  - control the light's position. Holding LEFT_SHIFT with these keys will move in smaller increments.
+ * I,J,K,L  - control the light's position. Holding SHIFT with these keys will move in smaller increments.
  * SPACE	- toggles between drawing the uncolored cylinder and the colored one.
- * U,O      - control the specular value. They raise and low the specular exponent. Using LEFT_SHIFT in combination 
+ * U,O      - control the specular value. They raise and low the specular exponent. Using SHIFT in combination 
  * 				with them will raise/lower the exponent by smaller amounts.
  * Y 		- toggles the drawing of the light source.
  * T 		- toggles between the scaled and unscaled cylinder.
  * B 		- toggles the light's rotation on/off.
  * G 		- toggles between a diffuse color of (1, 1, 1) and a darker diffuse color of (0.2, 0.2, 0.2).
- * H 		- selects between specular and diffuse, just specular and just diffuse. Pressing LEFT_SHIFT+H will toggle 
+ * H 		- selects between specular and diffuse, just specular and just diffuse. Pressing SHIFT+H will toggle 
  * 				between diffuse only and diffuse+specular.
  * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING				- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
+ * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING			- rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT	- spin the object.
+ * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
  */
-public class PhongLighting01 extends GLWindow {
+public class PhongLighting01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new PhongLighting01().start();
@@ -244,20 +244,17 @@ public class PhongLighting01 extends GLWindow {
 			}
 		}
 		
-		
-		boolean bChangedShininess = false;
-		boolean bChangedLightModel = false;
-		
+			
 		float lastFrameDuration = (float) (getLastFrameDuration() * 5 / 1000.0);
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightRadius -= 0.05f * lastFrameDuration;
 			} else {
 				g_fLightRadius -= 0.2f * lastFrameDuration;
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightRadius += 0.05f * lastFrameDuration;
 			} else {
 				g_fLightRadius += 0.2f * lastFrameDuration;
@@ -265,57 +262,76 @@ public class PhongLighting01 extends GLWindow {
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightHeight += 0.05f * lastFrameDuration;
 			} else {
 				g_fLightHeight += 0.2f * lastFrameDuration;
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightHeight -= 0.05f * lastFrameDuration;
 			} else {
 				g_fLightHeight -= 0.2f * lastFrameDuration;
 			}
 		}
+		
+		if (g_fLightRadius < 0.2f) {
+			g_fLightRadius = 0.2f;
+		}
+		
+		if (g_fShininessFactor <= 0.0f) {
+			g_fShininessFactor = 0.0001f;
+		}
 
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				boolean bChangedShininess = false;
+				boolean bChangedLightModel = false;
+				
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					g_bDrawColoredCyl = !g_bDrawColoredCyl;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_O) {
-					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+				case Keyboard.KEY_O:
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 						g_fShininessFactor += 0.1f;
 					} else {
 						g_fShininessFactor += 0.5f;
 					}
 					
 					bChangedShininess = true;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_U) {
-					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+					break;
+
+				case Keyboard.KEY_U:
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 						g_fShininessFactor -= 0.1f;
 					} else {
 						g_fShininessFactor -= 0.5f;
 					}
 					
 					bChangedShininess = true;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+				case Keyboard.KEY_Y:
 					g_bDrawLightSource = !g_bDrawLightSource;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+				case Keyboard.KEY_T:
 					g_bScaleCyl = !g_bScaleCyl;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_B) {
+				case Keyboard.KEY_B:
 					g_LightTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
+				case Keyboard.KEY_G:
 					g_bDrawDark = !g_bDrawDark;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
-					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+				case Keyboard.KEY_H:
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 						switch (g_eLightModel) {
 						case LM_DIFFUSE_AND_SPECULAR:
 							g_eLightModel = LightingModel.LM_PURE_DIFFUSE;
@@ -334,29 +350,22 @@ public class PhongLighting01 extends GLWindow {
 					}
 				
 					bChangedLightModel = true;
-				
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
+				}
+				
+				
+				if (bChangedShininess) {
+					System.out.printf("Shiny: %f\n", g_fShininessFactor);
+				}
+				
+				if (bChangedLightModel) {
+					System.out.printf("%s\n", strLightModelNames[g_eLightModel.ordinal()]);
 				}
 			}
-		}
-		
-		
-		if (g_fLightRadius < 0.2f) {
-			g_fLightRadius = 0.2f;
-		}
-		
-		if (g_fShininessFactor <= 0.0f) {
-			g_fShininessFactor = 0.0001f;
-		}
-		
-		if (bChangedShininess) {
-			System.out.println("Shiny: " + g_fShininessFactor);
-		}
-		
-		if (bChangedLightModel) {
-			System.out.println(strLightModelNames[g_eLightModel.ordinal()]);
 		}
 	}
 	

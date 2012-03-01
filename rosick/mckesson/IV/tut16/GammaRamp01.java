@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL21.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL33.*;
@@ -19,9 +20,8 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL21;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.glm.Mat4;
@@ -39,7 +39,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * 1 		- switches the top texture between lRGB and sRGB.
  * 2		- switches the bottom texture between lRGB and sRGB.
  */
-public class GammaRamp01 extends GLWindow {
+public class GammaRamp01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new GammaRamp01().start(500, 195);
@@ -162,25 +162,30 @@ public class GammaRamp01 extends GLWindow {
 	protected void update() {		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_1) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_1:
 					g_useGammaCorrect[0] = !g_useGammaCorrect[0];
+					
 					if (g_useGammaCorrect[0]) {
-						System.out.println("Top:\tsRGB texture.");
+						System.out.printf("Top:\tsRGB texture.\n");
 					} else {
-						System.out.println("Top:\tlinear texture.");
+						System.out.printf("Top:\tlinear texture.\n");
 					}
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_2) {
+				case Keyboard.KEY_2:
 					g_useGammaCorrect[1] = !g_useGammaCorrect[1];
+					
 					if (g_useGammaCorrect[1]) {
-						System.out.println("Bottom:\tsRGB texture.");
+						System.out.printf("Bottom:\tsRGB texture.\n");
 					} else {
-						System.out.println("Bottom:\tlinear texture.");
+						System.out.printf("Bottom:\tlinear texture.\n");
 					}
+					break;
 					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}
@@ -258,10 +263,9 @@ public class GammaRamp01 extends GLWindow {
 		g_textures[1] = glGenTextures();
 		
 		try {
-			/* Not in the original tutorial, needed for png loading */
+			/* PNG loading - different from the original tutorial which uses jglsdk classes */
 			BufferedImage bufferedImage = ImageIO.read(ClassLoader.class.getResourceAsStream(TUTORIAL_DATAPATH + "gamma_ramp.png"));			
 			ByteBuffer textureBuffer = byteBufferFromBufferedImage(bufferedImage);
-			/*                                                      */
 
 			glBindTexture(GL_TEXTURE_2D, g_textures[0]);
 		    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bufferedImage.getWidth(), bufferedImage.getHeight(), 0, 
@@ -270,7 +274,7 @@ public class GammaRamp01 extends GLWindow {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
 			glBindTexture(GL_TEXTURE_2D, g_textures[1]);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL21.GL_SRGB8, bufferedImage.getWidth(), bufferedImage.getHeight(), 0,
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, bufferedImage.getWidth(), bufferedImage.getHeight(), 0,
 					GL_RGB, GL_UNSIGNED_BYTE, textureBuffer);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
@@ -292,6 +296,7 @@ public class GammaRamp01 extends GLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
+	/* PNG loading - different from the original tutorial which uses jglsdk classes */
 	protected ByteBuffer byteBufferFromBufferedImage(BufferedImage image) {
 		int numComponents = image.getColorModel().getNumComponents();
 		

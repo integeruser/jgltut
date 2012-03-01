@@ -14,7 +14,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.MousePole;
@@ -42,24 +42,24 @@ import rosick.mckesson.III.tut12.Scene.ProgramData;
  * @author integeruser
  * 
  * W,A,S,D	- move the cameras forward/backwards and left/right, relative to the camera's current orientation.
- * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
+ * 				Holding SHIFT with these keys will move in smaller increments.  
  * Q,E		- raise and lower the camera, relative to its current orientation. 
- * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
+ * 				Holding SHIFT with these keys will move in smaller increments.  
  * P		- toggles pausing on/off.
  * -,=		- rewind/jump forward time by one second (of real-time).
  * T		- toggles viewing of the current target point.
  * 1,2,3	- timer commands affect both the sun and the other lights/only the sun/only the other lights.
- * L		- switches to hdr lighting. Pressing LEFT_SHIFT+L will switch to gamma version.
+ * L		- switches to hdr lighting. Pressing SHIFT+L will switch to gamma version.
  * K 		- toggles gamma correction.
  * Y,H 		- raise and lower the gamma value (default 2.2).
  * SPACE	- prints out the current sun-based time, in 24-hour notation.
  * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
+ * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
+ * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
  */
-public class GammaCorrection03 extends GLWindow {
+public class GammaCorrection03 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new GammaCorrection03().start(800, 800);
@@ -257,88 +257,101 @@ public class GammaCorrection03 extends GLWindow {
 		float lastFrameDuration = (float) (getLastFrameDuration() / 100.0);
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-			g_viewPole.charPress(Keyboard.KEY_W, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_W, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			g_viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			g_viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-			g_viewPole.charPress(Keyboard.KEY_A, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_A, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
-			g_viewPole.charPress(Keyboard.KEY_E, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_E, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-			g_viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 		
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_P:
 					g_lights.togglePause(g_eTimerMode);
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_MINUS) {
+				case Keyboard.KEY_MINUS:
 					g_lights.rewindTime(g_eTimerMode, 1.0f);
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_EQUALS) {
+					break;
+
+				case Keyboard.KEY_EQUALS:
 					g_lights.fastForwardTime(g_eTimerMode, 1.0f);
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+				case Keyboard.KEY_T:
 					g_bDrawCameraPos = !g_bDrawCameraPos;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_1) {
+				case Keyboard.KEY_1:
 					g_eTimerMode = TimerTypes.TIMER_ALL;
-					System.out.println("All.");
+					System.out.printf("All\n");
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_2) {
+				case Keyboard.KEY_2:
 					g_eTimerMode = TimerTypes.TIMER_SUN;
-					System.out.println("Sun.");
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_3) {
+					System.out.printf("Sun\n");
+					break;
+
+				case Keyboard.KEY_3:
 					g_eTimerMode = TimerTypes.TIMER_LIGHTS;
-					System.out.println("Lights.");
+					System.out.printf("Lights\n");
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_L) {
-					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+				case Keyboard.KEY_L:
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 						setupGammaLighting();
 					} else {
 						setupHDRLighting();
 					}
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_K) {
+					break;
+				
+				case Keyboard.KEY_K:
 					g_isGammaCorrect = !g_isGammaCorrect;
 					if (g_isGammaCorrect) {
-						System.out.println("Gamma on!");
+						System.out.printf("Gamma on!\n");
 					} else {
-						System.out.println("Gamma off!");
+						System.out.printf("Gamma off!\n");
 					}
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+					break;
+				
+				case Keyboard.KEY_Y:
 					g_gammaValue += 0.1f;
-					System.out.println("Gamma: " + g_gammaValue);
+					System.out.printf("Gamma: %f\n", g_gammaValue);
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
+				case Keyboard.KEY_H:
 					g_gammaValue -= 0.1f;
 					if (g_gammaValue < 1.0f) {
 						g_gammaValue = 1.0f;	
 					}
-					System.out.println("Gamma: " + g_gammaValue);
+					System.out.printf("Gamma: %f\n", g_gammaValue);
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				case Keyboard.KEY_SPACE:
 					float sunAlpha = g_lights.getSunTime();
 					float sunTimeHours = sunAlpha * 24.0f + 12.0f;
 					sunTimeHours = sunTimeHours > 24.0f ? sunTimeHours - 24.0f : sunTimeHours;
 					int sunHours = (int) sunTimeHours;
 					float sunTimeMinutes = (sunTimeHours - sunHours) * 60.0f;
 					int sunMinutes = (int) sunTimeMinutes;
-					System.out.format("%02d:%02d\n", sunHours, sunMinutes);
-					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+					System.out.printf("%02d:%02d\n", sunHours, sunMinutes);
+					break;
+				
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

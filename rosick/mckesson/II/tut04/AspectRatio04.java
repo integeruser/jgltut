@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 
 
@@ -22,7 +22,7 @@ import rosick.jglsdk.framework.Framework;
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2004.html
  * @author integeruser
  */
-public class AspectRatio04 extends GLWindow {
+public class AspectRatio04 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new AspectRatio04().start();

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.glutil.MatrixStack;
@@ -27,7 +27,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * P		- toggles between perspective-correct interpolation/window-space linear interpolation.
  * SPACE	- reloads meshes.
  */
-public class PerspectiveInterpolation02 extends GLWindow {
+public class PerspectiveInterpolation02 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new PerspectiveInterpolation02().start();
@@ -106,30 +106,36 @@ public class PerspectiveInterpolation02 extends GLWindow {
 	protected void update() {
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_S) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_S:
 					g_bUseFakeHallway = !g_bUseFakeHallway;
+
 					if (g_bUseFakeHallway) {
-						System.out.println("Fake Hallway.");
+						System.out.printf("Fake Hallway.\n");
 					} else {
-						System.out.println("Real Hallway.");
+						System.out.printf("Real Hallway.\n");
 					}
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+					break;
+
+				case Keyboard.KEY_P:
 					g_bUseSmoothInterpolation = !g_bUseSmoothInterpolation;
+
 					if (g_bUseSmoothInterpolation) {
-						System.out.println("Perspective correct interpolation.");
+						System.out.printf("Perspective correct interpolation.\n");
 					} else {
-						System.out.println("Just linear interpolation.");
+						System.out.printf("Just linear interpolation.\n");
 					}
-											
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+					break;
+
+				case Keyboard.KEY_SPACE:
 					// Reload
 					g_pRealHallway = new Mesh(TUTORIAL_DATAPATH + "RealHallway.xml");
 					g_pFauxHallway = new Mesh(TUTORIAL_DATAPATH + "FauxHallway.xml");
-					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+					break;
+
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

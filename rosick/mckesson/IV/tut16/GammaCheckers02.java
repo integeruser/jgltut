@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL21.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
@@ -17,9 +18,8 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL21;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -49,7 +49,7 @@ import rosick.jglsdk.glutil.MatrixStack;
  * P		- toggles pausing on/off.
  * 1,2		- select linear mipmap filtering and anisotropic filtering (using the maximum possible anisotropy).
  */
-public class GammaCheckers02 extends GLWindow {
+public class GammaCheckers02 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new GammaCheckers02().start();
@@ -164,41 +164,50 @@ public class GammaCheckers02 extends GLWindow {
 			boolean particularKeyPressed = false;
 			
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_A) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_A:
 					g_drawGammaProgram = !g_drawGammaProgram;
 					particularKeyPressed = true;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
+				case Keyboard.KEY_G:
 					g_drawGammaTexture = !g_drawGammaTexture;
 					particularKeyPressed = true;
-		
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+					break;
+					
+				case Keyboard.KEY_SPACE:
 					g_drawGammaProgram = !g_drawGammaProgram;
 					g_drawGammaTexture = !g_drawGammaTexture;
 					particularKeyPressed = true;
+					break;
 
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
+				case Keyboard.KEY_Y:
 					g_drawCorridor = !g_drawCorridor;
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_P) {
-					g_camTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
+				case Keyboard.KEY_P:
+					g_camTimer.togglePause();
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
+					leaveMainLoop();
+					break;
+				}
+				
+				
+				if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_SAMPLERS) {
 						g_currSampler = number;
 					}
-					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-					leaveMainLoop();
 				}
-				
-				if (particularKeyPressed) {
-					System.out.println("----");
-					System.out.println("Rendering:\t\t" + (g_drawGammaProgram ? "Gamma" : "Linear"));
-					System.out.println("Mipmap Generation:\t" + (g_drawGammaTexture ? "Gamma" : "Linear"));
-				}
+			}
+			
+			
+			if (particularKeyPressed) {
+				System.out.printf("----\n");
+				System.out.printf("Rendering:\t\t%s\n", g_drawGammaProgram ? "Gamma" : "Linear");
+				System.out.printf("Mipmap Generation:\t%s\n", g_drawGammaTexture ? "Gamma" : "Linear");
 			}
 		}
 	}
@@ -325,7 +334,7 @@ public class GammaCheckers02 extends GLWindow {
 				SingleImage image = pImageSet.getImage(mipmapLevel, 0, 0);
 				Dimensions dims = image.getDimensions();
 
-				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL21.GL_SRGB8, dims.width, dims.height, 0,
+				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, dims.width, dims.height, 0,
 						GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData());
 			}
 
@@ -342,7 +351,7 @@ public class GammaCheckers02 extends GLWindow {
 				SingleImage image = pImageSet.getImage(mipmapLevel, 0, 0);
 				Dimensions dims = image.getDimensions();
 
-				/* Changed GL_SRGB8 with GL_RGB8 */
+				/* GL_RGB8 should be GL_SRGB8 :\ */
 				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_RGB8, dims.width, dims.height, 0,
 						GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData());
 			}

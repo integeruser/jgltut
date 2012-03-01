@@ -44,11 +44,7 @@ public class ImageCreator {
 		private static final long serialVersionUID = 5885166000035279615L;
 	}
 	
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+		
 	private ImageFormat m_format;
 	private Dimensions m_dims;
 	private int m_mipmapCount;

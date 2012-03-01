@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 
 
@@ -27,7 +27,7 @@ import rosick.jglsdk.framework.Framework;
  * 
  * SPACE	- toggles depth clamping on/off.
  */
-public class DepthClamping05 extends GLWindow {
+public class DepthClamping05 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new DepthClamping05().start();
@@ -262,7 +262,8 @@ public class DepthClamping05 extends GLWindow {
 	protected void update() {		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE: 
 					if (bDepthClampingActive) {
 						glDisable(GL_DEPTH_CLAMP);
 					} else {
@@ -270,11 +271,11 @@ public class DepthClamping05 extends GLWindow {
 					}
 					
 					bDepthClampingActive = !bDepthClampingActive;	
-				}
+					break;
 				
-				
-				else if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

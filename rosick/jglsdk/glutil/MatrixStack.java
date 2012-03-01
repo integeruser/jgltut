@@ -17,10 +17,6 @@ public class MatrixStack {
 	private int firstIndexUsable;
 		
 	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
-	
 	public MatrixStack() {
 		matrices = new float[160];													// 10 matrices		
 		currentMatrix = new Mat4(1.0f);

@@ -14,7 +14,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -39,20 +39,20 @@ import rosick.jglsdk.glutil.MousePoles.*;
  * @author integeruser
  * 
  * W,A,S,D	- move the cameras forward/backwards and left/right, relative to the camera's current orientation.
- * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
+ * 				Holding SHIFT with these keys will move in smaller increments.  
  * Q,E		- raise and lower the camera, relative to its current orientation. 
- * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
+ * 				Holding SHIFT with these keys will move in smaller increments.  
  * P		- toggles pausing on/off.
  * -,=		- rewind/jump forward time by 0.5 second (of real-time).
  * T		- toggles a display showing the look-at point.
  * G		- toggles the drawing of the light source.
  * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
+ * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
+ * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
  */
-public class GeomImpostor02 extends GLWindow {
+public class GeomImpostor02 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new GeomImpostor02().start();
@@ -275,44 +275,50 @@ public class GeomImpostor02 extends GLWindow {
 		float lastFrameDuration = (float) (getLastFrameDuration() / 100.0);
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-			g_viewPole.charPress(Keyboard.KEY_W, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_W, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			g_viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			g_viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-			g_viewPole.charPress(Keyboard.KEY_A, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_A, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
-			g_viewPole.charPress(Keyboard.KEY_E, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_E, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-			g_viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 		
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_P:
 					g_sphereTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_MINUS) {
+				case Keyboard.KEY_MINUS:
 					g_sphereTimer.rewind(0.5f);
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_EQUALS) {
+					break;
+
+				case Keyboard.KEY_EQUALS:
 					g_sphereTimer.fastForward(0.5f);
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+				case Keyboard.KEY_T:
 					g_bDrawCameraPos = !g_bDrawCameraPos;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
+				case Keyboard.KEY_G:
 					g_bDrawLights = !g_bDrawLights;
+					break;
 					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

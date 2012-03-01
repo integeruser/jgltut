@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.glm.Glm;
@@ -32,12 +32,12 @@ import rosick.jglsdk.glutil.MatrixStack;
  * W,S		- control the outer gimbal.
  * A,D 		- control the middle gimbal.
  * Q,E  	- control the inner gimbal.
- * I,K      - move the camera up and down, relative to a center point. Holding LEFT_SHIFT with these keys will move 
+ * I,K      - move the camera up and down, relative to a center point. Holding SHIFT with these keys will move 
  * 				the camera in smaller increments.
- * J,L 		- move the camera left and right around the center point. Holding LEFT_SHIFT with these keys will move 
+ * J,L 		- move the camera left and right around the center point. Holding SHIFT with these keys will move 
  * 				the camera in smaller increments.
  */
-public class CameraRelative03 extends GLWindow {
+public class CameraRelative03 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new CameraRelative03().start();
@@ -115,6 +115,7 @@ public class CameraRelative03 extends GLWindow {
 	
 	@Override
 	protected void update() {
+		boolean changedY = false;
 		float lastFrameDuration = (float) (getLastFrameDuration() * 5 / 1000.0);
 	
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
@@ -137,27 +138,31 @@ public class CameraRelative03 extends GLWindow {
 		
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y - 1.125f * lastFrameDuration);
 			} else {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y - 11.25f * lastFrameDuration);
 			}
+			
+			changedY = true;
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y + 1.125f * lastFrameDuration);
 			} else {
 				g_sphereCamRelPos.y = (float) (g_sphereCamRelPos.y + 11.25f * lastFrameDuration);
 			}
+			
+			changedY = true;
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x - 1.125f * lastFrameDuration);	
 			} else {
 				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x - 11.25f * lastFrameDuration);
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x + 1.125f * lastFrameDuration);
 			} else {
 				g_sphereCamRelPos.x = (float) (g_sphereCamRelPos.x + 11.25f * lastFrameDuration);
@@ -165,9 +170,15 @@ public class CameraRelative03 extends GLWindow {
 		}
 
 		
+		if (changedY) {
+			g_sphereCamRelPos.y = Glm.clamp(g_sphereCamRelPos.y, -78.75f, 10.0f);
+		}
+		
+		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
 					int ordinal = g_iOffset.ordinal();
 					ordinal += 1;
 					ordinal = ordinal % OffsetRelative.NUM_RELATIVES.ordinal();
@@ -175,27 +186,25 @@ public class CameraRelative03 extends GLWindow {
 					g_iOffset = OffsetRelative.values()[ordinal];
 					
 					switch (g_iOffset) {
-						case MODEL_RELATIVE: 	
-							System.out.println("Model Relative"); 
-							break;
-						case WORLD_RELATIVE: 	
-							System.out.println("World Relative"); 
-							break;
-						case CAMERA_RELATIVE: 	
-							System.out.println("Camera Relative"); 
-							break;
+					case MODEL_RELATIVE:
+						System.out.printf("Model Relative\n");
+						break;
+					case WORLD_RELATIVE:
+						System.out.printf("World Relative\n");
+						break;
+					case CAMERA_RELATIVE:
+						System.out.printf("Camera Relative\n");
+						break;
 					}
-				}
-				
-				
-				else if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+					
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}
-
-
-		g_sphereCamRelPos.y = Glm.clamp(g_sphereCamRelPos.y, -78.75f, 10.0f);
 	}
 	
 

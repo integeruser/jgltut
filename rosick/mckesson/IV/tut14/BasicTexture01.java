@@ -19,7 +19,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -50,15 +50,15 @@ import rosick.jglsdk.glutil.MousePoles.*;
  * SPACE	- toggles between shader-based Gaussian specular and texture-based specular.
  * 1,2,3,4	- switch to progressively larger textures.
  * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING				- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
+ * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING			- rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT	- spin the object.
+ * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
  */
-public class BasicTexture01 extends GLWindow {
+public class BasicTexture01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new BasicTexture01().start();
@@ -253,39 +253,48 @@ public class BasicTexture01 extends GLWindow {
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_P:
 					g_lightTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_MINUS) {
+				case Keyboard.KEY_MINUS:
 					g_lightTimer.rewind(0.5f);
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_EQUALS) {
+					break;
+					
+				case Keyboard.KEY_EQUALS:
 					g_lightTimer.fastForward(0.5f);
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
+					break;
+
+				case Keyboard.KEY_T:
 					g_bDrawCameraPos = !g_bDrawCameraPos;
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
+				case Keyboard.KEY_G:
 					g_bDrawLights = !g_bDrawLights;
-				
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+					break;
+					
+				case Keyboard.KEY_SPACE:
 					g_bUseTexture = !g_bUseTexture;
 					if (g_bUseTexture) {
-						System.out.println("Texture");
+						System.out.printf("Texture\n");
 					} else {
-						System.out.println("Shader");
+						System.out.printf("Shader\n");
 					}
+					break;
 					
-				} else if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
+				case Keyboard.KEY_ESCAPE:
+					leaveMainLoop();
+					break;
+				}
+					
+				
+				if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_GAUSS_TEXTURES) {
-						System.out.println("Angle Resolution: "+ calcCosAngResolution(number));
+						System.out.printf("Angle Resolution: %d\n", calcCosAngResolution(number));
 						g_currTexture = number;
 					}
-					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-					leaveMainLoop();
 				}
 			}
 		}

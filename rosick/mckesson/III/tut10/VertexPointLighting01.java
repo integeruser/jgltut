@@ -14,7 +14,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -42,15 +42,15 @@ import rosick.jglsdk.glutil.MousePoles.*;
  * Y 		- toggles the drawing of the light source.
  * B 		- toggles the light's rotation on/off.
  * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING				- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
+ * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING			- rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT	- spin the object.
+ * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
  */
-public class VertexPointLighting01 extends GLWindow {
+public class VertexPointLighting01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new VertexPointLighting01().start();
@@ -218,13 +218,13 @@ public class VertexPointLighting01 extends GLWindow {
 		float lastFrameDuration = (float) (getLastFrameDuration() * 5 / 1000.0);
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightRadius -= 0.05f * lastFrameDuration;
 			} else {
 				g_fLightRadius -= 0.2f * lastFrameDuration;
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightRadius += 0.05f * lastFrameDuration;
 			} else {
 				g_fLightRadius += 0.2f * lastFrameDuration;
@@ -232,13 +232,13 @@ public class VertexPointLighting01 extends GLWindow {
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightHeight += 0.05f * lastFrameDuration;
 			} else {
 				g_fLightHeight += 0.2f * lastFrameDuration;
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightHeight -= 0.05f * lastFrameDuration;
 			} else {
 				g_fLightHeight -= 0.2f * lastFrameDuration;
@@ -246,27 +246,31 @@ public class VertexPointLighting01 extends GLWindow {
 		}
 		
 		
-		while (Keyboard.next()) {
-			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
-					g_bDrawColoredCyl = !g_bDrawColoredCyl;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
-					g_bDrawLight = !g_bDrawLight;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_B) {
-					g_LightTimer.togglePause();
-
-				
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-					leaveMainLoop();
-				}
-			}
+		if (g_fLightRadius < 0.2f) {
+			g_fLightRadius = 0.2f;
 		}
 		
 		
-		if (g_fLightRadius < 0.2f) {
-			g_fLightRadius = 0.2f;
+		while (Keyboard.next()) {
+			if (Keyboard.getEventKeyState()) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
+					g_bDrawColoredCyl = !g_bDrawColoredCyl;
+					break;
+					
+				case Keyboard.KEY_Y:
+					g_bDrawLight = !g_bDrawLight;
+					break;
+					
+				case Keyboard.KEY_B:
+					g_LightTimer.togglePause();
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
+					leaveMainLoop();
+					break;
+				}
+			}
 		}
 	}
 	

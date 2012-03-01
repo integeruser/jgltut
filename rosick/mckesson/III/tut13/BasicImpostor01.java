@@ -15,7 +15,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -41,9 +41,9 @@ import rosick.jglsdk.glutil.MousePoles.*;
  * @author integeruser
  * 
  * W,A,S,D	- move the cameras forward/backwards and left/right, relative to the camera's current orientation.
- * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
+ * 				Holding SHIFT with these keys will move in smaller increments.  
  * Q,E		- raise and lower the camera, relative to its current orientation. 
- * 				Holding LEFT_SHIFT with these keys will move in smaller increments.  
+ * 				Holding SHIFT with these keys will move in smaller increments.  
  * P		- toggles pausing on/off.
  * -,=		- rewind/jump forward time by 0.5 second (of real-time).
  * T		- toggles a display showing the look-at point.
@@ -54,12 +54,12 @@ import rosick.jglsdk.glutil.MousePoles.*;
  * 4		- switches back and forth between actual meshes and impostor spheres (the gold sphere on the right).
  * L,J,H	- switch impostor.
  * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
+ * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
+ * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
  */
-public class BasicImpostor01 extends GLWindow {
+public class BasicImpostor01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new BasicImpostor01().start();
@@ -291,65 +291,78 @@ public class BasicImpostor01 extends GLWindow {
 		float lastFrameDuration = (float) (getLastFrameDuration() / 100.0);
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-			g_viewPole.charPress(Keyboard.KEY_W, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_W, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			g_viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			g_viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-			g_viewPole.charPress(Keyboard.KEY_A, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_A, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
-			g_viewPole.charPress(Keyboard.KEY_E, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_E, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-			g_viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT), lastFrameDuration);
+			g_viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 		
 		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_P) {
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_P:
 					g_sphereTimer.togglePause();
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_MINUS) {
+				case Keyboard.KEY_MINUS:
 					g_sphereTimer.rewind(0.5f);
-										
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_EQUALS) {
-					g_sphereTimer.fastForward(0.5f);
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
-					g_bDrawCameraPos = !g_bDrawCameraPos;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_G) {
-					g_bDrawLights = !g_bDrawLights;
+					break;
 
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_1) {
+				case Keyboard.KEY_EQUALS:
+					g_sphereTimer.fastForward(0.5f);
+					break;
+					
+				case Keyboard.KEY_T:
+					g_bDrawCameraPos = !g_bDrawCameraPos;
+					break;
+					
+				case Keyboard.KEY_G:
+					g_bDrawLights = !g_bDrawLights;
+					break;
+					
+				case Keyboard.KEY_1:
 					g_drawImposter[0] = !g_drawImposter[0];
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_2) {
+				case Keyboard.KEY_2:
 					g_drawImposter[1] = !g_drawImposter[1];
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_3) {
+					break;
+
+				case Keyboard.KEY_3:
 					g_drawImposter[2] = !g_drawImposter[2];
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_4) {
+				case Keyboard.KEY_4:
 					g_drawImposter[3] = !g_drawImposter[3];
+					break;
 					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_L) {
+				case Keyboard.KEY_L:
 					g_currImpostor = Impostors.IMP_BASIC;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_J) {
+					break;
+				
+				case Keyboard.KEY_J:
 					g_currImpostor = Impostors.IMP_PERSPECTIVE;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
+					break;
+				
+				case Keyboard.KEY_H:
 					g_currImpostor = Impostors.IMP_DEPTH;
+					break;
 					
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
+					break;
 				}
 			}
 		}

@@ -15,7 +15,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
@@ -48,15 +48,15 @@ import rosick.jglsdk.glutil.MousePoles.*;
  * B 		- toggles the light's rotation on/off.
  * H 		- swaps between the linear and quadratic interpolation functions.
  * 
- * LEFT	  CLICKING and DRAGGING				- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + LEFT_ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING				- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + LEFT_ALT	- spin the object.
- * WHEEL  SCROLLING							- move the camera closer to it's target point or farther away. 
+ * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
+ * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
+ * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING			- rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT	- spin the object.
+ * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
  */
-public class FragmentAttenuation03 extends GLWindow {
+public class FragmentAttenuation03 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new FragmentAttenuation03().start();
@@ -241,17 +241,16 @@ public class FragmentAttenuation03 extends GLWindow {
 		}
 		
 		
-		boolean bChangedAtten = false;
 		float lastFrameDuration = (float) (getLastFrameDuration() * 5 / 1000.0);
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightRadius -= 0.05f * lastFrameDuration;
 			} else {
 				g_fLightRadius -= 0.2f * lastFrameDuration;
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightRadius += 0.05f * lastFrameDuration;
 			} else {
 				g_fLightRadius += 0.2f * lastFrameDuration;
@@ -259,62 +258,16 @@ public class FragmentAttenuation03 extends GLWindow {
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightHeight += 0.05f * lastFrameDuration;
 			} else {
 				g_fLightHeight += 0.2f * lastFrameDuration;
 			}
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				g_fLightHeight -= 0.05f * lastFrameDuration;
 			} else {
 				g_fLightHeight -= 0.2f * lastFrameDuration;
-			}
-		}
-		
-
-		while (Keyboard.next()) {
-			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
-					g_bDrawColoredCyl = !g_bDrawColoredCyl;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_O) {
-					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-						g_fLightAttenuation *= 1.1f;
-					} else {
-						g_fLightAttenuation *= 1.5f;
-					}
-					bChangedAtten = true;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_U) {
-					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-						g_fLightAttenuation /= 1.1f; 
-					} else {
-						g_fLightAttenuation /= 1.5f; 
-					}
-					bChangedAtten = true;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_Y) {
-					g_bDrawLight = !g_bDrawLight;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_T) {
-					g_bScaleCyl = !g_bScaleCyl;
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_B) {
-					g_LightTimer.togglePause();
-					
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_H) {
-					g_bUseRSquare = !g_bUseRSquare;
-					if (g_bUseRSquare) {
-						System.out.println("Inverse Squared Attenuation");
-					} else {
-						System.out.println("Plain Inverse Attenuation");
-					}					
-				
-				
-				} else if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-					leaveMainLoop();
-				}
 			}
 		}
 		
@@ -326,9 +279,70 @@ public class FragmentAttenuation03 extends GLWindow {
 		if (g_fLightAttenuation < 0.1f) {
 			g_fLightAttenuation = 0.1f;
 		}
+		
 
-		if (bChangedAtten) {
-			System.out.println("Atten: " + g_fLightAttenuation);
+		while (Keyboard.next()) {
+			if (Keyboard.getEventKeyState()) {
+				boolean bChangedAtten = false;
+
+				
+				switch (Keyboard.getEventKey()) {
+				case Keyboard.KEY_SPACE:
+					g_bDrawColoredCyl = !g_bDrawColoredCyl;
+					break;
+					
+				case Keyboard.KEY_O:
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+						g_fLightAttenuation *= 1.1f;
+					} else {
+						g_fLightAttenuation *= 1.5f;
+					}
+					
+					bChangedAtten = true;
+					break;
+					
+				case Keyboard.KEY_U:
+					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+						g_fLightAttenuation /= 1.1f; 
+					} else {
+						g_fLightAttenuation /= 1.5f; 
+					}
+					
+					bChangedAtten = true;
+					break;
+				
+				case Keyboard.KEY_Y:
+					g_bDrawLight = !g_bDrawLight;
+					break;
+					
+				case Keyboard.KEY_T:
+					g_bScaleCyl = !g_bScaleCyl;
+					break;
+					
+				case Keyboard.KEY_B:
+					g_LightTimer.togglePause();
+					break;
+					
+				case Keyboard.KEY_H:
+					g_bUseRSquare = !g_bUseRSquare;
+					
+					if (g_bUseRSquare) {
+						System.out.printf("Inverse Squared Attenuation\n");
+					} else {
+						System.out.printf("Plain Inverse Attenuation\n");
+					}	
+					break;
+					
+				case Keyboard.KEY_ESCAPE:
+					leaveMainLoop();
+					break;
+				}
+				
+				
+				if (bChangedAtten) {
+					System.out.printf("Atten: %f\n", g_fLightAttenuation);
+				}
+			}
 		}
 	}
 	

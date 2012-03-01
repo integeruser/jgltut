@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
-import rosick.GLWindow;
+import rosick.LWJGLWindow;
 import rosick.jglsdk.framework.Framework;
 
 
@@ -24,7 +24,7 @@ import rosick.jglsdk.framework.Framework;
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2005.html
  * @author integeruser
  */
-public class BaseVertexOverlap02 extends GLWindow {
+public class BaseVertexOverlap02 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
 		new BaseVertexOverlap02().start();

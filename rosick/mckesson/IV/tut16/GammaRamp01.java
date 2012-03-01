@@ -263,10 +263,9 @@ public class GammaRamp01 extends LWJGLWindow {
 		g_textures[1] = glGenTextures();
 		
 		try {
-			/* Not in the original tutorial, needed for png loading */
+			/* PNG loading - different from the original tutorial which uses jglsdk classes */
 			BufferedImage bufferedImage = ImageIO.read(ClassLoader.class.getResourceAsStream(TUTORIAL_DATAPATH + "gamma_ramp.png"));			
 			ByteBuffer textureBuffer = byteBufferFromBufferedImage(bufferedImage);
-			/*                                                      */
 
 			glBindTexture(GL_TEXTURE_2D, g_textures[0]);
 		    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bufferedImage.getWidth(), bufferedImage.getHeight(), 0, 
@@ -297,6 +296,7 @@ public class GammaRamp01 extends LWJGLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
+	/* PNG loading - different from the original tutorial which uses jglsdk classes */
 	protected ByteBuffer byteBufferFromBufferedImage(BufferedImage image) {
 		int numComponents = image.getColorModel().getNumComponents();
 		

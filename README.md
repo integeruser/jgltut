@@ -7,7 +7,7 @@ This project is a port of McKesson's OpenGL tutorials to Java using LWJGL and it
 [here](https://bitbucket.org/alfonse/gltut/wiki/Home).  
 The author occasionally updates his book by adding new tutorials: we will update this project as soon as we can.
 
-Tutorials ported so far: 16.2 of 16.3
+Tutorials ported so far: 16.1 of 17.3
 
 To suggest a feature, report a bug, or general discussion please use the [issue tracker](https://github.com/rosickteam/OpenGL/issues).  
 Happy coding! 

@@ -341,7 +341,7 @@ public class GammaCheckers02 extends LWJGLWindow {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
 			glGenerateMipmap(GL_TEXTURE_2D);
-
+			
 			pImageSet = Dds.loadFromFile(TUTORIAL_DATAPATH + "checker_gamma.dds");
 
 			g_gammaTexture = glGenTextures();
@@ -351,8 +351,7 @@ public class GammaCheckers02 extends LWJGLWindow {
 				SingleImage image = pImageSet.getImage(mipmapLevel, 0, 0);
 				Dimensions dims = image.getDimensions();
 
-				/* GL_RGB8 should be GL_SRGB8 :\ */
-				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_RGB8, dims.width, dims.height, 0,
+				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, dims.width, dims.height, 0,
 						GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData());
 			}
 

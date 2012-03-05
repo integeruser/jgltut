@@ -1,9 +1,6 @@
 package rosick.jglsdk.glimg;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-
-import org.lwjgl.BufferUtils;
 
 
 /**
@@ -14,11 +11,12 @@ import org.lwjgl.BufferUtils;
 public class ImageSet {
 
 	public static class Dimensions {
-		public int numDimensions;													// The number of dimensions of an image. Can be 1, 2, or 3.
-		public int width;															// The width of the image. Always valid.
-		public int height;															// The height of the image. Only valid if numDimensions is 2 or 3.
-		public int depth;															// The depth of the image. Only valid if numDimensions is 3.
+		public int numDimensions;			// The number of dimensions of an image. Can be 1, 2, or 3.
+		public int width;					// The width of the image. Always valid.
+		public int height;					// The height of the image. Only valid if numDimensions is 2 or 3.
+		public int depth;					// The depth of the image. Only valid if numDimensions is 3.
 
+		
 		public Dimensions() {
 		}
 		
@@ -30,8 +28,8 @@ public class ImageSet {
 		}
 
 
-		// Computes the number of rows of pixel data in the image.
 		int numLines() {
+			// Computes the number of rows of pixel data in the image.
 			switch (numDimensions) {
 			case 1:
 				return 1;
@@ -45,69 +43,6 @@ public class ImageSet {
 			return -1;
 		}
 	};
-	
-	
-	public static class ImageSetImpl {
-		private ImageFormat m_format;
-		private Dimensions m_dimensions;
-		private ArrayList<Integer> m_imageSizes;
-		private ArrayList<ArrayList<Integer>> m_imageData;
-		private int m_mipmapCount;
-		private int m_faceCount;
-
-		
-		public ImageSetImpl(ImageFormat format, Dimensions dimensions,
-				int mipmapCount, int arrayCount, int faceCount,
-				ArrayList<ArrayList<Integer>> imageData,
-				ArrayList<Integer> imageSizes) {
-
-			m_format = format;
-			m_dimensions = dimensions;
-			m_imageData = imageData;
-			m_imageSizes = imageSizes;
-			m_mipmapCount = mipmapCount;
-			m_faceCount = faceCount;
-		}
-
-		
-		private Dimensions modifySizeForMipmap(Dimensions origDim, int mipmapLevel) {
-			for (int iLoop = 0; iLoop < mipmapLevel; iLoop++) {
-				origDim.width /= 2;
-				origDim.height /= 2;
-				origDim.depth /= 2;
-			}
-
-			return origDim;
-		}
-
-		
-		public int getMipmapCount() {
-			return m_mipmapCount;
-		}
-
-		public ImageFormat getFormat() {
-			return m_format;
-		}
-		
-		public Dimensions getDimensions(int mipmapLevel) {
-			return modifySizeForMipmap(m_dimensions, mipmapLevel);
-		}
-
-		public ByteBuffer getImageData(int mipmapLevel, int arrayIx, int faceIx) {		
-			int imageOffset = ((arrayIx * m_faceCount) + faceIx) * m_imageSizes.get(mipmapLevel);
-			ArrayList<Integer> temp = m_imageData.get(imageOffset);
-			
-			ByteBuffer tempBuffer = BufferUtils.createByteBuffer(temp.size());
-			
-			for (Integer integer : temp) {
-				tempBuffer.put((byte) (int) integer);
-			}
-			
-			tempBuffer.flip();
-			
-			return tempBuffer;
-		}
-	}
 
 	
 	public static class SingleImage {
@@ -136,7 +71,7 @@ public class ImageSet {
 	private ImageSetImpl m_pImpl;
 	
 	
-	public ImageSet(ImageSetImpl pImpl) {
+	ImageSet(ImageSetImpl pImpl) {
 		m_pImpl = pImpl;
 	}
 

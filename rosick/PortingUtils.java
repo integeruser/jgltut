@@ -30,7 +30,18 @@ public class PortingUtils {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	
-	public static int toInt(ArrayList<Character> data, int startIndex, int length) {
+	public static int toUnsignedInt(char data) {		
+		byte bytes[] = (data + "").getBytes();										// Needed for encoding problems
+		long value = bytes[0] & 0xff;
+		
+		return (int) value;
+	}
+	
+	public static int toUnsignedInt(ArrayList<Character> data, int startIndex) {
+		return toUnsignedInt(data, startIndex, 4);
+	}
+	
+	public static int toUnsignedInt(ArrayList<Character> data, int startIndex, int length) {
 		StringBuilder temp = new StringBuilder();
 		
 		for (int i = startIndex; i < startIndex + length; i++) {

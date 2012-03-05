@@ -205,9 +205,9 @@ public class ManyImages01 extends LWJGLWindow {
 		modelMatrix.clear();
 
 		final Mat4 worldToCamMat = Glm.lookAt(
-			new Vec3(hOffset, 1.0f, -64.0f),
-			new Vec3(hOffset, -5.0f + vOffset, -44.0f),
-			new Vec3(0.0f, 1.0f, 0.0f));
+				new Vec3(hOffset, 1.0f, -64.0f),
+				new Vec3(hOffset, -5.0f + vOffset, -44.0f),
+				new Vec3(0.0f, 1.0f, 0.0f));
 
 		modelMatrix.applyMatrix(worldToCamMat);	
 
@@ -215,7 +215,8 @@ public class ManyImages01 extends LWJGLWindow {
 		glUniformMatrix4(g_program.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
 
 		glActiveTexture(GL_TEXTURE0 + g_colorTexUnit);
-		glBindTexture(GL_TEXTURE_2D, g_useMipmapTexture ? g_mipmapTestTexture : g_checkerTexture);		
+		glBindTexture(GL_TEXTURE_2D, 
+				g_useMipmapTexture ? g_mipmapTestTexture : g_checkerTexture);		
 		glBindSampler(g_colorTexUnit, g_samplers[g_currSampler]);
 
 		if (g_drawCorridor) {
@@ -367,7 +368,8 @@ public class ManyImages01 extends LWJGLWindow {
 			}
 			tempByteBuffer.flip();
 			
-			glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, tempByteBuffer);
+			glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_RGB8, width, height, 0, 
+					GL_RGB, GL_UNSIGNED_BYTE, tempByteBuffer);
 		}
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, oldAlign);
@@ -383,7 +385,7 @@ public class ManyImages01 extends LWJGLWindow {
 
 			g_checkerTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_checkerTexture);
-
+			
 			for (int mipmapLevel = 0; mipmapLevel < pImageSet.getMipmapCount(); mipmapLevel++) {
 				SingleImage image = pImageSet.getImage(mipmapLevel, 0, 0);
 				Dimensions dims = image.getDimensions();
@@ -394,7 +396,6 @@ public class ManyImages01 extends LWJGLWindow {
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
-			glGenerateMipmap(GL_TEXTURE_2D);
 
 			glBindTexture(GL_TEXTURE_2D, 0);
 		} catch (Exception e) {

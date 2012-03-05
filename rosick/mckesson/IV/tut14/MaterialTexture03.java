@@ -701,15 +701,16 @@ public class MaterialTexture03 extends LWJGLWindow {
 			pImageSet = Dds.loadFromFile(TUTORIAL_DATAPATH + "main.dds");
 			
 			SingleImage image = pImageSet.getImage(0, 0, 0);
-
 			Dimensions dims = image.getDimensions();
 
 			g_shineTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_shineTexture);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, dims.width, dims.height, 0,
-				GL11.GL_RED, GL_UNSIGNED_BYTE, image.getImageData());
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, dims.width, dims.height, 0, 
+					GL11.GL_RED, GL_UNSIGNED_BYTE, image.getImageData());
+			
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+			
 			glBindTexture(GL_TEXTURE_2D, 0);
 		} catch (Exception e) {
 			e.printStackTrace();

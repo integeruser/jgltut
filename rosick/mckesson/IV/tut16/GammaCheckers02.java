@@ -228,9 +228,9 @@ public class GammaCheckers02 extends LWJGLWindow {
 		modelMatrix.clear();
 
 		final Mat4 worldToCamMat = Glm.lookAt(
-			new Vec3(hOffset, 1.0f, -64.0f),
-			new Vec3(hOffset, -5.0f + vOffset, -44.0f),
-			new Vec3(0.0f, 1.0f, 0.0f));
+				new Vec3(hOffset, 1.0f, -64.0f),
+				new Vec3(hOffset, -5.0f + vOffset, -44.0f),
+				new Vec3(0.0f, 1.0f, 0.0f));
 
 		modelMatrix.applyMatrix(worldToCamMat);	
 
@@ -340,7 +340,7 @@ public class GammaCheckers02 extends LWJGLWindow {
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
-			glGenerateMipmap(GL_TEXTURE_2D);
+
 			
 			pImageSet = Dds.loadFromFile(TUTORIAL_DATAPATH + "checker_gamma.dds");
 
@@ -351,13 +351,12 @@ public class GammaCheckers02 extends LWJGLWindow {
 				SingleImage image = pImageSet.getImage(mipmapLevel, 0, 0);
 				Dimensions dims = image.getDimensions();
 
-				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, dims.width, dims.height, 0,
+				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, dims.width, dims.height, 0, 
 						GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData());
 			}
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
-			glGenerateMipmap(GL_TEXTURE_2D);
 
 			glBindTexture(GL_TEXTURE_2D, 0);		
 		} catch (Exception e) {

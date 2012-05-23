@@ -9,6 +9,11 @@ The author occasionally updates his book by adding new tutorials: we will update
 
 Tutorials ported so far: 16.2 of 17.3
 
+
+**UPDATE 23/05
+When the school term finishes (in June) i will port the last tutorials and do some refactoring. Cheers :)   Francesco
+
+
 To suggest a feature, report a bug, or general discussion please use the [issue tracker](https://github.com/rosickteam/OpenGL/issues).  
 Happy coding! 
 

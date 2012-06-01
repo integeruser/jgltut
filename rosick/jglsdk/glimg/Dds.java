@@ -1,4 +1,4 @@
-package rosick.jglsdk.glimg.loaders;
+package rosick.jglsdk.glimg;
 
 import static rosick.PortingUtils.*;
 import static rosick.jglsdk.glimg.ImageFormat.Bitdepth.*;
@@ -13,12 +13,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 
-import rosick.jglsdk.glimg.ImageCreator;
-import rosick.jglsdk.glimg.ImageFormat;
-import rosick.jglsdk.glimg.ImageSet;
-import rosick.jglsdk.glimg.Util;
 import rosick.jglsdk.glimg.ImageFormat.UncheckedImageFormat;
 import rosick.jglsdk.glimg.ImageSet.Dimensions;
+
+
+@SuppressWarnings("unused")										// for static members ported but not used
 
 
 /**
@@ -28,17 +27,66 @@ import rosick.jglsdk.glimg.ImageSet.Dimensions;
  */
 public class Dds {
 	
-	private static class MagicNumbers {
-		static final int DDS_MAGIC_NUMBER 	= 0x20534444;							// "DDS "
-		static final int DDS10_FOUR_CC 		= 0x30314458;							// "DX10"
+	public static ImageSet loadFromFile(String fileName) {
+		// Read the file.
+		ArrayList<Character> fileData = readFile(fileName);
+    
+		// Check the first 4 bytes.
+		int magicTest = toUnsignedInt(fileData, 0);
+		if (magicTest != MagicNumbers.DDS_MAGIC_NUMBER) {
+			throw new DdsFileMalformedException(fileName, "The Magic number is missing from the file.");
+		}
+		
+		if (fileData.size() < DdsHeader.SIZE + 4) {
+			throw new DdsFileMalformedException(fileName, "The data is way too small to store actual information.");
+		}
+				
+		// Collect info from the DDS file.
+		DdsHeader header = getDdsHeader(fileData);
+		Dds10Header header10 = getDds10Header(header, fileData);
+		Dimensions dimensions = getDimensions(header);
+		UncheckedImageFormat uncheckedFormat = getImageFormat(header);
 
-		static final int DDSFOURCC_DXT1 	= 0x31545844; 							// "DXT1"
-		static final int DDSFOURCC_DXT3 	= 0x33545844;	 						// "DXT3"
-		static final int DDSFOURCC_DXT5 	= 0x35545844; 							// "DXT5"
+		// Get image counts.
+		int numMipmaps = (header.dwFlags & DdsFlags.DDSD_MIPMAPCOUNT) != 0 ? header.dwMipMapCount : 1;
+		int numFaces = (header10.miscFlag & Dds10MiscFlags.DDS_RESOURCE_MISC_TEXTURECUBE) != 0 ? 6 : 1;
+		int numArrays = header10.arraySize > 1 ? header10.arraySize : 1;
+			
+		int baseOffset = getByteOffsetToData(header);
+
+		// Build the image creator. No more exceptions, except for those thrown by the ImageCreator.
+		ImageCreator imgCreator = new ImageCreator(new ImageFormat(uncheckedFormat), dimensions, numMipmaps, numArrays, numFaces);
+		int cumulativeOffset = baseOffset;
+		for (int arrayIx = 0; arrayIx < numArrays; arrayIx++) {
+			for (int faceIx = 0; faceIx < numFaces; faceIx++) {
+				for (int mipmapLevel = 0; mipmapLevel < numMipmaps; mipmapLevel++) {
+					imgCreator.setImageData(fileData.subList(cumulativeOffset, fileData.size()), true, mipmapLevel, arrayIx, faceIx);
+					cumulativeOffset += calcMipmapSize(new Dimensions(dimensions), mipmapLevel, uncheckedFormat);
+				}
+			}
+		}
+		
+		return imgCreator.createImage();
+	}
+	
+	
+		
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */		
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private static class MagicNumbers {
+		static final int DDS_MAGIC_NUMBER 	= 0x20534444;		// "DDS "
+		static final int DDS10_FOUR_CC 		= 0x30314458;		// "DX10"
+
+		static final int DDSFOURCC_DXT1 	= 0x31545844; 		// "DXT1"
+		static final int DDSFOURCC_DXT3 	= 0x33545844;	 	// "DXT3"
+		static final int DDSFOURCC_DXT5 	= 0x35545844; 		// "DXT5"
 	};
 	
 	
-	static class DdsFlags {
+	private static class DdsFlags {
 		static final int DDSD_CAPS			= 0x00000001;							
 		static final int DDSD_HEIGHT 		= 0x00000002;							
 		static final int DDSD_WIDTH 		= 0x00000004;							
@@ -50,17 +98,17 @@ public class Dds {
 
 	}
 	 
-	static class Dds10MiscFlags {
+	private static class Dds10MiscFlags {
 		static final int DDS_RESOURCE_MISC_TEXTURECUBE = 0x00000004;													
 	}
 	
-	static class Dds10ResourceDimensions {
+	private static class Dds10ResourceDimensions {
 		static final int DDS_DIMENSION_TEXTURE1D = 2;							
 		static final int DDS_DIMENSION_TEXTURE2D = 3;							
 		static final int DDS_DIMENSION_TEXTURE3D = 4;							
 	}
 	
-	static class DdsCaps2 {
+	private static class DdsCaps2 {
 		static final int DDSCAPS2_CUBEMAP 			= 0x00000200;							
 		static final int DDSCAPS2_CUBEMAP_POSITIVEX = 0x00000400;							
 		static final int DDSCAPS2_CUBEMAP_NEGATIVEX = 0x00000800;
@@ -76,13 +124,12 @@ public class Dds {
 			   	DDSCAPS2_CUBEMAP_NEGATIVEZ;
 	}
 	
-	static class DXGI_FORMAT {
+	private static class DXGI_FORMAT {
 		static final int DXGI_FORMAT_UNKNOWN = 0;
 	}
 		
 
-
-	static class DdsPixelFormat {
+	private static class DdsPixelFormat {
 		int	dwSize;
 		int	dwFlags;
 		int	dwFourCC;
@@ -91,20 +138,9 @@ public class Dds {
 		int	dwGBitMask;
 		int	dwBBitMask;
 		int	dwABitMask;
-
-		DdsPixelFormat(ArrayList<Character> ddsData, int startIndex) {
-			dwSize =		toUnsignedInt(ddsData, startIndex);
-			dwFlags =		toUnsignedInt(ddsData, startIndex +  4);
-			dwFourCC =		toUnsignedInt(ddsData, startIndex +  8);
-			dwRGBBitCount =	toUnsignedInt(ddsData, startIndex + 12);
-			dwRBitMask =	toUnsignedInt(ddsData, startIndex + 16);
-			dwGBitMask =	toUnsignedInt(ddsData, startIndex + 20);
-			dwBBitMask =	toUnsignedInt(ddsData, startIndex + 24);
-			dwABitMask =	toUnsignedInt(ddsData, startIndex + 28);
-		}
 	};
 	
-	static class DdsPixelFormatFlags {
+	private static class DdsPixelFormatFlags {
 		static final int DDPF_ALPHAPIXELS 	= 0x00000001;
 		static final int DDPF_ALPHA 		= 0x00000002;
 		static final int DDPF_FOURCC 		= 0x00000004;
@@ -114,7 +150,7 @@ public class Dds {
     };
 
     
-	static class DdsHeader {
+    private static class DdsHeader {
 		int	dwSize;
 		int dwFlags;
 		int	dwHeight;
@@ -131,32 +167,9 @@ public class Dds {
 		int	dwReserved2;
 
 		static final int SIZE = (7 + 11 + 8 + 5) * (Integer.SIZE / 8);
-
-		DdsHeader(ArrayList<Character> ddsData) {
-			int startIndex = 4;
-			
-			dwSize = 				toUnsignedInt(ddsData, startIndex);
-			dwFlags = 				toUnsignedInt(ddsData, startIndex +  4);
-			dwHeight = 				toUnsignedInt(ddsData, startIndex +  8);
-			dwWidth = 				toUnsignedInt(ddsData, startIndex + 12);
-			dwPitchOrLinearSize = 	toUnsignedInt(ddsData, startIndex + 16);
-			dwDepth = 				toUnsignedInt(ddsData, startIndex + 20);
-			dwMipMapCount = 		toUnsignedInt(ddsData, startIndex + 24);
-
-			for (int i = 0; i < 11; i++) {
-				dwReserved1[i] = 	toUnsignedInt(ddsData, (startIndex + 28) + 4 * i);
-			}
-
-			ddspf = 				new DdsPixelFormat(ddsData, 76);
-			dwCaps = 				toUnsignedInt(ddsData, startIndex + 104);
-			dwCaps2 = 				toUnsignedInt(ddsData, startIndex + 108);
-			dwCaps3 = 				toUnsignedInt(ddsData, startIndex + 112);
-			dwCaps4 = 				toUnsignedInt(ddsData, startIndex + 116);
-			dwReserved2 = 			toUnsignedInt(ddsData, startIndex + 120);
-		}
 	};
 
-	static class Dds10Header {
+	private static class Dds10Header {
 		int dxgiFormat;
 		int resourceDimension;
 		int miscFlag;
@@ -164,23 +177,9 @@ public class Dds {
 		int reserved;
 
 		static final int SIZE = 5 * (Integer.SIZE / 8);
-
-		Dds10Header() {}
-
-		Dds10Header(ArrayList<Character> ddsData, int startIndex) {
-			dxgiFormat = 		toUnsignedInt(ddsData, startIndex);
-			resourceDimension = toUnsignedInt(ddsData, startIndex +  4);
-			miscFlag = 			toUnsignedInt(ddsData, startIndex +  8);
-			arraySize = 		toUnsignedInt(ddsData, startIndex + 12);
-			reserved = 			toUnsignedInt(ddsData, startIndex + 16);
-		}
 	}
 
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+		
 	private static class DdsFileMalformedException extends RuntimeException {
 		private static final long serialVersionUID = 7351687754827086128L;
 
@@ -198,84 +197,76 @@ public class Dds {
 	}
 		
 	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
-	
-	public static ImageSet loadFromFile(String filename) {
-		// Load the file.
-		ArrayList<Character> fileData = new ArrayList<>();
-
-		InputStream in = ClassLoader.class.getResourceAsStream(filename);
-		Reader buffer = new BufferedReader(new InputStreamReader(in));
-		int r;
-		
-        try {
-			while ((r = buffer.read()) != -1) {
-				fileData.add((char) r);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        
-		return processDDSData(fileData, filename);
-	}
-	
-	
-	private static ImageSet processDDSData(ArrayList<Character> ddsData, String filename) {
-		// Check the first 4 bytes.
-		int magicTest = toUnsignedInt(ddsData, 0);
-
-		if (magicTest != MagicNumbers.DDS_MAGIC_NUMBER) {
-			throw new DdsFileMalformedException(filename, "The Magic number is missing from the file.");
-		}
-		
-		if (ddsData.size() < DdsHeader.SIZE + 4) {
-			throw new DdsFileMalformedException(filename, "The data is way too small to store actual information.");
-		}
-		
-		// Now, get a DDS header.
-		DdsHeader header = new DdsHeader(ddsData);
-		
-		// Collect info from the DDS file.
-		Dds10Header header10 = getDDS10Header(header, ddsData);
-		Dimensions dims = getDimensions(header, header10);
-		UncheckedImageFormat fmt = getImageFormat(header, header10);
-
-		int data[] = getImageCounts(header, header10);
-		int numMipmaps = data[0];
-		int numFaces = data[1];
-		int numArrays = data[2];
-			
-		int baseOffset = getByteOffsetToData(header);
-
-		// Build the image creator. No more exceptions, except for those thrown by the ImageCreator.
-		ImageCreator imgCreator = new ImageCreator(new ImageFormat(fmt), dims, numMipmaps, numArrays, numFaces);
-		int cumulativeOffset = baseOffset;
-		for (int arrayIx = 0; arrayIx < numArrays; arrayIx++) {
-			for (int faceIx = 0; faceIx < numFaces; faceIx++) {
-				for (int mipmapLevel = 0; mipmapLevel < numMipmaps; mipmapLevel++) {
-					imgCreator.setImageData(ddsData.subList(cumulativeOffset, ddsData.size()), true, mipmapLevel, arrayIx, faceIx);
-					cumulativeOffset += calcMipmapSize(new Dimensions(dims), mipmapLevel, fmt);
-				}
-			}
-		}
-		
-		return imgCreator.createImage();
-	}
-	
-	
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private static Dds10Header getDDS10Header(DdsHeader header, ArrayList<Character> ddsData) {
+	private static ArrayList<Character> readFile(String fileName) {
+		ArrayList<Character> fileData = new ArrayList<>();
+
+        try {
+    		InputStream in = ClassLoader.class.getResourceAsStream(fileName);
+    		Reader buffer = new BufferedReader(new InputStreamReader(in));
+    		int currentChar;
+    		
+        	while ((currentChar = buffer.read()) != -1) {
+				fileData.add((char) currentChar);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+        
+        return fileData;
+	}
+	
+	
+	private static DdsHeader getDdsHeader(ArrayList<Character> ddsData) {
+		DdsHeader header = new DdsHeader();
+
+		int startIndex = 4;
+		
+		header.dwSize = 				toUnsignedInt(ddsData, startIndex);
+		header.dwFlags = 				toUnsignedInt(ddsData, startIndex +  4);
+		header.dwHeight = 				toUnsignedInt(ddsData, startIndex +  8);
+		header.dwWidth = 				toUnsignedInt(ddsData, startIndex + 12);
+		header.dwPitchOrLinearSize = 	toUnsignedInt(ddsData, startIndex + 16);
+		header.dwDepth = 				toUnsignedInt(ddsData, startIndex + 20);
+		header.dwMipMapCount = 			toUnsignedInt(ddsData, startIndex + 24);
+
+		for (int i = 0; i < 11; i++) {
+			header.dwReserved1[i] = toUnsignedInt(ddsData, (startIndex + 28) + 4 * i);
+		}
+
+		header.ddspf = new DdsPixelFormat();
+		header.ddspf.dwSize =			toUnsignedInt(ddsData, 76);
+		header.ddspf.dwFlags =			toUnsignedInt(ddsData, 76 +  4);
+		header.ddspf.dwFourCC =			toUnsignedInt(ddsData, 76 +  8);
+		header.ddspf.dwRGBBitCount =	toUnsignedInt(ddsData, 76 + 12);
+		header.ddspf.dwRBitMask =		toUnsignedInt(ddsData, 76 + 16);
+		header.ddspf.dwGBitMask =		toUnsignedInt(ddsData, 76 + 20);
+		header.ddspf.dwBBitMask =		toUnsignedInt(ddsData, 76 + 24);
+		header.ddspf.dwABitMask =		toUnsignedInt(ddsData, 76 + 28);
+		
+		header.dwCaps =			toUnsignedInt(ddsData, startIndex + 104);
+		header.dwCaps2 = 		toUnsignedInt(ddsData, startIndex + 108);
+		header.dwCaps3 = 		toUnsignedInt(ddsData, startIndex + 112);
+		header.dwCaps4 = 		toUnsignedInt(ddsData, startIndex + 116);
+		header.dwReserved2 = 	toUnsignedInt(ddsData, startIndex + 120);
+		
+		return header;
+	}
+	
+	private static Dds10Header getDds10Header(DdsHeader header, ArrayList<Character> ddsData) {
 		if (header.ddspf.dwFourCC == MagicNumbers.DDS10_FOUR_CC) {
-			Dds10Header header10;
+			Dds10Header header10 = new Dds10Header();
 			int offsetToNewHeader = 4 + DdsHeader.SIZE;
 
-			header10 = new Dds10Header(ddsData, offsetToNewHeader);
-
+			header10.dxgiFormat = 		toUnsignedInt(ddsData, offsetToNewHeader);
+			header10.resourceDimension = toUnsignedInt(ddsData, offsetToNewHeader +  4);
+			header10.miscFlag = 			toUnsignedInt(ddsData, offsetToNewHeader +  8);
+			header10.arraySize = 		toUnsignedInt(ddsData, offsetToNewHeader + 12);
+			header10.reserved = 			toUnsignedInt(ddsData, offsetToNewHeader + 16);
+			
 			return header10;
 		}
 
@@ -313,70 +304,35 @@ public class Dds {
 	}
 	
 	
-	private static Dimensions getDimensions(DdsHeader header, Dds10Header header10) {
-		Dimensions dims = new Dimensions();
-		dims.numDimensions = 1;
-		dims.width = header.dwWidth;
+	private static Dimensions getDimensions(DdsHeader header) {
+		Dimensions dimensions = new Dimensions();
+		dimensions.numDimensions = 1;
+		dimensions.width = header.dwWidth;
 		
 		if ((header.dwFlags & DdsFlags.DDSD_HEIGHT) != 0) {
-			dims.numDimensions = 2;
-			dims.height = header.dwHeight;
+			dimensions.numDimensions = 2;
+			dimensions.height = header.dwHeight;
 		}
 		
 		if ((header.dwFlags & DdsFlags.DDSD_DEPTH) != 0) {
-			dims.numDimensions = 3;
-			dims.depth = header.dwDepth;
+			dimensions.numDimensions = 3;
+			dimensions.depth = header.dwDepth;
 		}
 
-		return dims;
+		return dimensions;
 	}
 	
 	
-	private static UncheckedImageFormat getImageFormat(DdsHeader header, Dds10Header header10) {
-		for (int convIx = 0; convIx < g_oldFmtConvert.length; convIx++) {
-			if (doesMatchFormat(g_oldFmtConvert[convIx].ddsFmt, header)) {
-				return g_oldFmtConvert[convIx].fmt;
+	private static UncheckedImageFormat getImageFormat(DdsHeader header) {
+		for (int convIx = 0; convIx < oldFormatConvert.length; convIx++) {
+			if (doesMatchFormat(oldFormatConvert[convIx].ddsFmt, header)) {
+				return oldFormatConvert[convIx].fmt;
 			}
 		}
 
 		throw new DdsFileUnsupportedException("", "Could not use the DDS9's image format.");
 	}
-	
-	
-	private static int[] getImageCounts(DdsHeader header, Dds10Header header10) {
-		int data[] = new int[3];
-		int numMipmaps;
-		int numFaces;
-		int numArrays;
 		
-		if ((header.dwFlags & DdsFlags.DDSD_MIPMAPCOUNT) != 0) {
-			numMipmaps = header.dwMipMapCount;
-		} 
-		else {
-			numMipmaps = 1;
-		}
-		
-		if ((header10.miscFlag & Dds10MiscFlags.DDS_RESOURCE_MISC_TEXTURECUBE) != 0) {
-			numFaces = 6;
-		} 
-		else {
-			numFaces = 1;
-		}
-		
-		if (header10.arraySize > 1) {
-			numArrays = header10.arraySize;
-		} 
-		else {
-			numArrays = 1;
-		}
-		
-		data[0] = numMipmaps;
-		data[1] = numFaces;
-		data[2] = numArrays;
-		
-		return data;
-	}
-	
 	
 	private static int getByteOffsetToData(DdsHeader header) {
 		int byteOffset = DdsHeader.SIZE + 4;
@@ -438,7 +394,7 @@ public class Dds {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private static OldDdsFormatConv g_oldFmtConvert[] = {
+	private static OldDdsFormatConv oldFormatConvert[] = {
 		new OldDdsFormatConv(new UncheckedImageFormat(DT_NORM_UNSIGNED_INTEGER, FMT_COLOR_RGBA, ORDER_RGBA, BD_PER_COMP_8, 1),
 				new OldDdsFmtMatch(DdsPixelFormatFlags.DDPF_RGB | DdsPixelFormatFlags.DDPF_ALPHAPIXELS, 32, 0xff, 0xff00, 0xff0000, 0xff000000, 0)),
 				

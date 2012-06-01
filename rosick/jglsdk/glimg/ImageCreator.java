@@ -53,7 +53,7 @@ public class ImageCreator {
 	private ArrayList<Integer> m_imageSizes;
 
 	
-	public ImageCreator(ImageFormat format, Dimensions dimensions, int mipmapCount, int arrayCount, int faceCount) throws CubemapsMustBe2DException, BadFaceCountException, No3DTextureArrayException, NoImagesSpecifiedException {
+	public ImageCreator(ImageFormat format, Dimensions dimensions, int mipmapCount, int arrayCount, int faceCount) {
 		m_format = format;
 		m_dims = new Dimensions(dimensions);
 		m_mipmapCount = mipmapCount;
@@ -138,10 +138,8 @@ public class ImageCreator {
 			throw new ImageSetAlreadyCreatedException();
 		}
 		
-		ImageSetImpl pImageData = new ImageSetImpl(m_format, m_dims,
-			m_mipmapCount, m_arrayCount, m_faceCount, m_imageData, m_imageSizes);
-
-		return new ImageSet(pImageData);
+		return new ImageSet(m_format, m_dims,
+				m_mipmapCount, m_arrayCount, m_faceCount, m_imageData, m_imageSizes);
 	}
 	
 	

@@ -264,6 +264,16 @@ public class Glm {
 		return res;
 	}
 	
+	public static Mat4 scale(Mat4 mat, Vec3 vec) {
+		Mat4 result = new Mat4();
+		result.setColumn(0, Vec4.scale(mat.getColumn(0), vec.x));
+		result.setColumn(1, Vec4.scale(mat.getColumn(1), vec.y));
+		result.setColumn(2, Vec4.scale(mat.getColumn(2), vec.z));
+		result.setColumn(3, mat.getColumn(3));
+
+		return result;
+	}
+	
 	
 	public static Mat3 transpose(Mat3 mat) {
 		Mat3 res = new Mat3();
@@ -389,9 +399,25 @@ public class Glm {
 		
 		return result;
 	}
-
-
 	
+	public static Quaternion rotate(Quaternion q, float angle, Vec3 v) {
+		Vec3 tmp = new Vec3(v);
+
+		// Axis of rotation must be normalised
+		float len = length(tmp);
+		if (Math.abs(len - 1.0f) > 0.001f) {
+			float oneOverLen = 1.0f / len;
+			tmp.x *= oneOverLen;
+			tmp.y *= oneOverLen;
+			tmp.z *= oneOverLen;
+		}
+
+		float angleRad = (float) Math.toRadians(angle);
+		float fSin = (float) Math.sin(angleRad * 0.5f);
+
+		return Quaternion.mul(q, new Quaternion((float) Math.cos(angleRad * 0.5f), tmp.x * fSin, tmp.y * fSin, tmp.z * fSin));
+	}
+
 	
 	public static Mat4 lookAt(Vec3 eye, Vec3 center, Vec3 up) {
         Vec3 f = normalize(Vec3.sub(center, eye));

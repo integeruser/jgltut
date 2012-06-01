@@ -18,6 +18,10 @@ public class Quaternion extends BufferableData<FloatBuffer> {
 	public Quaternion() {
 	}
 	
+	public Quaternion(float w) {
+		this.w = w;
+	}
+	
 	public Quaternion(float w, float x, float y, float z) {
 		this.x = x;
 		this.y = y;

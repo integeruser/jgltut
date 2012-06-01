@@ -253,6 +253,26 @@ public class Mat4 extends BufferableData<FloatBuffer> {
 		return res;
 	}
 	
+	public static Mat4 mul(Mat4 m1, Mat4 m2) {
+		Vec4 SrcA0 = m1.getColumn(0);
+		Vec4 SrcA1 = m1.getColumn(1);
+		Vec4 SrcA2 = m1.getColumn(2);
+		Vec4 SrcA3 = m1.getColumn(3);
+
+		Vec4 SrcB0 = m2.getColumn(0);
+		Vec4 SrcB1 = m2.getColumn(1);
+		Vec4 SrcB2 = m2.getColumn(2);
+		Vec4 SrcB3 = m2.getColumn(3);
+		
+		Mat4 result = new Mat4();
+		result.setColumn(0, Vec4.scale(SrcA0, SrcB0.x).add(Vec4.scale(SrcA1, SrcB0.y).add(Vec4.scale(SrcA2, SrcB0.z).add(Vec4.scale(SrcA3, SrcB0.w)))));
+		result.setColumn(1, Vec4.scale(SrcA0, SrcB1.x).add(Vec4.scale(SrcA1, SrcB1.y).add(Vec4.scale(SrcA2, SrcB1.z).add(Vec4.scale(SrcA3, SrcB1.w)))));
+		result.setColumn(2, Vec4.scale(SrcA0, SrcB2.x).add(Vec4.scale(SrcA1, SrcB2.y).add(Vec4.scale(SrcA2, SrcB2.z).add(Vec4.scale(SrcA3, SrcB2.w)))));
+		result.setColumn(3, Vec4.scale(SrcA0, SrcB3.x).add(Vec4.scale(SrcA1, SrcB3.y).add(Vec4.scale(SrcA2, SrcB3.z).add(Vec4.scale(SrcA3, SrcB3.w)))));
+
+		return result;
+	}
+	
 	
 	public static Mat4 getRotateX(float angDeg) {
 		float fAngRad = (float) Math.toRadians(angDeg);
@@ -337,4 +357,5 @@ public class Mat4 extends BufferableData<FloatBuffer> {
 
 		return res;
 	}
+
 }

@@ -5,13 +5,12 @@ This project is a port of McKesson's OpenGL tutorials to Java using LWJGL and it
 
 [Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html) is the book where to start; you can find the original c++ source code
 [here](https://bitbucket.org/alfonse/gltut/wiki/Home).  
-The author occasionally updates his book by adding new tutorials: we will update this project as soon as we can.
+
 
 Tutorials ported so far: 16.2 of 17.3
 
 
-**UPDATE 23/05
-When the school term finishes (in June) i will port the last tutorials and do some refactoring. Cheers :)   Francesco
+If you don't want to download the source code you can play with the tutorials with [this simple program](https://github.com/downloads/rosickteam/OpenGL/tutorial-chooser.zip).
 
 
 To suggest a feature, report a bug, or general discussion please use the [issue tracker](https://github.com/rosickteam/OpenGL/issues).  
@@ -35,28 +34,10 @@ add and configure the LWJGL library in the project build path. Open any tutorial
 
 
 
-Porting notes
--------------
-Every tutorial class inherits from the base class GLWindow: in this class the main loop is executed, which in order calculates the values of 'elapsedTime' 
-and 'lastFrameDuration', call update() and display(). The function reshape() is called once before the main loop starts and every time the window get resized. 
-The two variables 'elapsedTime' and 'lastFrameDuration' can be accessed by calling their respective getters; update(), display() and reshape() 
-are overrided in every tutorial class. 
-
-The code was ported in a manner as similar as possible as the original project (which is written in c++), but not all the features it uses are implemented in Java 
-(eg. function pointers), so i had to make some changes. This is the major changes list:
-
-* In the original tutorials, Glut manage keyboard inputs by calling keyboard(char c). I choose to create a general purpose method called update(), which is executed 
-once per loop, and here check if the keyboard keys that the tutorial need are pressed or not. In addition, to obtain a more accurate movement (eg. the camera controlled with the keyboard) i computed the simplest 
-possible integration by multiplying the deltaMovement by "lastFrameDuration". The value of lastFrameDuration obtained with getLastFrameDuration() is often multiplied by a constant (e.g 5 / 1000.0), which
-is simply a convenient value to make the calculations.
-* PushStack : the original author decided to implement a MatrixStack with a push/pop organization based on PushStack's constructor and destructor. 
-Unfortunately, in Java objects destructor aren't called at the end of the object's scope, but the destruction is decided by the garbage collector.
-I decided to create the push() and pop() methods in MatrixStack.java, and call them when needed.
-
-
-
 Distribution
 ------------
 
 This project is licensed under a [Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/).  
 The LWJGL license can be found [here](http://lwjgl.org/license.php).
+The gltut and glsdk licenses can be found [here](https://bitbucket.org/alfonse/gltut/raw/3ee6f3dd04a7/License.txt) and 
+[here](https://bitbucket.org/alfonse/unofficial-opengl-sdk/raw/1893b6e851b9/License.txt).

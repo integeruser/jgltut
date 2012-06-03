@@ -15,81 +15,43 @@ import rosick.jglsdk.glimg.ImageSet.Dimensions;
  */
 public class ImageCreator {
 	
-	private class BadFaceCountException extends RuntimeException {
-		private static final long serialVersionUID = -4120563516856357626L;
-	}
+	public ImageCreator(ImageFormat imageFormat, Dimensions dimensions, int mipmapCount, int arrayCount, int faceCount) {
+		this.imageFormat = imageFormat;
+		this.dimensions = new Dimensions(dimensions);
+		this.mipmapCount = mipmapCount;
+		this.arrayCount = arrayCount;
+		this.faceCount = faceCount;
+		imageData = new ArrayList<>(mipmapCount);
+		imageSizes = new ArrayList<>(mipmapCount);
 
-	private class CubemapsMustBe2DException extends RuntimeException {
-		private static final long serialVersionUID = 4034128602806705190L;
-	}
-
-	private class No3DTextureArrayException extends RuntimeException {
-		private static final long serialVersionUID = -9001483779340494905L;
-	}
-
-	private class NoImagesSpecifiedException extends RuntimeException {
-		private static final long serialVersionUID = 3390815114957601365L;
-	}
-
-	private class ImageSetAlreadyCreatedException extends RuntimeException {
-		private static final long serialVersionUID = -7707381545866051896L;
-	}
-
-	private class MipmapLayerOutOfBoundsException extends RuntimeException {
-		private static final long serialVersionUID = 5160364349781356398L;
-	}
-
-	private class FaceIndexOutOfBoundsException extends RuntimeException {
-		private static final long serialVersionUID = 5885166000035279615L;
-	}
-	
-		
-	private ImageFormat m_format;
-	private Dimensions m_dims;
-	private int m_mipmapCount;
-	private int m_arrayCount;
-	private int m_faceCount;
-	private ArrayList<ArrayList<Integer>> m_imageData;
-	private ArrayList<Integer> m_imageSizes;
-
-	
-	public ImageCreator(ImageFormat format, Dimensions dimensions, int mipmapCount, int arrayCount, int faceCount) {
-		m_format = format;
-		m_dims = new Dimensions(dimensions);
-		m_mipmapCount = mipmapCount;
-		m_arrayCount = arrayCount;
-		m_faceCount = faceCount;
-		m_imageData = new ArrayList<>(mipmapCount);
-		m_imageSizes = new ArrayList<>(mipmapCount);
-
-		if (m_faceCount != 6 && m_faceCount != 1) {
+		if (faceCount != 6 && faceCount != 1) {
 			throw new BadFaceCountException();
 		}
 
-		if (m_faceCount == 6 && m_dims.numDimensions != 2) {
+		if (faceCount == 6 && dimensions.numDimensions != 2) {
 			throw new CubemapsMustBe2DException();
 		}
 
-		if (m_dims.numDimensions == 3 && m_arrayCount != 1) {
+		if (dimensions.numDimensions == 3 && arrayCount != 1) {
 			throw new No3DTextureArrayException();
 		}
 
-		if (m_mipmapCount <= 0 || m_arrayCount <= 0) {
+		if (mipmapCount <= 0 || arrayCount <= 0) {
 			throw new NoImagesSpecifiedException();
 		}
 
 		// Allocate the memory for our data.
 		for (int level = 0; level < mipmapCount; level++) {
-			Dimensions mipmapDims = Util.modifySizeForMipmap(m_dims, level);
-			int imageSize = Util.calcImageByteSize(m_format, mipmapDims);
+			Dimensions mipmapDimensions = Util.modifyDimensionsForMipmap(dimensions, level);
+			int imageSize = Util.getImageByteSize(imageFormat, mipmapDimensions);
 
 			ArrayList<Integer> mipmap = new ArrayList<>();
-			for (int i = 0; i < imageSize * m_faceCount * m_arrayCount; i++) {
+			for (int i = 0; i < imageSize * faceCount * arrayCount; i++) {
 				mipmap.add(0);
 			}
 			
-			m_imageData.add(mipmap);
-			m_imageSizes.add(imageSize);
+			imageData.add(mipmap);
+			imageSizes.add(imageSize);
 		}
 	}	
 	
@@ -101,26 +63,26 @@ public class ImageCreator {
 	public void setImageData(List<Character> pixelData,
 			boolean isTopLeft, int mipmapLevel, int arrayIx, int faceIx) {
 
- 		if (m_imageData.isEmpty()) {
+ 		if (imageData.isEmpty()) {
 			throw new ImageSetAlreadyCreatedException();
  		}
 			
 		// Check inputs.
-		if ((arrayIx < 0) || (m_arrayCount <= arrayIx)) {
+		if ((arrayIx < 0) || (arrayCount <= arrayIx)) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		
-		if ((mipmapLevel < 0) || (m_mipmapCount <= mipmapLevel)) {
+		if ((mipmapLevel < 0) || (mipmapCount <= mipmapLevel)) {
 			throw new MipmapLayerOutOfBoundsException();
 		}
 
-		if ((faceIx < 0) || (m_faceCount <= faceIx)) {
+		if ((faceIx < 0) || (faceCount <= faceIx)) {
 			throw new FaceIndexOutOfBoundsException();
 		}
 
-		int imageOffset = ((arrayIx * m_faceCount) + faceIx) * m_imageSizes.get(mipmapLevel);
+		int imageOffset = ((arrayIx * faceCount) + faceIx) * imageSizes.get(mipmapLevel);
 
-		ArrayList<Integer> pMipmapData = m_imageData.get(mipmapLevel);
+		ArrayList<Integer> pMipmapData = imageData.get(mipmapLevel);
 		List<Integer> pMipmapDataList = pMipmapData.subList(imageOffset, pMipmapData.size());
 		
 		if (!isTopLeft) {
@@ -134,14 +96,58 @@ public class ImageCreator {
 
 
 	public ImageSet createImage() {
-		if (m_imageData.isEmpty()) {
+		if (imageData.isEmpty()) {
 			throw new ImageSetAlreadyCreatedException();
 		}
 		
-		return new ImageSet(m_format, m_dims,
-				m_mipmapCount, m_arrayCount, m_faceCount, m_imageData, m_imageSizes);
+		return new ImageSet(imageFormat, dimensions,
+				mipmapCount, arrayCount, faceCount, imageData, imageSizes);
+	}	
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */		
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private static class BadFaceCountException extends RuntimeException {
+		private static final long serialVersionUID = -4120563516856357626L;
+	}
+
+	private static class CubemapsMustBe2DException extends RuntimeException {
+		private static final long serialVersionUID = 4034128602806705190L;
+	}
+
+	private static class No3DTextureArrayException extends RuntimeException {
+		private static final long serialVersionUID = -9001483779340494905L;
+	}
+
+	private static class NoImagesSpecifiedException extends RuntimeException {
+		private static final long serialVersionUID = 3390815114957601365L;
+	}
+
+	private static class ImageSetAlreadyCreatedException extends RuntimeException {
+		private static final long serialVersionUID = -7707381545866051896L;
+	}
+
+	private static class MipmapLayerOutOfBoundsException extends RuntimeException {
+		private static final long serialVersionUID = 5160364349781356398L;
+	}
+
+	private static class FaceIndexOutOfBoundsException extends RuntimeException {
+		private static final long serialVersionUID = 5885166000035279615L;
 	}
 	
+		
+	private ImageFormat imageFormat;
+	private Dimensions dimensions;
+	private int mipmapCount;
+	private int arrayCount;
+	private int faceCount;
+	private ArrayList<ArrayList<Integer>> imageData;
+	private ArrayList<Integer> imageSizes;
+
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -149,11 +155,11 @@ public class ImageCreator {
 	
 	private void copyImageFlipped(List<Character> pixelData,
 			List<Integer> pDstData, int mipmapLevel) {
-		Dimensions dims = Util.modifySizeForMipmap(new Dimensions(m_dims), mipmapLevel);
+		Dimensions dims = Util.modifyDimensionsForMipmap(new Dimensions(dimensions), mipmapLevel);
 		
-		if (m_format.type().ordinal() < PixelDataType.DT_NUM_UNCOMPRESSED_TYPES.ordinal()) {
-			copyPixelsFlipped(pDstData, dims, m_format, mipmapLevel, pixelData,
-				m_imageSizes.get(mipmapLevel));
+		if (imageFormat.getType().ordinal() < PixelDataType.DT_NUM_UNCOMPRESSED_TYPES.ordinal()) {
+			copyPixelsFlipped(pDstData, dims, imageFormat, mipmapLevel, pixelData,
+				imageSizes.get(mipmapLevel));
 		} 
 		else {
 			throw new RuntimeException("Not yet implemented");
@@ -166,7 +172,7 @@ public class ImageCreator {
 			int imageSize) {
 		// Flip the data. Copy line by line.
 		int numLines = dims.numLines();
-		int lineByteSize = format.alignByteCount(Util.calcBytesPerPixel(format) * dims.width);
+		int lineByteSize = format.alignByteCount(Util.getBytesPerPixel(format) * dims.width);
 		
 		// Move the pixel data to the last row.
 		int pInputRow = imageSize;

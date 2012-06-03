@@ -73,6 +73,7 @@ public class LWJGLWindow {
 		}
 		
 		checkForGlErrors("display() or update()");
+		Display.destroy();
 	}
 	
 	

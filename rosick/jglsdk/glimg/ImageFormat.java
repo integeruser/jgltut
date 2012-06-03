@@ -127,7 +127,7 @@ public class ImageFormat {
 	}
 	
 		
-	public PixelDataType type() {
+	public PixelDataType getType() {
 		return fmt.eType;
 	}
 	

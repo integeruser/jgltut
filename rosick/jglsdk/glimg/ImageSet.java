@@ -103,7 +103,7 @@ public class ImageSet {
 	}
 	
 	public Dimensions getDimensions(int mipmapLevel) {
-		return Util.modifySizeForMipmap(m_dimensions, mipmapLevel);
+		return Util.modifyDimensionsForMipmap(m_dimensions, mipmapLevel);
 	}
 
 	public SingleImage getImage(int mipmapLevel, int arrayIx, int faceIx) {

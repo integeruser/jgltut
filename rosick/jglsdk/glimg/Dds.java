@@ -45,28 +45,29 @@ public class Dds {
 		DdsHeader header = getDdsHeader(fileData);
 		Dds10Header header10 = getDds10Header(header, fileData);
 		Dimensions dimensions = getDimensions(header);
-		UncheckedImageFormat uncheckedFormat = getImageFormat(header);
+		UncheckedImageFormat uncheckedFormat = getUncheckedImageFormat(header);
 
 		// Get image counts.
-		int numMipmaps = (header.dwFlags & DdsFlags.DDSD_MIPMAPCOUNT) != 0 ? header.dwMipMapCount : 1;
-		int numFaces = (header10.miscFlag & Dds10MiscFlags.DDS_RESOURCE_MISC_TEXTURECUBE) != 0 ? 6 : 1;
-		int numArrays = header10.arraySize > 1 ? header10.arraySize : 1;
+		int mipmapCount = (header.dwFlags & DdsFlags.DDSD_MIPMAPCOUNT) != 0 ? header.dwMipMapCount : 1;
+		int faceCount 	= (header10.miscFlag & Dds10MiscFlags.DDS_RESOURCE_MISC_TEXTURECUBE) != 0 ? 6 : 1;
+		int arrayCount 	= header10.arraySize > 1 ? header10.arraySize : 1;
 			
 		int baseOffset = getByteOffsetToData(header);
 
 		// Build the image creator. No more exceptions, except for those thrown by the ImageCreator.
-		ImageCreator imgCreator = new ImageCreator(new ImageFormat(uncheckedFormat), dimensions, numMipmaps, numArrays, numFaces);
+		ImageCreator imageCreator = new ImageCreator(new ImageFormat(uncheckedFormat), dimensions, mipmapCount, arrayCount, faceCount);
 		int cumulativeOffset = baseOffset;
-		for (int arrayIx = 0; arrayIx < numArrays; arrayIx++) {
-			for (int faceIx = 0; faceIx < numFaces; faceIx++) {
-				for (int mipmapLevel = 0; mipmapLevel < numMipmaps; mipmapLevel++) {
-					imgCreator.setImageData(fileData.subList(cumulativeOffset, fileData.size()), true, mipmapLevel, arrayIx, faceIx);
-					cumulativeOffset += calcMipmapSize(new Dimensions(dimensions), mipmapLevel, uncheckedFormat);
+		
+		for (int array = 0; array < arrayCount; array++) {
+			for (int face = 0; face < faceCount; face++) {
+				for (int mipmap = 0; mipmap < mipmapCount; mipmap++) {
+					imageCreator.setImageData(fileData.subList(cumulativeOffset, fileData.size()), true, mipmap, array, face);
+					cumulativeOffset += calcMipmapSize(dimensions, mipmap, uncheckedFormat);
 				}
 			}
 		}
 		
-		return imgCreator.createImage();
+		return imageCreator.createImage();
 	}
 	
 	
@@ -323,10 +324,10 @@ public class Dds {
 	}
 	
 	
-	private static UncheckedImageFormat getImageFormat(DdsHeader header) {
+	private static UncheckedImageFormat getUncheckedImageFormat(DdsHeader header) {
 		for (int convIx = 0; convIx < oldFormatConvert.length; convIx++) {
 			if (doesMatchFormat(oldFormatConvert[convIx].ddsFmt, header)) {
-				return oldFormatConvert[convIx].fmt;
+				return oldFormatConvert[convIx].uncheckedImageFormat;
 			}
 		}
 
@@ -345,48 +346,50 @@ public class Dds {
 	}
 	
 	
-	private static int calcMipmapSize(Dimensions dims, int currLevel, UncheckedImageFormat fmt) {
-		Dimensions mipmapDims = new Dimensions(Util.modifySizeForMipmap(dims, currLevel));
-
-		int lineSize = calcLineSize(fmt, mipmapDims.width);
+	private static int calcMipmapSize(Dimensions dimensions, int currentMipmapLevel, UncheckedImageFormat uncheckedImageFormat) {
+		Dimensions mipmapDimensions = Util.modifyDimensionsForMipmap(dimensions, currentMipmapLevel);
+		int lineSize = calcLineSize(uncheckedImageFormat, mipmapDimensions.width);
 
 		int effectiveHeight = 1;
-		if (mipmapDims.numDimensions > 1) {
-			effectiveHeight = mipmapDims.height;
-			if (fmt.eBitdepth == BD_COMPRESSED) {
+		if (mipmapDimensions.numDimensions > 1) {
+			effectiveHeight = mipmapDimensions.height;
+			
+			if (uncheckedImageFormat.eBitdepth == BD_COMPRESSED) {
 				effectiveHeight = (effectiveHeight + 3) / 4;
 			}
 		}
 
 		int effectiveDepth = 1;
-		if (mipmapDims.numDimensions > 2) {
-			effectiveDepth = mipmapDims.depth;
-			if (fmt.eBitdepth == BD_COMPRESSED) {
+		if (mipmapDimensions.numDimensions > 2) {
+			effectiveDepth = mipmapDimensions.depth;
+			
+			if (uncheckedImageFormat.eBitdepth == BD_COMPRESSED) {
 				effectiveDepth = (effectiveDepth + 3) / 4;
 			}
 		}
 
 		int numLines = effectiveHeight * effectiveDepth;
-		
-		return numLines * lineSize;
+		return lineSize * numLines;
 	}
 
-	private static int calcLineSize(UncheckedImageFormat fmt, int lineWidth) {
+	private static int calcLineSize(UncheckedImageFormat uncheckedImageFormat, int lineWidth) {
 		// This is from the DDS suggestions for line size computations.
-		if (fmt.eBitdepth == BD_COMPRESSED) {
+		if (uncheckedImageFormat.eBitdepth == BD_COMPRESSED) {
 			int blockSize = 16;
 
-			if (fmt.eType == DT_COMPRESSED_BC1 ||
-				fmt.eType == DT_COMPRESSED_UNSIGNED_BC4 || fmt.eType == DT_COMPRESSED_SIGNED_BC4) {
+			if (uncheckedImageFormat.eType == DT_COMPRESSED_BC1 ||
+				uncheckedImageFormat.eType == DT_COMPRESSED_UNSIGNED_BC4 || 
+				uncheckedImageFormat.eType == DT_COMPRESSED_SIGNED_BC4) 
+			{
 				blockSize = 8;
 			}
 
 			return ((lineWidth + 3) / 4) * blockSize;
 		}
-
-		int bytesPerPixel = Util.calcBytesPerPixel(new ImageFormat(fmt));
-		
-		return lineWidth * bytesPerPixel;
+		else {
+			int bytesPerPixel = Util.getBytesPerPixel(new ImageFormat(uncheckedImageFormat));
+			return lineWidth * bytesPerPixel;			
+		}
 	}
 	
 
@@ -473,11 +476,11 @@ public class Dds {
 	};
 
 	private static class OldDdsFormatConv {
-		UncheckedImageFormat fmt;
+		UncheckedImageFormat uncheckedImageFormat;
 		OldDdsFmtMatch ddsFmt;
 		
 		OldDdsFormatConv(UncheckedImageFormat fmt, OldDdsFmtMatch ddsFmt) {
-			this.fmt = fmt;
+			this.uncheckedImageFormat = fmt;
 			this.ddsFmt = ddsFmt;
 		}
 	};

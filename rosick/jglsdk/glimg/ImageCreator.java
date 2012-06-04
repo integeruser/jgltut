@@ -3,7 +3,6 @@ package rosick.jglsdk.glimg;
 import java.util.ArrayList;
 import java.util.List;
 
-import rosick.PortingUtils;
 import rosick.jglsdk.glimg.ImageFormat.PixelDataType;
 import rosick.jglsdk.glimg.ImageSet.Dimensions;
 
@@ -60,9 +59,7 @@ public class ImageCreator {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	public void setImageData(List<Character> pixelData,
-			boolean isTopLeft, int mipmapLevel, int arrayIx, int faceIx) {
-
+	public void setImageData(byte mipmapBytes[], boolean isTopLeft, int mipmapLevel, int arrayIx, int faceIx) {
  		if (imageData.isEmpty()) {
 			throw new ImageSetAlreadyCreatedException();
  		}
@@ -90,7 +87,7 @@ public class ImageCreator {
 			throw new RuntimeException("Not yet implemented");
 		}
 		else {
-			copyImageFlipped(pixelData, pMipmapDataList, mipmapLevel);
+			copyImageFlipped(mipmapBytes, pMipmapDataList, mipmapLevel);
 		}
 	}
 
@@ -153,12 +150,11 @@ public class ImageCreator {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private void copyImageFlipped(List<Character> pixelData,
-			List<Integer> pDstData, int mipmapLevel) {
+	private void copyImageFlipped(byte[] mipmapBytes, List<Integer> pDstData, int mipmapLevel) {
 		Dimensions dims = Util.modifyDimensionsForMipmap(new Dimensions(dimensions), mipmapLevel);
 		
 		if (imageFormat.getType().ordinal() < PixelDataType.DT_NUM_UNCOMPRESSED_TYPES.ordinal()) {
-			copyPixelsFlipped(pDstData, dims, imageFormat, mipmapLevel, pixelData,
+			copyPixelsFlipped(pDstData, dims, imageFormat, mipmapLevel, mipmapBytes,
 				imageSizes.get(mipmapLevel));
 		} 
 		else {
@@ -168,7 +164,7 @@ public class ImageCreator {
 	
 	
 	private void copyPixelsFlipped(List<Integer> pMipmapData, Dimensions dims,
-			ImageFormat format, int mipmapLevel, List<Character> pixelData,
+			ImageFormat format, int mipmapLevel, byte[] mipmapBytes,
 			int imageSize) {
 		// Flip the data. Copy line by line.
 		int numLines = dims.numLines();
@@ -181,7 +177,8 @@ public class ImageCreator {
 			int lineOffset = line * lineByteSize;
 			
 			for (int i = 0; i < lineByteSize; i++) {
-				int pixel = PortingUtils.toUnsignedInt(pixelData.get(pInputRow - lineOffset + i));
+				//int pixel = PortingUtils.toUnsignedInt(pixelData.get(pInputRow - lineOffset + i));
+				int pixel = mipmapBytes[pInputRow - lineOffset + i];
 				pMipmapData.set(lineOffset + i, pixel);
 			}
 		}

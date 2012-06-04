@@ -44,9 +44,9 @@ public class ImageCreator {
 			Dimensions mipmapDimensions = Util.modifyDimensionsForMipmap(dimensions, level);
 			int imageSize = Util.getImageByteSize(imageFormat, mipmapDimensions);
 
-			ArrayList<Integer> mipmap = new ArrayList<>();
+			ArrayList<Byte> mipmap = new ArrayList<>();
 			for (int i = 0; i < imageSize * faceCount * arrayCount; i++) {
-				mipmap.add(0);
+				mipmap.add((byte) 0);
 			}
 			
 			imageData.add(mipmap);
@@ -79,8 +79,8 @@ public class ImageCreator {
 
 		int imageOffset = ((arrayIx * faceCount) + faceIx) * imageSizes.get(mipmapLevel);
 
-		ArrayList<Integer> pMipmapData = imageData.get(mipmapLevel);
-		List<Integer> pMipmapDataList = pMipmapData.subList(imageOffset, pMipmapData.size());
+		ArrayList<Byte> pMipmapData = imageData.get(mipmapLevel);
+		List<Byte> pMipmapDataList = pMipmapData.subList(imageOffset, pMipmapData.size());
 		
 		if (!isTopLeft) {
 			//memcpy(pMipmapData, pixelData, m_imageSizes[mipmapLevel]);
@@ -142,7 +142,7 @@ public class ImageCreator {
 	private int mipmapCount;
 	private int arrayCount;
 	private int faceCount;
-	private ArrayList<ArrayList<Integer>> imageData;
+	private ArrayList<ArrayList<Byte>> imageData;
 	private ArrayList<Integer> imageSizes;
 
 	
@@ -150,7 +150,7 @@ public class ImageCreator {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private void copyImageFlipped(byte[] mipmapBytes, List<Integer> pDstData, int mipmapLevel) {
+	private void copyImageFlipped(byte[] mipmapBytes, List<Byte> pDstData, int mipmapLevel) {
 		Dimensions dims = Util.modifyDimensionsForMipmap(new Dimensions(dimensions), mipmapLevel);
 		
 		if (imageFormat.getType().ordinal() < PixelDataType.DT_NUM_UNCOMPRESSED_TYPES.ordinal()) {
@@ -163,7 +163,7 @@ public class ImageCreator {
 	}
 	
 	
-	private void copyPixelsFlipped(List<Integer> pMipmapData, Dimensions dims,
+	private void copyPixelsFlipped(List<Byte> pMipmapData, Dimensions dims,
 			ImageFormat format, int mipmapLevel, byte[] mipmapBytes,
 			int imageSize) {
 		// Flip the data. Copy line by line.
@@ -178,7 +178,7 @@ public class ImageCreator {
 			
 			for (int i = 0; i < lineByteSize; i++) {
 				//int pixel = PortingUtils.toUnsignedInt(pixelData.get(pInputRow - lineOffset + i));
-				int pixel = mipmapBytes[pInputRow - lineOffset + i];
+				byte pixel = mipmapBytes[pInputRow - lineOffset + i];
 				pMipmapData.set(lineOffset + i, pixel);
 			}
 		}

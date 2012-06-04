@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -231,16 +232,13 @@ public class Dds {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	private static int intFrom4Bytes(byte bytes[], int startIndex) {
-		long value = 0;
+		int value = 0;
 		
 		for (int i = startIndex; i < startIndex + 4; i++) {
 		   value += (bytes[i] & 0xff) << (8 * (i - startIndex));
 		}
 		
-		return (int) value;
-		
-		//return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0)); big-endian o
-		//int result = ByteBuffer.wrap(bytes).getInt();
+		return value;
 	}
 	
 	

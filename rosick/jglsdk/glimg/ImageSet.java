@@ -71,7 +71,7 @@ public class ImageSet {
 	private ImageFormat m_format;
 	private Dimensions m_dimensions;
 	private ArrayList<Integer> m_imageSizes;
-	private ArrayList<ArrayList<Integer>> m_imageData;
+	private ArrayList<ArrayList<Byte>> m_imageData;
 	private int m_mipmapCount;
 	private int m_faceCount;
 
@@ -79,7 +79,7 @@ public class ImageSet {
 	
 	ImageSet(ImageFormat format, Dimensions dimensions,
 			int mipmapCount, int arrayCount, int faceCount,
-			ArrayList<ArrayList<Integer>> imageData,
+			ArrayList<ArrayList<Byte>> imageData,
 			ArrayList<Integer> imageSizes) {
 		m_format = format;
 		m_dimensions = dimensions;
@@ -117,13 +117,13 @@ public class ImageSet {
 	
 	private ByteBuffer getImageData(int mipmapLevel, int arrayIx, int faceIx) {		
 		int imageOffset = ((arrayIx * m_faceCount) + faceIx) * m_imageSizes.get(mipmapLevel);
-		ArrayList<Integer> image = m_imageData.get(mipmapLevel);
-		List<Integer> offsettedImage = image.subList(imageOffset, image.size());
+		ArrayList<Byte> image = m_imageData.get(mipmapLevel);
+		List<Byte> offsettedImage = image.subList(imageOffset, image.size());
 
 		ByteBuffer tempBuffer = BufferUtils.createByteBuffer(offsettedImage.size());
 		
-		for (Integer integer : offsettedImage) {
-			tempBuffer.put(integer.byteValue());
+		for (Byte integer : offsettedImage) {
+			tempBuffer.put(integer);
 		}
 		
 		tempBuffer.flip();

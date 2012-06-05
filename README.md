@@ -7,14 +7,14 @@ This project is a port of McKesson's OpenGL tutorials to Java using LWJGL and it
 [here](https://bitbucket.org/alfonse/gltut/wiki/Home).  
 
 
-Tutorials ported so far: 16.2 of 17.3
+Tutorials ported so far: 16.3 of 17.3
 
 
-If you don't want to download the source code you can play with the tutorials with [this simple program](https://github.com/downloads/rosickteam/OpenGL/tutorial-chooser.zip).
+If you don't want to download the source code you can play with the tutorials with [this runnable jar](https://github.com/downloads/rosickteam/OpenGL/tutorial-chooser.zip).
 
 
 To suggest a feature, report a bug, or general discussion please use the [issue tracker](https://github.com/rosickteam/OpenGL/issues).  
-Happy coding! 
+Happy coding! :)
 
 Francesco
 
@@ -22,15 +22,17 @@ Francesco
 
 General information
 -------------------
-The project is developed with Java 1.7 and LWJGL 2.8.3, and may not work with older versions.  
+The project uses features of Java 7 and doesn't work with older versions. It is tested with LWJGL 2.8.3.  
 To download and install LWJGL visit the [official site](http://www.lwjgl.org/). 
 
 - "rosick/jglsdk" 	: package with the glsdk port.
 - "rosick/mckesson" : package with the tutorials port.
 
 To test it out, it is recommended to use [Eclipse](http://www.eclipse.org/).  
-Open Eclipse, copy or link the "rosick" package into an existing project (in the "src" folder) and, if you haven't already done, 
+Open Eclipse, copy or link the "rosick" package into an existing project (e.g. in the "src" folder) and, if you haven't already done, 
 add and configure the LWJGL library in the project build path. Open any tutorial and run it by clicking the 'play' button.
+
+I have tested my code only on Windows.
 
 
 

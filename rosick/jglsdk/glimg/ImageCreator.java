@@ -1,7 +1,7 @@
 package rosick.jglsdk.glimg;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import rosick.jglsdk.glimg.ImageFormat.PixelDataType;
 import rosick.jglsdk.glimg.ImageSet.Dimensions;
@@ -12,26 +12,26 @@ import rosick.jglsdk.glimg.ImageSet.Dimensions;
  * 
  * @author integeruser
  */
-public class ImageCreator {
+class ImageCreator {
 	
-	public ImageCreator(ImageFormat imageFormat, Dimensions dimensions, int mipmapCount, int arrayCount, int faceCount) {
-		this.imageFormat = imageFormat;
-		this.dimensions = new Dimensions(dimensions);
-		this.mipmapCount = mipmapCount;
-		this.arrayCount = arrayCount;
-		this.faceCount = faceCount;
-		imageData = new ArrayList<>(mipmapCount);
-		imageSizes = new ArrayList<>(mipmapCount);
+	ImageCreator(ImageFormat format, Dimensions dimensions, int mipmapCount, int arrayCount, int faceCount) {
+		m_imageFormat = format;
+		m_imageDimensions = new Dimensions(dimensions);
+		m_mipmapCount = mipmapCount;
+		m_arrayCount = arrayCount;
+		m_faceCount = faceCount;
+		m_imageData = new ArrayList<>(mipmapCount);
+		m_imageByteSizes = new int[mipmapCount];
 
 		if (faceCount != 6 && faceCount != 1) {
 			throw new BadFaceCountException();
 		}
 
-		if (faceCount == 6 && dimensions.numDimensions != 2) {
+		if (faceCount == 6 && dimensions.m_numDimensions != 2) {
 			throw new CubemapsMustBe2DException();
 		}
 
-		if (dimensions.numDimensions == 3 && arrayCount != 1) {
+		if (dimensions.m_numDimensions == 3 && arrayCount != 1) {
 			throw new No3DTextureArrayException();
 		}
 
@@ -40,17 +40,15 @@ public class ImageCreator {
 		}
 
 		// Allocate the memory for our data.
-		for (int level = 0; level < mipmapCount; level++) {
-			Dimensions mipmapDimensions = Util.modifyDimensionsForMipmap(dimensions, level);
-			int imageSize = Util.getImageByteSize(imageFormat, mipmapDimensions);
-
-			ArrayList<Byte> mipmap = new ArrayList<>();
-			for (int i = 0; i < imageSize * faceCount * arrayCount; i++) {
-				mipmap.add((byte) 0);
-			}
+		for (int mipmapLevel = 0; mipmapLevel < mipmapCount; mipmapLevel++) {
+			Dimensions mipmapImageDimensions = Util.getImageDimensionsForMipmapLevel(dimensions, mipmapLevel);
 			
-			imageData.add(mipmap);
-			imageSizes.add(imageSize);
+			int mipmapImageByteSize = getImageByteSize(format, mipmapImageDimensions);
+			m_imageByteSizes[mipmapLevel] = mipmapImageByteSize;
+
+			// An image for each mipmapLevel
+			byte[] mipmapImage = new byte[mipmapImageByteSize * faceCount * arrayCount];		
+			m_imageData.add(mipmapImage);			
 		}
 	}	
 	
@@ -59,46 +57,44 @@ public class ImageCreator {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	public void setImageData(byte mipmapBytes[], boolean isTopLeft, int mipmapLevel, int arrayIx, int faceIx) {
- 		if (imageData.isEmpty()) {
+	void setImageData(byte image[], boolean isTopLeft, int mipmapLevel, int arrayIx, int faceIx) {
+ 		if (m_imageData.isEmpty()) {
 			throw new ImageSetAlreadyCreatedException();
  		}
 			
 		// Check inputs.
-		if ((arrayIx < 0) || (arrayCount <= arrayIx)) {
+		if ((arrayIx < 0) || (m_arrayCount <= arrayIx)) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		
-		if ((mipmapLevel < 0) || (mipmapCount <= mipmapLevel)) {
+		if ((mipmapLevel < 0) || (m_mipmapCount <= mipmapLevel)) {
 			throw new MipmapLayerOutOfBoundsException();
 		}
 
-		if ((faceIx < 0) || (faceCount <= faceIx)) {
+		if ((faceIx < 0) || (m_faceCount <= faceIx)) {
 			throw new FaceIndexOutOfBoundsException();
 		}
 
-		int imageOffset = ((arrayIx * faceCount) + faceIx) * imageSizes.get(mipmapLevel);
-
-		ArrayList<Byte> pMipmapData = imageData.get(mipmapLevel);
-		List<Byte> pMipmapDataList = pMipmapData.subList(imageOffset, pMipmapData.size());
-		
+		// Get the image relative to mipmapLevel
+		byte[] mipmapImage = m_imageData.get(mipmapLevel);
+		int mipmapImageOffset = ((arrayIx * m_faceCount) + faceIx) * m_imageByteSizes[mipmapLevel];
+				
 		if (!isTopLeft) {
-			//memcpy(pMipmapData, pixelData, m_imageSizes[mipmapLevel]);
 			throw new RuntimeException("Not yet implemented");
 		}
 		else {
-			copyImageFlipped(mipmapBytes, pMipmapDataList, mipmapLevel);
+			copyImageFlipped(mipmapLevel, image, mipmapImage, mipmapImageOffset);
 		}
 	}
 
 
-	public ImageSet createImage() {
-		if (imageData.isEmpty()) {
+	ImageSet createImage() {
+		if (m_imageData.isEmpty()) {
 			throw new ImageSetAlreadyCreatedException();
 		}
 		
-		return new ImageSet(imageFormat, dimensions,
-				mipmapCount, arrayCount, faceCount, imageData, imageSizes);
+		return new ImageSet(m_imageFormat, m_imageDimensions,
+				m_mipmapCount, m_faceCount, m_imageData, m_imageByteSizes);
 	}	
 	
 	
@@ -106,7 +102,7 @@ public class ImageCreator {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */		
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
 	private static class BadFaceCountException extends RuntimeException {
 		private static final long serialVersionUID = -4120563516856357626L;
@@ -137,25 +133,46 @@ public class ImageCreator {
 	}
 	
 		
-	private ImageFormat imageFormat;
-	private Dimensions dimensions;
-	private int mipmapCount;
-	private int arrayCount;
-	private int faceCount;
-	private ArrayList<ArrayList<Byte>> imageData;
-	private ArrayList<Integer> imageSizes;
+	private ImageFormat m_imageFormat;
+	private Dimensions m_imageDimensions;
+	private int m_mipmapCount;
+	private int m_arrayCount;
+	private int m_faceCount;
+	private ArrayList<byte[]> m_imageData;
+	private int[] m_imageByteSizes;
 
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private void copyImageFlipped(byte[] mipmapBytes, List<Byte> pDstData, int mipmapLevel) {
-		Dimensions dims = Util.modifyDimensionsForMipmap(new Dimensions(dimensions), mipmapLevel);
+	private static int getImageByteSize(ImageFormat imageFormat, Dimensions dimensions) {
+		if (imageFormat.getType().ordinal() >= PixelDataType.DT_NUM_UNCOMPRESSED_TYPES.ordinal()) {
+			throw new RuntimeException("Compressed texture non yet implemented.");
+		}
+		else {
+			int bytesPerPixel = Util.getBytesPerPixel(imageFormat);
+			int lineByteSize = imageFormat.alignByteCount(bytesPerPixel * dimensions.m_width);
+
+			if (dimensions.m_numDimensions > 1) {
+				lineByteSize *= dimensions.m_height;
+			}
+			
+			if (dimensions.m_numDimensions == 3) {
+				lineByteSize *= dimensions.m_depth;
+			}
+
+			return lineByteSize;
+		}
+	}
+	
+
+	private void copyImageFlipped(int mipmapLevel, byte[] image, byte[] mipmapImage, int mipmapImageOffset) {	
+		Dimensions mipmapImageDimensions = Util.getImageDimensionsForMipmapLevel(new Dimensions(m_imageDimensions), mipmapLevel);
 		
-		if (imageFormat.getType().ordinal() < PixelDataType.DT_NUM_UNCOMPRESSED_TYPES.ordinal()) {
-			copyPixelsFlipped(pDstData, dims, imageFormat, mipmapLevel, mipmapBytes,
-				imageSizes.get(mipmapLevel));
+		if (m_imageFormat.getType().ordinal() < PixelDataType.DT_NUM_UNCOMPRESSED_TYPES.ordinal()) {
+			copyPixelsFlipped(m_imageFormat, image, 
+					mipmapImage, mipmapImageOffset, m_imageByteSizes[mipmapLevel], mipmapImageDimensions);
 		} 
 		else {
 			throw new RuntimeException("Not yet implemented");
@@ -163,24 +180,26 @@ public class ImageCreator {
 	}
 	
 	
-	private void copyPixelsFlipped(List<Byte> pMipmapData, Dimensions dims,
-			ImageFormat format, int mipmapLevel, byte[] mipmapBytes,
-			int imageSize) {
-		// Flip the data. Copy line by line.
-		int numLines = dims.numLines();
-		int lineByteSize = format.alignByteCount(Util.getBytesPerPixel(format) * dims.width);
+	private void copyPixelsFlipped(ImageFormat imageFormat, byte[] image, 
+			byte[] mipmapImage, int mipmapImageOffset, int mipmapImageByteSize, Dimensions mipmapImageDimensions) 
+	{
+		int lineCount = mipmapImageDimensions.getLineCount();
+		int lineByteSize = imageFormat.alignByteCount(Util.getBytesPerPixel(imageFormat) * mipmapImageDimensions.m_width);
+
+		// Flipped: start from last line of image, going backwards
+		int imageLineOffset = mipmapImageByteSize - lineByteSize; 
+		int mipmapImageLineOffset = 0;
 		
-		// Move the pixel data to the last row.
-		int pInputRow = imageSize;
-		pInputRow -= lineByteSize;
-		for (int line = 0; line < numLines; line++) {
-			int lineOffset = line * lineByteSize;
+		for (int line = 0; line < lineCount; line++) {		
+			// Get a line from image
+			byte[] imageLine = Arrays.copyOfRange(image, imageLineOffset, imageLineOffset + lineByteSize);
+
+			// Copy the line into mipmapImage
+			System.arraycopy(imageLine, 0, mipmapImage, mipmapImageOffset + mipmapImageLineOffset, lineByteSize);
 			
-			for (int i = 0; i < lineByteSize; i++) {
-				//int pixel = PortingUtils.toUnsignedInt(pixelData.get(pInputRow - lineOffset + i));
-				byte pixel = mipmapBytes[pInputRow - lineOffset + i];
-				pMipmapData.set(lineOffset + i, pixel);
-			}
+			// Update indices
+			imageLineOffset -= lineByteSize;
+			mipmapImageLineOffset += lineByteSize;
 		}
 	}
 }

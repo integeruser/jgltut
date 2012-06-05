@@ -390,7 +390,7 @@ public class ManyImages01 extends LWJGLWindow {
 				SingleImage image = pImageSet.getImage(mipmapLevel, 0, 0);
 				Dimensions dims = image.getDimensions();
 
-				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_RGB8, dims.width, dims.height, 0,
+				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_RGB8, dims.m_width, dims.m_height, 0,
 					GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData());
 			}
 

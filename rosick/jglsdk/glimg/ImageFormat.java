@@ -6,9 +6,9 @@ package rosick.jglsdk.glimg;
  * 
  * @author integeruser
  */
-public class ImageFormat {
+class ImageFormat {
 	
-	public enum PixelDataType {
+	enum PixelDataType {
 		DT_NORM_UNSIGNED_INTEGER,			// Image data are unsigned integers that are mapped to floats on the range [0, 1].
 		DT_NORM_SIGNED_INTEGER,				// Image data are signed integers that are mapped to floats on the range [-1, 1].
 		DT_UNSIGNED_INTEGRAL,				// Image data are unsigned integers.
@@ -31,7 +31,7 @@ public class ImageFormat {
 		DT_NUM_TYPES
 	};
 	
-	public enum PixelComponents {
+	enum PixelComponents {
 		FMT_COLOR_RED,						// Image contains 1 color component, namely red.
 		FMT_COLOR_RG,						// Image contains 2 color components, red and green.
 		FMT_COLOR_RGB,						// Image contains 3 color components, red, green, and blue.
@@ -47,7 +47,7 @@ public class ImageFormat {
 		FMT_NUM_FORMATS
 	};
 	
-	public enum ComponentOrder {
+	enum ComponentOrder {
 		ORDER_RGBA,							// Standard RGBA ordering.
 		ORDER_BGRA,							// Often used in conjunction with _REV Bitdepths.
 		ORDER_RGBE,							// For DT_SHARED_EXP_FLOAT types. The E is the exponent, and it comes first.
@@ -59,7 +59,7 @@ public class ImageFormat {
 		ORDER_NUM_ORDERS
 	};
 	
-	public enum Bitdepth {
+	enum Bitdepth {
 		BD_COMPRESSED,						// Used for compressed data types. They do not have a bitdepth.
 
 		BD_PER_COMP_8,						// Each component takes up 8 bits.
@@ -88,54 +88,58 @@ public class ImageFormat {
 	};
 	
 	
-	public static class UncheckedImageFormat {
-		public PixelDataType eType;			// The type of pixel data.
-		public PixelComponents eFormat;		// The components stored by a pixel.
-		public ComponentOrder eOrder;		// The order of the components of the pixel.
-		public Bitdepth eBitdepth;			// The bitdepth of each pixel component.
-		public int lineAlignment;			// The byte alignment of a horizontal line of pixel data.
+	static class UncheckedImageFormat {
+		PixelDataType m_type;									// The type of pixel data.
+		PixelComponents m_format;								// The components stored by a pixel.
+		ComponentOrder m_order;									// The order of the components of the pixel.
+		Bitdepth m_bitdepth;									// The bitdepth of each pixel component.
+		int m_lineAlignment;									// The byte alignment of a horizontal line of pixel data.
 		
-		
-		public UncheckedImageFormat() {
-		}
-		
-		public UncheckedImageFormat(PixelDataType eType, PixelComponents eFormat,
-				ComponentOrder eOrder, Bitdepth eBitdepth, int lineAlignment) {
-			this.eType = eType;
-			this.eFormat = eFormat;
-			this.eOrder = eOrder;
-			this.eBitdepth = eBitdepth;
-			this.lineAlignment = lineAlignment;
+
+		UncheckedImageFormat(PixelDataType type, PixelComponents format,
+				ComponentOrder order, Bitdepth bitdepth, int lineAlignment) {
+			m_type = type;
+			m_format = format;
+			m_order = order;
+			m_bitdepth = bitdepth;
+			m_lineAlignment = lineAlignment;
 		}
 	}
 	
 	
-	private UncheckedImageFormat fmt;
-
-		
-	public ImageFormat(UncheckedImageFormat fmt) {
-		this.fmt = fmt;
+	
+	ImageFormat(UncheckedImageFormat uncheckedImageFormat) {
+		this.uncheckedImageFormat = uncheckedImageFormat;
 	}
 	
 
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	public int alignByteCount(int byteCount) {
-		return (byteCount + (fmt.lineAlignment - 1)) / fmt.lineAlignment;
+	
+	final int alignByteCount(int byteCount) {
+		return (byteCount + (uncheckedImageFormat.m_lineAlignment - 1)) / uncheckedImageFormat.m_lineAlignment;
 	}
 	
 		
-	public PixelDataType getType() {
-		return fmt.eType;
+	final PixelDataType getType() {
+		return uncheckedImageFormat.m_type;
 	}
 	
-	public PixelComponents components() {
-		return fmt.eFormat;
+	final PixelComponents getPixelComponents() {
+		return uncheckedImageFormat.m_format;
 	}
 	
-	public Bitdepth depth() {
-		return fmt.eBitdepth;
+	final Bitdepth getBitdepth() {
+		return uncheckedImageFormat.m_bitdepth;
 	};
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private UncheckedImageFormat uncheckedImageFormat;
 }

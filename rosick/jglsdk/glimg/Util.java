@@ -2,7 +2,6 @@ package rosick.jglsdk.glimg;
 
 import rosick.jglsdk.glimg.ImageFormat.Bitdepth;
 import rosick.jglsdk.glimg.ImageFormat.PixelComponents;
-import rosick.jglsdk.glimg.ImageFormat.PixelDataType;
 import rosick.jglsdk.glimg.ImageSet.Dimensions;
 
 
@@ -11,25 +10,25 @@ import rosick.jglsdk.glimg.ImageSet.Dimensions;
  * 
  * @author integeruser
  */
-public class Util {
+class Util {
 		
-	static Dimensions modifyDimensionsForMipmap(Dimensions dimensions, int mipmapLevel) {
-		Dimensions newDimensions = new Dimensions(dimensions);
+	static Dimensions getImageDimensionsForMipmapLevel(Dimensions imageDimensions, int mipmapLevel) {
+		Dimensions mipmapImageDimensions = new Dimensions(imageDimensions);
 		
 		for (int i = 0; i < mipmapLevel; i++) {
-			newDimensions.width /= 2;
-			newDimensions.height /= 2;
-			newDimensions.depth /= 2;
+			mipmapImageDimensions.m_width /= 2;
+			mipmapImageDimensions.m_height /= 2;
+			mipmapImageDimensions.m_depth /= 2;
 		}
 
-		return newDimensions;
+		return mipmapImageDimensions;
 	}
 	
 	
 	static int getBytesPerPixel(ImageFormat imageFormat) {
 		int bytesPerPixel = 0;
 		
-		switch(imageFormat.depth()) {
+		switch(imageFormat.getBitdepth()) {
 		case BD_COMPRESSED:											return 0;
 		case BD_PER_COMP_8:					bytesPerPixel = 1;		break;
 		case BD_PER_COMP_16:				bytesPerPixel = 2;		break;
@@ -49,31 +48,11 @@ public class Util {
 		case BD_PACKED_32_BIT_5999_REV:		bytesPerPixel = 4;		break;
 		}
 
-		if (imageFormat.depth().ordinal() < Bitdepth.BD_NUM_PER_COMPONENT.ordinal()) {
-			bytesPerPixel *= getComponentCount(imageFormat.components());
+		if (imageFormat.getBitdepth().ordinal() < Bitdepth.BD_NUM_PER_COMPONENT.ordinal()) {
+			bytesPerPixel *= getComponentCount(imageFormat.getPixelComponents());
 		}
 
 		return bytesPerPixel;
-	}
-	
-	static int getImageByteSize(ImageFormat imageFormat, Dimensions dimensions) {
-		if (imageFormat.getType().ordinal() >= PixelDataType.DT_NUM_UNCOMPRESSED_TYPES.ordinal()) {
-			throw new RuntimeException("Compressed texture non yet implemented.");
-		}
-		else {
-			int bytesPerPixel = getBytesPerPixel(imageFormat);
-			int lineByteSize = imageFormat.alignByteCount(bytesPerPixel * dimensions.width);
-
-			if (dimensions.numDimensions > 1) {
-				lineByteSize *= dimensions.height;
-			}
-			
-			if (dimensions.numDimensions == 3) {
-				lineByteSize *= dimensions.depth;
-			}
-
-			return lineByteSize;
-		}
 	}
 	
 	

@@ -24,7 +24,7 @@ import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.framework.Timer;
-import rosick.jglsdk.glimg.Dds;
+import rosick.jglsdk.glimg.DdsLoader;
 import rosick.jglsdk.glimg.ImageSet;
 import rosick.jglsdk.glimg.ImageSet.Dimensions;
 import rosick.jglsdk.glimg.ImageSet.SingleImage;
@@ -325,7 +325,7 @@ public class GammaCheckers02 extends LWJGLWindow {
 		
 	private void loadCheckerTexture() {
 		try	{
-			ImageSet pImageSet = Dds.loadFromFile(TUTORIAL_DATAPATH + "checker_linear.dds");
+			ImageSet pImageSet = DdsLoader.loadFromFile(TUTORIAL_DATAPATH + "checker_linear.dds");
 
 			g_linearTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_linearTexture);
@@ -342,7 +342,7 @@ public class GammaCheckers02 extends LWJGLWindow {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
 
 			
-			pImageSet = Dds.loadFromFile(TUTORIAL_DATAPATH + "checker_gamma.dds");
+			pImageSet = DdsLoader.loadFromFile(TUTORIAL_DATAPATH + "checker_gamma.dds");
 
 			g_gammaTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_gammaTexture);

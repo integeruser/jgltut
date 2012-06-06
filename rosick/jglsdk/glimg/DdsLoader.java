@@ -6,10 +6,14 @@ import static rosick.jglsdk.glimg.ImageFormat.PixelComponents.*;
 import static rosick.jglsdk.glimg.ImageFormat.PixelDataType.*;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -32,7 +36,7 @@ import rosick.jglsdk.glimg.ImageSet.Dimensions;
  * 
  * @author integeruser
  */
-public class Dds {
+public class DdsLoader {
 	
 	/*
 	 * C++
@@ -47,15 +51,8 @@ public class Dds {
 
 	
 	public static ImageSet loadFromFile(String ddsFilePath) {
-		byte ddsFile[] = null;
-
 		// Read the file.
-		try {
-			Path path = Paths.get(ClassLoader.class.getResource(ddsFilePath).toURI());
-			ddsFile = Files.readAllBytes(path);
-		} catch (URISyntaxException | IOException e) {
-			e.printStackTrace();
-		}		
+		byte[] ddsFile = readDdsFile(ClassLoader.class.getResourceAsStream(ddsFilePath));	
 
 		// Check the first 4 bytes.
 		int magicTest = intFromFourBytes(ddsFile, 0);
@@ -231,6 +228,24 @@ public class Dds {
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private static byte[] readDdsFile(InputStream source) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		int bytesRead;
+		
+		try {
+			byte[] buffer = new byte[4096]; 
+			
+			while ((bytesRead = source.read(buffer)) != -1) {
+				out.write(buffer, 0, bytesRead);
+			}				
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+								
+		return out.toByteArray();
+	}
+	
 	
 	private static int intFromFourBytes(byte bytes[], int startIndex) {
 		int value = 0;

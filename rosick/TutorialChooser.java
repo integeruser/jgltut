@@ -193,7 +193,9 @@ public class TutorialChooser extends JPanel implements TreeSelectionListener {
 								category.add(tutorialFolder);
 							}
 						} else {
-							if (isFileNameValid(jarEntryName)) {
+							String fileName = jarEntryName.substring(jarEntryName.lastIndexOf("/") + 1);
+							
+							if (isFileNameValid(fileName)) {
 								addTutorial(tutorialFolder, jarEntryName);
 							}
 						}

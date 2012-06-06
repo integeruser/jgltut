@@ -24,7 +24,7 @@ import rosick.PortingUtils.BufferableData;
 import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.framework.Mesh;
 import rosick.jglsdk.framework.MousePole;
-import rosick.jglsdk.glimg.Dds;
+import rosick.jglsdk.glimg.DdsLoader;
 import rosick.jglsdk.glimg.ImageSet;
 import rosick.jglsdk.glimg.ImageSet.Dimensions;
 import rosick.jglsdk.glimg.ImageSet.SingleImage;
@@ -482,7 +482,7 @@ public class GammaLandscape03 extends LWJGLWindow {
 		
 	private void loadTextures() {
 		try	{
-			ImageSet pImageSet = Dds.loadFromFile(TUTORIAL_DATAPATH + "terrain_tex.dds");
+			ImageSet pImageSet = DdsLoader.loadFromFile(TUTORIAL_DATAPATH + "terrain_tex.dds");
 
 			g_linearTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_linearTexture);

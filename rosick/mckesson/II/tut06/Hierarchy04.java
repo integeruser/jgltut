@@ -13,11 +13,11 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
 import rosick.LWJGLWindow;
-import rosick.jglsdk.framework.Framework;
 import rosick.jglsdk.glm.Mat3;
 import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Vec3;
 import rosick.jglsdk.glm.Vec4;
+import rosick.mckesson.framework.Framework;
 
 
 /**

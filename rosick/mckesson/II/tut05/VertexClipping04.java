@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 
 import rosick.LWJGLWindow;
-import rosick.jglsdk.framework.Framework;
+import rosick.mckesson.framework.Framework;
 
 
 /**

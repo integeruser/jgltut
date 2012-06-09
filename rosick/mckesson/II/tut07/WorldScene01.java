@@ -11,8 +11,8 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
 import rosick.LWJGLWindow;
-import rosick.jglsdk.framework.Framework;
-import rosick.jglsdk.framework.Mesh;
+import rosick.mckesson.framework.Framework;
+import rosick.mckesson.framework.Mesh;
 import rosick.jglsdk.glm.Glm;
 import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Vec3;

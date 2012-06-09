@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 
 import rosick.LWJGLWindow;
-import rosick.jglsdk.framework.Framework;
+import rosick.mckesson.framework.Framework;
 import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Vec3;
 import rosick.jglsdk.glm.Vec4;

@@ -14,7 +14,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
 import rosick.LWJGLWindow;
-import rosick.jglsdk.framework.Framework;
+import rosick.mckesson.framework.Framework;
 
 
 /**

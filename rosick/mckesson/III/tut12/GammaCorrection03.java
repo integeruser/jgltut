@@ -15,10 +15,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import rosick.LWJGLWindow;
-import rosick.PortingUtils.BufferableData;
-import rosick.jglsdk.framework.Framework;
-import rosick.jglsdk.framework.MousePole;
-import rosick.jglsdk.framework.Timer;
+import rosick.jglsdk.BufferableData;
 import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Quaternion;
 import rosick.jglsdk.glm.Vec3;
@@ -31,6 +28,9 @@ import rosick.mckesson.III.tut12.LightManager.SunlightValueHDR;
 import rosick.mckesson.III.tut12.LightManager.TimerTypes;
 import rosick.mckesson.III.tut12.Scene.LightingProgramTypes;
 import rosick.mckesson.III.tut12.Scene.ProgramData;
+import rosick.mckesson.framework.Framework;
+import rosick.mckesson.framework.MousePole;
+import rosick.mckesson.framework.Timer;
 
 
 /**

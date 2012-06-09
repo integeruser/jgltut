@@ -15,10 +15,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import rosick.LWJGLWindow;
-import rosick.PortingUtils.BufferableData;
-import rosick.jglsdk.framework.Framework;
-import rosick.jglsdk.framework.Mesh;
-import rosick.jglsdk.framework.MousePole;
+import rosick.jglsdk.BufferableData;
 import rosick.jglsdk.glm.Mat3;
 import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Quaternion;
@@ -26,6 +23,9 @@ import rosick.jglsdk.glm.Vec3;
 import rosick.jglsdk.glm.Vec4;
 import rosick.jglsdk.glutil.MatrixStack;
 import rosick.jglsdk.glutil.MousePoles.*;
+import rosick.mckesson.framework.Framework;
+import rosick.mckesson.framework.Mesh;
+import rosick.mckesson.framework.MousePole;
 
 
 /**

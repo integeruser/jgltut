@@ -705,7 +705,7 @@ public class MaterialTexture03 extends LWJGLWindow {
 
 			g_shineTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_shineTexture);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, dims.m_width, dims.m_height, 0, 
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, dims.width, dims.height, 0, 
 					GL11.GL_RED, GL_UNSIGNED_BYTE, image.getImageData());
 			
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);

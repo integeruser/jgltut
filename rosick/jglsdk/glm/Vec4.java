@@ -2,11 +2,11 @@ package rosick.jglsdk.glm;
 
 import java.nio.FloatBuffer;
 
-import rosick.PortingUtils.BufferableData;
+import rosick.jglsdk.BufferableData;
 
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * Visit https://github.com/integeruser/jglsdk for project info, updates and license terms.
  * 
  * @author integeruser
  */
@@ -66,29 +66,29 @@ public class Vec4 extends BufferableData<FloatBuffer> {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	public Vec4 add(Vec4 vec) {
-		x += vec.x;
-		y += vec.y;
-		z += vec.z;
-		w += vec.w;
+	public Vec4 add(Vec4 rhs) {
+		x += rhs.x;
+		y += rhs.y;
+		z += rhs.z;
+		w += rhs.w;
 
 		return this;
 	}
 	
-	public Vec4 sub(Vec4 vec) {
-		x -= vec.x;
-		y -= vec.y;
-		z -= vec.z;
-		w -= vec.w;
+	public Vec4 sub(Vec4 rhs) {
+		x -= rhs.x;
+		y -= rhs.y;
+		z -= rhs.z;
+		w -= rhs.w;
 
 		return this;
 	}
 	
-	public Vec4 mul(Vec4 vec) {	   
-		x *= vec.x;
-		y *= vec.y;
-		z *= vec.z;
-		w *= vec.w;
+	public Vec4 mul(Vec4 rhs) {	   
+		x *= rhs.x;
+		y *= rhs.y;
+		z *= rhs.z;
+		w *= rhs.w;
 		
 		return this;
 	}
@@ -108,22 +108,22 @@ public class Vec4 extends BufferableData<FloatBuffer> {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	public static Vec4 add(Vec4 a, Vec4 b) {
-		Vec4 res = new Vec4(a);
+	public static Vec4 add(Vec4 lhs, Vec4 rhs) {
+		Vec4 res = new Vec4(lhs);
 		
-		return res.add(b);
+		return res.add(rhs);
 	}
 	
-	public static Vec4 sub(Vec4 a, Vec4 b) {
-		Vec4 res = new Vec4(a);
+	public static Vec4 sub(Vec4 lhs, Vec4 rhs) {
+		Vec4 res = new Vec4(lhs);
 
-		return res.sub(b);
+		return res.sub(rhs);
 	}
 	
-	public static Vec4 mul(Vec4 a, Vec4 b) {
-		Vec4 res = new Vec4(a);
+	public static Vec4 mul(Vec4 lhs, Vec4 rhs) {
+		Vec4 res = new Vec4(lhs);
 
-		return res.mul(b);
+		return res.mul(rhs);
 	}
 	
 	

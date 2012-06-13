@@ -2,11 +2,11 @@ package rosick.jglsdk.glm;
 
 import java.nio.FloatBuffer;
 
-import rosick.PortingUtils.BufferableData;
+import rosick.jglsdk.BufferableData;
 
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * Visit https://github.com/integeruser/jglsdk for project info, updates and license terms.
  * 
  * @author integeruser
  */
@@ -62,26 +62,26 @@ public class Vec3 extends BufferableData<FloatBuffer> {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 
-	public Vec3 add(Vec3 vec) {
-		x += vec.x;
-		y += vec.y;
-		z += vec.z;
+	public Vec3 add(Vec3 rhs) {
+		x += rhs.x;
+		y += rhs.y;
+		z += rhs.z;
 		
 		return this;
 	}
 	
-	public Vec3 sub(Vec3 vec) {
-		x -= vec.x;
-		y -= vec.y;
-		z -= vec.z;
+	public Vec3 sub(Vec3 rhs) {
+		x -= rhs.x;
+		y -= rhs.y;
+		z -= rhs.z;
 		
 		return this;
 	}
 	
-	public Vec3 mul(Vec3 vec) {
-		x *= vec.x;
-		y *= vec.y;
-		z *= vec.z;
+	public Vec3 mul(Vec3 rhs) {
+		x *= rhs.x;
+		y *= rhs.y;
+		z *= rhs.z;
 		
 		return this;
 	}
@@ -105,32 +105,26 @@ public class Vec3 extends BufferableData<FloatBuffer> {
 	}
 	
 	
-	@Override
-	public String toString() {
-		return "X: " + x + ", Y: " + y + ", Z: " + z;
-	}
-
-	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
-	public static Vec3 add(Vec3 a, Vec3 b) {
-		Vec3 res = new Vec3(a);
+	public static Vec3 add(Vec3 lhs, Vec3 rhs) {
+		Vec3 res = new Vec3(lhs);
 		
-		return res.add(b);
+		return res.add(rhs);
 	}
 	
-	public static Vec3 sub(Vec3 a, Vec3 b) {
-		Vec3 res = new Vec3(a);
+	public static Vec3 sub(Vec3 lhs, Vec3 rhs) {
+		Vec3 res = new Vec3(lhs);
 
-		return res.sub(b);
+		return res.sub(rhs);
 	}	
 	
-	public static Vec3 mul(Vec3 a, Vec3 b) {	
-		Vec3 res = new Vec3(a);
+	public static Vec3 mul(Vec3 lhs, Vec3 rhs) {	
+		Vec3 res = new Vec3(lhs);
 		
-		return res.mul(b);
+		return res.mul(rhs);
 	}
 	
 	

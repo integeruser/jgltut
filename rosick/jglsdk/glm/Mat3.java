@@ -2,11 +2,11 @@ package rosick.jglsdk.glm;
 
 import java.nio.FloatBuffer;
 
-import rosick.PortingUtils.BufferableData;
+import rosick.jglsdk.BufferableData;
 
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * Visit https://github.com/integeruser/jglsdk for project info, updates and license terms.
  * 
  * @author integeruser
  */
@@ -29,11 +29,6 @@ public class Mat3 extends BufferableData<FloatBuffer> {
 		matrix[8] = diagonal;
 	}
 
-	public Mat3(float mat[]) {
-		matrix = new float[9];
-		System.arraycopy(mat, 0, matrix, 0, 9);
-	}
-	
 	public Mat3(Mat3 mat) {
 		matrix = new float[9];
 		System.arraycopy(mat.matrix, 0, matrix, 0, 9);
@@ -68,15 +63,6 @@ public class Mat3 extends BufferableData<FloatBuffer> {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	public float[] get() {
-		return matrix;
-	}
-	
-	public float get(int index) {
-		return matrix[index];
-	}
-	
 	
 	public void set(int index, float value) {
 		matrix[index] = value;
@@ -117,24 +103,5 @@ public class Mat3 extends BufferableData<FloatBuffer> {
 		}
 		
 		return this;
-	}
-	
-	
-	public void clear(float diagonal) {
-		for (int i = 0; i < 9; i++) {
-			matrix[i] = 0.0f;
-		}
-		
-		matrix[0] = diagonal;
-		matrix[4] = diagonal;
-		matrix[8] = diagonal;
-	}
-	
-	public void clear(float[] array) {
-		System.arraycopy(array, 0, matrix, 0, 9);		
-	}
-	
-	public void clear(Mat3 mat) {
-		clear(mat.matrix);
 	}
 }

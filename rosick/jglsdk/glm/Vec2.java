@@ -2,11 +2,11 @@ package rosick.jglsdk.glm;
 
 import java.nio.FloatBuffer;
 
-import rosick.PortingUtils.BufferableData;
+import rosick.jglsdk.BufferableData;
 
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * Visit https://github.com/integeruser/jglsdk for project info, updates and license terms.
  * 
  * @author integeruser
  */
@@ -46,23 +46,23 @@ public class Vec2 extends BufferableData<FloatBuffer> {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
-	public Vec2 add(Vec2 vec) {
-		x += vec.x;
-		y += vec.y;
+	public Vec2 add(Vec2 rhs) {
+		x += rhs.x;
+		y += rhs.y;
 		
 		return this;
 	}
 	
-	public Vec2 sub(Vec2 vec) {
-		x -= vec.x;
-		y -= vec.y;
+	public Vec2 sub(Vec2 rhs) {
+		x -= rhs.x;
+		y -= rhs.y;
 		
 		return this;
 	}
 	
-	public Vec2 mul(Vec2 vec) {
-		x *= vec.x;
-		y *= vec.y;
+	public Vec2 mul(Vec2 rhs) {
+		x *= rhs.x;
+		y *= rhs.y;
 		
 		return this;
 	}
@@ -84,32 +84,26 @@ public class Vec2 extends BufferableData<FloatBuffer> {
 	}
 	
 	
-	@Override
-	public String toString() {
-		return "X: " + x + ", Y: " + y;
-	}
-
-	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
-	public static Vec2 add(Vec2 a, Vec2 b) {
-		Vec2 res = new Vec2(a);
+	public static Vec2 add(Vec2 lhs, Vec2 rhs) {
+		Vec2 res = new Vec2(lhs);
 		
-		return res.add(b);
+		return res.add(rhs);
 	}
 	
-	public static Vec2 sub(Vec2 a, Vec2 b) {
-		Vec2 res = new Vec2(a);
+	public static Vec2 sub(Vec2 lhs, Vec2 rhs) {
+		Vec2 res = new Vec2(lhs);
 
-		return res.sub(b);
+		return res.sub(rhs);
 	}	
 	
-	public static Vec2 mul(Vec2 a, Vec2 b) {	
-		Vec2 res = new Vec2(a);
+	public static Vec2 mul(Vec2 lhs, Vec2 rhs) {	
+		Vec2 res = new Vec2(lhs);
 		
-		return res.mul(b);
+		return res.mul(rhs);
 	}
 	
 	
@@ -125,5 +119,4 @@ public class Vec2 extends BufferableData<FloatBuffer> {
 		
 		return res.negate();
 	}
-
 }

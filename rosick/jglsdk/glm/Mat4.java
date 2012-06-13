@@ -2,11 +2,11 @@ package rosick.jglsdk.glm;
 
 import java.nio.FloatBuffer;
 
-import rosick.PortingUtils.BufferableData;
+import rosick.jglsdk.BufferableData;
 
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * Visit https://github.com/integeruser/jglsdk for project info, updates and license terms.
  * 
  * @author integeruser
  */
@@ -33,12 +33,6 @@ public class Mat4 extends BufferableData<FloatBuffer> {
 		matrix[15] 	= diagonal;
 	}
 
-	public Mat4(float mat[]) {
-		matrix = new float[16];
-		
-		System.arraycopy(mat, 0, matrix, 0, 16);
-	}
-	
 	public Mat4(Mat3 rotMatrix) {
 		matrix = new float[16];
 
@@ -162,19 +156,19 @@ public class Mat4 extends BufferableData<FloatBuffer> {
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) { 
 				float sum = 0;
-				
+
 				for (int k = 0; k < 4; k++) {
 					float a = m1[r + 4*k];
 					float b = m2[4*c + k];
 					sum += a * b;
 				}
-				
+
 				res[r + 4*c] = sum;
 			}
 		}
 
 		System.arraycopy(res, 0, matrix, 0, 16);
-		
+
 		return this;
 	}
 	
@@ -198,29 +192,9 @@ public class Mat4 extends BufferableData<FloatBuffer> {
 		matrix[10] = diagonal;
 		matrix[15] = diagonal;
 	}
-	
-	public void clear(float[] array) {
-		System.arraycopy(array, 0, matrix, 0, 16);		
-	}
-	
-	public void clear(Mat4 mat) {
-		clear(mat.matrix);
-	}
 
-
-	@Override
-	public String toString() {
-		String res = "";
-
-		for (int i = 0; i < 4; i++) {
-			res += matrix[i * 4] + " " + matrix[i * 4 + 1] + " " + matrix[i * 4 + 2] + " " + matrix[i * 4 + 3] + "\n";
-		}
-
-		return res;
-	}
 	
-	
-	
+		
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -253,24 +227,10 @@ public class Mat4 extends BufferableData<FloatBuffer> {
 		return res;
 	}
 	
-	public static Mat4 mul(Mat4 m1, Mat4 m2) {
-		Vec4 SrcA0 = m1.getColumn(0);
-		Vec4 SrcA1 = m1.getColumn(1);
-		Vec4 SrcA2 = m1.getColumn(2);
-		Vec4 SrcA3 = m1.getColumn(3);
-
-		Vec4 SrcB0 = m2.getColumn(0);
-		Vec4 SrcB1 = m2.getColumn(1);
-		Vec4 SrcB2 = m2.getColumn(2);
-		Vec4 SrcB3 = m2.getColumn(3);
+	public static Mat4 mul(Mat4 lhs, Mat4 rhs) {		
+		Mat4 temp = new Mat4(lhs);
 		
-		Mat4 result = new Mat4();
-		result.setColumn(0, Vec4.scale(SrcA0, SrcB0.x).add(Vec4.scale(SrcA1, SrcB0.y).add(Vec4.scale(SrcA2, SrcB0.z).add(Vec4.scale(SrcA3, SrcB0.w)))));
-		result.setColumn(1, Vec4.scale(SrcA0, SrcB1.x).add(Vec4.scale(SrcA1, SrcB1.y).add(Vec4.scale(SrcA2, SrcB1.z).add(Vec4.scale(SrcA3, SrcB1.w)))));
-		result.setColumn(2, Vec4.scale(SrcA0, SrcB2.x).add(Vec4.scale(SrcA1, SrcB2.y).add(Vec4.scale(SrcA2, SrcB2.z).add(Vec4.scale(SrcA3, SrcB2.w)))));
-		result.setColumn(3, Vec4.scale(SrcA0, SrcB3.x).add(Vec4.scale(SrcA1, SrcB3.y).add(Vec4.scale(SrcA2, SrcB3.z).add(Vec4.scale(SrcA3, SrcB3.w)))));
-
-		return result;
+		return temp.mul(rhs);
 	}
 	
 	
@@ -357,5 +317,4 @@ public class Mat4 extends BufferableData<FloatBuffer> {
 
 		return res;
 	}
-
 }

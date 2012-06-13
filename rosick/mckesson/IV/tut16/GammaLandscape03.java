@@ -25,6 +25,8 @@ import rosick.jglsdk.glimg.DdsLoader;
 import rosick.jglsdk.glimg.ImageSet;
 import rosick.jglsdk.glimg.ImageSet.Dimensions;
 import rosick.jglsdk.glimg.ImageSet.SingleImage;
+import rosick.jglsdk.glimg.TextureGenerator;
+import rosick.jglsdk.glimg.TextureGenerator.OpenGLPixelTransferParams;
 import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Quaternion;
 import rosick.jglsdk.glm.Vec3;
@@ -486,13 +488,15 @@ public class GammaLandscape03 extends LWJGLWindow {
 
 			g_linearTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_linearTexture);
-			
+
+			OpenGLPixelTransferParams xfer = TextureGenerator.getUploadFormatType(pImageSet.getFormat(), 0);
+				
 			for (int mipmapLevel = 0; mipmapLevel < pImageSet.getMipmapCount(); mipmapLevel++) {
 				SingleImage image = pImageSet.getImage(mipmapLevel, 0, 0);
 				Dimensions dims = image.getDimensions();
 
-				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_SRGB8_ALPHA8, dims.m_width, dims.m_height, 0, 
-						GL_RGBA, GL_UNSIGNED_BYTE, image.getImageData());
+				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_SRGB8_ALPHA8, dims.width, dims.height, 0, 
+						xfer.format, xfer.type, image.getImageData());
 			}
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);

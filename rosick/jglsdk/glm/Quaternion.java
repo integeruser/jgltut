@@ -2,17 +2,17 @@ package rosick.jglsdk.glm;
 
 import java.nio.FloatBuffer;
 
-import rosick.PortingUtils.BufferableData;
+import rosick.jglsdk.BufferableData;
 
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * Visit https://github.com/integeruser/jglsdk for project info, updates and license terms.
  * 
  * @author integeruser
  */
 public class Quaternion extends BufferableData<FloatBuffer> {
 	
-	public float w, x, y, z;
+	public float x, y, z, w;
 
 	
 	public Quaternion() {
@@ -64,29 +64,29 @@ public class Quaternion extends BufferableData<FloatBuffer> {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	public Quaternion add(Quaternion quat) {
-		x += quat.x;
-		y += quat.y;
-		z += quat.z;
-		w += quat.w;
+	public Quaternion add(Quaternion rhs) {
+		x += rhs.x;
+		y += rhs.y;
+		z += rhs.z;
+		w += rhs.w;
 
 		return this;
 	}
 	
-	public Quaternion sub(Quaternion quat) {
-		x -= quat.x;
-		y -= quat.y;
-		z -= quat.z;
-		w -= quat.w;
+	public Quaternion sub(Quaternion rhs) {
+		x -= rhs.x;
+		y -= rhs.y;
+		z -= rhs.z;
+		w -= rhs.w;
 
 		return this;
 	}
 	
-	public Quaternion mul(Quaternion quat) {	
-		float newX = (x * quat.w) + (w * quat.x) + (y * quat.z) - (z * quat.y);
-		float newY = (y * quat.w) + (w * quat.y) + (z * quat.x) - (x * quat.z);
-		float newZ = (z * quat.w) + (w * quat.z) + (x * quat.y) - (y * quat.x);
-		float newW = (w * quat.w) - (x * quat.x) - (y * quat.y) - (z * quat.z);
+	public Quaternion mul(Quaternion rhs) {	
+		float newX = (x * rhs.w) + (w * rhs.x) + (y * rhs.z) - (z * rhs.y);
+		float newY = (y * rhs.w) + (w * rhs.y) + (z * rhs.x) - (x * rhs.z);
+		float newZ = (z * rhs.w) + (w * rhs.z) + (x * rhs.y) - (y * rhs.x);
+		float newW = (w * rhs.w) - (x * rhs.x) - (y * rhs.y) - (z * rhs.z);
 		
 		x = newX;
 		y = newY;
@@ -96,18 +96,18 @@ public class Quaternion extends BufferableData<FloatBuffer> {
 		return this;
 	}
 	
-	public Vec3 mul(Vec3 v) {	
+	public Vec3 mul(Vec3 rhs) {	
 		float two = 2.0f;
 		Vec3 uv, uuv;
 		Vec3 quatVector = new Vec3(x, y, z);
 
-		uv = Glm.cross(quatVector, v);
+		uv = Glm.cross(quatVector, rhs);
 		uuv = Glm.cross(quatVector, uv);
 			
 		uv.scale(two * w); 
 		uuv.scale(two); 
 
-		return v.add(uv).add(uuv);
+		return rhs.add(uv).add(uuv);
 	}
 	
 	
@@ -143,22 +143,22 @@ public class Quaternion extends BufferableData<FloatBuffer> {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	public static Quaternion add(Quaternion a, Quaternion b) {
-		Quaternion res = new Quaternion(a);
+	public static Quaternion add(Quaternion lhs, Quaternion rhs) {
+		Quaternion res = new Quaternion(lhs);
 		
-		return res.add(b);
+		return res.add(rhs);
 	}
 	
-	public static Quaternion mul(Quaternion a, Quaternion b) {
-		Quaternion res = new Quaternion(a);
+	public static Quaternion mul(Quaternion lhs, Quaternion rhs) {
+		Quaternion res = new Quaternion(lhs);
 		
-		return res.mul(b);
+		return res.mul(rhs);
 	}
 	
-	public static Vec3 mul(Quaternion a, Vec3 b) {
-		Quaternion res = new Quaternion(a);
+	public static Vec3 mul(Quaternion lhs, Vec3 rhs) {
+		Quaternion res = new Quaternion(lhs);
 		
-		return res.mul(b);
+		return res.mul(rhs);
 	}
 	
 	

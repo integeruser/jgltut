@@ -2,14 +2,14 @@ package rosick.jglsdk.glm;
 
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
+ * Visit https://github.com/integeruser/jglsdk for project info, updates and license terms.
  * 
  * @author integeruser
  */
 public class Glm {
 	
-	public static float clamp(float x, float minVal, float maxVal) {
-		return Math.min(Math.max(x, minVal), maxVal);
+	public static float clamp(float x, float min, float max) {
+		return Math.min(Math.max(x, min), max);
 	}
 	
 	
@@ -27,62 +27,62 @@ public class Glm {
 	
 	
 	public static Vec3 normalize(Vec3 vec) {
-		Vec3 res = new Vec3();
+		Vec3 vecNormalized = new Vec3();
 		
 		float invLength = 1.0f / length(vec);
-		res.x = vec.x * invLength;
-		res.y = vec.y * invLength;
-		res.z = vec.z * invLength;
+		vecNormalized.x = vec.x * invLength;
+		vecNormalized.y = vec.y * invLength;
+		vecNormalized.z = vec.z * invLength;
 		
-		return res;
+		return vecNormalized;
 	}
 	
 	public static Vec4 normalize(Vec4 vec) {
-		Vec4 res = new Vec4();
+		Vec4 vecNormalized = new Vec4();
 		
 		float invLength = 1.0f / length(vec);
-		res.x = vec.x * invLength;
-		res.y = vec.y * invLength;
-		res.z = vec.z * invLength;
-		res.w = vec.w * invLength;
+		vecNormalized.x = vec.x * invLength;
+		vecNormalized.y = vec.y * invLength;
+		vecNormalized.z = vec.z * invLength;
+		vecNormalized.w = vec.w * invLength;
 
-		return res;
+		return vecNormalized;
 	}
 	
 	public static Quaternion normalize(Quaternion quat) {		
-		Quaternion res = new Quaternion();
+		Quaternion quatNormalized = new Quaternion();
 		
 		float invLength = 1.0f / length(quat);
-		res.x = quat.x * invLength;
-		res.y = quat.y * invLength;
-		res.z = quat.z * invLength;
-		res.w = quat.w * invLength;
+		quatNormalized.x = quat.x * invLength;
+		quatNormalized.y = quat.y * invLength;
+		quatNormalized.z = quat.z * invLength;
+		quatNormalized.w = quat.w * invLength;
 
-		return res;
+		return quatNormalized;
 	}
 	
 	
-	public static float dot(Vec3 a, Vec3 b) {
-		return a.x * b.x + a.y * b.y + a.z * b.z;
+	public static float dot(Vec3 lhs, Vec3 rhs) {
+		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
 	}
 	
-	public static float dot(Vec4 a, Vec4 b) {
-		return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+	public static float dot(Vec4 lhs, Vec4 rhs) {
+		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z + lhs.w * rhs.w;
 	}
 	
-	public static float dot(Quaternion a, Quaternion b) {
-		return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+	public static float dot(Quaternion lhs, Quaternion rhs) {
+		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z + lhs.w * rhs.w;
 	}
 	
 	
-	public static Vec3 cross(Vec3 a, Vec3 b) {
-		Vec3 res = new Vec3();
+	public static Vec3 cross(Vec3 lhs, Vec3 rhs) {
+		Vec3 cross = new Vec3();
 
-		res.x = a.y * b.z - a.z * b.y;
-		res.y = a.z * b.x - a.x * b.z;
-		res.z = a.x * b.y - a.y * b.x;
+		cross.x = lhs.y * rhs.z - lhs.z * rhs.y;
+		cross.y = lhs.z * rhs.x - lhs.x * rhs.z;
+		cross.z = lhs.x * rhs.y - lhs.y * rhs.x;
 
-		return res;
+		return cross;
 	}
 		
 	
@@ -151,18 +151,21 @@ public class Glm {
 			res.y = (mat.matrix[8] - mat.matrix[2]) * mult;
 			res.z = (mat.matrix[1] - mat.matrix[4]) * mult;
 			break;
+			
 		case 1:
 			res.w = (mat.matrix[6] - mat.matrix[9]) * mult;
 			res.x = biggestVal;
 			res.y = (mat.matrix[1] + mat.matrix[4]) * mult;
 			res.z = (mat.matrix[8] + mat.matrix[2]) * mult;
 			break;
+			
 		case 2:
 			res.w = (mat.matrix[8] - mat.matrix[2]) * mult;
 			res.x = (mat.matrix[1] + mat.matrix[4]) * mult;
 			res.y = biggestVal;
 			res.z = (mat.matrix[6] + mat.matrix[9]) * mult;
 			break;
+			
 		case 3:
 			res.w = (mat.matrix[1] - mat.matrix[4]) * mult;
 			res.x = (mat.matrix[8] + mat.matrix[2]) * mult;
@@ -320,8 +323,8 @@ public class Glm {
 	}
 	
 	
-	public static Mat4 perspective(float fovy, float aspect, float zNear, float zFar) {	
-		float range = (float) (Math.tan(Math.toRadians(fovy / 2.0f)) * zNear);	
+	public static Mat4 perspective(float fovY, float aspect, float zNear, float zFar) {	
+		float range = (float) (Math.tan(Math.toRadians(fovY / 2.0f)) * zNear);	
 		float left = -range * aspect;
 		float right = range * aspect;
 		float bottom = -range;
@@ -369,12 +372,12 @@ public class Glm {
 	}
 	
 	
-	public static Mat4 rotate(Mat4 m, float angle, Vec3 v) {
+	public static Mat4 rotate(Mat4 mat, float angle, Vec3 vec) {
         float a = (float) Math.toRadians(angle);
         float c = (float) Math.cos(a);
         float s = (float) Math.sin(a);
 
-        Vec3 axis = normalize(v);
+        Vec3 axis = normalize(vec);
 
         Vec3 temp = Vec3.scale(axis, 1.0f - c);
 
@@ -392,16 +395,16 @@ public class Glm {
 		rotate.set(10, 	c + temp.z * axis.z);
 
 	    Mat4 result = new Mat4();
-	    result.setColumn(0, Vec4.scale(m.getColumn(0), rotate.matrix[0]).add(Vec4.scale(m.getColumn(1), rotate.matrix[1])).add(Vec4.scale(m.getColumn(2), rotate.matrix[2])));
-	    result.setColumn(1, Vec4.scale(m.getColumn(0), rotate.matrix[4]).add(Vec4.scale(m.getColumn(1), rotate.matrix[5])).add(Vec4.scale(m.getColumn(2), rotate.matrix[6])));
-	    result.setColumn(2, Vec4.scale(m.getColumn(0), rotate.matrix[8]).add(Vec4.scale(m.getColumn(1), rotate.matrix[9])).add(Vec4.scale(m.getColumn(2), rotate.matrix[10])));
-	    result.setColumn(3, m.getColumn(3));
+	    result.setColumn(0, Vec4.scale(mat.getColumn(0), rotate.matrix[0]).add(Vec4.scale(mat.getColumn(1), rotate.matrix[1])).add(Vec4.scale(mat.getColumn(2), rotate.matrix[2])));
+	    result.setColumn(1, Vec4.scale(mat.getColumn(0), rotate.matrix[4]).add(Vec4.scale(mat.getColumn(1), rotate.matrix[5])).add(Vec4.scale(mat.getColumn(2), rotate.matrix[6])));
+	    result.setColumn(2, Vec4.scale(mat.getColumn(0), rotate.matrix[8]).add(Vec4.scale(mat.getColumn(1), rotate.matrix[9])).add(Vec4.scale(mat.getColumn(2), rotate.matrix[10])));
+	    result.setColumn(3, mat.getColumn(3));
 		
 		return result;
 	}
 	
-	public static Quaternion rotate(Quaternion q, float angle, Vec3 v) {
-		Vec3 tmp = new Vec3(v);
+	public static Quaternion rotate(Quaternion quat, float angle, Vec3 vec) {
+		Vec3 tmp = new Vec3(vec);
 
 		// Axis of rotation must be normalised
 		float len = length(tmp);
@@ -415,7 +418,9 @@ public class Glm {
 		float angleRad = (float) Math.toRadians(angle);
 		float fSin = (float) Math.sin(angleRad * 0.5f);
 
-		return Quaternion.mul(q, new Quaternion((float) Math.cos(angleRad * 0.5f), tmp.x * fSin, tmp.y * fSin, tmp.z * fSin));
+		Quaternion res = new Quaternion((float) Math.cos(angleRad * 0.5f), tmp.x * fSin, tmp.y * fSin, tmp.z * fSin);
+		
+		return Quaternion.mul(quat, res);
 	}
 
 	

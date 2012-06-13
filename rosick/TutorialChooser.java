@@ -3,13 +3,11 @@ package rosick;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -129,23 +127,19 @@ public class TutorialChooser extends JPanel implements TreeSelectionListener {
 	private void addCategory(DefaultMutableTreeNode top, String categoryPath, String categoryDisplayedName) {
 		URL url = this.getClass().getResource(categoryPath);
 
-		try {
-			DefaultMutableTreeNode category = new DefaultMutableTreeNode(categoryDisplayedName);
-			File categoryDirectory = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
-			
-			if (categoryDirectory.exists()) {
-				// we are running this code from filesystem
-				addTutorialsFromFileSystem(category, categoryDirectory);
-			} else {
-				// we are running this code from jar
-				String categoryPathInJar = categoryPath.substring(1, categoryPath.length());
-				addTutorialsFromJar(category, categoryPathInJar, url);
-			}
-
-			top.add(category);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+		DefaultMutableTreeNode category = new DefaultMutableTreeNode(categoryDisplayedName);
+		File categoryDirectory = new File(url.getFile());
+		
+		if (categoryDirectory.exists()) {
+			// we are running this code from filesystem
+			addTutorialsFromFileSystem(category, categoryDirectory);
+		} else {
+			// we are running this code from jar
+			String categoryPathInJar = categoryPath.substring(1, categoryPath.length());
+			addTutorialsFromJar(category, categoryPathInJar, url);
 		}
+
+		top.add(category);
 	}
 	
 	

@@ -7,7 +7,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GLContext;
-import org.lwjgl.opengl.Util;
 
 
 /**
@@ -16,31 +15,18 @@ import org.lwjgl.opengl.Util;
  * @author integeruser
  */
 public class LWJGLWindow {
-		
-	// Measured in milliseconds
-	private double elapsedTime; 
-	private double lastFrameDuration;
-	
-	private double lastFrameTimestamp, now;
-	private boolean continueMainLoop;
-	
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+			
 	public final void start() {		
 		start(500, 500);
 	}
 	
 	public final void start(int width, int height) {		
 		try {
-			Display.setTitle("LWJGLWindow by rosickteam");
+			Display.setTitle("LWJGLWindow");
 			Display.setDisplayMode(new DisplayMode(width, height));
 			Display.setResizable(true);
-			Display.setVSyncEnabled(true);
 			Display.create();
-
+			
 			if (!GLContext.getCapabilities().OpenGL33) {
 				System.err.printf("You must have at least OpenGL 3.3 to run this tutorial.\n");
 			}
@@ -52,8 +38,8 @@ public class LWJGLWindow {
 		long startTime = System.nanoTime();
 		continueMainLoop = true;
 		
-		init();						checkForGlErrors("init()"); 
-		reshape(width, height); 	checkForGlErrors("reshape()");	
+		init();								
+		reshape(width, height); 	
 		
 		while (continueMainLoop && !Display.isCloseRequested()) {
 			elapsedTime = (System.nanoTime() - startTime) / 1000000.0;
@@ -72,7 +58,6 @@ public class LWJGLWindow {
 			}
 		}
 		
-		checkForGlErrors("display() or update()");
 		Display.destroy();
 	}
 	
@@ -92,6 +77,8 @@ public class LWJGLWindow {
 	
 	
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
@@ -124,12 +111,13 @@ public class LWJGLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private final void checkForGlErrors(String method) {
-		int error_code = glGetError();
-		
-		if (error_code != 0) {
-			System.err.println("While executing:\t" + method + "\nglGetError():\t\t" + Util.translateGLErrorString(error_code));
-		}
-	}
+	// Measured in milliseconds
+	private double elapsedTime; 
+	private double lastFrameDuration;
+	
+	private double lastFrameTimestamp, now;
+	private boolean continueMainLoop;
 }

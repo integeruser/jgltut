@@ -1,16 +1,14 @@
 OpenGL 3.3 tutorials with LWJGL
 ===============================
-
-This project is a port of McKesson's OpenGL tutorials to Java using LWJGL and it is distributed in the hope that it will be useful.
 This project is a port of *[Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using LWJGL and it is distributed in the hope that it will be useful. You can find the original c++ source code [here](https://bitbucket.org/alfonse/gltut/wiki/Home).  
+
 
 The tutorials use many features of *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)*, and you can find my port of this sdk [here](https://github.com/integeruser/jglsdk). It has a simple math library, a DDS texture loader and other useful stuff. I have included in this project a version of jglsdk
 so you don't need to download it.
 
-Tutorials ported so far: 17.3 of 17.3 ?
 
+Tutorials ported so far: 16.3 of 17.3
 
-If you don't want to download the source code you can play with the tutorials with [this runnable jar](https://github.com/downloads/rosickteam/OpenGL/tutorial-chooser.zip). In several tutorials you can interact using the keyboard: key mappings are written at the top of each tutorial file.
 
 If you don't want to download the source code you can play with the tutorials with [this runnable jar](https://github.com/downloads/rosickteam/OpenGL/tutorial-chooser.zip). In several tutorials you can interact using the keyboard: key mappings are written at the top of each tutorial class.
 

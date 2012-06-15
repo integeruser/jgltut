@@ -20,6 +20,7 @@ import rosick.jglsdk.glm.Glm;
 import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Vec3;
 import rosick.jglsdk.glm.Vec4;
+import rosick.mckesson.framework.Framework;
 import rosick.mckesson.framework.Timer;
 import rosick.mckesson.framework.Interpolators.ConstVelLinearInterpolatorVec3;
 import rosick.mckesson.framework.Interpolators.WeightedLinearInterpolatorFloat;
@@ -104,7 +105,10 @@ public class LightEnv {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			doc = dBuilder.parse(ClassLoader.class.getResourceAsStream(envFileName));
+			
+			String filepath = Framework.findFileOrThrow(envFileName);
+			
+			doc = dBuilder.parse(ClassLoader.class.getResourceAsStream(filepath));
 		} catch (SAXException | ParserConfigurationException | IOException e) {
 			e.printStackTrace();
 			System.exit(0);

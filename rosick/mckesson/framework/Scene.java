@@ -48,47 +48,9 @@ import rosick.mckesson.framework.SceneBinders.StateBinder;
  * @author integeruser
  */
 public class Scene {
-	
-	/*
-	public class NodeRef {
-
-		public NodeRef(SceneNode pNode) {
-			m_pNode = pNode;
-		}
 		
-		
-		public Quaternion nodeGetOrient() {
-			return m_pNode.nodeGetOrient();
-		}
-		
-		public void nodeSetOrient(Quaternion orient) {
-			m_pNode.nodeSetOrient(orient);
-		}
-		
-		
-		public int getProgram() {
-			return m_pNode.getProgram();
-		}
-		
-		
-		public void setStateBinder(StateBinder pBinder) {
-			m_pNode.setStateBinder(pBinder);
-		}
-		
-		
-		
-		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		/*
-		private SceneNode m_pNode;
-	}
-	*/
-	
-	
-	public Scene(String filePath) {
-		m_sceneImpl = new SceneImpl(filePath);
+	public Scene(String filename) {
+		m_sceneImpl = new SceneImpl(filename);
 	}
 
 	
@@ -132,8 +94,8 @@ public class Scene {
 	
 	private class SceneMesh {
 		
-		SceneMesh(String filePath) {
-			m_mesh = new Mesh(filePath);
+		SceneMesh(String filename) {
+			m_mesh = new Mesh(filename);
 		}
 		
 		
@@ -156,16 +118,17 @@ public class Scene {
 	
 	private class SceneTexture {
 		
-		SceneTexture(String filePath, int creationFlags) {
+		SceneTexture(String filename, int creationFlags) {
+			String filePath = Framework.findFileOrThrow(filename);
 			ImageSet imageSet = null;
 
-			String fileExtension = filePath.substring(filePath.lastIndexOf('.') + 1);
+			String fileExtension = filename.substring(filename.lastIndexOf('.') + 1);
 			if (fileExtension.equals("dds")) {
 				try {
 					imageSet = DdsLoader.loadFromFile(filePath);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+					System.exit(0);
 				}
 			}
 			else {
@@ -480,12 +443,9 @@ public class Scene {
 
 		private int m_samplers[];
 		
-		
-		private String basepath = "/rosick/mckesson/IV/tut17/data/";
-		
-		
-		
-		private SceneImpl(String xmlPath) {		
+
+				
+		private SceneImpl(String filename) {		
 			m_meshes = new HashMap<>();
 			m_textures = new HashMap<>();
 			m_programs = new HashMap<>();
@@ -494,13 +454,14 @@ public class Scene {
 			m_rootNodes = new ArrayList<>();
 
 			m_samplers = new int[SamplerTypes.MAX_SAMPLERS.ordinal()];
-
+						
 			// Read the xml scene.
 			Document document = null;
 			try {
 				DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 				
+				String xmlPath = Framework.findFileOrThrow(filename);
 				InputStream xmlInputStream = ClassLoader.class.getResourceAsStream(xmlPath);
 				document = documentBuilder.parse(xmlInputStream);
 			} catch (SAXException | ParserConfigurationException | IOException e) {
@@ -597,7 +558,7 @@ public class Scene {
 				if (m_meshes.containsKey(nameNode)) throw new RuntimeException("The mesh named \"" + nameNode + "\" already exists.");
 			}
 			
-			SceneMesh mesh = new SceneMesh(basepath + filenameNode);
+			SceneMesh mesh = new SceneMesh(filenameNode);
 			m_meshes.put(nameNode, mesh);	
 		}	
 		
@@ -626,7 +587,7 @@ public class Scene {
 				creationFlags = creationFlags | ForcedConvertFlags.FORCE_SRGB_COLORSPACE_FMT;
 			}
 			
-			SceneTexture texture = new SceneTexture(basepath + filenameNode, creationFlags);
+			SceneTexture texture = new SceneTexture(filenameNode, creationFlags);
 			m_textures.put(nameNode, texture);	
 		}	
 		
@@ -662,11 +623,11 @@ public class Scene {
 						
 			{
 				ArrayList<Integer> shaders = new ArrayList<>();
-				shaders.add(Framework.loadShader(GL_VERTEX_SHADER, basepath + vertexShaderNode));
-				shaders.add(Framework.loadShader(GL_FRAGMENT_SHADER, basepath + fragmentShaderNode));
+				shaders.add(Framework.loadShader(GL_VERTEX_SHADER, vertexShaderNode));
+				shaders.add(Framework.loadShader(GL_FRAGMENT_SHADER, fragmentShaderNode));
 			
 				if (!geometryShaderNode.equals("")) {
-					shaders.add(Framework.loadShader(GL_GEOMETRY_SHADER, basepath + geometryShaderNode));	
+					shaders.add(Framework.loadShader(GL_GEOMETRY_SHADER, geometryShaderNode));	
 				}
 			
 				program = Framework.createProgram(shaders);

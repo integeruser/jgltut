@@ -32,13 +32,12 @@ import rosick.mckesson.framework.Mesh;
  */
 public class GimbalLock01 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut08/data/";
+
 		new GimbalLock01().start();
 	}
-	
-	
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut08/data/";
-	
+		
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -60,8 +59,8 @@ public class GimbalLock01 extends LWJGLWindow {
 	
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "ColorMultUniform.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "ColorMultUniform.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -92,7 +91,7 @@ public class GimbalLock01 extends LWJGLWindow {
 				g_Gimbals[i] = new Mesh(g_strGimbalNames[i]);
 			}
 			
-			g_pObject = new Mesh(TUTORIAL_DATAPATH + "Ship.xml");
+			g_pObject = new Mesh("Ship.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -209,9 +208,9 @@ public class GimbalLock01 extends LWJGLWindow {
 	
 	private final float SMALL_ANGLE_INCREMENT = 9.0f;
 	private final String g_strGimbalNames[] = {
-			TUTORIAL_DATAPATH + "LargeGimbal.xml",
-			TUTORIAL_DATAPATH + "MediumGimbal.xml",
-			TUTORIAL_DATAPATH + "SmallGimbal.xml",
+			"LargeGimbal.xml",
+			"MediumGimbal.xml",
+			"SmallGimbal.xml",
 	};
 	
 	private GimbalAngles g_angles = new GimbalAngles();

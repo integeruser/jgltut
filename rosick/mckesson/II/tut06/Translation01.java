@@ -29,12 +29,13 @@ import rosick.jglsdk.glm.Vec4;
 public class Translation01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut06/data/";
+
 		new Translation01().start();
 	}
 	
 	
 	private final int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut06/data/";
 
 	
 	
@@ -93,8 +94,8 @@ public class Translation01 extends LWJGLWindow {
 	
 	private void initializeProgram() {	
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	TUTORIAL_DATAPATH + "ColorPassthrough.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	"ColorPassthrough.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 			    

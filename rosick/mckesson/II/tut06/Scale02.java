@@ -30,12 +30,13 @@ import rosick.mckesson.framework.Framework;
 public class Scale02 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut06/data/";
+
 		new Scale02().start();
 	}
 	
 	
 	private final int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut06/data/";
 
 	
 	
@@ -94,8 +95,8 @@ public class Scale02 extends LWJGLWindow {
 		
 	private void initializeProgram() {	
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	TUTORIAL_DATAPATH + "PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	TUTORIAL_DATAPATH + "ColorPassthrough.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	"PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	"ColorPassthrough.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 			    

@@ -61,13 +61,14 @@ import rosick.mckesson.framework.Timer;
  */
 public class HDRLighting02 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut12/data/";
+
 		new HDRLighting02().start(800, 800);
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut12/data/";
 	
 	
 	
@@ -99,11 +100,11 @@ public class HDRLighting02 extends LWJGLWindow {
 
 	private ProgramData g_Programs[] = new ProgramData[LightingProgramTypes.LP_MAX_LIGHTING_PROGRAM_TYPES.ordinal()];
 	private Shaders g_ShaderFiles[] = new Shaders[] {
-			new Shaders(TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "DiffuseSpecularHDR.frag"),
-			new Shaders(TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "DiffuseOnlyHDR.frag"),
+			new Shaders("PCN.vert", "DiffuseSpecularHDR.frag"),
+			new Shaders("PCN.vert", "DiffuseOnlyHDR.frag"),
 			
-			new Shaders(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "DiffuseSpecularMtlHDR.frag"),
-			new Shaders(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "DiffuseOnlyMtlHDR.frag")
+			new Shaders("PN.vert", "DiffuseSpecularMtlHDR.frag"),
+			new Shaders("PN.vert", "DiffuseOnlyMtlHDR.frag")
 	};
 	
 	private UnlitProgData g_Unlit;
@@ -170,7 +171,7 @@ public class HDRLighting02 extends LWJGLWindow {
 			g_Programs[iProg] = loadLitProgram(g_ShaderFiles[iProg].fileVertexShader, g_ShaderFiles[iProg].fileFragmentShader);
 		}
 
-		g_Unlit = loadUnlitProgram(TUTORIAL_DATAPATH + "PosTransform.vert", TUTORIAL_DATAPATH + "UniformColor.frag");
+		g_Unlit = loadUnlitProgram("PosTransform.vert", "UniformColor.frag");
 	}
 	
 	
@@ -179,7 +180,7 @@ public class HDRLighting02 extends LWJGLWindow {
 		initializePrograms();
 
 		try {
-			g_pScene = new Scene(TUTORIAL_DATAPATH) {
+			g_pScene = new Scene() {
 
 				@Override
 				ProgramData getProgram(LightingProgramTypes eType) {

@@ -41,13 +41,12 @@ import rosick.jglsdk.glutil.MatrixStack;
  */
 public class WorldScene01 extends LWJGLWindow {
 
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut07/data/";
+
 		new WorldScene01().start(800, 800);
 	}
-
-
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut07/data/";
-
+	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -95,9 +94,9 @@ public class WorldScene01 extends LWJGLWindow {
 	}
 
 	private void initializeProgram() {
-		uniformColor = 		loadProgram(TUTORIAL_DATAPATH + "PosOnlyWorldTransform.vert",	TUTORIAL_DATAPATH + "ColorUniform.frag");
-		objectColor = 		loadProgram(TUTORIAL_DATAPATH + "PosColorWorldTransform.vert", 	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
-		uniformColorTint = 	loadProgram(TUTORIAL_DATAPATH + "PosColorWorldTransform.vert", 	TUTORIAL_DATAPATH + "ColorMultUniform.frag");
+		uniformColor = 		loadProgram("PosOnlyWorldTransform.vert",	"ColorUniform.frag");
+		objectColor = 		loadProgram("PosColorWorldTransform.vert", 	"ColorPassthrough.frag");
+		uniformColorTint = 	loadProgram("PosColorWorldTransform.vert", 	"ColorMultUniform.frag");
 	}
 
 	
@@ -106,11 +105,11 @@ public class WorldScene01 extends LWJGLWindow {
 		initializeProgram();
 
 		try {
-			g_pConeMesh 		= new Mesh(TUTORIAL_DATAPATH + "UnitConeTint.xml");
-			g_pCylinderMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCylinderTint.xml");
-			g_pCubeTintMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCubeTint.xml");
-			g_pCubeColorMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCubeColor.xml");
-			g_pPlaneMesh 		= new Mesh(TUTORIAL_DATAPATH + "UnitPlane.xml");
+			g_pConeMesh 		= new Mesh("UnitConeTint.xml");
+			g_pCylinderMesh 	= new Mesh("UnitCylinderTint.xml");
+			g_pCubeTintMesh 	= new Mesh("UnitCubeTint.xml");
+			g_pCubeColorMesh 	= new Mesh("UnitCubeColor.xml");
+			g_pPlaneMesh 		= new Mesh("UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

@@ -49,13 +49,14 @@ import rosick.mckesson.framework.Timer;
  */
 public class ManyImages01 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut15/data/";
+
 		new ManyImages01().start();
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut15/data/";
 	
 	
 	
@@ -110,7 +111,7 @@ public class ManyImages01 extends LWJGLWindow {
 	}
 		
 	private void initializePrograms() {	
-		g_program = loadProgram(TUTORIAL_DATAPATH + "PT.vert", TUTORIAL_DATAPATH + "Tex.frag");
+		g_program = loadProgram("PT.vert", "Tex.frag");
 	}
 	
 	
@@ -119,8 +120,8 @@ public class ManyImages01 extends LWJGLWindow {
 		initializePrograms();
 
 		try {
-			g_pCorridor = 	new Mesh(TUTORIAL_DATAPATH + "Corridor.xml");
-			g_pPlane = 		new Mesh(TUTORIAL_DATAPATH + "BigPlane.xml");
+			g_pCorridor = 	new Mesh("Corridor.xml");
+			g_pPlane = 		new Mesh("BigPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -381,7 +382,8 @@ public class ManyImages01 extends LWJGLWindow {
 	
 	private void loadCheckerTexture() {
 		try	{
-			ImageSet pImageSet = DdsLoader.loadFromFile(TUTORIAL_DATAPATH + "checker.dds");
+			String filepath = Framework.findFileOrThrow("checker.dds");
+			ImageSet pImageSet = DdsLoader.loadFromFile(filepath);
 
 			g_checkerTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_checkerTexture);

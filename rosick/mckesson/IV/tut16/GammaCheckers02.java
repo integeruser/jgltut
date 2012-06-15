@@ -51,13 +51,14 @@ import rosick.mckesson.framework.Timer;
  */
 public class GammaCheckers02 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut16/data/";
+
 		new GammaCheckers02().start();
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut16/data/";
 	
 	
 	
@@ -113,8 +114,8 @@ public class GammaCheckers02 extends LWJGLWindow {
 	}
 		
 	private void initializePrograms() {	
-		g_progNoGamma = loadProgram(TUTORIAL_DATAPATH + "PT.vert", TUTORIAL_DATAPATH + "textureNoGamma.frag");
-		g_progGamma = loadProgram(TUTORIAL_DATAPATH + "PT.vert", TUTORIAL_DATAPATH + "textureGamma.frag");
+		g_progNoGamma = loadProgram("PT.vert", "textureNoGamma.frag");
+		g_progGamma = loadProgram("PT.vert", "textureGamma.frag");
 	}
 	
 	
@@ -123,8 +124,8 @@ public class GammaCheckers02 extends LWJGLWindow {
 		initializePrograms();
 
 		try {
-			g_pCorridor = new Mesh(TUTORIAL_DATAPATH + "Corridor.xml");
-			g_pPlane = 	new Mesh(TUTORIAL_DATAPATH + "BigPlane.xml");
+			g_pCorridor = new Mesh("Corridor.xml");
+			g_pPlane = 	new Mesh("BigPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -325,7 +326,8 @@ public class GammaCheckers02 extends LWJGLWindow {
 		
 	private void loadCheckerTexture() {
 		try	{
-			ImageSet pImageSet = DdsLoader.loadFromFile(TUTORIAL_DATAPATH + "checker_linear.dds");
+			String filepath = Framework.findFileOrThrow("checker_linear.dds");
+			ImageSet pImageSet = DdsLoader.loadFromFile(filepath);
 
 			g_linearTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_linearTexture);
@@ -342,7 +344,8 @@ public class GammaCheckers02 extends LWJGLWindow {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
 
 			
-			pImageSet = DdsLoader.loadFromFile(TUTORIAL_DATAPATH + "checker_gamma.dds");
+			filepath = Framework.findFileOrThrow("checker_gamma.dds");
+			pImageSet = DdsLoader.loadFromFile(filepath);
 
 			g_gammaTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_gammaTexture);

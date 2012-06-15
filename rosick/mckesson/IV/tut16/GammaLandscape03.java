@@ -56,14 +56,14 @@ import rosick.mckesson.framework.MousePole;
  */
 public class GammaLandscape03 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut16/data/";
+
 		new GammaLandscape03().start();
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String COMMON_DATAPATH = "/rosick/mckesson/data/";
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut16/data/";
 
 	
 	
@@ -150,20 +150,20 @@ public class GammaLandscape03 extends LWJGLWindow {
 	}
 		
 	private void initializePrograms() {	
-		g_progStandard = loadProgram(TUTORIAL_DATAPATH + "PNT.vert", TUTORIAL_DATAPATH + "litTexture.frag");
-		g_progUnlit = loadUnlitProgram(COMMON_DATAPATH + "Unlit.vert", COMMON_DATAPATH + "Unlit.frag");
+		g_progStandard = loadProgram("PNT.vert", "litTexture.frag");
+		g_progUnlit = loadUnlitProgram("Unlit.vert", "Unlit.frag");
 	}
 	
 	
 	@Override
 	protected void init() {	
 		try {
-			g_pLightEnv = new LightEnv("/rosick/mckesson/IV/tut16/data/LightEnv.xml");
+			g_pLightEnv = new LightEnv("LightEnv.xml");
 			
 			initializePrograms();
 			
-			g_pTerrain = 	new Mesh(TUTORIAL_DATAPATH + "terrain.xml");
-			g_pSphere = 	new Mesh(TUTORIAL_DATAPATH + "UnitSphere.xml");
+			g_pTerrain = 	new Mesh("terrain.xml");
+			g_pSphere = 	new Mesh("UnitSphere.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -484,7 +484,9 @@ public class GammaLandscape03 extends LWJGLWindow {
 		
 	private void loadTextures() {
 		try	{
-			ImageSet pImageSet = DdsLoader.loadFromFile(TUTORIAL_DATAPATH + "terrain_tex.dds");
+			String filepath = Framework.findFileOrThrow("terrain_tex.dds");
+			
+			ImageSet pImageSet = DdsLoader.loadFromFile(filepath);
 
 			g_linearTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, g_linearTexture);

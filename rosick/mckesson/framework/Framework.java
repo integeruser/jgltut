@@ -3,6 +3,7 @@ package rosick.mckesson.framework;
 import static org.lwjgl.opengl.GL20.*;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
@@ -14,7 +15,32 @@ import java.util.ArrayList;
  */
 public class Framework {
 
-    public static int loadShader(int shaderType, String path){
+	public static String COMMON_DATAPATH = "/rosick/mckesson/data/";
+	public static String CURRENT_TUTORIAL_DATAPATH = null;
+	
+	
+	public static String findFileOrThrow(String filename) {		
+		InputStream fileStream = ClassLoader.class.getResourceAsStream(CURRENT_TUTORIAL_DATAPATH + filename);
+		if (fileStream != null) {
+			return CURRENT_TUTORIAL_DATAPATH + filename;
+		}
+		
+		fileStream = ClassLoader.class.getResourceAsStream(COMMON_DATAPATH + filename);
+		if (fileStream != null) {
+			return COMMON_DATAPATH + filename;
+		}
+		
+		throw new RuntimeException("Could not find the file " + filename);
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+    public static int loadShader(int shaderType, String filename){
+    	String filepath = Framework.findFileOrThrow(filename);
+    	
         int shader = glCreateShader(shaderType);
        
         if (shader != 0) {
@@ -25,7 +51,7 @@ public class Framework {
                 StringBuilder text = new StringBuilder();
                 
                 try {
-                	BufferedReader reader = new BufferedReader(new InputStreamReader(ClassLoader.class.getResourceAsStream(path)));
+                	BufferedReader reader = new BufferedReader(new InputStreamReader(ClassLoader.class.getResourceAsStream(filepath)));
                 	String line;
                 	
                 	while ((line = reader.readLine()) != null) {
@@ -34,7 +60,7 @@ public class Framework {
                 	
                 	reader.close();
                 } catch (Exception e){
-                	System.err.println("Fail reading " + path + ": " + e.getMessage());
+                	throw new RuntimeException("Unexpected error");
                 }
                 
                 shaderCode = text.toString();
@@ -65,15 +91,15 @@ public class Framework {
 	    
 	    return program;
 	}
+
 	
-
-
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private static final float fDegToRad = 3.14159f * 2.0f / 360.0f;
-
 	public static float degToRad(float fAngDeg) {
+		final float fDegToRad = 3.14159f * 2.0f / 360.0f;
+		
 		return fAngDeg * fDegToRad;
 	}
 }

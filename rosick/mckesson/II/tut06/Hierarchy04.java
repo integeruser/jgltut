@@ -38,13 +38,14 @@ import rosick.mckesson.framework.Framework;
  */
 public class Hierarchy04 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut06/data/";
+
 		new Hierarchy04().start(800, 800);
 	}
 	
 	
 	private final int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut06/data/";
 
 	
 
@@ -159,8 +160,8 @@ public class Hierarchy04 extends LWJGLWindow {
 
 	private void initializeProgram() {	
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "ColorPassthrough.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "ColorPassthrough.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		

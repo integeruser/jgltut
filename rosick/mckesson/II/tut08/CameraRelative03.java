@@ -39,12 +39,11 @@ import rosick.mckesson.framework.Mesh;
  */
 public class CameraRelative03 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut08/data/";
+
 		new CameraRelative03().start();
 	}
-	
-	
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut08/data/";
 	
 	
 	
@@ -67,8 +66,8 @@ public class CameraRelative03 extends LWJGLWindow {
 
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "ColorMultUniform.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "ColorMultUniform.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -95,8 +94,8 @@ public class CameraRelative03 extends LWJGLWindow {
 		initializeProgram();
 		
 		try {		
-			g_pShip = new Mesh(TUTORIAL_DATAPATH + "Ship.xml");
-			g_pPlane = new Mesh(TUTORIAL_DATAPATH + "UnitPlane.xml");
+			g_pShip = new Mesh("Ship.xml");
+			g_pPlane = new Mesh("UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

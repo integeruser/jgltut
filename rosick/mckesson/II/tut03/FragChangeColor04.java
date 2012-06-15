@@ -25,12 +25,11 @@ import rosick.mckesson.framework.Framework;
 public class FragChangeColor04 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut03/data/";
+
 		new	FragChangeColor04().start();
 	}
 	
-	
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut03/data/";
-
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -54,8 +53,8 @@ public class FragChangeColor04 extends LWJGLWindow {
 
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "CalcOffset.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "CalcColor.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"CalcOffset.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "CalcColor.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		

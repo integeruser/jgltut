@@ -59,13 +59,14 @@ import rosick.mckesson.III.tut12.Scene.ProgramData;
  */
 public class SceneLighting01 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut12/data/";
+
 		new SceneLighting01().start(800, 800);
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut12/data/";
 	
 	
 	
@@ -97,11 +98,11 @@ public class SceneLighting01 extends LWJGLWindow {
 
 	private ProgramData g_Programs[] = new ProgramData[LightingProgramTypes.LP_MAX_LIGHTING_PROGRAM_TYPES.ordinal()];
 	private Shaders g_ShaderFiles[] = new Shaders[] {
-		new Shaders(TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "DiffuseSpecular.frag"),
-		new Shaders(TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "DiffuseOnly.frag"),
+		new Shaders("PCN.vert", "DiffuseSpecular.frag"),
+		new Shaders("PCN.vert", "DiffuseOnly.frag"),
 		
-		new Shaders(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "DiffuseSpecularMtl.frag"),
-		new Shaders(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "DiffuseOnlyMtl.frag")
+		new Shaders("PN.vert", "DiffuseSpecularMtl.frag"),
+		new Shaders("PN.vert", "DiffuseOnlyMtl.frag")
 	};
 	
 	private UnlitProgData g_Unlit;
@@ -168,7 +169,7 @@ public class SceneLighting01 extends LWJGLWindow {
 			g_Programs[iProg] = loadLitProgram(g_ShaderFiles[iProg].fileVertexShader, g_ShaderFiles[iProg].fileFragmentShader);
 		}
 
-		g_Unlit = loadUnlitProgram(TUTORIAL_DATAPATH + "PosTransform.vert", TUTORIAL_DATAPATH + "UniformColor.frag");
+		g_Unlit = loadUnlitProgram("PosTransform.vert", "UniformColor.frag");
 	}
 	
 	
@@ -177,7 +178,7 @@ public class SceneLighting01 extends LWJGLWindow {
 		initializePrograms();
 
 		try {
-			g_pScene = new Scene(TUTORIAL_DATAPATH) {
+			g_pScene = new Scene() {
 
 				@Override
 				ProgramData getProgram(LightingProgramTypes eType) {

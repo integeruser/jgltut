@@ -26,13 +26,14 @@ import rosick.mckesson.framework.Framework;
  */
 public class BaseVertexOverlap02 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut05/data/";
+
 		new BaseVertexOverlap02().start();
 	}
 	
 
 	private final int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut05/data/";
 
 	
 	
@@ -176,8 +177,8 @@ public class BaseVertexOverlap02 extends LWJGLWindow {
 	
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "Standard.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "Standard.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"Standard.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "Standard.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		

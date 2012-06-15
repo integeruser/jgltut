@@ -25,12 +25,11 @@ import rosick.mckesson.framework.Framework;
 public class AspectRatio04 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut04/data/";
+	
 		new AspectRatio04().start();
 	}
 	
-	
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut04/data/";
-
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -153,8 +152,8 @@ public class AspectRatio04 extends LWJGLWindow {
 	
 	private void initializeProgram() {	
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "MatrixPerspective.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "StandardColors.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"MatrixPerspective.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "StandardColors.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		

@@ -43,7 +43,7 @@ public class Mesh {
 	private ArrayList<RenderCmd> primitives = new ArrayList<>();
 	private Map<String, Integer> namedVAOs = new HashMap<>();
 	
-	public Mesh(String filePath) {
+	public Mesh(String filename) {
 		ArrayList<Attribute> attribs = new ArrayList<>(16);
 		ArrayList<IndexData> indexData = new ArrayList<>();
 		ArrayList<NamedVAO> namedVaoList = new ArrayList<>();
@@ -53,7 +53,9 @@ public class Mesh {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			doc = dBuilder.parse(ClassLoader.class.getResourceAsStream(filePath));
+			
+			String meshPath = Framework.findFileOrThrow(filename);
+			doc = dBuilder.parse(ClassLoader.class.getResourceAsStream(meshPath));
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();
 			System.exit(0);

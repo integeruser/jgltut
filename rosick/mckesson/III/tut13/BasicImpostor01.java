@@ -61,14 +61,14 @@ import rosick.mckesson.framework.UniformBlockArray;
  */
 public class BasicImpostor01 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut13/data/";
+
 		new BasicImpostor01().start();
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String COMMON_DATAPATH = "/rosick/mckesson/data/";
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut13/data/";
 
 	
 	
@@ -106,9 +106,9 @@ public class BasicImpostor01 extends LWJGLWindow {
 	private UnlitProgData g_Unlit;
 	
 	private String g_impShaderNames[] = new String[] {
-		TUTORIAL_DATAPATH + "BasicImpostor.vert", TUTORIAL_DATAPATH + "BasicImpostor.frag",
-		TUTORIAL_DATAPATH + "PerspImpostor.vert", TUTORIAL_DATAPATH + "PerspImpostor.frag",
-		TUTORIAL_DATAPATH + "DepthImpostor.vert", TUTORIAL_DATAPATH + "DepthImpostor.frag",
+		"BasicImpostor.vert", "BasicImpostor.frag",
+		"PerspImpostor.vert", "PerspImpostor.frag",
+		"DepthImpostor.vert", "DepthImpostor.frag",
 	};
 	
 	private int g_lightUniformBuffer;
@@ -191,14 +191,14 @@ public class BasicImpostor01 extends LWJGLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_litMeshProg = loadLitMeshProgram(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "Lighting.frag");
+		g_litMeshProg = loadLitMeshProgram("PN.vert", "Lighting.frag");
 
 		for (int iLoop = 0; iLoop < Impostors.IMP_NUM_IMPOSTORS.ordinal(); iLoop++) {
 			g_litImpProgs[iLoop] = new ProgramImposData();
 			g_litImpProgs[iLoop] = loadLitImposProgram(g_impShaderNames[iLoop * 2], g_impShaderNames[iLoop * 2 + 1]);
 		}
 
-		g_Unlit = loadUnlitProgram(COMMON_DATAPATH + "Unlit.vert", COMMON_DATAPATH + "Unlit.frag");
+		g_Unlit = loadUnlitProgram("Unlit.vert", "Unlit.frag");
 	}
 	
 	
@@ -207,9 +207,9 @@ public class BasicImpostor01 extends LWJGLWindow {
 		initializePrograms();
 
 		try {
-			g_pPlaneMesh = 	new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
-			g_pSphereMesh = new Mesh(TUTORIAL_DATAPATH + "UnitSphere.xml");
-			g_pCubeMesh = 	new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
+			g_pPlaneMesh = 	new Mesh("LargePlane.xml");
+			g_pSphereMesh = new Mesh("UnitSphere.xml");
+			g_pCubeMesh = 	new Mesh("UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

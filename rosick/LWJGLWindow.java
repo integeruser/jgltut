@@ -42,10 +42,10 @@ public class LWJGLWindow {
 		reshape(width, height); 	
 		
 		while (continueMainLoop && !Display.isCloseRequested()) {
-			elapsedTime = (System.nanoTime() - startTime) / 1000000.0;
+			elapsedTime = (float) ((System.nanoTime() - startTime) / 1000000.0);
 					
 			now = System.nanoTime();
-		    lastFrameDuration = (now - lastFrameTimestamp) / 1000000.0;
+		    lastFrameDuration = (float) ((now - lastFrameTimestamp) / 1000000.0);
 		    lastFrameTimestamp = now;
 			
 			update();
@@ -62,23 +62,16 @@ public class LWJGLWindow {
 	}
 	
 	
-	public final void leaveMainLoop() {
-		continueMainLoop = false;
-	}
-	
-	
-	public final double getElapsedTime() {
-		return elapsedTime;
-	}
-	
-	public final double getLastFrameDuration() {
-		return lastFrameDuration;
-	}
-	
-	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	protected static final int FLOAT_SIZE = Float.SIZE / 8;
+
+	
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
@@ -111,12 +104,30 @@ public class LWJGLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	protected final float getElapsedTime() {
+		return elapsedTime;
+	}
+	
+	protected final float getLastFrameDuration() {
+		return lastFrameDuration;
+	}
+	
+	
+	protected final void leaveMainLoop() {
+		continueMainLoop = false;
+	}
+	
+	
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
 	// Measured in milliseconds
-	private double elapsedTime; 
-	private double lastFrameDuration;
+	private float elapsedTime; 
+	private float lastFrameDuration;
 	
 	private double lastFrameTimestamp, now;
 	private boolean continueMainLoop;

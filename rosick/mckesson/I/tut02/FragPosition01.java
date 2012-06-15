@@ -25,12 +25,11 @@ import rosick.mckesson.framework.Framework;
 public class FragPosition01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/I/tut02/data/";
+
 		new FragPosition01().start();
 	}
 	
-	
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/I/tut02/data/";
-
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -53,8 +52,8 @@ public class FragPosition01 extends LWJGLWindow {
 
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	TUTORIAL_DATAPATH + "FragPosition.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "FragPosition.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	"FragPosition.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "FragPosition.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 	}

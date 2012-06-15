@@ -41,13 +41,14 @@ import rosick.mckesson.framework.Framework;
  */
 public class GammaRamp01 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut16/data/";
+
 		new GammaRamp01().start(500, 195);
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut16/data/";
 	
 	
 	
@@ -83,17 +84,17 @@ public class GammaRamp01 extends LWJGLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	private void initializeProgram() {
-		int vertexShader = Framework.loadShader(GL_VERTEX_SHADER, TUTORIAL_DATAPATH + "screenCoords.vert");
+		int vertexShader = Framework.loadShader(GL_VERTEX_SHADER, "screenCoords.vert");
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		
 		shaderList.add(vertexShader);
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	TUTORIAL_DATAPATH + "textureNoGamma.frag"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	"textureNoGamma.frag"));
 
 		g_noGammaProgram = Framework.createProgram(shaderList);
 		glDeleteShader(shaderList.get(1));
 
 		shaderList.remove(1);
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	TUTORIAL_DATAPATH + "textureGamma.frag"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	"textureGamma.frag"));
 
 		g_gammaProgram = Framework.createProgram(shaderList);
 		glDeleteShader(shaderList.get(1));
@@ -264,7 +265,8 @@ public class GammaRamp01 extends LWJGLWindow {
 		
 		try {
 			/* PNG loading - different from the original tutorial which uses jglsdk classes */
-			BufferedImage bufferedImage = ImageIO.read(ClassLoader.class.getResourceAsStream(TUTORIAL_DATAPATH + "gamma_ramp.png"));			
+			String filepath = Framework.findFileOrThrow("gamma_ramp.png");
+			BufferedImage bufferedImage = ImageIO.read(ClassLoader.class.getResourceAsStream(filepath));			
 			ByteBuffer textureBuffer = byteBufferFromBufferedImage(bufferedImage);
 
 			glBindTexture(GL_TEXTURE_2D, g_textures[0]);

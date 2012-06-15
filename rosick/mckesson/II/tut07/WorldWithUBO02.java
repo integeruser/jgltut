@@ -44,13 +44,14 @@ import rosick.jglsdk.glutil.MatrixStack;
  */
 public class WorldWithUBO02 extends LWJGLWindow {
 
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut07/data/";
+
 		new WorldWithUBO02().start(800, 800);
 	}
 
 	
 	private final int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut07/data/";
 
 	
 
@@ -103,9 +104,9 @@ public class WorldWithUBO02 extends LWJGLWindow {
 	}
 
 	private void initializeProgram() {
-		uniformColor = 		loadProgram(TUTORIAL_DATAPATH + "PosOnlyWorldTransformUBO.vert",		TUTORIAL_DATAPATH + "ColorUniform.frag");
-		objectColor = 		loadProgram(TUTORIAL_DATAPATH + "PosColorWorldTransformUBO.vert", 	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
-		uniformColorTint = 	loadProgram(TUTORIAL_DATAPATH + "PosColorWorldTransformUBO.vert", 	TUTORIAL_DATAPATH + "ColorMultUniform.frag");
+		uniformColor = 		loadProgram("PosOnlyWorldTransformUBO.vert",	"ColorUniform.frag");
+		objectColor = 		loadProgram("PosColorWorldTransformUBO.vert", 	"ColorPassthrough.frag");
+		uniformColorTint = 	loadProgram("PosColorWorldTransformUBO.vert", 	"ColorMultUniform.frag");
 		
 		g_GlobalMatricesUBO = glGenBuffers();	       
 		glBindBuffer(GL_UNIFORM_BUFFER, g_GlobalMatricesUBO);
@@ -120,11 +121,11 @@ public class WorldWithUBO02 extends LWJGLWindow {
 		initializeProgram();
 
 		try {
-			g_pConeMesh 		= new Mesh(TUTORIAL_DATAPATH + "UnitConeTint.xml");
-			g_pCylinderMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCylinderTint.xml");
-			g_pCubeTintMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCubeTint.xml");
-			g_pCubeColorMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCubeColor.xml");
-			g_pPlaneMesh 		= new Mesh(TUTORIAL_DATAPATH + "UnitPlane.xml");
+			g_pConeMesh 		= new Mesh("UnitConeTint.xml");
+			g_pCylinderMesh 	= new Mesh("UnitCylinderTint.xml");
+			g_pCubeTintMesh 	= new Mesh("UnitCubeTint.xml");
+			g_pCubeColorMesh 	= new Mesh("UnitCubeColor.xml");
+			g_pPlaneMesh 		= new Mesh("UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

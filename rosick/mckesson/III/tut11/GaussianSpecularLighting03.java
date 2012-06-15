@@ -59,13 +59,14 @@ import rosick.mckesson.framework.Timer;
  */
 public class GaussianSpecularLighting03 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut11/data/";
+
 		new GaussianSpecularLighting03().start();
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut11/data/";
 
 	
 	
@@ -117,12 +118,12 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 			
 	private ProgramPairs g_Programs[] = new ProgramPairs[LightingModel.LM_MAX_LIGHTING_MODEL.ordinal()];
 	private ShaderPairs g_ShaderFiles[] = new ShaderPairs[] {
-			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "PhongLighting.frag"),
-			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "PhongOnly.frag"),
-			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "BlinnLighting.frag"),
-			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "BlinnOnly.frag"),
-			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "GaussianLighting.frag"),
-			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "PCN.vert", TUTORIAL_DATAPATH + "GaussianOnly.frag")
+			new ShaderPairs("PN.vert", "PCN.vert", "PhongLighting.frag"),
+			new ShaderPairs("PN.vert", "PCN.vert", "PhongOnly.frag"),
+			new ShaderPairs("PN.vert", "PCN.vert", "BlinnLighting.frag"),
+			new ShaderPairs("PN.vert", "PCN.vert", "BlinnOnly.frag"),
+			new ShaderPairs("PN.vert", "PCN.vert", "GaussianLighting.frag"),
+			new ShaderPairs("PN.vert", "PCN.vert", "GaussianOnly.frag")
 	};
 	
 	private UnlitProgData g_Unlit;
@@ -188,7 +189,7 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 			g_Programs[iProg].colorProg = loadLitProgram(g_ShaderFiles[iProg].strColorVertShader, g_ShaderFiles[iProg].strFragmentShader);
 		}
 		
-		g_Unlit = loadUnlitProgram(TUTORIAL_DATAPATH + "PosTransform.vert", TUTORIAL_DATAPATH + "UniformColor.frag");
+		g_Unlit = loadUnlitProgram("PosTransform.vert", "UniformColor.frag");
 	}
 	
 	
@@ -197,9 +198,9 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 		initializePrograms();
 		
 		try {
-			g_pCylinderMesh = new Mesh(TUTORIAL_DATAPATH + "UnitCylinder.xml");
-			g_pPlaneMesh 	= new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
-			g_pCubeMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
+			g_pCylinderMesh = new Mesh("UnitCylinder.xml");
+			g_pPlaneMesh 	= new Mesh("LargePlane.xml");
+			g_pCubeMesh 	= new Mesh("UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

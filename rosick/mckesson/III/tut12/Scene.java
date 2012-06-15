@@ -70,12 +70,12 @@ public abstract class Scene {
 	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
 
 	
-	Scene(String basepath) {
-		m_pTerrainMesh 	= new Mesh(basepath + "Ground.xml");
-		m_pCubeMesh 	= new Mesh(basepath + "UnitCube.xml");
-		m_pTetraMesh 	= new Mesh(basepath + "UnitTetrahedron.xml");
-		m_pCylMesh 		= new Mesh(basepath + "UnitCylinder.xml");
-		m_pSphereMesh 	= new Mesh(basepath + "UnitSphere.xml");
+	Scene() {
+		m_pTerrainMesh 	= new Mesh("Ground.xml");
+		m_pCubeMesh 	= new Mesh("UnitCube.xml");
+		m_pTetraMesh 	= new Mesh("UnitTetrahedron.xml");
+		m_pCylMesh 		= new Mesh("UnitCylinder.xml");
+		m_pSphereMesh 	= new Mesh("UnitSphere.xml");
 		
 		// Align the size of each MaterialBlock to the uniform buffer alignment.
 		int uniformBufferAlignSize = glGetInteger(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT);

@@ -54,14 +54,14 @@ import rosick.mckesson.framework.Timer;
  */
 public class GeomImpostor02 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut13/data/";
+
 		new GeomImpostor02().start();
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String COMMON_DATAPATH = "/rosick/mckesson/data/";
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut13/data/";
 
 	
 	
@@ -175,11 +175,11 @@ public class GeomImpostor02 extends LWJGLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_litMeshProg = loadLitMeshProgram(TUTORIAL_DATAPATH + "PN.vert", TUTORIAL_DATAPATH + "Lighting.frag");
+		g_litMeshProg = loadLitMeshProgram("PN.vert", "Lighting.frag");
 
-		g_litImpProg = loadLitImposProgram(TUTORIAL_DATAPATH + "GeomImpostor.vert", TUTORIAL_DATAPATH + "GeomImpostor.geom", TUTORIAL_DATAPATH + "GeomImpostor.frag");
+		g_litImpProg = loadLitImposProgram("GeomImpostor.vert", "GeomImpostor.geom", "GeomImpostor.frag");
 
-		g_Unlit = loadUnlitProgram(COMMON_DATAPATH + "Unlit.vert", COMMON_DATAPATH + "Unlit.frag");
+		g_Unlit = loadUnlitProgram("Unlit.vert", "Unlit.frag");
 	}
 	
 	
@@ -188,8 +188,8 @@ public class GeomImpostor02 extends LWJGLWindow {
 		initializePrograms();
 
 		try {
-			g_pPlaneMesh = 	new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
-			g_pCubeMesh = 	new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
+			g_pPlaneMesh = 	new Mesh("LargePlane.xml");
+			g_pCubeMesh = 	new Mesh("UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

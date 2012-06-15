@@ -49,13 +49,14 @@ import rosick.mckesson.framework.MousePole;
  */
 public class AmbientLighting03 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut09/data/";
+
 		new AmbientLighting03().start();
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut09/data/";
 
 	
 	
@@ -116,10 +117,10 @@ public class AmbientLighting03 extends LWJGLWindow {
 	}
 	
 	private void initializeProgram() {	
-		g_WhiteDiffuseColor =		loadProgram(TUTORIAL_DATAPATH + "DirVertexLighting_PN.vert",		TUTORIAL_DATAPATH + "ColorPassthrough.frag");		
-		g_VertexDiffuseColor = 		loadProgram(TUTORIAL_DATAPATH + "DirVertexLighting_PCN.vert", 		TUTORIAL_DATAPATH + "ColorPassthrough.frag");
-		g_WhiteAmbDiffuseColor = 	loadProgram(TUTORIAL_DATAPATH + "DirAmbVertexLighting_PN.vert", 	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
-		g_VertexAmbDiffuseColor = 	loadProgram(TUTORIAL_DATAPATH + "DirAmbVertexLighting_PCN.vert",	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
+		g_WhiteDiffuseColor =		loadProgram("DirVertexLighting_PN.vert",		"ColorPassthrough.frag");		
+		g_VertexDiffuseColor = 		loadProgram("DirVertexLighting_PCN.vert", 		"ColorPassthrough.frag");
+		g_WhiteAmbDiffuseColor = 	loadProgram("DirAmbVertexLighting_PN.vert", 	"ColorPassthrough.frag");
+		g_VertexAmbDiffuseColor = 	loadProgram("DirAmbVertexLighting_PCN.vert",	"ColorPassthrough.frag");
 	}
 	
 
@@ -128,8 +129,8 @@ public class AmbientLighting03 extends LWJGLWindow {
 		initializeProgram();
 		
 		try {
-			g_pCylinderMesh = new Mesh(TUTORIAL_DATAPATH + "UnitCylinder.xml");
-			g_pPlaneMesh 	= new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
+			g_pCylinderMesh = new Mesh("UnitCylinder.xml");
+			g_pPlaneMesh 	= new Mesh("LargePlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

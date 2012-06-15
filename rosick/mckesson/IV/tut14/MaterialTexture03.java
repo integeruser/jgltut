@@ -69,13 +69,13 @@ import rosick.mckesson.framework.UniformBlockArray;
 public class MaterialTexture03 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut14/data/";
+
 		new MaterialTexture03().start();
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String COMMON_DATAPATH = "/rosick/mckesson/data/";
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut14/data/";
 
 	
 	
@@ -116,9 +116,9 @@ public class MaterialTexture03 extends LWJGLWindow {
 	private UnlitProgData g_Unlit;
 	
 	private ShaderPairs g_shaderPairs[] = new ShaderPairs[] {
-			new ShaderPairs(TUTORIAL_DATAPATH + "PN.vert", 	TUTORIAL_DATAPATH + "FixedShininess.frag"),
-			new ShaderPairs(TUTORIAL_DATAPATH + "PNT.vert", TUTORIAL_DATAPATH + "TextureShininess.frag"),
-			new ShaderPairs(TUTORIAL_DATAPATH + "PNT.vert", TUTORIAL_DATAPATH + "TextureCompute.frag")
+			new ShaderPairs("PN.vert", 	"FixedShininess.frag"),
+			new ShaderPairs("PNT.vert", "TextureShininess.frag"),
+			new ShaderPairs("PNT.vert", "TextureCompute.frag")
 	};
 	
 	private int g_lightUniformBuffer;
@@ -188,7 +188,7 @@ public class MaterialTexture03 extends LWJGLWindow {
 			g_Programs[prog] = loadStandardProgram(g_shaderPairs[prog].vertShader, g_shaderPairs[prog].fragShader);
 		}
 
-		g_Unlit = loadUnlitProgram(COMMON_DATAPATH + "Unlit.vert", COMMON_DATAPATH + "Unlit.frag");
+		g_Unlit = loadUnlitProgram("Unlit.vert", "Unlit.frag");
 	}
 	
 	
@@ -197,9 +197,9 @@ public class MaterialTexture03 extends LWJGLWindow {
 		initializePrograms();
 
 		try {
-			g_pObjectMesh = new Mesh(COMMON_DATAPATH + "Infinity.xml");
-			g_pCubeMesh = 	new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
-			g_pPlaneMesh = 	new Mesh(COMMON_DATAPATH + "UnitPlane.xml");
+			g_pObjectMesh = new Mesh("Infinity.xml");
+			g_pCubeMesh = 	new Mesh("UnitCube.xml");
+			g_pPlaneMesh = 	new Mesh("UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -698,7 +698,8 @@ public class MaterialTexture03 extends LWJGLWindow {
 		ImageSet pImageSet;
 
 		try {
-			pImageSet = DdsLoader.loadFromFile(TUTORIAL_DATAPATH + "main.dds");
+			String filepath = Framework.findFileOrThrow("main.dds");
+			pImageSet = DdsLoader.loadFromFile(filepath);
 			
 			SingleImage image = pImageSet.getImage(0, 0, 0);
 			Dimensions dims = image.getDimensions();

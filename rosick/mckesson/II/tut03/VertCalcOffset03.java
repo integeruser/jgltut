@@ -24,13 +24,12 @@ import rosick.mckesson.framework.Framework;
  */
 public class VertCalcOffset03 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut03/data/";
+
 		new	VertCalcOffset03().start();
 	}
 	
-	
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut03/data/";
-
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -54,8 +53,8 @@ public class VertCalcOffset03 extends LWJGLWindow {
 	
 	private void initializeProgram() {
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "CalcOffset.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "Standard.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"CalcOffset.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "Standard.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		

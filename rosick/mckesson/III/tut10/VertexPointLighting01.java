@@ -53,13 +53,14 @@ import rosick.jglsdk.glutil.MousePoles.*;
 public class VertexPointLighting01 extends LWJGLWindow {
 	
 	public static void main(String[] args) {		
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut10/data/";
+
 		new VertexPointLighting01().start();
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut10/data/";
-
+	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -142,10 +143,10 @@ public class VertexPointLighting01 extends LWJGLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_WhiteDiffuseColor =	loadLitProgram(TUTORIAL_DATAPATH + "PosVertexLighting_PN.vert",		TUTORIAL_DATAPATH + "ColorPassthrough.frag");		
-		g_VertexDiffuseColor = 	loadLitProgram(TUTORIAL_DATAPATH + "PosVertexLighting_PCN.vert", 	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
+		g_WhiteDiffuseColor =	loadLitProgram("PosVertexLighting_PN.vert",		"ColorPassthrough.frag");		
+		g_VertexDiffuseColor = 	loadLitProgram("PosVertexLighting_PCN.vert", 	"ColorPassthrough.frag");
 		
-		g_Unlit = loadUnlitProgram(TUTORIAL_DATAPATH + "PosTransform.vert", TUTORIAL_DATAPATH + "UniformColor.frag");
+		g_Unlit = loadUnlitProgram("PosTransform.vert", "UniformColor.frag");
 	}
 	
 	
@@ -154,9 +155,9 @@ public class VertexPointLighting01 extends LWJGLWindow {
 		initializePrograms();
 		
 		try {
-			g_pCylinderMesh = new Mesh(TUTORIAL_DATAPATH + "UnitCylinder.xml");
-			g_pPlaneMesh 	= new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
-			g_pCubeMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
+			g_pCylinderMesh = new Mesh("UnitCylinder.xml");
+			g_pPlaneMesh 	= new Mesh("LargePlane.xml");
+			g_pCubeMesh 	= new Mesh("UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

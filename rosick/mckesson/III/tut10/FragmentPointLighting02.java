@@ -54,13 +54,14 @@ import rosick.mckesson.framework.Timer;
  */
 public class FragmentPointLighting02 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut10/data/";
+
 		new FragmentPointLighting02().start();
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut10/data/";
 
 	
 	
@@ -143,12 +144,12 @@ public class FragmentPointLighting02 extends LWJGLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_WhiteDiffuseColor =		loadLitProgram(TUTORIAL_DATAPATH + "ModelPosVertexLighting_PN.vert",	TUTORIAL_DATAPATH + "ColorPassthrough.frag");		
-		g_VertexDiffuseColor = 		loadLitProgram(TUTORIAL_DATAPATH + "ModelPosVertexLighting_PCN.vert",	TUTORIAL_DATAPATH + "ColorPassthrough.frag");
-		g_FragWhiteDiffuseColor =	loadLitProgram(TUTORIAL_DATAPATH + "FragmentLighting_PN.vert",			TUTORIAL_DATAPATH + "FragmentLighting.frag");		
-		g_FragVertexDiffuseColor = 	loadLitProgram(TUTORIAL_DATAPATH + "FragmentLighting_PCN.vert", 		TUTORIAL_DATAPATH + "FragmentLighting.frag");
+		g_WhiteDiffuseColor =		loadLitProgram("ModelPosVertexLighting_PN.vert",	"ColorPassthrough.frag");		
+		g_VertexDiffuseColor = 		loadLitProgram("ModelPosVertexLighting_PCN.vert",	"ColorPassthrough.frag");
+		g_FragWhiteDiffuseColor =	loadLitProgram("FragmentLighting_PN.vert",			"FragmentLighting.frag");		
+		g_FragVertexDiffuseColor = 	loadLitProgram("FragmentLighting_PCN.vert", 		"FragmentLighting.frag");
 		
-		g_Unlit = loadUnlitProgram(TUTORIAL_DATAPATH + "PosTransform.vert", TUTORIAL_DATAPATH + "UniformColor.frag");
+		g_Unlit = loadUnlitProgram("PosTransform.vert", "UniformColor.frag");
 	}
 	
 	
@@ -157,9 +158,9 @@ public class FragmentPointLighting02 extends LWJGLWindow {
 		initializePrograms();
 		
 		try {
-			g_pCylinderMesh = new Mesh(TUTORIAL_DATAPATH + "UnitCylinder.xml");
-			g_pPlaneMesh 	= new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
-			g_pCubeMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
+			g_pCylinderMesh = new Mesh("UnitCylinder.xml");
+			g_pPlaneMesh 	= new Mesh("LargePlane.xml");
+			g_pCubeMesh 	= new Mesh("UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

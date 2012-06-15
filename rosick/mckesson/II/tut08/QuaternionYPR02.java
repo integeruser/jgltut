@@ -34,13 +34,12 @@ import rosick.mckesson.framework.Mesh;
  */
 public class QuaternionYPR02 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut08/data/";
+
 		new QuaternionYPR02().start();
 	}
-	
-	
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut08/data/";
-	
+		
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -62,8 +61,8 @@ public class QuaternionYPR02 extends LWJGLWindow {
 	
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "ColorMultUniform.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "ColorMultUniform.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		
@@ -90,7 +89,7 @@ public class QuaternionYPR02 extends LWJGLWindow {
 		initializeProgram();
 		
 		try {		
-			g_pShip = new Mesh(TUTORIAL_DATAPATH + "Ship.xml");
+			g_pShip = new Mesh("Ship.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

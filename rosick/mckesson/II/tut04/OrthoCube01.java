@@ -24,13 +24,12 @@ import rosick.mckesson.framework.Framework;
  */
 public class OrthoCube01 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut04/data/";
+
 		new OrthoCube01().start();
 	}
 	
-	
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/II/tut04/data/";
-
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -149,8 +148,8 @@ public class OrthoCube01 extends LWJGLWindow {
 
 	private void initializeProgram() {	        
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	TUTORIAL_DATAPATH + "OrthoWithOffset.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, TUTORIAL_DATAPATH + "StandardColors.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"OrthoWithOffset.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "StandardColors.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		

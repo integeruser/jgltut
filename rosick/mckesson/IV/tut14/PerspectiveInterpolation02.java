@@ -29,13 +29,12 @@ import rosick.mckesson.framework.Mesh;
  */
 public class PerspectiveInterpolation02 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut14/data/";
+
 		new PerspectiveInterpolation02().start();
 	}
-	
-	
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut14/data/";
-	
+		
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -74,8 +73,8 @@ public class PerspectiveInterpolation02 extends LWJGLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_SmoothInterp = loadProgram(TUTORIAL_DATAPATH + "SmoothVertexColors.vert", 	TUTORIAL_DATAPATH + "SmoothVertexColors.frag");
-		g_LinearInterp = loadProgram(TUTORIAL_DATAPATH + "NoCorrectVertexColors.vert", 	TUTORIAL_DATAPATH + "NoCorrectVertexColors.frag");
+		g_SmoothInterp = loadProgram("SmoothVertexColors.vert", 	"SmoothVertexColors.frag");
+		g_LinearInterp = loadProgram("NoCorrectVertexColors.vert", 	"NoCorrectVertexColors.frag");
 
 		MatrixStack persMatrix = new MatrixStack();
 		persMatrix.perspective(60.0f, 1.0f, g_fzNear, g_fzFar);
@@ -93,8 +92,8 @@ public class PerspectiveInterpolation02 extends LWJGLWindow {
 		initializePrograms();
 
 		try {
-			g_pRealHallway = new Mesh(TUTORIAL_DATAPATH + "RealHallway.xml");
-			g_pFauxHallway = new Mesh(TUTORIAL_DATAPATH + "FauxHallway.xml");
+			g_pRealHallway = new Mesh("RealHallway.xml");
+			g_pFauxHallway = new Mesh("FauxHallway.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -129,8 +128,8 @@ public class PerspectiveInterpolation02 extends LWJGLWindow {
 
 				case Keyboard.KEY_SPACE:
 					// Reload
-					g_pRealHallway = new Mesh(TUTORIAL_DATAPATH + "RealHallway.xml");
-					g_pFauxHallway = new Mesh(TUTORIAL_DATAPATH + "FauxHallway.xml");
+					g_pRealHallway = new Mesh("RealHallway.xml");
+					g_pFauxHallway = new Mesh("FauxHallway.xml");
 					break;
 
 				case Keyboard.KEY_ESCAPE:

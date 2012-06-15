@@ -58,13 +58,14 @@ import rosick.mckesson.framework.Timer;
  */
 public class FragmentAttenuation03 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut10/data/";
+
 		new FragmentAttenuation03().start();
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut10/data/";
 
 	
 	
@@ -158,10 +159,10 @@ public class FragmentAttenuation03 extends LWJGLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_FragWhiteDiffuseColor =	loadLitProgram(TUTORIAL_DATAPATH + "FragLightAtten_PN.vert",	TUTORIAL_DATAPATH + "FragLightAtten.frag");		
-		g_FragVertexDiffuseColor = 	loadLitProgram(TUTORIAL_DATAPATH + "FragLightAtten_PCN.vert", 	TUTORIAL_DATAPATH + "FragLightAtten.frag");
+		g_FragWhiteDiffuseColor =	loadLitProgram("FragLightAtten_PN.vert",	"FragLightAtten.frag");		
+		g_FragVertexDiffuseColor = 	loadLitProgram("FragLightAtten_PCN.vert", 	"FragLightAtten.frag");
 		
-		g_Unlit = loadUnlitProgram(TUTORIAL_DATAPATH + "PosTransform.vert", TUTORIAL_DATAPATH + "UniformColor.frag");
+		g_Unlit = loadUnlitProgram("PosTransform.vert", "UniformColor.frag");
 	}
 	
 	
@@ -170,9 +171,9 @@ public class FragmentAttenuation03 extends LWJGLWindow {
 		initializePrograms();
 		
 		try {
-			g_pCylinderMesh = new Mesh(TUTORIAL_DATAPATH + "UnitCylinder.xml");
-			g_pPlaneMesh 	= new Mesh(TUTORIAL_DATAPATH + "LargePlane.xml");
-			g_pCubeMesh 	= new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
+			g_pCylinderMesh = new Mesh("UnitCylinder.xml");
+			g_pPlaneMesh 	= new Mesh("LargePlane.xml");
+			g_pCubeMesh 	= new Mesh("UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

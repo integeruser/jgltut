@@ -60,14 +60,14 @@ import rosick.mckesson.framework.Timer;
  */
 public class BasicTexture01 extends LWJGLWindow {
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut14/data/";
+
 		new BasicTexture01().start();
 	}
 	
 	
 	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	private final String COMMON_DATAPATH = "/rosick/mckesson/data/";
-	private final String TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut14/data/";
 
 	
 	
@@ -158,10 +158,10 @@ public class BasicTexture01 extends LWJGLWindow {
 	}
 	
 	private void initializePrograms() {	
-		g_litShaderProg = loadStandardProgram(TUTORIAL_DATAPATH + "PN.vert", 	TUTORIAL_DATAPATH + "ShaderGaussian.frag");
-		g_litTextureProg = loadStandardProgram(TUTORIAL_DATAPATH + "PN.vert", 	TUTORIAL_DATAPATH + "TextureGaussian.frag");
+		g_litShaderProg = loadStandardProgram("PN.vert", 	"ShaderGaussian.frag");
+		g_litTextureProg = loadStandardProgram("PN.vert", 	"TextureGaussian.frag");
 
-		g_Unlit = loadUnlitProgram(COMMON_DATAPATH + "Unlit.vert", COMMON_DATAPATH + "Unlit.frag");
+		g_Unlit = loadUnlitProgram("Unlit.vert", "Unlit.frag");
 	}
 	
 	
@@ -170,8 +170,8 @@ public class BasicTexture01 extends LWJGLWindow {
 		initializePrograms();
 		
 		try {
-			g_pObjectMesh = new Mesh(COMMON_DATAPATH + "Infinity.xml");
-			g_pCubeMesh = 	new Mesh(TUTORIAL_DATAPATH + "UnitCube.xml");
+			g_pObjectMesh = new Mesh("Infinity.xml");
+			g_pCubeMesh = 	new Mesh("UnitCube.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);

@@ -1,13 +1,13 @@
 package rosick.mckesson.II.tut06;
 
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
+import java.util.ArrayList;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
-
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
-import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
@@ -37,106 +37,11 @@ public class Rotation03 extends LWJGLWindow {
 	}
 	
 	
-	private final int FLOAT_SIZE = Float.SIZE / 8;
-
-	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-			
-	private final float vertexData[] = {
-			+1.0f, +1.0f, +1.0f,
-			-1.0f, -1.0f, +1.0f,
-			-1.0f, +1.0f, -1.0f,
-			+1.0f, -1.0f, -1.0f,
-	
-			-1.0f, -1.0f, -1.0f,
-			+1.0f, +1.0f, -1.0f,
-			+1.0f, -1.0f, +1.0f,
-			-1.0f, +1.0f, +1.0f,
-	
-			0.0f, 1.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 1.0f, 1.0f,
-			1.0f, 0.0f, 0.0f, 1.0f,
-			0.5f, 0.5f, 0.0f, 1.0f,
-	
-			0.0f, 1.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 1.0f, 1.0f,
-			1.0f, 0.0f, 0.0f, 1.0f,
-			0.5f, 0.5f, 0.0f, 1.0f
-	};
-	
-	private final short indexData[] = {
-			0, 1, 2,
-			1, 0, 3,
-			2, 3, 0,
-			3, 2, 1,
-	
-			5, 4, 6,
-			4, 5, 7,
-			7, 6, 4,
-			6, 7, 5
-	};
-	
-	private final int numberOfVertices = 8;
-	
-	private int theProgram;
-	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
-	private int vertexBufferObject, indexBufferObject;
-	private int vao;
-	
-	private Mat4 cameraToClipMatrix = new Mat4();
-	
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-
-	
-	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
-		
-	private void initializeProgram() {	
-		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	"PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "ColorPassthrough.frag"));
-
-		theProgram = Framework.createProgram(shaderList);
-		
-	    modelToCameraMatrixUnif = glGetUniformLocation(theProgram, "modelToCameraMatrix");
-		cameraToClipMatrixUnif = glGetUniformLocation(theProgram, "cameraToClipMatrix");
-		
-		float fzNear = 1.0f; float fzFar = 45.0f;
-
-		cameraToClipMatrix.set(0, 	fFrustumScale);
-		cameraToClipMatrix.set(5, 	fFrustumScale);
-		cameraToClipMatrix.set(10, 	(fzFar + fzNear) / (fzNear - fzFar));
-		cameraToClipMatrix.set(11, 	-1.0f);
-		cameraToClipMatrix.set(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
-		
-		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(tempFloatBuffer16));
-		glUseProgram(0);
-	}
-	
-	private void initializeVertexBuffer() {
-		FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
-		vertexDataBuffer.put(vertexData);
-		vertexDataBuffer.flip();
-		
-        vertexBufferObject = glGenBuffers();	       
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		
-		ShortBuffer indexDataBuffer = BufferUtils.createShortBuffer(indexData.length);
-		indexDataBuffer.put(indexData);
-		indexDataBuffer.flip();
-		
-        indexBufferObject = glGenBuffers();	       
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataBuffer, GL_STATIC_DRAW);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
-	
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */			
 	
 	@Override
 	protected void init() {
@@ -177,11 +82,11 @@ public class Rotation03 extends LWJGLWindow {
 		
 		glBindVertexArray(vao);
 		
-		float fElapsedTime = (float) (getElapsedTime() / 1000.0);
-		for (Instance currInst : g_instanceList) {
-			final Mat4 transformMatrix = currInst.constructMatrix(fElapsedTime);
+		float elapsedTime = getElapsedTime() / 1000.0f;
+		for (Instance currInst : instanceList) {
+			final Mat4 transformMatrix = currInst.constructMatrix(elapsedTime);
 			
-			glUniformMatrix4(modelToCameraMatrixUnif, false, transformMatrix.fillAndFlipBuffer(tempFloatBuffer16));
+			glUniformMatrix4(modelToCameraMatrixUnif, false, transformMatrix.fillAndFlipBuffer(mat4Buffer));
 			glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 		}
 
@@ -192,11 +97,11 @@ public class Rotation03 extends LWJGLWindow {
 	
 	@Override
 	protected void reshape(int width, int height) {
-		cameraToClipMatrix.set(0, fFrustumScale / (width / (float) height));
-		cameraToClipMatrix.set(5, fFrustumScale);
+		cameraToClipMatrix.set(0, 0, frustumScale / (width / (float) height));
+		cameraToClipMatrix.set(1, 1, frustumScale);
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(tempFloatBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
 		glUseProgram(0);
 
 		glViewport(0, 0, width, height);
@@ -206,25 +111,124 @@ public class Rotation03 extends LWJGLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private Instance g_instanceList[] = {
+	private int theProgram;
+	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
+	private int vao;
+	
+	private Mat4 cameraToClipMatrix = new Mat4(0.0f);
+	
+	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
+
+			
+	private void initializeProgram() {	
+		ArrayList<Integer> shaderList = new ArrayList<>();
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER,	"PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "ColorPassthrough.frag"));
+
+		theProgram = Framework.createProgram(shaderList);
+		
+	    modelToCameraMatrixUnif = glGetUniformLocation(theProgram, "modelToCameraMatrix");
+		cameraToClipMatrixUnif = glGetUniformLocation(theProgram, "cameraToClipMatrix");
+		
+		float zNear = 1.0f; float zFar = 61.0f;
+
+		cameraToClipMatrix.set(0, 0, 	frustumScale);
+		cameraToClipMatrix.set(1, 1, 	frustumScale);
+		cameraToClipMatrix.set(2, 2,	(zFar + zNear) / (zNear - zFar));
+		cameraToClipMatrix.set(2, 3,	-1.0f);
+		cameraToClipMatrix.set(3, 2,	(2 * zFar * zNear) / (zNear - zFar));
+		
+		glUseProgram(theProgram);
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+		glUseProgram(0);
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final int numberOfVertices = 8;
+
+	private final float vertexData[] = {
+			+1.0f, +1.0f, +1.0f,
+			-1.0f, -1.0f, +1.0f,
+			-1.0f, +1.0f, -1.0f,
+			+1.0f, -1.0f, -1.0f,
+	
+			-1.0f, -1.0f, -1.0f,
+			+1.0f, +1.0f, -1.0f,
+			+1.0f, -1.0f, +1.0f,
+			-1.0f, +1.0f, +1.0f,
+	
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+	
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f};
+	private final short indexData[] = {
+			0, 1, 2,
+			1, 0, 3,
+			2, 3, 0,
+			3, 2, 1,
+	
+			5, 4, 6,
+			4, 5, 7,
+			7, 6, 4,
+			6, 7, 5};
+	
+	private int vertexBufferObject, indexBufferObject;
+
+	
+	private void initializeVertexBuffer() {
+		FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+		vertexDataBuffer.put(vertexData);
+		vertexDataBuffer.flip();
+		
+        vertexBufferObject = glGenBuffers();	       
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+	    glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		
+		ShortBuffer indexDataBuffer = BufferUtils.createShortBuffer(indexData.length);
+		indexDataBuffer.put(indexData);
+		indexDataBuffer.flip();
+		
+        indexBufferObject = glGenBuffers();	       
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataBuffer, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private Instance instanceList[] = {
 			new NullRotation	(new Vec3(0.0f, 0.0f, -25.0f)),
 			new RotateX			(new Vec3(-5.0f, -5.0f, -25.0f)),
 			new RotateY			(new Vec3(-5.0f, 5.0f, -25.0f)),
 			new RotateZ			(new Vec3(5.0f, 5.0f, -25.0f)),
-			new RotateAxis		(new Vec3(5.0f, -5.0f, -25.0f))
-	};
+			new RotateAxis		(new Vec3(5.0f, -5.0f, -25.0f))};
 	
 	
-	private abstract class Instance {
-		
+	private abstract class Instance {	
 		Vec3 offset;
 		
 		
-		abstract Mat3 calcRotation(float fElapsedTime);
+		abstract Mat3 calcRotation(float elapsedTime);
 		
-		Mat4 constructMatrix(float fElapsedTime) {
-			final Mat3 rotMatrix = calcRotation(fElapsedTime);
+		Mat4 constructMatrix(float elapsedTime) {
+			final Mat3 rotMatrix = calcRotation(elapsedTime);
+			
 			Mat4 theMat = new Mat4(rotMatrix);
 			theMat.setColumn(3, new Vec4(offset, 1.0f));
 			
@@ -236,11 +240,11 @@ public class Rotation03 extends LWJGLWindow {
 	private class NullRotation extends Instance {
 
 		NullRotation(Vec3 vec) {
-			offset = vec;
+			offset = new Vec3(vec);
 		}
 
 		@Override
-		Mat3 calcRotation(float fElapsedTime) {
+		Mat3 calcRotation(float elapsedTime) {
 			return new Mat3(1.0f);
 		}
 	}
@@ -248,18 +252,18 @@ public class Rotation03 extends LWJGLWindow {
 	private class RotateX extends Instance {
 
 		RotateX(Vec3 vec) {
-			offset = vec;
+			offset = new Vec3(vec);
 		}
 
 		@Override
-		Mat3 calcRotation(float fElapsedTime) {
-			float fAngRad = computeAngleRad(fElapsedTime, 3.0f);
-			float fCos = (float) Math.cos(fAngRad);
-			float fSin = (float) Math.sin(fAngRad);
+		Mat3 calcRotation(float elapsedTime) {
+			float angRad = computeAngleRad(elapsedTime, 3.0f);
+			float cos = (float) Math.cos(angRad);
+			float sin = (float) Math.sin(angRad);
 
 			Mat3 theMat = new Mat3(1.0f);
-			theMat.set(4, fCos); theMat.set(7, -fSin); 
-			theMat.set(5, fSin); theMat.set(8, fCos); 
+			theMat.set(1, 1, cos); theMat.set(2, 1, -sin); 
+			theMat.set(1, 2, sin); theMat.set(2, 2, cos); 
 			return theMat;
 		}
 	}
@@ -267,18 +271,18 @@ public class Rotation03 extends LWJGLWindow {
 	private class RotateY extends Instance {
 
 		RotateY(Vec3 vec) {
-			offset = vec;
+			offset = new Vec3(vec);
 		}
 
 		@Override
-		Mat3 calcRotation(float fElapsedTime) {
-			float fAngRad = computeAngleRad(fElapsedTime, 2.0f);
-			float fCos = (float) Math.cos(fAngRad);
-			float fSin = (float) Math.sin(fAngRad);
+		Mat3 calcRotation(float elapsedTime) {
+			float angRad = computeAngleRad(elapsedTime, 2.0f);
+			float cos = (float) Math.cos(angRad);
+			float sin = (float) Math.sin(angRad);
 
 			Mat3 theMat = new Mat3(1.0f);
-			theMat.set(0, fCos); theMat.set(6, fSin); 
-			theMat.set(2, -fSin); theMat.set(8, fCos);
+			theMat.set(0, 0, cos); 	theMat.set(2, 0, sin); 
+			theMat.set(0, 2, -sin); theMat.set(2, 2, cos);
 			return theMat;
 		}
 	}
@@ -286,18 +290,18 @@ public class Rotation03 extends LWJGLWindow {
 	private class RotateZ extends Instance {
 
 		RotateZ(Vec3 vec) {
-			offset = vec;
+			offset = new Vec3(vec);
 		}
 
 		@Override
-		Mat3 calcRotation(float fElapsedTime) {
-			float fAngRad = computeAngleRad(fElapsedTime, 2.0f);
-			float fCos = (float) Math.cos(fAngRad);
-			float fSin = (float) Math.sin(fAngRad);
+		Mat3 calcRotation(float elapsedTime) {
+			float angRad = computeAngleRad(elapsedTime, 2.0f);
+			float cos = (float) Math.cos(angRad);
+			float sin = (float) Math.sin(angRad);
 
 			Mat3 theMat = new Mat3(1.0f);
-			theMat.set(0, fCos); theMat.set(3, -fSin); 
-			theMat.set(1, fSin); theMat.set(4, fCos);
+			theMat.set(0, 0, cos); theMat.set(1, 0, -sin); 
+			theMat.set(0, 1, sin); theMat.set(1, 1, cos);
 			return theMat;
 		}
 	}
@@ -305,31 +309,31 @@ public class Rotation03 extends LWJGLWindow {
 	private class RotateAxis extends Instance {
 
 		RotateAxis(Vec3 vec) {
-			offset = vec;
+			offset = new Vec3(vec);
 		}
 
 		@Override
-		Mat3 calcRotation(float fElapsedTime) {
-			float fAngRad = computeAngleRad(fElapsedTime, 2.0f);
-			float fCos = (float) Math.cos(fAngRad);
-			float fInvCos = 1.0f - fCos;
-			float fSin = (float) Math.sin(fAngRad);
+		Mat3 calcRotation(float elapsedTime) {
+			float angRad = computeAngleRad(elapsedTime, 2.0f);
+			float cos = (float) Math.cos(angRad);
+			float invCos = 1.0f - cos;
+			float sin = (float) Math.sin(angRad);
 
 			Vec3 axis = new Vec3(1.0f, 1.0f, 1.0f);
 			axis = Glm.normalize(axis);
 
 			Mat3 theMat = new Mat3(1.0f);
-			theMat.set(0, (axis.x * axis.x) + ((1 - axis.x * axis.x) * fCos));
-			theMat.set(3, axis.x * axis.y * (fInvCos) - (axis.z * fSin));
-			theMat.set(6, axis.x * axis.z * (fInvCos) + (axis.y * fSin));
+			theMat.set(0, 0, (axis.x * axis.x) + ((1 - axis.x * axis.x) * cos));
+			theMat.set(1, 0, axis.x * axis.y * (invCos) - (axis.z * sin));
+			theMat.set(2, 0, axis.x * axis.z * (invCos) + (axis.y * sin));
 
-			theMat.set(1, axis.x * axis.y * (fInvCos) + (axis.z * fSin));
-			theMat.set(4, (axis.y * axis.y) + ((1 - axis.y * axis.y) * fCos));
-			theMat.set(7, axis.y * axis.z * (fInvCos) - (axis.x * fSin));
+			theMat.set(0, 1, axis.x * axis.y * (invCos) + (axis.z * sin));
+			theMat.set(1, 1, (axis.y * axis.y) + ((1 - axis.y * axis.y) * cos));
+			theMat.set(2, 1, axis.y * axis.z * (invCos) - (axis.x * sin));
 
-			theMat.set(2, axis.x * axis.z * (fInvCos) - (axis.y * fSin));
-			theMat.set(5, axis.y * axis.z * (fInvCos) + (axis.x * fSin));
-			theMat.set(8, (axis.z * axis.z) + ((1 - axis.z * axis.z) * fCos));
+			theMat.set(0, 2, axis.x * axis.z * (invCos) - (axis.y * sin));
+			theMat.set(1, 2, axis.y * axis.z * (invCos) + (axis.x * sin));
+			theMat.set(2, 2, (axis.z * axis.z) + ((1 - axis.z * axis.z) * cos));
 			return theMat;
 		}
 	}
@@ -339,21 +343,21 @@ public class Rotation03 extends LWJGLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private final float fFrustumScale = calcFrustumScale(45.0f);
+	private final float frustumScale = calcFrustumScale(45.0f);
 
 	
-	private float calcFrustumScale(float fFovDeg) {
+	private float calcFrustumScale(float fovDeg) {
 		final float degToRad = 3.14159f * 2.0f / 360.0f;
-		float fFovRad = fFovDeg * degToRad;
+		float fovRad = fovDeg * degToRad;
 		
-		return 1.0f / (float) (Math.tan(fFovRad / 2.0f));
+		return 1.0f / (float) (Math.tan(fovRad / 2.0f));
 	}
 	
 	
-	private float computeAngleRad(float fElapsedTime, float fLoopDuration) {
-		final float fScale = 3.14159f * 2.0f / fLoopDuration;
-		float fCurrTimeThroughLoop = fElapsedTime % fLoopDuration;
+	private float computeAngleRad(float elapsedTime, float loopDuration) {
+		final float scale = 3.14159f * 2.0f / loopDuration;
+		float currTimeThroughLoop = elapsedTime % loopDuration;
 		
-		return fCurrTimeThroughLoop * fScale;
+		return currTimeThroughLoop * scale;
 	}
 }

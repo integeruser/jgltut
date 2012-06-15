@@ -1,12 +1,12 @@
 package rosick.mckesson.II.tut04;
 
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
-
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
@@ -34,159 +34,8 @@ public class MatrixPerspective03 extends LWJGLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	private int theProgram;
-	private int offsetUniform;
-	private int vertexBufferObject;
-	private int vao;
-	
-	private final float vertexData[] = {
-		 0.25f,  0.25f, -1.25f, 1.0f,
-		 0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-
-		 0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-
-		 0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-		 0.25f, -0.25f, -2.75f, 1.0f,
-
-		 0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-
-		 0.25f,  0.25f, -1.25f, 1.0f,
-		 0.25f, -0.25f, -2.75f, 1.0f,
-		 0.25f, -0.25f, -1.25f, 1.0f,
-
-		 0.25f,  0.25f, -1.25f, 1.0f,
-		 0.25f,  0.25f, -2.75f, 1.0f,
-		 0.25f, -0.25f, -2.75f, 1.0f,
-
-		 0.25f,  0.25f, -2.75f, 1.0f,
-		 0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-
-		 0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-
-		 0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		 0.25f, -0.25f, -1.25f, 1.0f,
-
-		 0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-
-
-
-
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-	};
-	
-
-	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	private void initializeProgram() {			
-		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"MatrixPerspective.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "StandardColors.frag"));
-
-		theProgram = Framework.createProgram(shaderList);
-		
-		offsetUniform = glGetUniformLocation(theProgram, "offset");
-		
-		int perspectiveMatrixUnif = glGetUniformLocation(theProgram, "perspectiveMatrix");
-		
-		float fFrustumScale = 1.0f; float fzNear = 0.5f; float fzFar = 3.0f;
-		
-		float theMatrix[]; 
-		theMatrix = new float[16];
-		theMatrix[0] 	= fFrustumScale;
-		theMatrix[5] 	= fFrustumScale;
-		theMatrix[10] 	= (fzFar + fzNear) / (fzNear - fzFar);
-		theMatrix[14] 	= (2 * fzFar * fzNear) / (fzNear - fzFar);
-		theMatrix[11] 	= -1.0f;
-		
-		FloatBuffer theMatrixBuffer = BufferUtils.createFloatBuffer(theMatrix.length);
-		theMatrixBuffer.put(theMatrix);
-		theMatrixBuffer.flip();
-		
-		glUseProgram(theProgram);
-		glUniformMatrix4(perspectiveMatrixUnif, false, theMatrixBuffer);
-		glUseProgram(0);
-	}
-	
-	private void initializeVertexBuffer() {
-		FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
-		vertexDataBuffer.put(vertexData);
-		vertexDataBuffer.flip();
-		
-        vertexBufferObject = glGenBuffers();	       
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-	
 	
 	@Override
 	protected void init() {
@@ -211,7 +60,7 @@ public class MatrixPerspective03 extends LWJGLWindow {
 		
 		glUniform2f(offsetUniform, 0.5f, 0.5f);
 
-		int colorData = vertexData.length * 2;
+		int colorData = (vertexData.length * FLOAT_SIZE) / 2;
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
@@ -223,5 +72,165 @@ public class MatrixPerspective03 extends LWJGLWindow {
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glUseProgram(0);
+	}
+
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private int theProgram;
+	private int offsetUniform;
+	private int vao;
+	
+
+	private void initializeProgram() {			
+		ArrayList<Integer> shaderList = new ArrayList<>();
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"MatrixPerspective.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "StandardColors.frag"));
+
+		theProgram = Framework.createProgram(shaderList);
+		
+		offsetUniform = glGetUniformLocation(theProgram, "offset");
+		
+		int perspectiveMatrixUnif = glGetUniformLocation(theProgram, "perspectiveMatrix");
+		
+		float frustumScale = 1.0f; float zNear = 0.5f; float zFar = 3.0f;
+		
+		float theMatrix[] = new float[16];
+		theMatrix[0] 	= frustumScale;
+		theMatrix[5] 	= frustumScale;
+		theMatrix[10] 	= (zFar + zNear) / (zNear - zFar);
+		theMatrix[14] 	= (2 * zFar * zNear) / (zNear - zFar);
+		theMatrix[11] 	= -1.0f;
+		
+		FloatBuffer theMatrixBuffer = BufferUtils.createFloatBuffer(theMatrix.length);
+		theMatrixBuffer.put(theMatrix);
+		theMatrixBuffer.flip();
+		
+		glUseProgram(theProgram);
+		glUniformMatrix4(perspectiveMatrixUnif, false, theMatrixBuffer);
+		glUseProgram(0);
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final float vertexData[] = {
+			 0.25f,  0.25f, -1.25f, 1.0f,
+			 0.25f, -0.25f, -1.25f, 1.0f,
+			-0.25f,  0.25f, -1.25f, 1.0f,
+
+			 0.25f, -0.25f, -1.25f, 1.0f,
+			-0.25f, -0.25f, -1.25f, 1.0f,
+			-0.25f,  0.25f, -1.25f, 1.0f,
+
+			 0.25f,  0.25f, -2.75f, 1.0f,
+			-0.25f,  0.25f, -2.75f, 1.0f,
+			 0.25f, -0.25f, -2.75f, 1.0f,
+
+			 0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f,  0.25f, -2.75f, 1.0f,
+			-0.25f, -0.25f, -2.75f, 1.0f,
+
+			-0.25f,  0.25f, -1.25f, 1.0f,
+			-0.25f, -0.25f, -1.25f, 1.0f,
+			-0.25f, -0.25f, -2.75f, 1.0f,
+
+			-0.25f,  0.25f, -1.25f, 1.0f,
+			-0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f,  0.25f, -2.75f, 1.0f,
+
+			 0.25f,  0.25f, -1.25f, 1.0f,
+			 0.25f, -0.25f, -2.75f, 1.0f,
+			 0.25f, -0.25f, -1.25f, 1.0f,
+
+			 0.25f,  0.25f, -1.25f, 1.0f,
+			 0.25f,  0.25f, -2.75f, 1.0f,
+			 0.25f, -0.25f, -2.75f, 1.0f,
+
+			 0.25f,  0.25f, -2.75f, 1.0f,
+			 0.25f,  0.25f, -1.25f, 1.0f,
+			-0.25f,  0.25f, -1.25f, 1.0f,
+
+			 0.25f,  0.25f, -2.75f, 1.0f,
+			-0.25f,  0.25f, -1.25f, 1.0f,
+			-0.25f,  0.25f, -2.75f, 1.0f,
+
+			 0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f, -0.25f, -1.25f, 1.0f,
+			 0.25f, -0.25f, -1.25f, 1.0f,
+
+			 0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f, -0.25f, -2.75f, 1.0f,
+			-0.25f, -0.25f, -1.25f, 1.0f,
+
+
+
+
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f, 1.0f,
+
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+			0.8f, 0.8f, 0.8f, 1.0f,
+
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
+
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f,
+
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f, 1.0f,
+
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f, 1.0f};
+	
+	private int vertexBufferObject;
+
+	
+	private void initializeVertexBuffer() {
+		FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+		vertexDataBuffer.put(vertexData);
+		vertexDataBuffer.flip();
+		
+        vertexBufferObject = glGenBuffers();	       
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+	    glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 }

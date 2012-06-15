@@ -1,10 +1,10 @@
 package rosick.mckesson.II.tut08;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
@@ -43,52 +43,15 @@ public class Interpolation04 extends LWJGLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	private int theProgram;
-	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif, baseColorUnif;
-	
-	private MatrixStack currMatrix = new MatrixStack(); 
-
-	private Mat4 cameraToClipMatrix = new Mat4();
-	
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-
-	
-	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	private void initializeProgram() {			
-		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "ColorMultUniform.frag"));
-
-		theProgram = Framework.createProgram(shaderList);
 		
-		modelToCameraMatrixUnif = glGetUniformLocation(theProgram, "modelToCameraMatrix");
-		cameraToClipMatrixUnif = glGetUniformLocation(theProgram, "cameraToClipMatrix");
-		baseColorUnif = glGetUniformLocation(theProgram, "baseColor");
-
-		float fzNear = 1.0f; float fzFar = 600.0f;
-		
-		cameraToClipMatrix.set(0,	fFrustumScale);
-		cameraToClipMatrix.set(5, 	fFrustumScale);
-		cameraToClipMatrix.set(10, 	(fzFar + fzNear) / (fzNear - fzFar));
-		cameraToClipMatrix.set(11, 	-1.0f);
-		cameraToClipMatrix.set(14, 	(2 * fzFar * fzNear) / (fzNear - fzFar));
-
-		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(tempFloatBuffer16));
-		glUseProgram(0);
-	}
-	
-	
 	@Override
 	protected void init() {
 		initializeProgram();
 		
 		try {		
-			g_pShip = new Mesh("Ship.xml");
+			ship = new Mesh("Ship.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -114,12 +77,12 @@ public class Interpolation04 extends LWJGLWindow {
 				}
 				
 				else if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
-					boolean bSlerp = g_orient.toggleSlerp();
-					System.out.printf(bSlerp ? "Slerp\n" : "Lerp\n");
+					boolean slerp = orient.toggleSlerp();
+					System.out.printf(slerp ? "Slerp\n" : "Lerp\n");
 					
 				} else {
-					for (int iOrient = 0; iOrient < g_OrientKeys.length; iOrient++) {
-						if (Keyboard.getEventKey() == g_OrientKeys[iOrient]) {
+					for (int iOrient = 0; iOrient < orientKeys.length; iOrient++) {
+						if (Keyboard.getEventKey() == orientKeys[iOrient]) {
 							applyOrientation(iOrient);
 							break;
 						}
@@ -132,24 +95,24 @@ public class Interpolation04 extends LWJGLWindow {
 
 	@Override
 	protected void display() {			
-		g_orient.updateTime();
+		orient.updateTime();
 
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		currMatrix.clear();
+		MatrixStack currMatrix = new MatrixStack(); 
 		currMatrix.translate(0.0f, 0.0f, -200.0f);
-		currMatrix.applyMatrix(Glm.matCast(g_orient.getOrient()));
+		currMatrix.applyMatrix(Glm.matCast(orient.getOrient()));
 
 		glUseProgram(theProgram);
 		currMatrix.scale(3.0f, 3.0f, 3.0f);
 		currMatrix.rotateX(-90.0f);
 		//Set the base color for this object.
 		glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-		glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
+		glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-		g_pShip.render("tint");
+		ship.render("tint");
 
 		glUseProgram(0);
 	}
@@ -157,11 +120,11 @@ public class Interpolation04 extends LWJGLWindow {
 	
 	@Override
 	protected void reshape(int width, int height) {	
-		cameraToClipMatrix.set(0, fFrustumScale / (width / (float) height));
-		cameraToClipMatrix.set(5, fFrustumScale);
+		cameraToClipMatrix.set(0, 0, frustumScale / (width / (float) height));
+		cameraToClipMatrix.set(1, 1, frustumScale);
 
 		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(tempFloatBuffer16));
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
 		glUseProgram(0);
 
 		glViewport(0, 0, width, height);
@@ -171,10 +134,49 @@ public class Interpolation04 extends LWJGLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private Mesh g_pShip;
+	private int theProgram;
+	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif, baseColorUnif;
 	
-	private Quaternion g_Orients[] = {
+	private Mat4 cameraToClipMatrix = new Mat4(0.0f);
+	
+	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
+	
+	
+	private void initializeProgram() {			
+		ArrayList<Integer> shaderList = new ArrayList<>();
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"PosColorLocalTransform.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "ColorMultUniform.frag"));
+
+		theProgram = Framework.createProgram(shaderList);
+		
+		modelToCameraMatrixUnif = glGetUniformLocation(theProgram, "modelToCameraMatrix");
+		cameraToClipMatrixUnif = glGetUniformLocation(theProgram, "cameraToClipMatrix");
+		baseColorUnif = glGetUniformLocation(theProgram, "baseColor");
+
+		float zNear = 1.0f; float zFar = 600.0f;
+		
+		cameraToClipMatrix.set(0, 0, 	frustumScale);
+		cameraToClipMatrix.set(1, 1, 	frustumScale);
+		cameraToClipMatrix.set(2, 2,	(zFar + zNear) / (zNear - zFar));
+		cameraToClipMatrix.set(2, 3,	-1.0f);
+		cameraToClipMatrix.set(3, 2,	(2 * zFar * zNear) / (zNear - zFar));
+
+		glUseProgram(theProgram);
+		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+		glUseProgram(0);
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private Mesh ship;
+	
+	private Quaternion orients[] = {
 			new Quaternion(0.7071f, 0.7071f, 0.0f, 0.0f),
 			new Quaternion(0.5f, 0.5f, -0.5f, 0.5f),
 			new Quaternion(-0.4895f, -0.7892f, -0.3700f, -0.02514f),
@@ -182,10 +184,9 @@ public class Interpolation04 extends LWJGLWindow {
 	
 			new Quaternion(0.3840f, -0.1591f, -0.7991f, -0.4344f),
 			new Quaternion(0.5537f, 0.5208f, 0.6483f, 0.0410f),
-			new Quaternion(0.0f, 0.0f, 1.0f, 0.0f)
-	};
+			new Quaternion(0.0f, 0.0f, 1.0f, 0.0f)};
 
-	private int g_OrientKeys[] = {
+	private int orientKeys[] = {
 			Keyboard.KEY_Q,
 			Keyboard.KEY_W,
 			Keyboard.KEY_E,
@@ -193,19 +194,18 @@ public class Interpolation04 extends LWJGLWindow {
 	
 			Keyboard.KEY_T,
 			Keyboard.KEY_Y,
-			Keyboard.KEY_U
-	};
+			Keyboard.KEY_U};
 		
 	
 	private Vec4 vectorize(Quaternion theQuat) {
-		Vec4 ret = new Vec4();
+		Vec4 vec = new Vec4();
 
-		ret.x = theQuat.x;
-		ret.y = theQuat.y;
-		ret.z = theQuat.z;
-		ret.w = theQuat.w;
+		vec.x = theQuat.x;
+		vec.y = theQuat.y;
+		vec.z = theQuat.z;
+		vec.w = theQuat.w;
 
-		return ret;
+		return vec;
 	}
 	
 	
@@ -213,6 +213,8 @@ public class Interpolation04 extends LWJGLWindow {
 		Vec4 start = vectorize(v0);
 		Vec4 end = vectorize(v1);
 		Vec4 interp = Glm.mix(start, end, alpha);
+		
+		System.out.printf("alpha: %f, (%f, %f, %f, %f)\n", alpha, interp.w, interp.x, interp.y, interp.z);
 
 		interp = Glm.normalize(interp);
 		
@@ -239,9 +241,9 @@ public class Interpolation04 extends LWJGLWindow {
 	}
 	
 	
-	private void applyOrientation(int iIndex) {
-		if (!g_orient.isAnimating()) {
-			g_orient.animateToOrient(iIndex);
+	private void applyOrientation(int orientationIndex) {
+		if (!orient.isAnimating()) {
+			orient.animateToOrient(orientationIndex);
 		}
 	}
 	
@@ -250,106 +252,102 @@ public class Interpolation04 extends LWJGLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private Orientation g_orient = new Orientation();
+	private Orientation orient = new Orientation();
 	
 	
 	private class Orientation {
-		
-		private boolean m_bIsAnimating;
-		private boolean m_bSlerp;
-		private int m_ixCurrOrient;
+		private boolean animating;
+		private boolean slerp;
+		private int currOrientIndex;
 	
-		private Animation m_anim = new Animation();
+		private Animation anim = new Animation();
 		
 		
 		void updateTime() {
-			if (m_bIsAnimating) {
-				boolean bIsFinished = m_anim.updateTime();
-				if (bIsFinished) {
-					m_bIsAnimating = false;
-					m_ixCurrOrient = m_anim.getFinalIx();
+			if (animating) {
+				boolean finished = anim.updateTime();
+				
+				if (finished) {
+					animating = false;
+					currOrientIndex = anim.getFinalIndex();
 				}
 			}
 		}
 		
 		
-		void animateToOrient(int ixDestination) {
-			if (m_ixCurrOrient == ixDestination) {
+		void animateToOrient(int destinationIndex) {
+			if (currOrientIndex == destinationIndex) {
 				return;
 			}
 
-			m_anim.startAnimation(ixDestination, 1.0f);
-			m_bIsAnimating = true;
+			anim.startAnimation(destinationIndex, 1.0f);
+			animating = true;
 		}
 		
 		
 		boolean toggleSlerp() {
-			m_bSlerp = !m_bSlerp;
+			slerp = !slerp;
 			
-			return m_bSlerp;
+			return slerp;
 		}
 		
 		
 		boolean isAnimating() {
-			return m_bIsAnimating;
+			return animating;
 		}
 		
 		
 		Quaternion getOrient() {
-			if (m_bIsAnimating) {
-				return m_anim.getOrient(g_Orients[m_ixCurrOrient], m_bSlerp);
+			if (animating) {
+				return anim.getOrient(orients[currOrientIndex], slerp);
 			} else {
-				return g_Orients[m_ixCurrOrient];
-			}
-		}
-		
-		
-		
-		private class Animation {		
-			private int m_ixFinalOrient;
-			private Timer m_currTimer;
-			
-			
-			/**
-			 * @return true if the animation is over
-			 */
-			boolean updateTime() {
-				return m_currTimer.update((float) getElapsedTime());
-			}
-			
-				
-			void startAnimation(int ixDestination, float fDuration) {
-				m_ixFinalOrient = ixDestination;
-				m_currTimer = new Timer(Timer.Type.TT_SINGLE, fDuration);
-			}
-			
-			
-			Quaternion getOrient(Quaternion initial, boolean bSlerp) {
-				if (bSlerp) {
-					return slerp(initial, g_Orients[m_ixFinalOrient], m_currTimer.getAlpha());
-				} else {
-					return lerp(initial, g_Orients[m_ixFinalOrient], m_currTimer.getAlpha());
-				}
-			}
-
-			int getFinalIx() {
-				return m_ixFinalOrient;
+				return orients[currOrientIndex];
 			}
 		}
 	}	
+	
+	
+	private class Animation {
+		int finalOrientIndex;
+		Timer currTimer;
+		
+		
+		boolean updateTime() {
+			return currTimer.update(getElapsedTime());
+		}
+		
+			
+		void startAnimation(int destinationIndex, float duration) {
+			finalOrientIndex = destinationIndex;
+			currTimer = new Timer(Timer.Type.TT_SINGLE, duration);
+		}
+		
+		
+		Quaternion getOrient(Quaternion initial, boolean slerp) {
+			if (slerp) {
+				return slerp(initial, orients[finalOrientIndex], currTimer.getAlpha());
+			} else {
+				return lerp(initial, orients[finalOrientIndex], currTimer.getAlpha());
+			}
+		}
+
+		int getFinalIndex() {
+			return finalOrientIndex;
+		}
+	}
 	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
-	private final float fFrustumScale = calcFrustumScale(20.0f);
+	private final float frustumScale = calcFrustumScale(20.0f);
 
 	
-	private float calcFrustumScale(float fFovDeg) {
+	private float calcFrustumScale(float fovDeg) {
 		final float degToRad = 3.14159f * 2.0f / 360.0f;
-		float fFovRad = fFovDeg * degToRad;
+		float fovRad = fovDeg * degToRad;
 		
-		return (float) (1.0f / Math.tan(fFovRad / 2.0f));
+		return (float) (1.0f / Math.tan(fovRad / 2.0f));
 	}
 }

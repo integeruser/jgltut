@@ -68,6 +68,11 @@ public class MousePoles {
 			this.position = position;
 			this.orientation = orientation;
 		}
+
+		public ObjectData(ObjectData initialData) {
+			position = new Vec3(initialData.position);
+			orientation = new Quaternion(initialData.orientation);
+		}
 	}
 
 
@@ -79,6 +84,13 @@ public class MousePoles {
 		Quaternion orient;
 		public float radius;
 		float degSpinRotation;
+		
+		public ViewData(ViewData viewData) {
+			targetPos = new Vec3(viewData.targetPos);
+			orient = new Quaternion(viewData.orient);
+			radius = viewData.radius;
+			degSpinRotation = viewData.degSpinRotation;
+		}
 
 		public ViewData(Vec3 targetPos, Quaternion orient, float radius, float degSpinRotation) {
 			this.targetPos = targetPos;
@@ -158,7 +170,7 @@ public class MousePoles {
 
 		public ObjectPole(ObjectData initialData, float rotateScale, MouseButtons actionButton, ViewProvider pLookatProvider) {
 			m_pView = pLookatProvider;
-			m_po = initialData;
+			m_po = new ObjectData(initialData);
 			m_initialPo = initialData;
 			m_rotateScale = rotateScale;
 			m_actionButton = actionButton;
@@ -258,7 +270,7 @@ public class MousePoles {
 
 		public void reset() {
 			if (!m_bIsDragging) {
-				m_po = m_initialPo;
+				m_po = new ObjectData(m_initialPo);
 			}
 		}
 		
@@ -386,7 +398,7 @@ public class MousePoles {
 		}
 		
 		public ViewPole(ViewData initialView, ViewScale viewScale, MouseButtons actionButton, boolean bRightKeyboardCtrls) {
-			m_currView = initialView;
+			m_currView = new ViewData(initialView);
 			m_viewScale = viewScale;
 			m_initialView = initialView;
 			m_actionButton = actionButton;
@@ -542,7 +554,7 @@ public class MousePoles {
 
 		public void reset() {
 			if (!m_bIsDragging) {
-				m_currView = m_initialView;
+				m_currView = new ViewData(m_initialView);
 			}
 		}
 		

@@ -1,13 +1,13 @@
 package rosick.mckesson.II.tut05;
 
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
+import java.util.ArrayList;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
-
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
-import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
@@ -32,13 +32,109 @@ public class OverlapNoDepth01 extends LWJGLWindow {
 	}
 	
 	
-	private final int FLOAT_SIZE = Float.SIZE / 8;
+		
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 
+	@Override
+	protected void init() {
+		initializeProgram();
+		initializeVertexBuffer(); 
+		initializeVertexArrayObjects();
+	
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glFrontFace(GL_CW);
+	}
+		
+	
+	@Override
+	protected void display() {
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		glUseProgram(theProgram);
+
+		glBindVertexArray(vaoObject1);
+		glUniform3f(offsetUniform, 0.0f, 0.0f, 0.0f);
+		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
+
+		glBindVertexArray(vaoObject2);
+		glUniform3f(offsetUniform, 0.0f, 0.0f, -1.0f);
+		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
+
+		glBindVertexArray(0);
+		glUseProgram(0);
+	}
+	
+	
+	@Override
+	protected void reshape(int width, int height) {
+		perspectiveMatrix[0] = frustumScale / (width / (float) height);
+		perspectiveMatrix[5] = frustumScale;
+
+		FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer(perspectiveMatrix.length);
+		perspectiveMatrixBuffer.put(perspectiveMatrix);
+		perspectiveMatrixBuffer.flip();
+
+		glUseProgram(theProgram);
+		glUniformMatrix4(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);
+		glUseProgram(0);
+
+		glViewport(0, 0, width, height);
+	}
+
+
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final float frustumScale = 1.0f;
+
+	private int theProgram;
+	private int offsetUniform, perspectiveMatrixUnif;
+	
+	private float perspectiveMatrix[];
+	
+	
+	private void initializeProgram() {			
+		ArrayList<Integer> shaderList = new ArrayList<>();
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"Standard.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "Standard.frag"));
+
+		theProgram = Framework.createProgram(shaderList);
+		
+		offsetUniform = glGetUniformLocation(theProgram, "offset");
+		
+		perspectiveMatrixUnif = glGetUniformLocation(theProgram, "perspectiveMatrix");
+
+		float zNear = 1.0f; float zFar = 3.0f;
+		
+		perspectiveMatrix = new float[16];
+		perspectiveMatrix[0] 	= frustumScale;
+		perspectiveMatrix[5] 	= frustumScale;
+		perspectiveMatrix[10] 	= (zFar + zNear) / (zNear - zFar);
+		perspectiveMatrix[11] 	= -1.0f;
+		perspectiveMatrix[14] 	= (2 * zFar * zNear) / (zNear - zFar);
+
+		FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer(perspectiveMatrix.length);
+		perspectiveMatrixBuffer.put(perspectiveMatrix);
+		perspectiveMatrixBuffer.flip();
+				
+		glUseProgram(theProgram);
+		glUniformMatrix4(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);
+		glUseProgram(0);
+	}
+	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		
+	
 	private final float RIGHT_EXTENT 	=	0.8f;
 	private final float LEFT_EXTENT  	=  -RIGHT_EXTENT;
 	private final float TOP_EXTENT   	=	0.20f;
@@ -47,6 +143,8 @@ public class OverlapNoDepth01 extends LWJGLWindow {
 	private final float FRONT_EXTENT	=  -1.25f;
 	private final float REAR_EXTENT		=  -1.75f;
 	
+	private final int numberOfVertices = 36;
+
 	private final float vertexData[] = {												
 			// Object 1 positions
 			LEFT_EXTENT,	TOP_EXTENT,		REAR_EXTENT,
@@ -142,9 +240,7 @@ public class OverlapNoDepth01 extends LWJGLWindow {
 			0.8f, 0.8f, 0.8f, 1.0f, 													// GREY
 			0.8f, 0.8f, 0.8f, 1.0f,
 			0.8f, 0.8f, 0.8f, 1.0f,
-			0.8f, 0.8f, 0.8f, 1.0f
-	};
-	
+			0.8f, 0.8f, 0.8f, 1.0f};
 	private final short indexData[] = {	
 			0, 2, 1,
 			3, 2, 0,
@@ -156,52 +252,10 @@ public class OverlapNoDepth01 extends LWJGLWindow {
 			11, 13, 12,
 	
 			14, 16, 15,
-			17, 16, 14
-	};
+			17, 16, 14};
 	
-	private final int numberOfVertices = 36;
-	private final float fFrustumScale = 1.0f;
-
-	private int theProgram;
-	private int offsetUniform, perspectiveMatrixUnif;
 	private int vertexBufferObject, indexBufferObject;
-	private int vaoObject1, vaoObject2;
-	
-	private float perspectiveMatrix[];
 
-	
-
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
-	
-	private void initializeProgram() {			
-		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"Standard.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "Standard.frag"));
-
-		theProgram = Framework.createProgram(shaderList);
-		
-		offsetUniform = glGetUniformLocation(theProgram, "offset");
-		
-		perspectiveMatrixUnif = glGetUniformLocation(theProgram, "perspectiveMatrix");
-
-		float fzNear = 1.0f; float fzFar = 3.0f;
-		
-		perspectiveMatrix = new float[16];
-		perspectiveMatrix[0] 	= fFrustumScale;
-		perspectiveMatrix[5] 	= fFrustumScale;
-		perspectiveMatrix[10] 	= (fzFar + fzNear) / (fzNear - fzFar);
-		perspectiveMatrix[11] 	= -1.0f;
-		perspectiveMatrix[14] 	= (2 * fzFar * fzNear) / (fzNear - fzFar);
-
-		FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer(perspectiveMatrix.length);
-		perspectiveMatrixBuffer.put(perspectiveMatrix);
-		perspectiveMatrixBuffer.flip();
-				
-		glUseProgram(theProgram);
-		glUniformMatrix4(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);
-		glUseProgram(0);
-	}
 	
 	private void initializeVertexBuffer() {
 		FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
@@ -223,6 +277,14 @@ public class OverlapNoDepth01 extends LWJGLWindow {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private int vaoObject1, vaoObject2;
+
+	
 	private void initializeVertexArrayObjects() {
 		vaoObject1 = glGenVertexArrays();
 		glBindVertexArray(vaoObject1);
@@ -241,8 +303,8 @@ public class OverlapNoDepth01 extends LWJGLWindow {
 		vaoObject2 = glGenVertexArrays();
 		glBindVertexArray(vaoObject2);
 
-		int posDataOffset = 4 * 3 * (numberOfVertices / 2);
-		colorDataOffset += 4 * 4 * (numberOfVertices / 2);
+		int posDataOffset = FLOAT_SIZE * 3 * (numberOfVertices / 2);
+		colorDataOffset += FLOAT_SIZE * 4 * (numberOfVertices / 2);
 
 		// Use the same buffer object previously bound to GL_ARRAY_BUFFER.
 		glEnableVertexAttribArray(0);
@@ -252,54 +314,5 @@ public class OverlapNoDepth01 extends LWJGLWindow {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 
 		glBindVertexArray(0);
-	}
-	
-	
-	@Override
-	protected void init() {
-		initializeProgram();
-		initializeVertexBuffer(); 
-		initializeVertexArrayObjects();
-	
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		glFrontFace(GL_CW);
-	}
-		
-	
-	@Override
-	protected void display() {
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		glUseProgram(theProgram);
-
-		glBindVertexArray(vaoObject1);
-		glUniform3f(offsetUniform, 0.0f, 0.0f, 0.0f);
-		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
-
-		glBindVertexArray(vaoObject2);
-		glUniform3f(offsetUniform, 0.0f, 0.0f, -1.0f);
-		glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
-
-		glBindVertexArray(0);
-		glUseProgram(0);
-	}
-	
-	
-	@Override
-	protected void reshape(int width, int height) {
-		perspectiveMatrix[0] = fFrustumScale / (width / (float) height);
-		perspectiveMatrix[5] = fFrustumScale;
-
-		FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer(perspectiveMatrix.length);
-		perspectiveMatrixBuffer.put(perspectiveMatrix);
-		perspectiveMatrixBuffer.flip();
-
-		glUseProgram(theProgram);
-		glUniformMatrix4(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);
-		glUseProgram(0);
-
-		glViewport(0, 0, width, height);
 	}
 }

@@ -29,7 +29,7 @@ import rosick.jglsdk.glimg.ImageSet.Dimensions;
  */
 public class DdsLoader {
 	
-	public static ImageSet loadFromFile(String ddsFilepath) throws IOException {	
+	public static ImageSet loadFromFile(String ddsFilepath) throws IOException {		
 		InputStream ddsInputStream = ClassLoader.class.getResourceAsStream(ddsFilepath);
 		byte[] ddsFile = readDdsFile(ddsInputStream);
 		
@@ -256,6 +256,8 @@ public class DdsLoader {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	private static byte[] readDdsFile(InputStream ddsInStream) throws IOException {
+		assert ddsInStream != null;
+		
 		ByteArrayOutputStream ddsOutStream = new ByteArrayOutputStream();
 		int bytesRead;
 		

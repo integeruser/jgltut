@@ -1,12 +1,12 @@
 package rosick.mckesson.II.tut03;
 
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
-
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
@@ -33,45 +33,9 @@ public class VertPositionOffset02 extends LWJGLWindow {
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	private final float vertexPositions[] = {
-			0.25f,  0.25f, 0.0f, 1.0f,
-			0.25f, -0.25f, 0.0f, 1.0f,
-		   -0.25f, -0.25f, 0.0f, 1.0f,
-	};
-	
-	private int theProgram;
-	private int offsetLocation;
-	private int positionBufferObject;
-	private int vao;
-	
-
-		
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */		
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	private void initializeProgram() {			
-		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"PositionOffset.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "Standard.frag"));
-
-		theProgram = Framework.createProgram(shaderList);
-		
-	    offsetLocation = glGetUniformLocation(theProgram, "offset");
-	}
-	
-	private void initializeVertexBuffer() {
-		FloatBuffer vertexPositionsBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
-		vertexPositionsBuffer.put(vertexPositions);
-		vertexPositionsBuffer.flip();
-		
-        positionBufferObject = glGenBuffers();	       
-		glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
-	    glBufferData(GL_ARRAY_BUFFER, vertexPositionsBuffer, GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-	
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	
 	@Override
 	protected void init() {
@@ -84,7 +48,9 @@ public class VertPositionOffset02 extends LWJGLWindow {
 	
 		
 	@Override
-	protected void display() {	
+	protected void display() {
+		fXOffset = 0.0f;
+		fYOffset = 0.0f;
 		computePositionOffsets();
 		
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -108,19 +74,65 @@ public class VertPositionOffset02 extends LWJGLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
+	private int theProgram;
+	private int offsetLocation;
+	private int vao;
+	
+	
+	private void initializeProgram() {			
+		ArrayList<Integer> shaderList = new ArrayList<>();
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"positionOffset.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "standard.frag"));
+
+		theProgram = Framework.createProgram(shaderList);
+		
+	    offsetLocation = glGetUniformLocation(theProgram, "offset");
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final float vertexPositions[] = {
+			0.25f,  0.25f, 0.0f, 1.0f,
+			0.25f, -0.25f, 0.0f, 1.0f,
+		   -0.25f, -0.25f, 0.0f, 1.0f};
+	
+	private int positionBufferObject;
+
+	
+	private void initializeVertexBuffer() {
+		FloatBuffer vertexPositionsBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
+		vertexPositionsBuffer.put(vertexPositions);
+		vertexPositionsBuffer.flip();
+		
+        positionBufferObject = glGenBuffers();	       
+		glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
+	    glBufferData(GL_ARRAY_BUFFER, vertexPositionsBuffer, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
 	private float fXOffset, fYOffset;
 
 	
 	private void computePositionOffsets() {
-		final float fLoopDuration = 5.0f;
-	    final float fScale = 3.14159f * 2.0f / fLoopDuration;
+		final float loopDuration = 5.0f;
+	    final float scale = 3.14159f * 2.0f / loopDuration;
 	    
-		float fElapsedTime = (float) (getElapsedTime() / 1000.0);
+		float elapsedTime = getElapsedTime() / 1000.0f;
 
-		float fCurrTimeThroughLoop = fElapsedTime % fLoopDuration;
-		
-	    fXOffset = (float) (Math.cos(fCurrTimeThroughLoop * fScale) * 0.5f);
-	    fYOffset = (float) (Math.sin(fCurrTimeThroughLoop * fScale) * 0.5f);
+		float currTimeThroughLoop = elapsedTime % loopDuration;
+			    
+	    fXOffset = (float) (Math.cos(currTimeThroughLoop * scale) * 0.5f);
+	    fYOffset = (float) (Math.sin(currTimeThroughLoop * scale) * 0.5f);
 	}
 }

@@ -68,7 +68,7 @@ public class LWJGLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	protected static final int FLOAT_SIZE = Float.SIZE / 8;
+	protected static final int FLOAT_SIZE = Float.SIZE / Byte.SIZE;
 
 	
 	

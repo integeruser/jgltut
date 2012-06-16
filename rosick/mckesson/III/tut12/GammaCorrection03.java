@@ -1,14 +1,14 @@
 package rosick.mckesson.III.tut12;
 
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
-
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
@@ -45,14 +45,14 @@ import rosick.mckesson.framework.Timer;
  * 				Holding SHIFT with these keys will move in smaller increments.  
  * Q,E		- raise and lower the camera, relative to its current orientation. 
  * 				Holding SHIFT with these keys will move in smaller increments.  
- * P		- toggles pausing on/off.
+ * P		- toggle pausing.
  * -,=		- rewind/jump forward time by one second (of real-time).
- * T		- toggles viewing of the current target point.
+ * T		- toggl viewing of the current target point.
  * 1,2,3	- timer commands affect both the sun and the other lights/only the sun/only the other lights.
- * L		- switches to hdr lighting. Pressing SHIFT+L will switch to gamma version.
- * K 		- toggles gamma correction.
+ * L		- switch to hdr lighting. Pressing SHIFT+L will switch to gamma version.
+ * K 		- toggl gamma correction.
  * Y,H 		- raise and lower the gamma value (default 2.2).
- * SPACE	- prints out the current sun-based time, in 24-hour notation.
+ * SPACE	- print out the current sun-based time, in 24-hour notation.
  * 
  * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
  * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
@@ -64,127 +64,26 @@ public class GammaCorrection03 extends LWJGLWindow {
 	public static void main(String[] args) {
 		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/III/tut12/data/";
 
-		new GammaCorrection03().start(800, 800);
+		new GammaCorrection03().start(700, 700);
 	}
-	
-	
-	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	
+		
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		
-	private class UnlitProgData {
-		int theProgram;
-
-		int objectColorUnif;
-		int modelToCameraMatrixUnif;
-	}
-	
-	
-	private class Shaders {
-		String fileVertexShader;
-		String fileFragmentShader;
-		
-		Shaders(String fileVertexShader, String fileFragmentShader) {
-			this.fileVertexShader = fileVertexShader;
-			this.fileFragmentShader = fileFragmentShader;
-		}
-	}
-	
-		
-	private final int g_materialBlockIndex = 0;
-	private final int g_lightBlockIndex = 1;
-	private final int g_projectionBlockIndex = 2;
-
-	private ProgramData g_Programs[] = new ProgramData[LightingProgramTypes.LP_MAX_LIGHTING_PROGRAM_TYPES.ordinal()];
-	private Shaders g_ShaderFiles[] = new Shaders[] {
-			new Shaders("PCN.vert", "DiffuseSpecularGamma.frag"),
-			new Shaders("PCN.vert", "DiffuseOnlyGamma.frag"),
-			
-			new Shaders("PN.vert", 	"DiffuseSpecularMtlGamma.frag"),
-			new Shaders("PN.vert", 	"DiffuseOnlyMtlGamma.frag")
-	};
-	
-	private UnlitProgData g_Unlit;
-	
-	private int g_lightUniformBuffer;
-	private int g_projectionUniformBuffer;
-	private float g_fzNear = 1.0f;
-	private float g_fzFar = 1000.0f;
-	
-	private MatrixStack modelMatrix = new MatrixStack();
-
-	private FloatBuffer tempFloatBuffer4 	= BufferUtils.createFloatBuffer(4);
-	private FloatBuffer tempFloatBuffer16 	= BufferUtils.createFloatBuffer(16);
-	private FloatBuffer tempFloatBuffer40 	= BufferUtils.createFloatBuffer(40);
-
-	
-	
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	private UnlitProgData loadUnlitProgram(String strVertexShader, String strFragmentShader) {		
-		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
-
-		UnlitProgData data = new UnlitProgData();
-		data.theProgram = Framework.createProgram(shaderList);
-		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
-		data.objectColorUnif = glGetUniformLocation(data.theProgram, "objectColor");
-
-		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
-		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
-
-		return data;
-	}
-	
-	private ProgramData loadLitProgram(String strVertexShader, String strFragmentShader) {		
-		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
-
-		ProgramData data = new ProgramData();
-		data.theProgram = Framework.createProgram(shaderList);
-		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
-
-		data.normalModelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "normalModelToCameraMatrix");
-
-		int materialBlock = glGetUniformBlockIndex(data.theProgram, "Material");
-		int lightBlock = glGetUniformBlockIndex(data.theProgram, "Light");
-		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
-
-		if (materialBlock != GL_INVALID_INDEX) {									// Can be optimized out.
-			glUniformBlockBinding(data.theProgram, materialBlock, g_materialBlockIndex);
-		}
-		glUniformBlockBinding(data.theProgram, lightBlock, g_lightBlockIndex);
-		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
-
-		return data;
-	}
-	
-	private void initializePrograms() {	
-		for (int iProg = 0; iProg < LightingProgramTypes.LP_MAX_LIGHTING_PROGRAM_TYPES.ordinal(); iProg++) {
-			g_Programs[iProg] = new ProgramData();
-			g_Programs[iProg] = loadLitProgram(g_ShaderFiles[iProg].fileVertexShader, g_ShaderFiles[iProg].fileFragmentShader);
-		}
-
-		g_Unlit = loadUnlitProgram("PosTransform.vert", "UniformColor.frag");
-	}
-	
-	
+		
 	@Override
 	protected void init() {
 		initializePrograms();
 
 		try {
-			g_pScene = new Scene() {
+			scene = new Scene() {
 
 				@Override
 				ProgramData getProgram(LightingProgramTypes eType) {
-					return g_Programs[eType.ordinal()];
+					return programs[eType.ordinal()];
 				}
 			};
 		} catch (Exception exception) {
@@ -194,7 +93,7 @@ public class GammaCorrection03 extends LWJGLWindow {
 		
 		setupHDRLighting();
 
-		g_lights.createTimer("tetra", Timer.Type.TT_LOOP, 2.5f);
+		lights.createTimer("tetra", Timer.Type.TT_LOOP, 2.5f);
 		
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
@@ -210,18 +109,20 @@ public class GammaCorrection03 extends LWJGLWindow {
 		glEnable(GL_DEPTH_CLAMP);
 		
 		// Setup our Uniform Buffers
-		g_lightUniformBuffer = glGenBuffers();	       
-		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
+		lightUniformBuffer = glGenBuffers();	       
+		glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
 		glBufferData(GL_UNIFORM_BUFFER, LightBlock.SIZE, GL_DYNAMIC_DRAW);	
 		
-		g_projectionUniformBuffer = glGenBuffers();	       
-		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
+		projectionUniformBuffer = glGenBuffers();	       
+		glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
 		glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW);	
 		
 		// Bind the static buffers.
-		glBindBufferRange(GL_UNIFORM_BUFFER, g_lightBlockIndex, g_lightUniformBuffer, 0, LightBlock.SIZE);
+		glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 
+				0, LightBlock.SIZE);
 		
-		glBindBufferRange(GL_UNIFORM_BUFFER, g_projectionBlockIndex, g_projectionUniformBuffer, 0, ProjectionBlock.SIZE);
+		glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 
+				0, ProjectionBlock.SIZE);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
@@ -235,44 +136,44 @@ public class GammaCorrection03 extends LWJGLWindow {
 			if (eventButton != -1) {
 				if (Mouse.getEventButtonState()) {
 					// Mouse down
-					MousePole.forwardMouseButton(g_viewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseButton(viewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
 				} else {
 					// Mouse up
-					MousePole.forwardMouseButton(g_viewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseButton(viewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
 				}
 			} else {
 				// Mouse moving or mouse scrolling
 				int dWheel = Mouse.getDWheel();
 				
 				if (dWheel != 0) {
-					MousePole.forwardMouseWheel(g_viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
+					MousePole.forwardMouseWheel(viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
 				}
 				
 				if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)) {
-					MousePole.forwardMouseMotion(g_viewPole, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseMotion(viewPole, Mouse.getX(), Mouse.getY());			
 				}
 			}
 		}
 		
 		
-		float lastFrameDuration = (float) (getLastFrameDuration() / 100.0);
+		float lastFrameDuration = getLastFrameDuration() * 20 / 1000.0f;
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-			g_viewPole.charPress(Keyboard.KEY_W, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			viewPole.charPress(Keyboard.KEY_W, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			g_viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			g_viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-			g_viewPole.charPress(Keyboard.KEY_A, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			viewPole.charPress(Keyboard.KEY_A, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
-			g_viewPole.charPress(Keyboard.KEY_E, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			viewPole.charPress(Keyboard.KEY_E, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-			g_viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 		
 		
@@ -280,33 +181,33 @@ public class GammaCorrection03 extends LWJGLWindow {
 			if (Keyboard.getEventKeyState()) {
 				switch (Keyboard.getEventKey()) {
 				case Keyboard.KEY_P:
-					g_lights.togglePause(g_eTimerMode);
+					lights.togglePause(timerMode);
 					break;
 					
 				case Keyboard.KEY_MINUS:
-					g_lights.rewindTime(g_eTimerMode, 1.0f);
+					lights.rewindTime(timerMode, 1.0f);
 					break;
 
 				case Keyboard.KEY_EQUALS:
-					g_lights.fastForwardTime(g_eTimerMode, 1.0f);
+					lights.fastForwardTime(timerMode, 1.0f);
 					break;
 					
 				case Keyboard.KEY_T:
-					g_bDrawCameraPos = !g_bDrawCameraPos;
+					drawCameraPos = !drawCameraPos;
 					break;
 					
 				case Keyboard.KEY_1:
-					g_eTimerMode = TimerTypes.TIMER_ALL;
+					timerMode = TimerTypes.ALL;
 					System.out.printf("All\n");
 					break;
 					
 				case Keyboard.KEY_2:
-					g_eTimerMode = TimerTypes.TIMER_SUN;
+					timerMode = TimerTypes.SUN;
 					System.out.printf("Sun\n");
 					break;
 
 				case Keyboard.KEY_3:
-					g_eTimerMode = TimerTypes.TIMER_LIGHTS;
+					timerMode = TimerTypes.LIGHTS;
 					System.out.printf("Lights\n");
 					break;
 					
@@ -319,8 +220,8 @@ public class GammaCorrection03 extends LWJGLWindow {
 					break;
 				
 				case Keyboard.KEY_K:
-					g_isGammaCorrect = !g_isGammaCorrect;
-					if (g_isGammaCorrect) {
+					isGammaCorrect = !isGammaCorrect;
+					if (isGammaCorrect) {
 						System.out.printf("Gamma on!\n");
 					} else {
 						System.out.printf("Gamma off!\n");
@@ -328,20 +229,20 @@ public class GammaCorrection03 extends LWJGLWindow {
 					break;
 				
 				case Keyboard.KEY_Y:
-					g_gammaValue += 0.1f;
-					System.out.printf("Gamma: %f\n", g_gammaValue);
+					gammaValue += 0.1f;
+					System.out.printf("Gamma: %f\n", gammaValue);
 					break;
 					
 				case Keyboard.KEY_H:
-					g_gammaValue -= 0.1f;
-					if (g_gammaValue < 1.0f) {
-						g_gammaValue = 1.0f;	
+					gammaValue -= 0.1f;
+					if (gammaValue < 1.0f) {
+						gammaValue = 1.0f;	
 					}
-					System.out.printf("Gamma: %f\n", g_gammaValue);
+					System.out.printf("Gamma: %f\n", gammaValue);
 					break;
 					
 				case Keyboard.KEY_SPACE:
-					float sunAlpha = g_lights.getSunTime();
+					float sunAlpha = lights.getSunTime();
 					float sunTimeHours = sunAlpha * 24.0f + 12.0f;
 					sunTimeHours = sunTimeHours > 24.0f ? sunTimeHours - 24.0f : sunTimeHours;
 					int sunHours = (int) sunTimeHours;
@@ -360,32 +261,32 @@ public class GammaCorrection03 extends LWJGLWindow {
 	
 
 	@Override
-	protected void display() {			
-		g_lights.updateTime(getElapsedTime());
+	protected void display() {
+		lights.updateTime(getElapsedTime());
 		
-		float gamma = g_isGammaCorrect ? g_gammaValue : 1.0f;
+		float gamma = isGammaCorrect ? gammaValue : 1.0f;
 
-		Vec4 bkg = gammaCorrect(g_lights.getBackgroundColor(), gamma);
+		Vec4 bkg = gammaCorrect(lights.getBackgroundColor(), gamma);
 
 		glClearColor(bkg.x, bkg.y, bkg.z, bkg.w);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		modelMatrix.clear();
-		modelMatrix.setMatrix(g_viewPole.calcMatrix());
+		MatrixStack modelMatrix = new MatrixStack();
+		modelMatrix.setMatrix(viewPole.calcMatrix());
 
 		final Mat4 worldToCamMat = modelMatrix.top();
-		LightBlockGamma lightData = g_lights.getLightInformationGamma(worldToCamMat);
+		LightBlockGamma lightData = lights.getLightInformationGamma(worldToCamMat);
 		lightData.gamma = gamma;
 
-		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillAndFlipBuffer(tempFloatBuffer40));
+		glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillAndFlipBuffer(lightBlockBuffer));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		{
 			modelMatrix.push();
 
-			g_pScene.draw(modelMatrix, g_materialBlockIndex, g_lights.getTimerValue("tetra"));
+			scene.draw(modelMatrix, materialBlockIndex, lights.getTimerValue("tetra"));
 			
 			modelMatrix.pop();
 		}
@@ -397,54 +298,54 @@ public class GammaCorrection03 extends LWJGLWindow {
 			{
 				modelMatrix.push();
 
-				Vec3 sunlightDir = new Vec3(g_lights.getSunlightDirection());
+				Vec3 sunlightDir = new Vec3(lights.getSunlightDirection());
 				modelMatrix.translate(sunlightDir.scale(500.0f));
 				modelMatrix.scale(30.0f, 30.0f, 30.0f);
 
-				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
+				glUseProgram(unlit.theProgram);
+				glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-				Vec4 lightColor = g_lights.getSunlightIntensity();
-				glUniform4(g_Unlit.objectColorUnif, lightColor.fillAndFlipBuffer(tempFloatBuffer4));
-				g_pScene.getSphereMesh().render("flat");
+				Vec4 lightColor = lights.getSunlightIntensity();
+				glUniform4(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+				scene.getSphereMesh().render("flat");
 				
 				modelMatrix.pop();
 			}
 
 			// Render the lights
-			if (g_bDrawLights) {
-				for (int light = 0; light < g_lights.getNumberOfPointLights(); light++) {
+			if (drawLights) {
+				for (int light = 0; light < lights.getNumberOfPointLights(); light++) {
 					modelMatrix.push();
 
-					modelMatrix.translate(g_lights.getWorldLightPosition(light));
+					modelMatrix.translate(lights.getWorldLightPosition(light));
 
-					glUseProgram(g_Unlit.theProgram);
-					glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
+					glUseProgram(unlit.theProgram);
+					glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-					Vec4 lightColor = g_lights.getPointLightIntensity(light);
-					glUniform4(g_Unlit.objectColorUnif, lightColor.fillAndFlipBuffer(tempFloatBuffer4));
-					g_pScene.getCubeMesh().render("flat");
+					Vec4 lightColor = lights.getPointLightIntensity(light);
+					glUniform4(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+					scene.getCubeMesh().render("flat");
 
 					modelMatrix.pop();
 				}
 			}
 			
-			if (g_bDrawCameraPos) {
+			if (drawCameraPos) {
 				modelMatrix.push();
 
 				modelMatrix.setIdentity();
-				modelMatrix.translate(0.0f, 0.0f, - g_viewPole.getView().radius);
+				modelMatrix.translate(0.0f, 0.0f, - viewPole.getView().radius);
 
 				glDisable(GL_DEPTH_TEST);
 				glDepthMask(false);
-				glUseProgram(g_Unlit.theProgram);
-				glUniformMatrix4(g_Unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
-				glUniform4f(g_Unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
-				g_pScene.getCubeMesh().render("flat");
+				glUseProgram(unlit.theProgram);
+				glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+				glUniform4f(unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
+				scene.getCubeMesh().render("flat");
 				glDepthMask(true);
 				glEnable(GL_DEPTH_TEST);
-				glUniform4f(g_Unlit.objectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-				g_pScene.getCubeMesh().render("flat");
+				glUniform4f(unlit.objectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
+				scene.getCubeMesh().render("flat");
 				
 				modelMatrix.pop();
 			}
@@ -455,15 +356,15 @@ public class GammaCorrection03 extends LWJGLWindow {
 	
 	
 	@Override
-	protected void reshape(int width, int height) {	
+	protected void reshape(int width, int height) {
 		MatrixStack persMatrix = new MatrixStack();
-		persMatrix.perspective(45.0f, (width / (float) height), g_fzNear, g_fzFar);
+		persMatrix.perspective(45.0f, (width / (float) height), zNear, zFar);
 		
 		ProjectionBlock projData = new ProjectionBlock();
 		projData.cameraToClipMatrix = persMatrix.top();
 
-		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillAndFlipBuffer(tempFloatBuffer16));
+		glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -472,68 +373,156 @@ public class GammaCorrection03 extends LWJGLWindow {
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */			
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private class ProjectionBlock extends BufferableData<FloatBuffer> {
-		Mat4 cameraToClipMatrix;
+	private final int materialBlockIndex = 0;
+	private final int lightBlockIndex = 1;
+
+	private int lightUniformBuffer;
+	private float zNear = 1.0f;
+	private float zFar = 1000.0f;
+
+	private FloatBuffer vec4Buffer 			= BufferUtils.createFloatBuffer(4);
+	private FloatBuffer mat4Buffer 			= BufferUtils.createFloatBuffer(16);
+	private FloatBuffer lightBlockBuffer 	= BufferUtils.createFloatBuffer(40);
+	
+	
+	private void initializePrograms() {
+		for (int progIndex = 0; progIndex < LightingProgramTypes.MAX_LIGHTING_PROGRAM_TYPES.ordinal(); progIndex++) {
+			programs[progIndex] = new ProgramData();
+			programs[progIndex] = loadLitProgram(shaderFilenames[progIndex].vertexShaderFilename, shaderFilenames[progIndex].fragmentShaderFilename);
+		}
+
+		unlit = loadUnlitProgram("PosTransform.vert", "UniformColor.frag");
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private ProgramData[] programs = new ProgramData[LightingProgramTypes.MAX_LIGHTING_PROGRAM_TYPES.ordinal()];
+	private Shaders[] shaderFilenames = new Shaders[] {
+			new Shaders("PCN.vert", "DiffuseSpecularGamma.frag"),
+			new Shaders("PCN.vert", "DiffuseOnlyGamma.frag"),
+			
+			new Shaders("PN.vert", 	"DiffuseSpecularMtlGamma.frag"),
+			new Shaders("PN.vert", 	"DiffuseOnlyMtlGamma.frag")};
+	private UnlitProgData unlit;
+	
+	
+	private class Shaders {
+		String vertexShaderFilename;
+		String fragmentShaderFilename;
 		
-		static final int SIZE = 16 * FLOAT_SIZE;
-		
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillBuffer(buffer);
+		Shaders(String vertexShaderFilename, String fragmentShaderFilename) {
+			this.vertexShaderFilename = vertexShaderFilename;
+			this.fragmentShaderFilename = fragmentShaderFilename;
 		}
 	}
-			
 	
-	private final Vec4 g_skyDaylightColor = new Vec4(0.65f, 0.65f, 1.0f, 1.0f);
+	private class UnlitProgData {
+		int theProgram;
 
-	private Scene g_pScene;
-	private LightManager g_lights = new LightManager();
+		int objectColorUnif;
+		int modelToCameraMatrixUnif;
+	}
 	
-	private TimerTypes g_eTimerMode = TimerTypes.TIMER_ALL;
+	
+	private ProgramData loadLitProgram(String strVertexShader, String strFragmentShader) {		
+		ArrayList<Integer> shaderList = new ArrayList<>();
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
-	private boolean g_bDrawLights = true;
-	private boolean g_bDrawCameraPos;
-	private boolean g_isGammaCorrect;
-	private float g_gammaValue = 2.2f;
+		ProgramData data = new ProgramData();
+		data.theProgram = Framework.createProgram(shaderList);
+		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
+
+		data.normalModelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "normalModelToCameraMatrix");
+
+		int materialBlock = glGetUniformBlockIndex(data.theProgram, "Material");
+		int lightBlock = glGetUniformBlockIndex(data.theProgram, "Light");
+		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
+
+		if (materialBlock != GL_INVALID_INDEX) {									// Can be optimized out.
+			glUniformBlockBinding(data.theProgram, materialBlock, materialBlockIndex);
+		}
+		glUniformBlockBinding(data.theProgram, lightBlock, lightBlockIndex);
+		glUniformBlockBinding(data.theProgram, projectionBlock, projectionBlockIndex);
+
+		return data;
+	}
+	
+	private UnlitProgData loadUnlitProgram(String strVertexShader, String strFragmentShader) {		
+		ArrayList<Integer> shaderList = new ArrayList<>();
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
+
+		UnlitProgData data = new UnlitProgData();
+		data.theProgram = Framework.createProgram(shaderList);
+		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
+		data.objectColorUnif = glGetUniformLocation(data.theProgram, "objectColor");
+
+		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
+		glUniformBlockBinding(data.theProgram, projectionBlock, projectionBlockIndex);
+
+		return data;
+	}
 	
 	
-	// View/Object Setup
 	
-	private ViewData g_initialViewData = new ViewData(
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final Vec4 skyDaylightColor = new Vec4(0.65f, 0.65f, 1.0f, 1.0f);
+
+	private Scene scene;
+	private LightManager lights = new LightManager();
+	
+	private TimerTypes timerMode = TimerTypes.ALL;
+
+	private boolean drawLights = true;
+	private boolean drawCameraPos;
+	private boolean isGammaCorrect;
+	private float gammaValue = 2.2f;
+	
+	
+	////////////////////////////////
+	// View setup.
+	private ViewData initialViewData = new ViewData(
 			new Vec3(-59.5f, 44.0f, 95.0f),
 			new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
 			50.0f,
-			0.0f
-	);
+			0.0f);
 
-	private ViewScale g_viewScale = new ViewScale(	
+	private ViewScale viewScale = new ViewScale(
 			3.0f, 80.0f,
 			4.0f, 1.0f,
 			5.0f, 1.0f,
-			90.0f / 250.0f
-	);
+			90.0f / 250.0f);
 
-	private ViewPole g_viewPole = new ViewPole(g_initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);
+	
+	private ViewPole viewPole = new ViewPole(initialViewData, viewScale, MouseButtons.MB_LEFT_BTN);
 		
 	
 	private void setupHDRLighting() {
 		SunlightValueHDR values[] = {
-				new SunlightValueHDR(0.0f/24.0f, new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(1.8f, 1.8f, 1.8f, 1.0f), new Vec4(g_skyDaylightColor), 3.0f),
-				new SunlightValueHDR(4.5f/24.0f, new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(1.8f, 1.8f, 1.8f, 1.0f), new Vec4(g_skyDaylightColor), 3.0f),
+				new SunlightValueHDR(0.0f/24.0f, new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(1.8f, 1.8f, 1.8f, 1.0f), new Vec4(skyDaylightColor), 3.0f),
+				new SunlightValueHDR(4.5f/24.0f, new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(1.8f, 1.8f, 1.8f, 1.0f), new Vec4(skyDaylightColor), 3.0f),
 				new SunlightValueHDR(6.5f/24.0f, new Vec4(0.225f, 0.075f, 0.075f, 1.0f), new Vec4(0.45f, 0.15f, 0.15f, 1.0f), new Vec4(0.5f, 0.1f, 0.1f, 1.0f), 1.5f),
 				new SunlightValueHDR(8.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 1.0f),
 				new SunlightValueHDR(18.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 1.0f),
 				new SunlightValueHDR(19.5f/24.0f, new Vec4(0.225f, 0.075f, 0.075f, 1.0f), new Vec4(0.45f, 0.15f, 0.15f, 1.0f), new Vec4(0.5f, 0.1f, 0.1f, 1.0f), 1.5f),
-				new SunlightValueHDR(20.5f/24.0f, new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(1.8f, 1.8f, 1.8f, 1.0f), new Vec4(g_skyDaylightColor), 3.0f),
+				new SunlightValueHDR(20.5f/24.0f, new Vec4(0.6f, 0.6f, 0.6f, 1.0f), new Vec4(1.8f, 1.8f, 1.8f, 1.0f), new Vec4(skyDaylightColor), 3.0f),
 		};
 
-		g_lights.setSunlightValues(values, 7);
+		lights.setSunlightValues(values, 7);
 
-		g_lights.setPointLightIntensity(0, new Vec4(0.6f, 0.6f, 0.6f, 1.0f));
-		g_lights.setPointLightIntensity(1, new Vec4(0.0f, 0.0f, 0.7f, 1.0f));
-		g_lights.setPointLightIntensity(2, new Vec4(0.7f, 0.0f, 0.0f, 1.0f));
+		lights.setPointLightIntensity(0, new Vec4(0.6f, 0.6f, 0.6f, 1.0f));
+		lights.setPointLightIntensity(1, new Vec4(0.0f, 0.0f, 0.7f, 1.0f));
+		lights.setPointLightIntensity(2, new Vec4(0.7f, 0.0f, 0.0f, 1.0f));
 	}
 	
 	private void setupGammaLighting() {
@@ -542,29 +531,50 @@ public class GammaCorrection03 extends LWJGLWindow {
 		
 		SunlightValueHDR values[] = {
 				new SunlightValueHDR( 0.0f/24.0f, brightAmbient, sunlight, new Vec4(0.65f, 0.65f, 1.0f, 1.0f), 10.0f),
-				new SunlightValueHDR( 4.5f/24.0f, brightAmbient, sunlight, new Vec4(g_skyDaylightColor), 10.0f),
+				new SunlightValueHDR( 4.5f/24.0f, brightAmbient, sunlight, new Vec4(skyDaylightColor), 10.0f),
 				new SunlightValueHDR( 6.5f/24.0f, new Vec4(0.01f, 0.025f, 0.025f, 1.0f), new Vec4(2.5f, 0.2f, 0.2f, 1.0f), new Vec4(0.5f, 0.1f, 0.1f, 1.0f), 5.0f),
 				new SunlightValueHDR( 8.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 3.0f),
 				new SunlightValueHDR(18.0f/24.0f, new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), new Vec4(0.0f, 0.0f, 0.0f, 1.0f), 3.0f),
 				new SunlightValueHDR(19.5f/24.0f, new Vec4(0.01f, 0.025f, 0.025f, 1.0f), new Vec4(2.5f, 0.2f, 0.2f, 1.0f), new Vec4(0.5f, 0.1f, 0.1f, 1.0f), 5.0f),
-				new SunlightValueHDR(20.5f/24.0f, brightAmbient, sunlight, new Vec4(g_skyDaylightColor), 10.0f)
+				new SunlightValueHDR(20.5f/24.0f, brightAmbient, sunlight, new Vec4(skyDaylightColor), 10.0f)
 		};
 				
-		g_lights.setSunlightValues(values, 7);
+		lights.setSunlightValues(values, 7);
 
-		g_lights.setPointLightIntensity(0, new Vec4(0.6f, 0.6f, 0.6f, 1.0f));
-		g_lights.setPointLightIntensity(1, new Vec4(0.0f, 0.0f, 0.7f, 1.0f));
-		g_lights.setPointLightIntensity(2, new Vec4(0.7f, 0.0f, 0.0f, 1.0f));
+		lights.setPointLightIntensity(0, new Vec4(0.6f, 0.6f, 0.6f, 1.0f));
+		lights.setPointLightIntensity(1, new Vec4(0.0f, 0.0f, 0.7f, 1.0f));
+		lights.setPointLightIntensity(2, new Vec4(0.7f, 0.0f, 0.0f, 1.0f));
 	}
 	
 	
 	private Vec4 gammaCorrect(Vec4 input, float gamma) {
-		Vec4 ret = new Vec4();
-		ret.x = (float) Math.pow(input.x, 1.0f / gamma);
-		ret.y = (float) Math.pow(input.y, 1.0f / gamma);
-		ret.z = (float) Math.pow(input.z, 1.0f / gamma);
-		ret.w = input.w;
+		Vec4 inputCorrected = new Vec4();
+		inputCorrected.x = (float) Math.pow(input.x, 1.0f / gamma);
+		inputCorrected.y = (float) Math.pow(input.y, 1.0f / gamma);
+		inputCorrected.z = (float) Math.pow(input.z, 1.0f / gamma);
+		inputCorrected.w = input.w;
 
-		return ret;
+		return inputCorrected;
+	}
+
+	
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	private final int projectionBlockIndex = 2;
+
+	private int projectionUniformBuffer;
+
+	
+	private class ProjectionBlock extends BufferableData<FloatBuffer> {
+		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = Mat4.SIZE;
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
+		}
 	}
 }

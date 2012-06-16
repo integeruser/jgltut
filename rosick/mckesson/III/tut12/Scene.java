@@ -1,13 +1,13 @@
 package rosick.mckesson.III.tut12;
 
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
-
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
@@ -26,79 +26,37 @@ import rosick.mckesson.framework.Mesh;
  * @author integeruser
  */
 public abstract class Scene {
-		 	
-	static class ProgramData {
-		int theProgram;
 
-		int modelToCameraMatrixUnif;
-		int normalModelToCameraMatrixUnif;
-	}
-
-	
-	private class MaterialBlock extends BufferableData<FloatBuffer> {
-		Vec4 diffuseColor;
-		Vec4 specularColor;
-		float specularShininess;
-		float padding[] = new float[3];
-
-		static final int SIZE = (4 + 4 + 1 + 3) * (Float.SIZE / 8);
-
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			diffuseColor.fillBuffer(buffer);
-			specularColor.fillBuffer(buffer);
-			buffer.put(specularShininess);
-			buffer.put(padding);
-			
-			return buffer;
-		}
-	}
-	
-	
-	private final int MATERIAL_COUNT = 6;
-
-	private Mesh m_pTerrainMesh;
-	private Mesh m_pCubeMesh;
-	private Mesh m_pTetraMesh;
-	private Mesh m_pCylMesh;
-	private Mesh m_pSphereMesh;
-
-	private int m_sizeMaterialBlock;
-	private int m_materialUniformBuffer;
-	
-	private FloatBuffer tempFloatBuffer9 = BufferUtils.createFloatBuffer(9);
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-
-	
 	Scene() {
-		m_pTerrainMesh 	= new Mesh("Ground.xml");
-		m_pCubeMesh 	= new Mesh("UnitCube.xml");
-		m_pTetraMesh 	= new Mesh("UnitTetrahedron.xml");
-		m_pCylMesh 		= new Mesh("UnitCylinder.xml");
-		m_pSphereMesh 	= new Mesh("UnitSphere.xml");
+		terrainMesh	= new Mesh("Ground.xml");
+		cubeMesh 	= new Mesh("UnitCube.xml");
+		tetraMesh 	= new Mesh("UnitTetrahedron.xml");
+		cylMesh 	= new Mesh("UnitCylinder.xml");
+		sphereMesh 	= new Mesh("UnitSphere.xml");
 		
 		// Align the size of each MaterialBlock to the uniform buffer alignment.
 		int uniformBufferAlignSize = glGetInteger(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT);
 
-		m_sizeMaterialBlock = MaterialBlock.SIZE;
-		m_sizeMaterialBlock += uniformBufferAlignSize - (m_sizeMaterialBlock % uniformBufferAlignSize);
+		sizeMaterialBlock = MaterialBlock.SIZE;
+		sizeMaterialBlock += uniformBufferAlignSize - (sizeMaterialBlock % uniformBufferAlignSize);
 
-		int sizeMaterialUniformBuffer = m_sizeMaterialBlock * MATERIAL_COUNT;
+		int sizeMaterialUniformBuffer = sizeMaterialBlock * MATERIAL_COUNT;
 
-		ArrayList<MaterialBlock> materials = new ArrayList<>();
+		ArrayList<MaterialBlock> materials = new ArrayList<>(MATERIAL_COUNT);
 		getMaterials(materials);
-
+		
 		FloatBuffer materialsBuffer = BufferUtils.createFloatBuffer(sizeMaterialUniformBuffer);
+		final float[] padding = new float[(sizeMaterialBlock - MaterialBlock.SIZE) / (Float.SIZE / Byte.SIZE)];
 		
 		for (MaterialBlock materialBlock : materials) {
 			materialBlock.fillBuffer(materialsBuffer);
-			materialsBuffer.put(new float[m_sizeMaterialBlock / 4 - MaterialBlock.SIZE / 4]);			// The buffer size must be sizeMaterialUniformBuffer
+			materialsBuffer.put(padding);						// The buffer size must be sizeMaterialUniformBuffer
 		}
 		
 		materialsBuffer.flip();
 
-		m_materialUniformBuffer = glGenBuffers();
-		glBindBuffer(GL_UNIFORM_BUFFER, m_materialUniformBuffer);
+		materialUniformBuffer = glGenBuffers();
+		glBindBuffer(GL_UNIFORM_BUFFER, materialUniformBuffer);
 		glBufferData(GL_UNIFORM_BUFFER, materialsBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
@@ -108,7 +66,15 @@ public abstract class Scene {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	abstract ProgramData getProgram(LightingProgramTypes eType);
+	static class ProgramData {
+		int theProgram;
+
+		int modelToCameraMatrixUnif;
+		int normalModelToCameraMatrixUnif;
+	}
+	
+	
+	abstract ProgramData getProgram(LightingProgramTypes type);
 	
 	
 	
@@ -116,15 +82,19 @@ public abstract class Scene {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	enum LightingProgramTypes {
-		LP_VERT_COLOR_DIFFUSE_SPECULAR,
-		LP_VERT_COLOR_DIFFUSE,
+		VERT_COLOR_DIFFUSE_SPECULAR,
+		VERT_COLOR_DIFFUSE,
 
-		LP_MTL_COLOR_DIFFUSE_SPECULAR,
-		LP_MTL_COLOR_DIFFUSE,
+		MTL_COLOR_DIFFUSE_SPECULAR,
+		MTL_COLOR_DIFFUSE,
 
-		LP_MAX_LIGHTING_PROGRAM_TYPES
+		MAX_LIGHTING_PROGRAM_TYPES
 	}
 	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	void draw(MatrixStack modelMatrix, int materialBlockIndex, float alphaTetra) {
 		// Render the ground plane.
@@ -133,7 +103,8 @@ public abstract class Scene {
 			
 			modelMatrix.rotateX(-90.0f);
 
-			drawObject(m_pTerrainMesh, getProgram(LightingProgramTypes.LP_VERT_COLOR_DIFFUSE), materialBlockIndex, 0, modelMatrix);
+			drawObject(terrainMesh, getProgram(LightingProgramTypes.VERT_COLOR_DIFFUSE), 
+					materialBlockIndex, 0, modelMatrix);
 			
 			modelMatrix.pop();
 		}
@@ -148,7 +119,8 @@ public abstract class Scene {
 			modelMatrix.translate(0.0f, (float) Math.sqrt(2.0f), 0.0f);
 			modelMatrix.rotate(new Vec3(-0.707f, 0.0f, -0.707f), 54.735f);
 
-			drawObject(m_pTetraMesh, "lit-color", getProgram(LightingProgramTypes.LP_VERT_COLOR_DIFFUSE_SPECULAR), materialBlockIndex, 1, modelMatrix);
+			drawObject(tetraMesh, "lit-color", getProgram(LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR), 
+					materialBlockIndex, 1, modelMatrix);
 			
 			modelMatrix.pop();
 		}
@@ -162,7 +134,8 @@ public abstract class Scene {
 			modelMatrix.scale(4.0f, 9.0f, 1.0f);
 			modelMatrix.translate(0.0f, 0.5f, 0.0f);
 
-			drawObject(m_pCubeMesh, "lit", getProgram(LightingProgramTypes.LP_MTL_COLOR_DIFFUSE_SPECULAR), materialBlockIndex, 2, modelMatrix);
+			drawObject(cubeMesh, "lit", getProgram(LightingProgramTypes.MTL_COLOR_DIFFUSE_SPECULAR), 
+					materialBlockIndex, 2, modelMatrix);
 			
 			modelMatrix.pop();
 		}
@@ -176,7 +149,8 @@ public abstract class Scene {
 			modelMatrix.rotateY(-10.0f);
 			modelMatrix.scale(20.0f, 20.0f, 20.0f);
 
-			drawObject(m_pCubeMesh, "lit-color", getProgram(LightingProgramTypes.LP_VERT_COLOR_DIFFUSE_SPECULAR), materialBlockIndex, 3, modelMatrix);
+			drawObject(cubeMesh, "lit-color", getProgram(LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR), 
+					materialBlockIndex, 3, modelMatrix);
 			
 			modelMatrix.pop();
 		}
@@ -189,7 +163,8 @@ public abstract class Scene {
 			modelMatrix.scale(15.0f, 55.0f, 15.0f);
 			modelMatrix.translate(0.0f, 0.5f, 0.0f);
 
-			drawObject(m_pCylMesh, "lit-color", getProgram(LightingProgramTypes.LP_VERT_COLOR_DIFFUSE_SPECULAR), materialBlockIndex, 4, modelMatrix);
+			drawObject(cylMesh, "lit-color", getProgram(LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR), 
+					materialBlockIndex, 4, modelMatrix);
 			
 			modelMatrix.pop();
 		}
@@ -201,40 +176,43 @@ public abstract class Scene {
 			modelMatrix.translate(-83.0f, 14.0f, -77.0f);
 			modelMatrix.scale(20.0f, 20.0f, 20.0f);
 
-			drawObject(m_pSphereMesh, "lit", getProgram(LightingProgramTypes.LP_MTL_COLOR_DIFFUSE_SPECULAR), materialBlockIndex, 5, modelMatrix);
+			drawObject(sphereMesh, "lit", getProgram(LightingProgramTypes.MTL_COLOR_DIFFUSE_SPECULAR), 
+					materialBlockIndex, 5, modelMatrix);
 			
 			modelMatrix.pop();
 		}
 	}
 		
 	
-	void drawObject(Mesh pMesh, ProgramData prog, int materialBlockIndex, int mtlIx, MatrixStack modelMatrix) {
-		glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, m_materialUniformBuffer, mtlIx * m_sizeMaterialBlock, MaterialBlock.SIZE);
+	void drawObject(Mesh mesh, ProgramData progData, int materialBlockIndex, int materialIndex, MatrixStack modelMatrix) {
+		glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, 
+				materialIndex * sizeMaterialBlock, MaterialBlock.SIZE);
 		
 		Mat3 normMatrix = new Mat3(modelMatrix.top());
 		normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 		
-		glUseProgram(prog.theProgram);
-		glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
+		glUseProgram(progData.theProgram);
+		glUniformMatrix4(progData.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-		glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
-		pMesh.render();
+		glUniformMatrix3(progData.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+		mesh.render();
 		glUseProgram(0);
 		
 		glBindBufferBase(GL_UNIFORM_BUFFER, materialBlockIndex, 0);
 	}
 	
-	void drawObject(Mesh pMesh, String meshName, ProgramData prog, int materialBlockIndex, int mtlIx, MatrixStack modelMatrix) {
-		glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, m_materialUniformBuffer, mtlIx * m_sizeMaterialBlock, MaterialBlock.SIZE);
+	void drawObject(Mesh mesh, String meshName, ProgramData progData, int materialBlockIndex, int materialIndex, MatrixStack modelMatrix) {
+		glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, 
+				materialIndex * sizeMaterialBlock, MaterialBlock.SIZE);
 		
 		Mat3 normMatrix = new Mat3(modelMatrix.top());
 		normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 		
-		glUseProgram(prog.theProgram);
-		glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
+		glUseProgram(progData.theProgram);
+		glUniformMatrix4(progData.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-		glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(tempFloatBuffer9));
-		pMesh.render(meshName);
+		glUniformMatrix3(progData.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+		mesh.render(meshName);
 		glUseProgram(0);
 		
 		glBindBufferBase(GL_UNIFORM_BUFFER, materialBlockIndex, 0);
@@ -242,61 +220,103 @@ public abstract class Scene {
 	
 	
 	Mesh getSphereMesh() {
-		return m_pSphereMesh;
+		return sphereMesh;
 	}
 	
 	Mesh getCubeMesh() {
-		return m_pCubeMesh;
+		return cubeMesh;
 	}
+
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private Mesh terrainMesh;
+	private Mesh cubeMesh;
+	private Mesh tetraMesh;
+	private Mesh cylMesh;
+	private Mesh sphereMesh;
+
+	private int sizeMaterialBlock;
+	private int materialUniformBuffer;
+	
+	private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
+	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private void getMaterials(ArrayList<MaterialBlock> materials) {	
-		MaterialBlock temp;
+	private final int MATERIAL_COUNT = 6;
+
+	
+	private class MaterialBlock extends BufferableData<FloatBuffer> {
+		Vec4 diffuseColor;
+		Vec4 specularColor;
+		float specularShininess;
+		float padding[] = new float[3];
+
+		static final int SIZE = Vec4.SIZE + Vec4.SIZE + ((1 + 3) * (Float.SIZE / Byte.SIZE));
+
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			diffuseColor.fillBuffer(buffer);
+			specularColor.fillBuffer(buffer);
+			buffer.put(specularShininess);
+			buffer.put(padding);
+			
+			return buffer;
+		}
+	}
+	
+	
+	private void getMaterials(ArrayList<MaterialBlock> materials) {
+		MaterialBlock matBlock;
 		
 		// Ground
-		temp = new MaterialBlock();
-		temp.diffuseColor = new Vec4(1.0f);
-		temp.specularColor = new Vec4(0.5f, 0.5f, 0.5f, 1.0f);
-		temp.specularShininess = 0.6f;
-		materials.add(temp);
+		matBlock = new MaterialBlock();
+		matBlock.diffuseColor = new Vec4(1.0f);
+		matBlock.specularColor = new Vec4(0.5f, 0.5f, 0.5f, 1.0f);
+		matBlock.specularShininess = 0.6f;
+		materials.add(matBlock);
 		
 		// Tetrahedron
-		temp = new MaterialBlock();
-		temp.diffuseColor = new Vec4(0.5f);
-		temp.specularColor = new Vec4(0.5f, 0.5f, 0.5f, 1.0f);
-		temp.specularShininess = 0.05f;
-		materials.add(temp);
+		matBlock = new MaterialBlock();
+		matBlock.diffuseColor = new Vec4(0.5f);
+		matBlock.specularColor = new Vec4(0.5f, 0.5f, 0.5f, 1.0f);
+		matBlock.specularShininess = 0.05f;
+		materials.add(matBlock);
 
 		// Monolith
-		temp = new MaterialBlock();
-		temp.diffuseColor = new Vec4(0.05f);
-		temp.specularColor = new Vec4(0.95f, 0.95f, 0.95f, 1.0f);
-		temp.specularShininess = 0.4f;
-		materials.add(temp);
+		matBlock = new MaterialBlock();
+		matBlock.diffuseColor = new Vec4(0.05f);
+		matBlock.specularColor = new Vec4(0.95f, 0.95f, 0.95f, 1.0f);
+		matBlock.specularShininess = 0.4f;
+		materials.add(matBlock);
 
 		// Cube
-		temp = new MaterialBlock();
-		temp.diffuseColor = new Vec4(0.5f);
-		temp.specularColor = new Vec4(0.3f, 0.3f, 0.3f, 1.0f);
-		temp.specularShininess = 0.1f;
-		materials.add(temp);
+		matBlock = new MaterialBlock();
+		matBlock.diffuseColor = new Vec4(0.5f);
+		matBlock.specularColor = new Vec4(0.3f, 0.3f, 0.3f, 1.0f);
+		matBlock.specularShininess = 0.1f;
+		materials.add(matBlock);
 
 		// Cylinder
-		temp = new MaterialBlock();
-		temp.diffuseColor = new Vec4(0.5f);
-		temp.specularColor = new Vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		temp.specularShininess = 0.6f;
-		materials.add(temp);
+		matBlock = new MaterialBlock();
+		matBlock.diffuseColor = new Vec4(0.5f);
+		matBlock.specularColor = new Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		matBlock.specularShininess = 0.6f;
+		materials.add(matBlock);
 
 		// Sphere
-		temp = new MaterialBlock();
-		temp.diffuseColor = new Vec4(0.63f, 0.60f, 0.02f, 1.0f);
-		temp.specularColor = new Vec4(0.22f, 0.20f, 0.0f, 1.0f);
-		temp.specularShininess = 0.3f;
-		materials.add(temp);
+		matBlock = new MaterialBlock();
+		matBlock.diffuseColor = new Vec4(0.63f, 0.60f, 0.02f, 1.0f);
+		matBlock.specularColor = new Vec4(0.22f, 0.20f, 0.0f, 1.0f);
+		matBlock.specularShininess = 0.3f;
+		materials.add(matBlock);
 	}
 }

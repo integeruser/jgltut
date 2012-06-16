@@ -11,7 +11,8 @@ import rosick.jglsdk.BufferableData;
  * @author integeruser
  */
 public class Mat4 extends BufferableData<FloatBuffer> {
-	public static int SIZE = 16 * (Float.SIZE / 8);
+	public static final int SIZE = (16 * Float.SIZE) / Byte.SIZE;
+	
 	
 	public float matrix[];
 

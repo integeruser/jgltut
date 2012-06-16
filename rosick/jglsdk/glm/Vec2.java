@@ -11,6 +11,8 @@ import rosick.jglsdk.BufferableData;
  * @author integeruser
  */
 public class Vec2 extends BufferableData<FloatBuffer> {
+	public static final int SIZE = (2 * Float.SIZE) / Byte.SIZE;
+
 	
 	public float x, y;
 	

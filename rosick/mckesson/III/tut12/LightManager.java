@@ -20,11 +20,110 @@ import rosick.mckesson.framework.Interpolators.WeightedLinearInterpolatorVec4;
  * 
  * @author integeruser
  */
-public class LightManager {
+class LightManager {
+	
+	LightManager() {
+		sunTimer = new Timer(Timer.Type.TT_LOOP, 30.0f);
+		
+		ambientInterpolator = new TimedLinearInterpolatorVec4();
+		backgroundInterpolator = new TimedLinearInterpolatorVec4();
+		sunlightInterpolator = new TimedLinearInterpolatorVec4();
+		maxIntensityInterpolator = new TimedLinearInterpolatorFloat();
+		
+		lightPos = new ArrayList<>();
+		lightIntensity = new ArrayList<>();
+		lightTimers = new ArrayList<>();
+		
+		extraTimers = new HashMap<String, Timer>();
+				 
+		lightPos.add(new ConstVelLinearInterpolatorVec3());
+		lightPos.add(new ConstVelLinearInterpolatorVec3());
+		lightPos.add(new ConstVelLinearInterpolatorVec3());
+
+		for (int i = 0; i < NUMBER_OF_POINT_LIGHTS; i++) {
+			lightIntensity.add(new Vec4(0.2f, 0.2f, 0.2f, 1.0f));
+		}	
+		
+		ArrayList<Vec3> posValues = new ArrayList<>();
+	
+		posValues.add(new Vec3(-50.0f, 30.0f, 70.0f));
+		posValues.add(new Vec3(-70.0f, 30.0f, 50.0f));
+		posValues.add(new Vec3(-70.0f, 30.0f, -50.0f));
+		posValues.add(new Vec3(-50.0f, 30.0f, -70.0f));
+		posValues.add(new Vec3(50.0f, 30.0f, -70.0f));
+		posValues.add(new Vec3(70.0f, 30.0f, -50.0f));
+		posValues.add(new Vec3(70.0f, 30.0f, 50.0f));
+		posValues.add(new Vec3(50.0f, 30.0f, 70.0f));
+		lightPos.get(0).setValues(posValues);
+		lightTimers.add(new Timer(Timer.Type.TT_LOOP, 15.0f));
+		
+		// Right-side light.
+		posValues = new ArrayList<>();
+		posValues.add(new Vec3(100.0f, 6.0f, 75.0f));
+		posValues.add(new Vec3(90.0f, 8.0f, 90.0f));
+		posValues.add(new Vec3(75.0f, 10.0f, 100.0f));
+		posValues.add(new Vec3(60.0f, 12.0f, 90.0f));
+		posValues.add(new Vec3(50.0f, 14.0f, 75.0f));
+		posValues.add(new Vec3(60.0f, 16.0f, 60.0f));
+		posValues.add(new Vec3(75.0f, 18.0f, 50.0f));
+		posValues.add(new Vec3(90.0f, 20.0f, 60.0f));
+		posValues.add(new Vec3(100.0f, 22.0f, 75.0f));
+		posValues.add(new Vec3(90.0f, 24.0f, 90.0f));
+		posValues.add(new Vec3(75.0f, 26.0f, 100.0f));
+		posValues.add(new Vec3(60.0f, 28.0f, 90.0f));
+		posValues.add(new Vec3(50.0f, 30.0f, 75.0f));
+
+		posValues.add(new Vec3(105.0f, 9.0f, -70.0f));
+		posValues.add(new Vec3(105.0f, 10.0f, -90.0f));
+		posValues.add(new Vec3(72.0f, 20.0f, -90.0f));
+		posValues.add(new Vec3(72.0f, 22.0f, -70.0f));
+		posValues.add(new Vec3(105.0f, 32.0f, -70.0f));
+		posValues.add(new Vec3(105.0f, 34.0f, -90.0f));
+		posValues.add(new Vec3(72.0f, 44.0f, -90.0f));
+
+		lightPos.get(1).setValues(posValues);
+		lightTimers.add(new Timer(Timer.Type.TT_LOOP, 25.0f));
+
+		// Left-side light.
+		posValues = new ArrayList<>();
+		posValues.add(new Vec3(-7.0f, 35.0f, 1.0f));
+		posValues.add(new Vec3(8.0f, 40.0f, -14.0f));
+		posValues.add(new Vec3(-7.0f, 45.0f, -29.0f));
+		posValues.add(new Vec3(-22.0f, 50.0f, -14.0f));
+		posValues.add(new Vec3(-7.0f, 55.0f, 1.0f));
+		posValues.add(new Vec3(8.0f, 60.0f, -14.0f));
+		posValues.add(new Vec3(-7.0f, 65.0f, -29.0f));
+
+		posValues.add(new Vec3(-83.0f, 30.0f, -92.0f));
+		posValues.add(new Vec3(-98.0f, 27.0f, -77.0f));
+		posValues.add(new Vec3(-83.0f, 24.0f, -62.0f));
+		posValues.add(new Vec3(-68.0f, 21.0f, -77.0f));
+		posValues.add(new Vec3(-83.0f, 18.0f, -92.0f));
+		posValues.add(new Vec3(-98.0f, 15.0f, -77.0f));
+
+		posValues.add(new Vec3(-50.0f, 8.0f, 25.0f));
+		posValues.add(new Vec3(-59.5f, 4.0f, 65.0f));
+		posValues.add(new Vec3(-59.5f, 4.0f, 78.0f));
+		posValues.add(new Vec3(-45.0f, 4.0f, 82.0f));
+		posValues.add(new Vec3(-40.0f, 4.0f, 50.0f));
+		posValues.add(new Vec3(-70.0f, 20.0f, 40.0f));
+		posValues.add(new Vec3(-60.0f, 20.0f, 90.0f));
+		posValues.add(new Vec3(-40.0f, 25.0f, 90.0f));
+
+		lightPos.get(2).setValues(posValues);
+		lightTimers.add(new Timer(Timer.Type.TT_LOOP, 15.0f));
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	class PerLight extends BufferableData<FloatBuffer> {
 		Vec4 cameraSpaceLightPos;
 		Vec4 lightIntensity;
+		
+		static final int SIZE = Vec4.SIZE + Vec4.SIZE;
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -35,13 +134,14 @@ public class LightManager {
 		}
 	}
 	
+	
 	class LightBlock extends BufferableData<FloatBuffer> {
 		Vec4 ambientIntensity;
 		float lightAttenuation;
 		float padding[] = new float[3];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-		static final int SIZE = (4 + 1 + 3 + (8 * 4)) * (Float.SIZE / 8);
+		static final int SIZE = Vec4.SIZE + ((1 + 3) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * NUMBER_OF_LIGHTS;
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
@@ -64,7 +164,7 @@ public class LightManager {
 		float padding[] = new float[2];
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-		static final int SIZE = (4 + 1 + 1 + 2 + (8 * 4)) * (Float.SIZE / 8);
+		static final int SIZE = Vec4.SIZE + ((1 + 1 + 2) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * NUMBER_OF_LIGHTS;
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
@@ -89,7 +189,7 @@ public class LightManager {
 		float padding;
 		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 		
-		static final int SIZE = (4 + 1 + 1 + 1 + 1 + (8 * 4)) * (Float.SIZE / 8);
+		static final int SIZE = Vec4.SIZE + ((1 + 1 + 1 + 1) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * NUMBER_OF_LIGHTS;
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
@@ -141,144 +241,25 @@ public class LightManager {
 	
 	
 	enum TimerTypes {
-		TIMER_SUN,
-		TIMER_LIGHTS,
-		TIMER_ALL,
+		SUN,
+		LIGHTS,
+		ALL,
 		
 		NUM_TIMER_TYPES
 	};
-	
-	
-	private class LightInterpolatorVec3 extends ConstVelLinearInterpolatorVec3 {}
-	private class ExtraTimerMap extends HashMap<String, Timer> {
-		private static final long serialVersionUID = 5833419449862029409L;
-	}
-		
-	
-	private final int NUMBER_OF_LIGHTS = 4;
-	private final int NUMBER_OF_POINT_LIGHTS = NUMBER_OF_LIGHTS - 1;
-	
-	private final float g_fHalfLightDistance = 70.0f;
-	private final float g_fLightAttenuation = 1.0f / (g_fHalfLightDistance * g_fHalfLightDistance);
-
-	private Timer m_sunTimer;
-	
-	private TimedLinearInterpolatorVec4 m_ambientInterpolator;
-	private TimedLinearInterpolatorVec4 m_backgroundInterpolator;
-	private TimedLinearInterpolatorVec4 m_sunlightInterpolator;
-	private TimedLinearInterpolatorFloat m_maxIntensityInterpolator;
-	
-	private ArrayList<LightInterpolatorVec3> m_lightPos;
-	private ArrayList<Vec4> m_lightIntensity;
-	private ArrayList<Timer> m_lightTimers;
-	
-	private ExtraTimerMap m_extraTimers;
-	
-	
-	LightManager() {
-		m_sunTimer = new Timer(Timer.Type.TT_LOOP, 30.0f);
-		
-		m_ambientInterpolator = new TimedLinearInterpolatorVec4();
-		m_backgroundInterpolator = new TimedLinearInterpolatorVec4();
-		m_sunlightInterpolator = new TimedLinearInterpolatorVec4();
-		m_maxIntensityInterpolator = new TimedLinearInterpolatorFloat();
-		
-		m_lightPos = new ArrayList<>();
-		m_lightIntensity = new ArrayList<>();
-		m_lightTimers = new ArrayList<>();
-		
-		m_extraTimers = new ExtraTimerMap();
-				 
-		m_lightPos.add(new LightInterpolatorVec3());
-		m_lightPos.add(new LightInterpolatorVec3());
-		m_lightPos.add(new LightInterpolatorVec3());
-
-		for (int i = 0; i < NUMBER_OF_POINT_LIGHTS; i++) {
-			m_lightIntensity.add(new Vec4(0.2f, 0.2f, 0.2f, 1.0f));
-		}	
-		
-		ArrayList<Vec3> posValues = new ArrayList<>();
-	
-		posValues.add(new Vec3(-50.0f, 30.0f, 70.0f));
-		posValues.add(new Vec3(-70.0f, 30.0f, 50.0f));
-		posValues.add(new Vec3(-70.0f, 30.0f, -50.0f));
-		posValues.add(new Vec3(-50.0f, 30.0f, -70.0f));
-		posValues.add(new Vec3(50.0f, 30.0f, -70.0f));
-		posValues.add(new Vec3(70.0f, 30.0f, -50.0f));
-		posValues.add(new Vec3(70.0f, 30.0f, 50.0f));
-		posValues.add(new Vec3(50.0f, 30.0f, 70.0f));
-		m_lightPos.get(0).setValues(posValues);
-		m_lightTimers.add(new Timer(Timer.Type.TT_LOOP, 15.0f));
-		
-		// Right-side light.
-		posValues = new ArrayList<>();
-		posValues.add(new Vec3(100.0f, 6.0f, 75.0f));
-		posValues.add(new Vec3(90.0f, 8.0f, 90.0f));
-		posValues.add(new Vec3(75.0f, 10.0f, 100.0f));
-		posValues.add(new Vec3(60.0f, 12.0f, 90.0f));
-		posValues.add(new Vec3(50.0f, 14.0f, 75.0f));
-		posValues.add(new Vec3(60.0f, 16.0f, 60.0f));
-		posValues.add(new Vec3(75.0f, 18.0f, 50.0f));
-		posValues.add(new Vec3(90.0f, 20.0f, 60.0f));
-		posValues.add(new Vec3(100.0f, 22.0f, 75.0f));
-		posValues.add(new Vec3(90.0f, 24.0f, 90.0f));
-		posValues.add(new Vec3(75.0f, 26.0f, 100.0f));
-		posValues.add(new Vec3(60.0f, 28.0f, 90.0f));
-		posValues.add(new Vec3(50.0f, 30.0f, 75.0f));
-
-		posValues.add(new Vec3(105.0f, 9.0f, -70.0f));
-		posValues.add(new Vec3(105.0f, 10.0f, -90.0f));
-		posValues.add(new Vec3(72.0f, 20.0f, -90.0f));
-		posValues.add(new Vec3(72.0f, 22.0f, -70.0f));
-		posValues.add(new Vec3(105.0f, 32.0f, -70.0f));
-		posValues.add(new Vec3(105.0f, 34.0f, -90.0f));
-		posValues.add(new Vec3(72.0f, 44.0f, -90.0f));
-
-		m_lightPos.get(1).setValues(posValues);
-		m_lightTimers.add(new Timer(Timer.Type.TT_LOOP, 25.0f));
-
-		// Left-side light.
-		posValues = new ArrayList<>();
-		posValues.add(new Vec3(-7.0f, 35.0f, 1.0f));
-		posValues.add(new Vec3(8.0f, 40.0f, -14.0f));
-		posValues.add(new Vec3(-7.0f, 45.0f, -29.0f));
-		posValues.add(new Vec3(-22.0f, 50.0f, -14.0f));
-		posValues.add(new Vec3(-7.0f, 55.0f, 1.0f));
-		posValues.add(new Vec3(8.0f, 60.0f, -14.0f));
-		posValues.add(new Vec3(-7.0f, 65.0f, -29.0f));
-
-		posValues.add(new Vec3(-83.0f, 30.0f, -92.0f));
-		posValues.add(new Vec3(-98.0f, 27.0f, -77.0f));
-		posValues.add(new Vec3(-83.0f, 24.0f, -62.0f));
-		posValues.add(new Vec3(-68.0f, 21.0f, -77.0f));
-		posValues.add(new Vec3(-83.0f, 18.0f, -92.0f));
-		posValues.add(new Vec3(-98.0f, 15.0f, -77.0f));
-
-		posValues.add(new Vec3(-50.0f, 8.0f, 25.0f));
-		posValues.add(new Vec3(-59.5f, 4.0f, 65.0f));
-		posValues.add(new Vec3(-59.5f, 4.0f, 78.0f));
-		posValues.add(new Vec3(-45.0f, 4.0f, 82.0f));
-		posValues.add(new Vec3(-40.0f, 4.0f, 50.0f));
-		posValues.add(new Vec3(-70.0f, 20.0f, 40.0f));
-		posValues.add(new Vec3(-60.0f, 20.0f, 90.0f));
-		posValues.add(new Vec3(-40.0f, 25.0f, 90.0f));
-
-		m_lightPos.get(2).setValues(posValues);
-		m_lightTimers.add(new Timer(Timer.Type.TT_LOOP, 15.0f));
-	}
 	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	public class TimedLinearInterpolatorFloat extends WeightedLinearInterpolatorFloat {
+	class TimedLinearInterpolatorFloat extends WeightedLinearInterpolatorFloat {
 
-		public void setValues(ArrayList<MaxIntensityData> data) {
+		void setValues(ArrayList<MaxIntensityData> data) {
 			setValues(data, true);
 		}
 		
-		public void setValues(ArrayList<MaxIntensityData> data, boolean isLooping) {
+		void setValues(ArrayList<MaxIntensityData> data, boolean isLooping) {
 			m_values.clear();
 
 			for (MaxIntensityData curr : data) {				
@@ -305,16 +286,16 @@ public class LightManager {
 		}
 	}
 		
-	public class TimedLinearInterpolatorVec4 extends WeightedLinearInterpolatorVec4 {
+	class TimedLinearInterpolatorVec4 extends WeightedLinearInterpolatorVec4 {
 
-		public void setValues(ArrayList<LightVectorData> data) {
+		void setValues(ArrayList<LightData> data) {
 			setValues(data, true);
 		}
 		
-		public void setValues(ArrayList<LightVectorData> data, boolean isLooping) {
+		void setValues(ArrayList<LightData> data, boolean isLooping) {
 			m_values.clear();
 
-			for (LightVectorData curr : data) {				
+			for (LightData curr : data) {				
 				Data temp = new Data();
 				temp.data = new Vec4(LightManager.getValue(curr));
 				temp.weight = LightManager.getTime(curr);
@@ -349,85 +330,76 @@ public class LightManager {
 	}
 	
 	
-	public class MaxIntensityData extends Pair<Float, Float> {
-		public MaxIntensityData(Float first, Float second) {
+	class MaxIntensityData extends Pair<Float, Float> {
+		MaxIntensityData(Float first, Float second) {
 			this.first = first;
 			this.second = second;
 		}
 	}
 	
-	public class LightVectorData extends Pair<Vec4, Float> {
-		public LightVectorData(Vec4 first, Float second) {
+	class LightData extends Pair<Vec4, Float> {
+		LightData(Vec4 first, Float second) {
 			this.first = first;
 			this.second = second;
 		}
 	}
 	
 	
-	public class MaxIntensityVector extends ArrayList<MaxIntensityData> {
-		private static final long serialVersionUID = -3083128917290208757L;			// Autogenerated by Eclipse Ide
-	}
-
-	public class LightVector extends ArrayList<LightVectorData> {
-		private static final long serialVersionUID = -7238863853470466667L;			// Autogenerated by Eclipse Ide
-	}
-
-	
-	public static Vec4 getValue(LightVectorData data) {
+	static Vec4 getValue(LightData data) {
 		return data.first;
 	}
 	
-	public static float getTime(LightVectorData data) {
+	static float getTime(LightData data) {
 		return data.second;
 	}
 	
 	
-	public float getValue(MaxIntensityData data) {
+	float getValue(MaxIntensityData data) {
 		return data.first;
 	}
 
-	public static float getTime(MaxIntensityData data) {
+	static float getTime(MaxIntensityData data) {
 		return data.second;
 	}
 	
 	
-	void setSunlightValues(SunlightValue pValues[], int iSize) {
-		LightVector ambient = new LightVector();
-		LightVector light = new LightVector();
-		LightVector background = new LightVector();
+	void setSunlightValues(SunlightValue values[], int size) {
+		ArrayList<LightData> ambient = new ArrayList<>();
+		ArrayList<LightData> light = new ArrayList<>();
+		ArrayList<LightData> background = new ArrayList<>();
 
-		for (int valIx = 0; valIx < iSize; valIx++) {
-			ambient.add		(new LightVectorData(new Vec4(pValues[valIx].ambient), 				pValues[valIx].normTime));
-			light.add		(new LightVectorData(new Vec4(pValues[valIx].sunlightIntensity), 	pValues[valIx].normTime));
-			background.add	(new LightVectorData(new Vec4(pValues[valIx].backgroundColor), 		pValues[valIx].normTime));
+		for (int valIndex = 0; valIndex < size; valIndex++) {
+			ambient.add		(new LightData(new Vec4(values[valIndex].ambient), 			values[valIndex].normTime));
+			light.add		(new LightData(new Vec4(values[valIndex].sunlightIntensity), 	values[valIndex].normTime));
+			background.add	(new LightData(new Vec4(values[valIndex].backgroundColor), 	values[valIndex].normTime));
 		}
 
-		m_ambientInterpolator.setValues(ambient);
-		m_sunlightInterpolator.setValues(light);
-		m_backgroundInterpolator.setValues(background);
+		ambientInterpolator.setValues(ambient);
+		sunlightInterpolator.setValues(light);
+		backgroundInterpolator.setValues(background);
 
-		MaxIntensityVector maxIntensity = new MaxIntensityVector();
+		ArrayList<MaxIntensityData> maxIntensity = new ArrayList<>();
 		maxIntensity.add(new MaxIntensityData(1.0f, 0.0f));
-		m_maxIntensityInterpolator.setValues(maxIntensity, false);
+		maxIntensityInterpolator.setValues(maxIntensity, false);
 	}
 	
-	void setSunlightValues(SunlightValueHDR pValues[], int iSize) {
-		LightVector ambient = new LightVector();
-		LightVector light = new LightVector();
-		LightVector background = new LightVector();
-		MaxIntensityVector maxIntensity = new MaxIntensityVector();
+	void setSunlightValues(SunlightValueHDR values[], int size) {
+		ArrayList<LightData> ambient = new ArrayList<>();
+		ArrayList<LightData> light = new ArrayList<>();
+		ArrayList<LightData> background = new ArrayList<>();
+		ArrayList<MaxIntensityData> maxIntensity = new ArrayList<>();
 
-		for (int valIx = 0; valIx < iSize; valIx++) {
-			ambient.add			(new LightVectorData(new Vec4(pValues[valIx].ambient), 				pValues[valIx].normTime));
-			light.add			(new LightVectorData(new Vec4(pValues[valIx].sunlightIntensity), 	pValues[valIx].normTime));
-			background.add		(new LightVectorData(new Vec4(pValues[valIx].backgroundColor), 		pValues[valIx].normTime));
-			maxIntensity.add	(new MaxIntensityData(pValues[valIx].maxIntensity, 					pValues[valIx].normTime));
+		for (int valIndex = 0; valIndex < size; valIndex++) {
+			ambient.add			(new LightData(new Vec4(values[valIndex].ambient), 			values[valIndex].normTime));
+			light.add			(new LightData(new Vec4(values[valIndex].sunlightIntensity),	values[valIndex].normTime));
+			background.add		(new LightData(new Vec4(values[valIndex].backgroundColor), 	values[valIndex].normTime));
+			maxIntensity.add	(new MaxIntensityData(values[valIndex].maxIntensity, 				values[valIndex].normTime));
 		}
 
-		m_ambientInterpolator.setValues(ambient);
-		m_sunlightInterpolator.setValues(light);
-		m_backgroundInterpolator.setValues(background);
-		m_maxIntensityInterpolator.setValues(maxIntensity);
+		ambientInterpolator.setValues(ambient);
+		sunlightInterpolator.setValues(light);
+		backgroundInterpolator.setValues(background);
+		maxIntensityInterpolator.setValues(maxIntensity);
 	}
 	
 	
@@ -435,101 +407,118 @@ public class LightManager {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
-	void updateTime(double fElapsedTime) {
-		m_sunTimer.update((float) fElapsedTime);
+	void createTimer(String timerName, Timer.Type timerType, float duration) {
+		extraTimers.put(timerName, new Timer(timerType, duration));
+	}
+	
+	float getTimerValue(String timerName) {
+		if (!extraTimers.containsKey(timerName)) {
+			return -1.0f;
+		}
+
+		return extraTimers.get(timerName).getAlpha();
+	}
+	
+	
+	void updateTime(float elapsedTime) {
+		sunTimer.update(elapsedTime);
 		
-		for (Timer timer : m_lightTimers) {
-			timer.update((float) fElapsedTime);
+		for (Timer timer : lightTimers) {
+			timer.update(elapsedTime);
 		}
 		
-		for (Timer timer : m_extraTimers.values()) {
-			timer.update((float) fElapsedTime);
+		for (Timer timer : extraTimers.values()) {
+			timer.update(elapsedTime);
 		}
 	}
 
 	
-	void setPause(TimerTypes eTimer, boolean pause) {
-		if (eTimer == TimerTypes.TIMER_ALL || eTimer == TimerTypes.TIMER_LIGHTS) {
-			for (Timer timer : m_lightTimers) {
+	void setPause(TimerTypes timerType, boolean pause) {
+		if (timerType == TimerTypes.ALL || timerType == TimerTypes.LIGHTS) {
+			for (Timer timer : lightTimers) {
 				timer.setPause(pause);
 			}
-			for (Timer timer : m_extraTimers.values()) {
+			for (Timer timer : extraTimers.values()) {
 				timer.setPause(pause);
 			}
 		}
 
-		if (eTimer == TimerTypes.TIMER_ALL || eTimer == TimerTypes.TIMER_SUN) {
-			m_sunTimer.togglePause();
+		if (timerType == TimerTypes.ALL || timerType == TimerTypes.SUN) {
+			sunTimer.togglePause();
 		}
 	}
 
-	void togglePause(TimerTypes eTimer) {
-		setPause(eTimer, !isPaused(eTimer));
+	void togglePause(TimerTypes timerType) {
+		setPause(timerType, !isPaused(timerType));
 	}
 
-	boolean isPaused(TimerTypes eTimer) {
-		if (eTimer == TimerTypes.TIMER_ALL || eTimer == TimerTypes.TIMER_SUN) {
-			return m_sunTimer.isPaused();
+	boolean isPaused(TimerTypes timerType) {
+		if (timerType == TimerTypes.ALL || timerType == TimerTypes.SUN) {
+			return sunTimer.isPaused();
 		}
 
-		return m_lightTimers.get(0).isPaused();
-	}
-
-	
-	void rewindTime(TimerTypes eTimer, float secRewind) {
-		if (eTimer == TimerTypes.TIMER_ALL || eTimer == TimerTypes.TIMER_SUN) {
-			m_sunTimer.rewind(secRewind);
-		}
-
-		if (eTimer == TimerTypes.TIMER_ALL || eTimer == TimerTypes.TIMER_LIGHTS) {
-			for (Timer timer : m_lightTimers) {
-				timer.rewind(secRewind);
-			}
-			for (Timer timer : m_extraTimers.values()) {
-				timer.rewind(secRewind);
-			}
-		}
+		return lightTimers.get(0).isPaused();
 	}
 
 	
-	void fastForwardTime(TimerTypes eTimer, float secFF) {
-		if (eTimer == TimerTypes.TIMER_ALL || eTimer == TimerTypes.TIMER_SUN) {
-			m_sunTimer.fastForward(secFF);
+	void rewindTime(TimerTypes timerType, float secRewind) {
+		if (timerType == TimerTypes.ALL || timerType == TimerTypes.SUN) {
+			sunTimer.rewind(secRewind);
 		}
 
-		if (eTimer == TimerTypes.TIMER_ALL || eTimer == TimerTypes.TIMER_LIGHTS) {
-			for (Timer timer : m_lightTimers) {
+		if (timerType == TimerTypes.ALL || timerType == TimerTypes.LIGHTS) {
+			for (Timer timer : lightTimers) {
+				timer.rewind(secRewind);
+			}
+			for (Timer timer : extraTimers.values()) {
+				timer.rewind(secRewind);
+			}
+		}
+	}
+
+	
+	void fastForwardTime(TimerTypes timerType, float secFF) {
+		if (timerType == TimerTypes.ALL || timerType == TimerTypes.SUN) {
+			sunTimer.fastForward(secFF);
+		}
+
+		if (timerType == TimerTypes.ALL || timerType == TimerTypes.LIGHTS) {
+			for (Timer timer : lightTimers) {
 				timer.fastForward(secFF);
 			}
-			for (Timer timer : m_extraTimers.values()) {
+			for (Timer timer : extraTimers.values()) {
 				timer.fastForward(secFF);
 			}
 		}
 	}
 
+	
+	float getSunTime() {
+		return sunTimer.getAlpha();
+	}
+	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
 	
 	LightBlock getLightInformation(Mat4 worldToCameraMat) {
 		LightBlock lightData = new LightBlock();
 
-		lightData.ambientIntensity = m_ambientInterpolator.interpolate(m_sunTimer.getAlpha());
-		lightData.lightAttenuation = g_fLightAttenuation;
+		lightData.ambientIntensity = ambientInterpolator.interpolate(sunTimer.getAlpha());
+		lightData.lightAttenuation = lightAttenuation;
 
 		lightData.lights[0] = new PerLight();
 		lightData.lights[0].cameraSpaceLightPos = Mat4.mul(worldToCameraMat, getSunlightDirection());
-		lightData.lights[0].lightIntensity = m_sunlightInterpolator.interpolate(m_sunTimer.getAlpha());
+		lightData.lights[0].lightIntensity = sunlightInterpolator.interpolate(sunTimer.getAlpha());
 
 		for (int light = 0; light < NUMBER_OF_POINT_LIGHTS; light++) {
-			Vec4 worldLightPos = new Vec4(m_lightPos.get(light).interpolate(m_lightTimers.get(light).getAlpha()), 1.0f);
+			Vec4 worldLightPos = new Vec4(lightPos.get(light).interpolate(lightTimers.get(light).getAlpha()), 1.0f);
 			Vec4 lightPosCameraSpace = Mat4.mul(worldToCameraMat, worldLightPos);
 
 			lightData.lights[light + 1] = new PerLight();
 			lightData.lights[light + 1].cameraSpaceLightPos = lightPosCameraSpace;
-			lightData.lights[light + 1].lightIntensity = new Vec4(m_lightIntensity.get(light));
+			lightData.lights[light + 1].lightIntensity = new Vec4(lightIntensity.get(light));
 		}
 
 		return lightData;
@@ -538,21 +527,21 @@ public class LightManager {
 	LightBlockHDR getLightInformationHDR(Mat4 worldToCameraMat) {
 		LightBlockHDR lightData = new LightBlockHDR();
 
-		lightData.ambientIntensity = m_ambientInterpolator.interpolate(m_sunTimer.getAlpha());
-		lightData.lightAttenuation = g_fLightAttenuation;
-		lightData.maxIntensity = m_maxIntensityInterpolator.interpolate(m_sunTimer.getAlpha());
+		lightData.ambientIntensity = ambientInterpolator.interpolate(sunTimer.getAlpha());
+		lightData.lightAttenuation = lightAttenuation;
+		lightData.maxIntensity = maxIntensityInterpolator.interpolate(sunTimer.getAlpha());
 
 		lightData.lights[0] = new PerLight();
 		lightData.lights[0].cameraSpaceLightPos = Mat4.mul(worldToCameraMat, getSunlightDirection());
-		lightData.lights[0].lightIntensity = m_sunlightInterpolator.interpolate(m_sunTimer.getAlpha());
+		lightData.lights[0].lightIntensity = sunlightInterpolator.interpolate(sunTimer.getAlpha());
 
 		for (int light = 0; light < NUMBER_OF_POINT_LIGHTS; light++) {
-			Vec4 worldLightPos = new Vec4(m_lightPos.get(light).interpolate(m_lightTimers.get(light).getAlpha()), 1.0f);
+			Vec4 worldLightPos = new Vec4(lightPos.get(light).interpolate(lightTimers.get(light).getAlpha()), 1.0f);
 			Vec4 lightPosCameraSpace = Mat4.mul(worldToCameraMat, worldLightPos);
 
 			lightData.lights[light + 1] = new PerLight();
 			lightData.lights[light + 1].cameraSpaceLightPos = lightPosCameraSpace;
-			lightData.lights[light + 1].lightIntensity = new Vec4(m_lightIntensity.get(light));
+			lightData.lights[light + 1].lightIntensity = new Vec4(lightIntensity.get(light));
 		}
 
 		return lightData;
@@ -572,7 +561,7 @@ public class LightManager {
 
 	
 	Vec4 getSunlightDirection() {
-		float angle = 2.0f * 3.14159f * m_sunTimer.getAlpha();
+		float angle = 2.0f * 3.14159f * sunTimer.getAlpha();
 		Vec4 sunDirection = new Vec4(0.0f);
 		sunDirection.x = (float) Math.sin(angle);
 		sunDirection.y = (float) Math.cos(angle);
@@ -584,47 +573,56 @@ public class LightManager {
 	}
 		
 	Vec4 getSunlightIntensity() {
-		return m_sunlightInterpolator.interpolate(m_sunTimer.getAlpha());
+		return sunlightInterpolator.interpolate(sunTimer.getAlpha());
 	}
 
 	
 	int getNumberOfPointLights() {
-		return m_lightPos.size();
+		return lightPos.size();
 	}
 	
 
-	Vec3 getWorldLightPosition(int lightIx) {
-		return m_lightPos.get(lightIx).interpolate(m_lightTimers.get(lightIx).getAlpha());
+	Vec3 getWorldLightPosition(int lightIndex) {
+		return lightPos.get(lightIndex).interpolate(lightTimers.get(lightIndex).getAlpha());
 	}
 
 	
-	void setPointLightIntensity(int iLightIx, Vec4 intensity) {
-		m_lightIntensity.set(iLightIx, intensity);
+	void setPointLightIntensity(int lightIndex, Vec4 intensity) {
+		lightIntensity.set(lightIndex, intensity);
 	}
 	
-	Vec4 getPointLightIntensity(int iLightIx) {
-		return m_lightIntensity.get(iLightIx);
-	}
-	
-
-	void createTimer(String timerName, Timer.Type eType, float fDuration) {
-		m_extraTimers.put(timerName, new Timer(eType, fDuration));
-	}
-	
-	float getTimerValue(String timerName) {
-		if (!m_extraTimers.containsKey(timerName)) {
-			return -1.0f;
-		}
-
-		return m_extraTimers.get(timerName).getAlpha();
+	Vec4 getPointLightIntensity(int lightIndex) {
+		return lightIntensity.get(lightIndex);
 	}
 	
 	
 	Vec4 getBackgroundColor() {
-		return m_backgroundInterpolator.interpolate(m_sunTimer.getAlpha());
+		return backgroundInterpolator.interpolate(sunTimer.getAlpha());
 	}
 
-	float getSunTime() {
-		return m_sunTimer.getAlpha();
-	}
+
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private static final int NUMBER_OF_LIGHTS = 4;
+	private static final int NUMBER_OF_POINT_LIGHTS = NUMBER_OF_LIGHTS - 1;
+	
+	private final float halfLightDistance = 70.0f;
+	private final float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
+
+	private Timer sunTimer;
+	
+	private TimedLinearInterpolatorVec4 ambientInterpolator;
+	private TimedLinearInterpolatorVec4 backgroundInterpolator;
+	private TimedLinearInterpolatorVec4 sunlightInterpolator;
+	private TimedLinearInterpolatorFloat maxIntensityInterpolator;
+	
+	private ArrayList<ConstVelLinearInterpolatorVec3> lightPos;
+	private ArrayList<Vec4> lightIntensity;
+	private ArrayList<Timer> lightTimers;
+	
+	private HashMap<String, Timer> extraTimers;
 }

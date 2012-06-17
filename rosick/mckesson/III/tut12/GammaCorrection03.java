@@ -431,10 +431,10 @@ public class GammaCorrection03 extends LWJGLWindow {
 	}
 	
 	
-	private ProgramData loadLitProgram(String strVertexShader, String strFragmentShader) {		
+	private ProgramData loadLitProgram(String vertexShaderFilename, String fragmentShaderFilename) {		
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	vertexShaderFilename));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	fragmentShaderFilename));
 
 		ProgramData data = new ProgramData();
 		data.theProgram = Framework.createProgram(shaderList);
@@ -455,10 +455,10 @@ public class GammaCorrection03 extends LWJGLWindow {
 		return data;
 	}
 	
-	private UnlitProgData loadUnlitProgram(String strVertexShader, String strFragmentShader) {		
+	private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {		
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	vertexShaderFilename));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	fragmentShaderFilename));
 
 		UnlitProgData data = new UnlitProgData();
 		data.theProgram = Framework.createProgram(shaderList);

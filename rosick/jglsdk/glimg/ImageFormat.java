@@ -95,6 +95,9 @@ class ImageFormat {
 		BitDepth bitDepth;					// The bitdepth of each pixel component.
 		int lineAlignment;					// The byte alignment of a horizontal line of pixel data.
 		
+		
+		UncheckedImageFormat() {
+		}
 
 		UncheckedImageFormat(PixelDataType type, PixelComponents format,
 				ComponentOrder order, BitDepth bitdepth, int lineAlignment) {

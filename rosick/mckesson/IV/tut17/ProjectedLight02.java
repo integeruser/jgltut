@@ -49,6 +49,11 @@ import rosick.mckesson.framework.SceneBinders.UniformVec3Binder;
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2017.html
  * @author integeruser
  * 
+ * W,A,S,D	- move the camera forward/backwards and left/right, relative to the camera's current orientation.
+ * 				Holding SHIFT with these keys will move in smaller increments.
+ * I,J,K,L  - control the projected flashlight's position. Holding SHIFT with these keys will move in smaller increments.
+ * O,U		- raise and lower the projected flashlight, relative to its current orientation. 
+ * 				Holding SHIFT with these keys will move in smaller increments.
  * SPACE	- reset the projected flashlight direction.
  * T		- toggle viewing of the current target point.
  * G		- toggle all of the regular lighting on and off.
@@ -65,23 +70,13 @@ import rosick.mckesson.framework.SceneBinders.UniformVec3Binder;
  * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the projected flashlight horizontally or vertically only, relative to the current camera view.
  * RIGHT  CLICKING and DRAGGING + ALT	- spin the projected flashlight.
  * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
- * 
- * W,A,S,D	- move the camera forward/backwards and left/right, relative to the camera's current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.  
- * Q,E		- raise and lower the camera, relative to its current orientation. 
- * 				Holding SHIFT with these keys will move in smaller increments.
- * 
- * I,J,K,L	- move the projected flashlight forward/backwards and left/right, relative to the camera's current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.  
- * U,O		- raise and lower the projected flashlight, relative to its current orientation. 
- * 				Holding SHIFT with these keys will move in smaller increments.
  */
 public class ProjectedLight02 extends LWJGLWindow {
 	
 	public static void main(String[] args) {	
 		Framework.CURRENT_TUTORIAL_DATAPATH = "/rosick/mckesson/IV/tut17/data/";
 		
-		new ProjectedLight02().start(g_displayWidth, g_displayHeight);
+		new ProjectedLight02().start(displayWidth, displayHeight);
 	}
 
 	
@@ -92,7 +87,7 @@ public class ProjectedLight02 extends LWJGLWindow {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	@Override
-	protected void init() {		
+	protected void init() {
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		glFrontFace(GL_CW);
@@ -125,11 +120,11 @@ public class ProjectedLight02 extends LWJGLWindow {
 			System.exit(0);
 		}
 
-		g_lightUniformBuffer = glGenBuffers();
-		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
+		lightUniformBuffer = glGenBuffers();
+		glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
 		glBufferData(GL_UNIFORM_BUFFER, LightBlock.SIZE, GL_STREAM_DRAW);
 
-		glBindBufferRange(GL_UNIFORM_BUFFER, g_lightBlockIndex, g_lightUniformBuffer,
+		glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer,
 				0, LightBlock.SIZE);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -144,24 +139,24 @@ public class ProjectedLight02 extends LWJGLWindow {
 			if (eventButton != -1) {
 				if (Mouse.getEventButtonState()) {
 					// Mouse down
-					MousePole.forwardMouseButton(g_viewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
-					MousePole.forwardMouseButton(g_lightViewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseButton(viewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseButton(lightViewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
 				} else {
 					// Mouse up
-					MousePole.forwardMouseButton(g_viewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
-					MousePole.forwardMouseButton(g_lightViewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseButton(viewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseButton(lightViewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
 				}
 			} else {
 				// Mouse moving or mouse scrolling
 				int dWheel = Mouse.getDWheel();
 				
 				if (dWheel != 0) {
-					MousePole.forwardMouseWheel(g_viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
+					MousePole.forwardMouseWheel(viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
 				}
 				
 				if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)) {
-					MousePole.forwardMouseMotion(g_viewPole, Mouse.getX(), Mouse.getY());			
-					MousePole.forwardMouseMotion(g_lightViewPole, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseMotion(viewPole, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseMotion(lightViewPole, Mouse.getX(), Mouse.getY());			
 				}
 			}
 		}
@@ -170,40 +165,40 @@ public class ProjectedLight02 extends LWJGLWindow {
 		float lastFrameDuration = (float) (getLastFrameDuration() / 100.0);
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-			g_viewPole.charPress(Keyboard.KEY_W, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			viewPole.charPress(Keyboard.KEY_W, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			g_viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			g_viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-			g_viewPole.charPress(Keyboard.KEY_A, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			viewPole.charPress(Keyboard.KEY_A, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
-			g_viewPole.charPress(Keyboard.KEY_E, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			viewPole.charPress(Keyboard.KEY_E, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-			g_viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 		
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-			g_lightViewPole.charPress(Keyboard.KEY_I, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			lightViewPole.charPress(Keyboard.KEY_I, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-			g_lightViewPole.charPress(Keyboard.KEY_K, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			lightViewPole.charPress(Keyboard.KEY_K, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			g_lightViewPole.charPress(Keyboard.KEY_L, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			lightViewPole.charPress(Keyboard.KEY_L, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-			g_lightViewPole.charPress(Keyboard.KEY_J, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			lightViewPole.charPress(Keyboard.KEY_J, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
-			g_lightViewPole.charPress(Keyboard.KEY_O, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			lightViewPole.charPress(Keyboard.KEY_O, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_U)) {
-			g_lightViewPole.charPress(Keyboard.KEY_U, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+			lightViewPole.charPress(Keyboard.KEY_U, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
 		
 		
@@ -211,41 +206,41 @@ public class ProjectedLight02 extends LWJGLWindow {
 			if (Keyboard.getEventKeyState()) {
 				switch (Keyboard.getEventKey()) {
 				case Keyboard.KEY_SPACE:
-					g_lightViewPole.reset();
+					lightViewPole.reset();
 					break;
 					
 				case Keyboard.KEY_T:
-					g_bDrawCameraPos = !g_bDrawCameraPos;
+					drawCameraPos = !drawCameraPos;
 					break;
 
 				case Keyboard.KEY_G:
-					g_bShowOtherLights = !g_bShowOtherLights;
+					showOtherLights = !showOtherLights;
 					break;
 	
 				case Keyboard.KEY_H:
-					g_currSampler = (g_currSampler + 1) % NUM_SAMPLERS;
+					currSampler = (currSampler + 1) % NUM_SAMPLERS;
 					break;
 					
 				case Keyboard.KEY_P:
-					g_timer.togglePause();
+					timer.togglePause();
 					break;
 					
 				case Keyboard.KEY_Y:
-					g_currFOVIndex = Math.min(g_currFOVIndex + 1, g_lightFOVs.length - 1);
-					System.out.printf("Curr FOV: %f\n", g_lightFOVs[g_currFOVIndex]);
+					currFOVIndex = Math.min(currFOVIndex + 1, lightFOVs.length - 1);
+					System.out.printf("Curr FOV: %f\n", lightFOVs[currFOVIndex]);
 					break;
 					
 				case Keyboard.KEY_N:
-					g_currFOVIndex = Math.max(g_currFOVIndex - 1, 0);
-					System.out.printf("Curr FOV: %f\n", g_lightFOVs[g_currFOVIndex]);
+					currFOVIndex = Math.max(currFOVIndex - 1, 0);
+					System.out.printf("Curr FOV: %f\n", lightFOVs[currFOVIndex]);
 					break;
 					
 				case Keyboard.KEY_1:
 				case Keyboard.KEY_2:
 				case Keyboard.KEY_3:
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
-					g_currTextureIndex = number;
-					System.out.printf("%s\n", g_texDefs[g_currTextureIndex].name);
+					currTextureIndex = number;
+					System.out.printf("%s\n", texDefs[currTextureIndex].name);
 					break;
 
 				case Keyboard.KEY_ESCAPE:
@@ -258,30 +253,30 @@ public class ProjectedLight02 extends LWJGLWindow {
 	
 
 	@Override
-	protected void display() {			
-		g_timer.update((float) getElapsedTime());
+	protected void display() {
+		timer.update(getElapsedTime());
 
 		glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		final Mat4 cameraMatrix = g_viewPole.calcMatrix();
-		final Mat4 lightView = g_lightViewPole.calcMatrix();
+		final Mat4 cameraMatrix = viewPole.calcMatrix();
+		final Mat4 lightView = lightViewPole.calcMatrix();
 		
 		MatrixStack modelMatrix = new MatrixStack();
 		modelMatrix.applyMatrix(cameraMatrix);
 
 		buildLights(cameraMatrix);
 		
-		g_nodes.get(0).nodeSetOrient(Glm.rotate(new Quaternion(1.0f),
-				360.0f * g_timer.getAlpha(), new Vec3(0.0f, 1.0f, 0.0f)));
+		nodes.get(0).nodeSetOrient(Glm.rotate(new Quaternion(1.0f),
+				360.0f * timer.getAlpha(), new Vec3(0.0f, 1.0f, 0.0f)));
 
-		g_nodes.get(3).nodeSetOrient(Quaternion.mul(g_spinBarOrient, Glm.rotate(new Quaternion(1.0f),
-				360.0f * g_timer.getAlpha(), new Vec3(0.0f, 0.0f, 1.0f))));
+		nodes.get(3).nodeSetOrient(Quaternion.mul(spinBarOrient, Glm.rotate(new Quaternion(1.0f),
+				360.0f * timer.getAlpha(), new Vec3(0.0f, 0.0f, 1.0f))));
 
 		{		
 			MatrixStack persMatrix = new MatrixStack();
-			persMatrix.perspective(60.0f, g_displayWidth / (float) g_displayHeight, g_fzNear, g_fzFar);
+			persMatrix.perspective(60.0f, displayWidth / (float) displayHeight, zNear, zFar);
 			
 			ProjectionBlock projData = new ProjectionBlock();
 			projData.cameraToClipMatrix = persMatrix.top();
@@ -291,9 +286,9 @@ public class ProjectedLight02 extends LWJGLWindow {
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		}
 
-		glActiveTexture(GL_TEXTURE0 + g_lightProjTexUnit);
-		glBindTexture(GL_TEXTURE_2D, g_lightTextures[g_currTextureIndex]);
-		glBindSampler(g_lightProjTexUnit, g_samplers[g_currSampler]);	
+		glActiveTexture(GL_TEXTURE0 + lightProjTexUnit);
+		glBindTexture(GL_TEXTURE_2D, lightTextures[currTextureIndex]);
+		glBindSampler(lightProjTexUnit, samplers[currSampler]);	
 		
 		{
 			MatrixStack lightProjStack = new MatrixStack();
@@ -302,22 +297,22 @@ public class ProjectedLight02 extends LWJGLWindow {
 			lightProjStack.scale(0.5f, 0.5f, 1.0f);
 			
 			// Project. Z-range is irrelevant.
-			lightProjStack.perspective(g_lightFOVs[g_currFOVIndex], 1.0f, 1.0f, 100.0f);
+			lightProjStack.perspective(lightFOVs[currFOVIndex], 1.0f, 1.0f, 100.0f);
 			
 			// Transform from main camera space to light camera space.
 			lightProjStack.applyMatrix(lightView);
 			lightProjStack.applyMatrix(Glm.inverse(cameraMatrix));
 
-			g_lightProjMatBinder.setValue(lightProjStack.top());
+			lightProjMatBinder.setValue(lightProjStack.top());
 
 			Vec4 worldLightPos = Glm.inverse(lightView).getColumn(3);
 			Vec3 lightPos = new Vec3(Mat4.mul(cameraMatrix, worldLightPos));
 
-			g_camLightPosBinder.setValue(lightPos);
+			camLightPosBinder.setValue(lightPos);
 		}
 				
-		glViewport(0, 0, g_displayWidth, g_displayHeight);
-		g_pScene.render(modelMatrix.top());
+		glViewport(0, 0, displayWidth, displayHeight);
+		scene.render(modelMatrix.top());
 
 		{
 			// Draw axes
@@ -327,47 +322,47 @@ public class ProjectedLight02 extends LWJGLWindow {
 			modelMatrix.scale(15.0f);
 			modelMatrix.scale(1.0f, 1.0f, -1.0f); 				// Invert the Z-axis so that it points in the right direction.
 
-			glUseProgram(g_coloredProg);
-			glUniformMatrix4(g_coloredModelToCameraMatrixUnif, false,
+			glUseProgram(coloredProg);
+			glUniformMatrix4(coloredModelToCameraMatrixUnif, false,
 				modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
-			g_pAxesMesh.render();
+			axesMesh.render();
 	
 			modelMatrix.pop();
 		}
 		
-		if (g_bDrawCameraPos) {
+		if (drawCameraPos) {
 			modelMatrix.push();
 
 			// Draw lookat point.
 			modelMatrix.setIdentity();
-			modelMatrix.translate(0.0f, 0.0f, -g_viewPole.getView().radius);
+			modelMatrix.translate(0.0f, 0.0f, -viewPole.getView().radius);
 			modelMatrix.scale(0.5f);
 
 			glDisable(GL_DEPTH_TEST);
 			glDepthMask(false);
-			glUseProgram(g_unlitProg);
-			glUniformMatrix4(g_unlitModelToCameraMatrixUnif, false,
+			glUseProgram(unlitProg);
+			glUniformMatrix4(unlitModelToCameraMatrixUnif, false,
 					modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
-			glUniform4f(g_unlitObjectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
-			g_pSphereMesh.render("flat");
+			glUniform4f(unlitObjectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
+			sphereMesh.render("flat");
 			glDepthMask(true);
 			glEnable(GL_DEPTH_TEST);
-			glUniform4f(g_unlitObjectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-			g_pSphereMesh.render("flat");
+			glUniform4f(unlitObjectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
+			sphereMesh.render("flat");
 			
 			modelMatrix.pop();
 		}
 		
-		glActiveTexture(GL_TEXTURE0 + g_lightProjTexUnit);
+		glActiveTexture(GL_TEXTURE0 + lightProjTexUnit);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		glBindSampler(g_lightProjTexUnit, 0);
+		glBindSampler(lightProjTexUnit, 0);
 	}
 	
 	
 	@Override
-	protected void reshape(int width, int height) {	
-		g_displayWidth = width;
-		g_displayHeight = height;
+	protected void reshape(int width, int height) {
+		displayWidth = width;
+		displayHeight = height;
 	}
 	
 	
@@ -377,133 +372,136 @@ public class ProjectedLight02 extends LWJGLWindow {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
-	private static int g_displayWidth = 500;
-	private static int g_displayHeight = 500;
+	private static int displayWidth = 500;
+	private static int displayHeight = 500;
 
-	private final float g_fzNear = 1.0f;
-	private final float g_fzFar = 1000.0f;
+	private final float zNear = 1.0f;
+	private final float zFar = 1000.0f;
 
 	private final FloatBuffer mat4Buffer		= BufferUtils.createFloatBuffer(16);
 	private final FloatBuffer lightBlockBuffer	= BufferUtils.createFloatBuffer(40);
 
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	private int coloredModelToCameraMatrixUnif;
+	private int coloredProg;
+	
+	private int unlitProg;
+	private int unlitModelToCameraMatrixUnif;
+	private int unlitObjectColorUnif;
+	
+	
+	private void loadAndSetupScene() {
+		scene = new Scene("proj2d_scene.xml");
+
+		nodes = new ArrayList<>();
+		nodes.add(scene.findNode("cube"));
+		nodes.add(scene.findNode("rightBar"));
+		nodes.add(scene.findNode("leaningBar"));
+		nodes.add(scene.findNode("spinBar"));
+		nodes.add(scene.findNode("diorama"));
+		nodes.add(scene.findNode("floor"));
+		
+		lightNumBinder = new UniformIntBinder();
+		SceneBinders.associateUniformWithNodes(nodes, lightNumBinder, "numberOfLights");
+		SceneBinders.setStateBinderWithNodes(nodes, lightNumBinder);
+
+		lightProjMatBinder = new UniformMat4Binder();
+		SceneBinders.associateUniformWithNodes(nodes, lightProjMatBinder, "cameraToLightProjMatrix");
+		SceneBinders.setStateBinderWithNodes(nodes, lightProjMatBinder);
+		
+		camLightPosBinder = new UniformVec3Binder();
+		SceneBinders.associateUniformWithNodes(nodes, camLightPosBinder, "cameraSpaceProjLightPos");
+		SceneBinders.setStateBinderWithNodes(nodes, camLightPosBinder);	
+		
+		int unlit = scene.findProgram("p_unlit");
+		sphereMesh = scene.findMesh("m_sphere");
+
+		int colored = scene.findProgram("p_colored");
+		axesMesh = scene.findMesh("m_axes");
+		
+		// No more things that can throw.
+		spinBarOrient = nodes.get(3).nodeGetOrient();
+		unlitProg = unlit;
+		unlitModelToCameraMatrixUnif = glGetUniformLocation(unlit, "modelToCameraMatrix");
+		unlitObjectColorUnif = glGetUniformLocation(unlit, "objectColor");
+
+		coloredProg = colored;
+		coloredModelToCameraMatrixUnif = glGetUniformLocation(colored, "modelToCameraMatrix");	
+	}
+	
+	
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private int g_unlitProg;
-	private int g_unlitModelToCameraMatrixUnif;
-	private int g_unlitObjectColorUnif;
-	
-	private int g_coloredModelToCameraMatrixUnif;
-	private int g_coloredProg;
-	
-	private Scene g_pScene;
-	private ArrayList<SceneNode> g_nodes;
-	private Timer g_timer = new Timer(Timer.Type.TT_LOOP, 10.0f);
+	private Scene scene;
+	private ArrayList<SceneNode> nodes;
+	private Timer timer = new Timer(Timer.Type.TT_LOOP, 10.0f);
 
-	private UniformMat4Binder g_lightProjMatBinder;
-	private UniformVec3Binder g_camLightPosBinder;
+	private UniformMat4Binder lightProjMatBinder;
+	private UniformVec3Binder camLightPosBinder;
 	
-	private Quaternion g_spinBarOrient;
+	private Quaternion spinBarOrient;
 	
-	private boolean g_bShowOtherLights = true;
+	private boolean showOtherLights = true;
 
-	private Mesh g_pSphereMesh, g_pAxesMesh;
-	private boolean g_bDrawCameraPos;
+	private Mesh sphereMesh, axesMesh;
+	private boolean drawCameraPos;
 		
-	private float g_lightFOVs[] = { 
+	private float[] lightFOVs = {
 			10.0f, 20.0f, 45.0f, 75.0f, 
 			90.0f, 120.0f, 150.0f, 170.0f};
-	private int g_currFOVIndex = 3;
+	private int currFOVIndex = 3;
 	
 	
 	////////////////////////////////
 	// View setup.
-	private ViewData g_initialView = new ViewData(
+	private ViewData initialView = new ViewData(
 			new Vec3(0.0f, 0.0f, 10.0f),
 			new Quaternion(0.909845f, 0.16043f, -0.376867f, -0.0664516f),
 			25.0f, 
 			0.0f);
 	
-	private ViewScale g_initialViewScale = new ViewScale(	
+	private ViewScale initialViewScale = new ViewScale(
 			5.0f, 70.0f,
 			2.0f, 0.5f,
 			2.0f, 0.5f,
 			90.0f / 250.0f);
 	
 
-	private ViewData g_initLightView = new ViewData(
+	private ViewData initLightView = new ViewData(
 			new Vec3(0.0f, 0.0f, 20.0f),
 			new Quaternion(1.0f, 0.0f, 0.0f, 0.0f),
 			5.0f,
 			0.0f);
 	
-	private ViewScale g_initLightViewScale = new ViewScale(	
+	private ViewScale initLightViewScale = new ViewScale(
 			0.05f, 10.0f,
 			0.1f, 0.05f,
 			4.0f, 1.0f,
 			90.0f / 250.0f);
 
 	
-	private ViewPole g_viewPole 		= new ViewPole(g_initialView, g_initialViewScale, MouseButtons.MB_LEFT_BTN);
-	private ViewPole g_lightViewPole	= new ViewPole(g_initLightView, g_initLightViewScale, MouseButtons.MB_RIGHT_BTN, true);	
+	private ViewPole viewPole 		= new ViewPole(initialView, initialViewScale, MouseButtons.MB_LEFT_BTN);
+	private ViewPole lightViewPole	= new ViewPole(initLightView, initLightViewScale, MouseButtons.MB_RIGHT_BTN, true);	
 
-	
+
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	private void loadAndSetupScene() {
-		g_pScene = new Scene("proj2d_scene.xml");
-
-		g_nodes = new ArrayList<>();
-		g_nodes.add(g_pScene.findNode("cube"));
-		g_nodes.add(g_pScene.findNode("rightBar"));
-		g_nodes.add(g_pScene.findNode("leaningBar"));
-		g_nodes.add(g_pScene.findNode("spinBar"));
-		g_nodes.add(g_pScene.findNode("diorama"));
-		g_nodes.add(g_pScene.findNode("floor"));
-		
-		g_lightNumBinder = new UniformIntBinder();
-		SceneBinders.associateUniformWithNodes(g_nodes, g_lightNumBinder, "numberOfLights");
-		SceneBinders.setStateBinderWithNodes(g_nodes, g_lightNumBinder);
-
-		g_lightProjMatBinder = new UniformMat4Binder();
-		SceneBinders.associateUniformWithNodes(g_nodes, g_lightProjMatBinder, "cameraToLightProjMatrix");
-		SceneBinders.setStateBinderWithNodes(g_nodes, g_lightProjMatBinder);
-		
-		g_camLightPosBinder = new UniformVec3Binder();
-		SceneBinders.associateUniformWithNodes(g_nodes, g_camLightPosBinder, "cameraSpaceProjLightPos");
-		SceneBinders.setStateBinderWithNodes(g_nodes, g_camLightPosBinder);	
-		
-		int unlit = g_pScene.findProgram("p_unlit");
-		g_pSphereMesh = g_pScene.findMesh("m_sphere");
-
-		int colored = g_pScene.findProgram("p_colored");
-		g_pAxesMesh = g_pScene.findMesh("m_axes");
-		
-		// No more things that can throw.
-		g_spinBarOrient = g_nodes.get(3).nodeGetOrient();
-		g_unlitProg = unlit;
-		g_unlitModelToCameraMatrixUnif = glGetUniformLocation(unlit, "modelToCameraMatrix");
-		g_unlitObjectColorUnif = glGetUniformLocation(unlit, "objectColor");
-
-		g_coloredProg = colored;
-		g_coloredModelToCameraMatrixUnif = glGetUniformLocation(colored, "modelToCameraMatrix");	
-	}
-	
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	private final TexDef g_texDefs[] = { 
+	private final TexDef[] texDefs = {
 			new TexDef("Flashlight.dds", 	"Flashlight"),
 			new TexDef("PointsOfLight.dds", "Multiple Point Lights"),
 			new TexDef("Bands.dds", 		"Light Bands")};
-	private final int NUM_LIGHT_TEXTURES = g_texDefs.length;
+	private final int NUM_LIGHT_TEXTURES = texDefs.length;
 
-	private int[] g_lightTextures = new int[g_texDefs.length];
-	private int g_currTextureIndex = 0;
+	private int[] lightTextures = new int[texDefs.length];
+	private int currTextureIndex = 0;
 	
 	
 	private class TexDef {
@@ -519,11 +517,11 @@ public class ProjectedLight02 extends LWJGLWindow {
 	
 	private void loadTextures() {
 		try {
-			for (int i = 0; i < NUM_LIGHT_TEXTURES; i++) {
-				String filepath = Framework.findFileOrThrow(g_texDefs[i].filename);
+			for (int textureIndex = 0; textureIndex < NUM_LIGHT_TEXTURES; textureIndex++) {
+				String filepath = Framework.findFileOrThrow(texDefs[textureIndex].filename);
 				ImageSet imageSet = DdsLoader.loadFromFile(filepath);
 				
-				g_lightTextures[i] = TextureGenerator.createTexture(imageSet, 0);	
+				lightTextures[textureIndex] = TextureGenerator.createTexture(imageSet, 0);	
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -537,34 +535,34 @@ public class ProjectedLight02 extends LWJGLWindow {
 	
 	private final int NUM_SAMPLERS = 2;
 
-	private int[] g_samplers = new int[NUM_SAMPLERS];
-	private int g_currSampler = 0;
+	private int[] samplers = new int[NUM_SAMPLERS];
+	private int currSampler = 0;
 	
 	
 	private void createSamplers() {		
-		for (int samplerIx = 0; samplerIx < NUM_SAMPLERS; samplerIx++) {
-			g_samplers[samplerIx] = glGenSamplers();
-			glSamplerParameteri(g_samplers[samplerIx], GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glSamplerParameteri(g_samplers[samplerIx], GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		for (int samplerIndex = 0; samplerIndex < NUM_SAMPLERS; samplerIndex++) {
+			samplers[samplerIndex] = glGenSamplers();
+			glSamplerParameteri(samplers[samplerIndex], GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glSamplerParameteri(samplers[samplerIndex], GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		}
 
-		glSamplerParameteri(g_samplers[0], GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glSamplerParameteri(g_samplers[0], GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glSamplerParameteri(samplers[0], GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glSamplerParameteri(samplers[0], GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-		glSamplerParameteri(g_samplers[1], GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glSamplerParameteri(g_samplers[1], GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		glSamplerParameteri(samplers[1], GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glSamplerParameteri(samplers[1], GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
 		
 		float[] color = {0.0f, 0.0f, 0.0f, 1.0f};
-		FloatBuffer buffer = BufferUtils.createFloatBuffer(4);
+		FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(4);
 		
 		for (float f : color) {
-			buffer.put(f);
+			colorBuffer.put(f);
 		}
 		
-		buffer.flip();
+		colorBuffer.flip();
 		
-		glSamplerParameter(g_samplers[1], GL_TEXTURE_BORDER_COLOR, buffer);
+		glSamplerParameter(samplers[1], GL_TEXTURE_BORDER_COLOR, colorBuffer);
 	}
 
 	
@@ -580,7 +578,7 @@ public class ProjectedLight02 extends LWJGLWindow {
 	private class ProjectionBlock extends BufferableData<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
 		
-		static final int SIZE = 16 * FLOAT_SIZE;
+		static final int SIZE = Mat4.SIZE;
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -595,16 +593,18 @@ public class ProjectedLight02 extends LWJGLWindow {
 	
 	private static final int MAX_NUMBER_OF_LIGHTS = 4;
 
-	private final int g_lightBlockIndex = 1;
-	private final int g_lightProjTexUnit = 3;
+	private final int lightBlockIndex = 1;
+	private final int lightProjTexUnit = 3;
 
-	private int g_lightUniformBuffer;
-	private UniformIntBinder g_lightNumBinder;
+	private int lightUniformBuffer;
+	private UniformIntBinder lightNumBinder;
 
-
+	
 	private class PerLight extends BufferableData<FloatBuffer> {
 		Vec4 cameraSpaceLightPos;
 		Vec4 lightIntensity;
+		
+		static final int SIZE = Vec4.SIZE + Vec4.SIZE;
 		
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -615,6 +615,7 @@ public class ProjectedLight02 extends LWJGLWindow {
 		}
 	}
 	
+	
 	private class LightBlock extends BufferableData<FloatBuffer> {
 		Vec4 ambientIntensity;
 		float lightAttenuation;
@@ -622,7 +623,7 @@ public class ProjectedLight02 extends LWJGLWindow {
 		float padding[] = new float[2];
 		PerLight lights[] = new PerLight[MAX_NUMBER_OF_LIGHTS];
 
-		static final int SIZE = (4 + 1 + 1 + 2 + (8 * MAX_NUMBER_OF_LIGHTS)) * FLOAT_SIZE;
+		static final int SIZE = Vec4.SIZE + ((1 + 1 + 2) * FLOAT_SIZE) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
 
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
@@ -642,7 +643,7 @@ public class ProjectedLight02 extends LWJGLWindow {
 		}
 	}
 
-	
+
 	private void buildLights(Mat4 camMatrix) {
 		LightBlock lightData = new LightBlock();
 		lightData.ambientIntensity = new Vec4(0.2f, 0.2f, 0.2f, 1.0f);
@@ -659,13 +660,13 @@ public class ProjectedLight02 extends LWJGLWindow {
 		lightData.lights[1].cameraSpaceLightPos = Mat4.mul(camMatrix, 
 				new Vec4(5.0f, 6.0f, 0.5f, 1.0f));
 
-		if (g_bShowOtherLights) {
-			g_lightNumBinder.setValue(2);
+		if (showOtherLights) {
+			lightNumBinder.setValue(2);
 		} else {
-			g_lightNumBinder.setValue(0);
+			lightNumBinder.setValue(0);
 		}
 		
-		glBindBuffer(GL_UNIFORM_BUFFER, g_lightUniformBuffer);
+		glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
 		glBufferData(GL_UNIFORM_BUFFER, lightData.fillAndFlipBuffer(lightBlockBuffer), GL_STREAM_DRAW);
 	}
 }

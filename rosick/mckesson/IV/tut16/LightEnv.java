@@ -34,72 +34,7 @@ import rosick.mckesson.framework.Interpolators.WeightedLinearInterpolatorVec4;
  */
 public class LightEnv {
 
-	class PerLight extends BufferableData<FloatBuffer> {
-		Vec4 cameraSpaceLightPos;
-		Vec4 lightIntensity;
-		
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			cameraSpaceLightPos.fillBuffer(buffer);
-			lightIntensity.fillBuffer(buffer);
-
-			return buffer;
-		}
-	}
-	
-	class LightBlock extends BufferableData<FloatBuffer> {
-		Vec4 ambientIntensity;
-		float lightAttenuation;
-		float maxIntensity;
-		float padding[] = new float[2];
-		PerLight lights[] = new PerLight[MAX_NUMBER_OF_LIGHTS];
-
-		static final int SIZE = (4 + 1 + 1 + 2 + (8 * 4)) * (Float.SIZE / 8);
-
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
-			ambientIntensity.fillBuffer(buffer);
-			buffer.put(lightAttenuation);
-			buffer.put(maxIntensity);
-			buffer.put(padding);
-			
-			for (PerLight light : lights) {
-				if (light == null)
-					break;
-				
-				light.fillBuffer(buffer);
-			}
-			
-			return buffer;
-		}
-	}
-	
-
-	private class LightInterpolatorVec3 extends ConstVelLinearInterpolatorVec3 {}
-	
-	
-	private final int MAX_NUMBER_OF_LIGHTS = 4;
-	
-	private final float g_fHalfLightDistance = 70.0f;
-	private final float g_fLightAttenuation = 1.0f / (g_fHalfLightDistance * g_fHalfLightDistance);
-
-	private Timer m_sunTimer;
-
-	private float m_fLightAttenuation;
-	
-	private TimedLinearInterpolatorVec4 m_ambientInterpolator = new TimedLinearInterpolatorVec4();
-	private TimedLinearInterpolatorVec4 m_backgroundInterpolator = new TimedLinearInterpolatorVec4();
-	private TimedLinearInterpolatorVec4 m_sunlightInterpolator = new TimedLinearInterpolatorVec4();
-	private TimedLinearInterpolatorFloat m_maxIntensityInterpolator = new TimedLinearInterpolatorFloat();
-	
-	private ArrayList<LightInterpolatorVec3> m_lightPos = new ArrayList<>();
-	private ArrayList<Vec4> m_lightIntensity = new ArrayList<>();
-	private ArrayList<Timer> m_lightTimers = new ArrayList<>();
-		
-		
-	LightEnv(String envFileName) {
-		m_fLightAttenuation = 40.0f;
-		
+	LightEnv(String envFileName) {		
 		// crea il parser e ci associa il file di input
 		Document doc = null;
 		try {
@@ -116,9 +51,6 @@ public class LightEnv {
 		
 		Element lightenvElement = doc.getDocumentElement();
 		
-		m_fLightAttenuation = Float.parseFloat(lightenvElement.getAttribute("atten"));
-		m_fLightAttenuation = 1.0f / (m_fLightAttenuation * m_fLightAttenuation);
-		
 		Element sunNode = (Element) lightenvElement.getElementsByTagName("sun").item(0);
 		if (sunNode == null) {
 			throw new RuntimeException("There must be a 'lightenv' element that has a 'sun' element as a child.");
@@ -126,12 +58,12 @@ public class LightEnv {
 		
 		float timerTime = Float.parseFloat(sunNode.getAttribute("time"));
 		
-		m_sunTimer = new Timer(Timer.Type.TT_LOOP, timerTime);
+		sunTimer = new Timer(Timer.Type.TT_LOOP, timerTime);
 		
-		LightVector ambient = new LightVector();
-		LightVector light = new LightVector();
-		LightVector background = new LightVector();
-		MaxIntensityVector maxIntensity = new MaxIntensityVector();
+		ArrayList<LightData> ambient = new ArrayList<>();
+		ArrayList<LightData> light = new ArrayList<>();
+		ArrayList<LightData> background = new ArrayList<>();
+		ArrayList<MaxIntensityData> maxIntensity = new ArrayList<>();
 		
 		{
 			NodeList keys = sunNode.getElementsByTagName("key");
@@ -157,10 +89,10 @@ public class LightEnv {
 			}
 		}
 		
-		m_ambientInterpolator.setValues(ambient);
-		m_sunlightInterpolator.setValues(light);
-		m_backgroundInterpolator.setValues(background);
-		m_maxIntensityInterpolator.setValues(maxIntensity);
+		ambientInterpolator.setValues(ambient);
+		sunlightInterpolator.setValues(light);
+		backgroundInterpolator.setValues(background);
+		maxIntensityInterpolator.setValues(maxIntensity);
 		
 		{
 			NodeList lights = lightenvElement.getElementsByTagName("light");
@@ -168,14 +100,14 @@ public class LightEnv {
 			int countLights = 0;
 			while ((elemlight = (Element) lights.item(countLights)) != null) {
 				
-				if(m_lightPos.size() + 1 == MAX_NUMBER_OF_LIGHTS)
+				if(lightPos.size() + 1 == MAX_NUMBER_OF_LIGHTS)
 					throw new RuntimeException("Too many lights specified.");
 				
 				float lightTime = Float.parseFloat(elemlight.getAttribute("time"));
-				m_lightTimers.add(new Timer(Timer.Type.TT_LOOP, lightTime));
+				lightTimers.add(new Timer(Timer.Type.TT_LOOP, lightTime));
 				
 				String strVec4 = elemlight.getAttribute("intensity");
-				m_lightIntensity.add(parseVec4(strVec4));
+				lightIntensity.add(parseVec4(strVec4));
 				
 				ArrayList<Vec3> posValues = new ArrayList<>();
 				NodeList keys = elemlight.getElementsByTagName("key");
@@ -190,9 +122,9 @@ public class LightEnv {
 				if(posValues.isEmpty())
 					throw new RuntimeException("'light' elements must have at least one 'key' element child.");
 
-				LightInterpolatorVec3 lightInterpolatorVec3 = new LightInterpolatorVec3();
+				ConstVelLinearInterpolatorVec3 lightInterpolatorVec3 = new ConstVelLinearInterpolatorVec3();
 				lightInterpolatorVec3.setValues(posValues);
-				m_lightPos.add(lightInterpolatorVec3);
+				lightPos.add(lightInterpolatorVec3);
 				countLights++;
 			}
 		}
@@ -203,8 +135,56 @@ public class LightEnv {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
+
+	class PerLight extends BufferableData<FloatBuffer> {
+		Vec4 cameraSpaceLightPos;
+		Vec4 lightIntensity;
+		
+		static final int SIZE = Vec4.SIZE + Vec4.SIZE;
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			cameraSpaceLightPos.fillBuffer(buffer);
+			lightIntensity.fillBuffer(buffer);
+
+			return buffer;
+		}
+	}
+
 	
-	public class TimedLinearInterpolatorFloat extends WeightedLinearInterpolatorFloat {
+	class LightBlock extends BufferableData<FloatBuffer> {
+		Vec4 ambientIntensity;
+		float lightAttenuation;
+		float maxIntensity;
+		float padding[] = new float[2];
+		PerLight lights[] = new PerLight[MAX_NUMBER_OF_LIGHTS];
+
+		static final int SIZE = Vec4.SIZE + ((1 + 1 + 2) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
+
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {			
+			ambientIntensity.fillBuffer(buffer);
+			buffer.put(lightAttenuation);
+			buffer.put(maxIntensity);
+			buffer.put(padding);
+			
+			for (PerLight light : lights) {
+				if (light == null)
+					break;
+				
+				light.fillBuffer(buffer);
+			}
+			
+			return buffer;
+		}
+	}
+		
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+	class TimedLinearInterpolatorFloat extends WeightedLinearInterpolatorFloat {
 
 		public void setValues(ArrayList<MaxIntensityData> data) {
 			setValues(data, true);
@@ -237,7 +217,7 @@ public class LightEnv {
 		}
 	}
 		
-	public class TimedLinearInterpolatorVec4 extends WeightedLinearInterpolatorVec4 {
+	class TimedLinearInterpolatorVec4 extends WeightedLinearInterpolatorVec4 {
 
 		public void setValues(ArrayList<LightData> data) {
 			setValues(data, true);
@@ -275,21 +255,20 @@ public class LightEnv {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	
 	class Pair<K, V> {
 		K first;
 		V second;
 	}
 	
 	
-	public class MaxIntensityData extends Pair<Float, Float> {
+	class MaxIntensityData extends Pair<Float, Float> {
 		public MaxIntensityData(Float first, Float second) {
 			this.first = first;
 			this.second = second;
 		}
 	}
 	
-	public class LightData extends Pair<Vec4, Float> {
+	class LightData extends Pair<Vec4, Float> {
 		public LightData(Vec4 first, Float second) {
 			this.first = first;
 			this.second = second;
@@ -297,29 +276,20 @@ public class LightEnv {
 	}
 	
 	
-	public class MaxIntensityVector extends ArrayList<MaxIntensityData> {
-		private static final long serialVersionUID = -3083128917290208757L;			// Autogenerated by Eclipse Ide
-	}
-
-	public class LightVector extends ArrayList<LightData> {
-		private static final long serialVersionUID = -7238863853470466667L;			// Autogenerated by Eclipse Ide
-	}
-
-	
-	public static Vec4 getValue(LightData data) {
+	static Vec4 getValue(LightData data) {
 		return data.first;
 	}
 	
-	public static float getTime(LightData data) {
+	static float getTime(LightData data) {
 		return data.second;
 	}
 	
 	
-	public float getValue(MaxIntensityData data) {
+	float getValue(MaxIntensityData data) {
 		return data.first;
 	}
 
-	public static float getTime(MaxIntensityData data) {
+	static float getTime(MaxIntensityData data) {
 		return data.second;
 	}
 	
@@ -329,41 +299,41 @@ public class LightEnv {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 		
-	void updateTime(double fElapsedTime) {
-		m_sunTimer.update((float) fElapsedTime);
+	void updateTime(double elapsedTime) {
+		sunTimer.update((float) elapsedTime);
 		
-		for (Timer timer : m_lightTimers) {
-			timer.update((float) fElapsedTime);
+		for (Timer timer : lightTimers) {
+			timer.update((float) elapsedTime);
 		}
 	}
 
 	
 	void togglePause() {
-		boolean isPaused = m_sunTimer.togglePause();
+		boolean isPaused = sunTimer.togglePause();
 		setPause(isPaused);
 	}
 	
 	void setPause(boolean pause) {
-		m_sunTimer.setPause(pause);
+		sunTimer.setPause(pause);
 
-		for (Timer timer : m_lightTimers) {
+		for (Timer timer : lightTimers) {
 			timer.setPause(pause);
 		}
 	}
 
 	
 	void rewindTime(float secRewind) {
-		m_sunTimer.rewind(secRewind);
+		sunTimer.rewind(secRewind);
 		
-		for (Timer timer : m_lightTimers) {
+		for (Timer timer : lightTimers) {
 			timer.rewind(secRewind);
 		}
 	}
 
 	void fastForwardTime(float secFF) {
-		m_sunTimer.fastForward(secFF);
+		sunTimer.fastForward(secFF);
 		
-		for (Timer timer : m_lightTimers) {
+		for (Timer timer : lightTimers) {
 			timer.fastForward(secFF);
 		}
 	}
@@ -372,49 +342,24 @@ public class LightEnv {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	public Vec4 parseVec4(String s) {
-		Scanner snr = new Scanner(s);
-		Vec4 res = new Vec4();
-		
-		res.x = Float.parseFloat(snr.next());
-		res.y = Float.parseFloat(snr.next());
-		res.z = Float.parseFloat(snr.next());
-		res.w = Float.parseFloat(snr.next());
 
-		return res;
-	}
-	
-	public Vec3 parseVec3(String s) {
-		Scanner snr = new Scanner(s);
-		Vec3 res = new Vec3();
-		
-		res.x = Float.parseFloat(snr.next());
-		res.y = Float.parseFloat(snr.next());
-		res.z = Float.parseFloat(snr.next());
-
-		return res;
-	}
-		
-	
 	LightBlock getLightBlock(Mat4 worldToCameraMat) {
 		LightBlock lightData = new LightBlock();
-
-		lightData.ambientIntensity = m_ambientInterpolator.interpolate(m_sunTimer.getAlpha());
-		lightData.lightAttenuation = g_fLightAttenuation;
-		lightData.maxIntensity = m_maxIntensityInterpolator.interpolate(m_sunTimer.getAlpha());
+		lightData.ambientIntensity = ambientInterpolator.interpolate(sunTimer.getAlpha());
+		lightData.lightAttenuation = lightAttenuation;
+		lightData.maxIntensity = maxIntensityInterpolator.interpolate(sunTimer.getAlpha());
 
 		lightData.lights[0] = new PerLight();
 		lightData.lights[0].cameraSpaceLightPos = Mat4.mul(worldToCameraMat, getSunlightDirection());
-		lightData.lights[0].lightIntensity = m_sunlightInterpolator.interpolate(m_sunTimer.getAlpha());
+		lightData.lights[0].lightIntensity = sunlightInterpolator.interpolate(sunTimer.getAlpha());
 
-		for (int light = 0; light < m_lightPos.size(); light++) {
-			Vec4 worldLightPos = new Vec4(m_lightPos.get(light).interpolate(m_lightTimers.get(light).getAlpha()), 1.0f);
+		for (int lightIndex = 0; lightIndex < lightPos.size(); lightIndex++) {
+			Vec4 worldLightPos = new Vec4(lightPos.get(lightIndex).interpolate(lightTimers.get(lightIndex).getAlpha()), 1.0f);
 			Vec4 lightPosCameraSpace = Mat4.mul(worldToCameraMat, worldLightPos);
 
-			lightData.lights[light + 1] = new PerLight();
-			lightData.lights[light + 1].cameraSpaceLightPos = lightPosCameraSpace;
-			lightData.lights[light + 1].lightIntensity = new Vec4(m_lightIntensity.get(light));
+			lightData.lights[lightIndex + 1] = new PerLight();
+			lightData.lights[lightIndex + 1].cameraSpaceLightPos = lightPosCameraSpace;
+			lightData.lights[lightIndex + 1].lightIntensity = new Vec4(lightIntensity.get(lightIndex));
 		}
 
 		return lightData;
@@ -422,7 +367,7 @@ public class LightEnv {
 	
 	
 	Vec4 getSunlightDirection() {
-		float angle = 2.0f * 3.14159f * m_sunTimer.getAlpha();
+		float angle = 2.0f * 3.14159f * sunTimer.getAlpha();
 		Vec4 sunDirection = new Vec4(0.0f);
 		sunDirection.x = (float) Math.sin(angle);
 		sunDirection.y = (float) Math.cos(angle);
@@ -434,35 +379,86 @@ public class LightEnv {
 	}
 	
 	Vec4 getSunlightScaledIntensity() {
-		return Vec4.scale(m_sunlightInterpolator.interpolate(m_sunTimer.getAlpha()),
-				1.0f / m_maxIntensityInterpolator.interpolate(m_sunTimer.getAlpha()));
+		return Vec4.scale(sunlightInterpolator.interpolate(sunTimer.getAlpha()),
+				1.0f / maxIntensityInterpolator.interpolate(sunTimer.getAlpha()));
 	}
 	
 	
 	int getNumLights() {
-		return 1 + m_lightPos.size();
+		return 1 + lightPos.size();
 	}
 
 	int getNumPointLights() {
-		return m_lightPos.size();
+		return lightPos.size();
 	}
 
 	
-	Vec4 getPointLightIntensity(int pointLightIx) {
-		return m_lightIntensity.get(pointLightIx);
+	Vec4 getPointLightIntensity(int pointLightIndex) {
+		return lightIntensity.get(pointLightIndex);
 	}
 	
-	Vec4 getPointLightScaledIntensity(int pointLightIx) {
-		return Vec4.scale(m_lightIntensity.get(pointLightIx), 
-				1.0f / m_maxIntensityInterpolator.interpolate(m_sunTimer.getAlpha()));
+	Vec4 getPointLightScaledIntensity(int pointLightIndex) {
+		return Vec4.scale(lightIntensity.get(pointLightIndex), 
+				1.0f / maxIntensityInterpolator.interpolate(sunTimer.getAlpha()));
 	}	
 	
-	Vec3 getPointLightWorldPos(int pointLightIx) {
-		return m_lightPos.get(pointLightIx).interpolate(m_lightTimers.get(pointLightIx).getAlpha());
+	Vec3 getPointLightWorldPos(int pointLightIndex) {
+		return lightPos.get(pointLightIndex).interpolate(lightTimers.get(pointLightIndex).getAlpha());
 	}
 	
 	
 	Vec4 getBackgroundColor() {
-		return m_backgroundInterpolator.interpolate(m_sunTimer.getAlpha());
+		return backgroundInterpolator.interpolate(sunTimer.getAlpha());
+	}
+
+
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	private final static int MAX_NUMBER_OF_LIGHTS = 4;
+	
+	private final float halfLightDistance = 70.0f;
+	private final float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
+
+	private Timer sunTimer;
+	
+	private TimedLinearInterpolatorVec4 ambientInterpolator = new TimedLinearInterpolatorVec4();
+	private TimedLinearInterpolatorVec4 backgroundInterpolator = new TimedLinearInterpolatorVec4();
+	private TimedLinearInterpolatorVec4 sunlightInterpolator = new TimedLinearInterpolatorVec4();
+	private TimedLinearInterpolatorFloat maxIntensityInterpolator = new TimedLinearInterpolatorFloat();
+	
+	private ArrayList<ConstVelLinearInterpolatorVec3> lightPos = new ArrayList<>();
+	private ArrayList<Vec4> lightIntensity = new ArrayList<>();
+	private ArrayList<Timer> lightTimers = new ArrayList<>();
+		
+		
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private Vec4 parseVec4(String s) {
+		Scanner snr = new Scanner(s);
+		Vec4 res = new Vec4();
+		
+		res.x = Float.parseFloat(snr.next());
+		res.y = Float.parseFloat(snr.next());
+		res.z = Float.parseFloat(snr.next());
+		res.w = Float.parseFloat(snr.next());
+
+		return res;
+	}
+	
+	private Vec3 parseVec3(String s) {
+		Scanner snr = new Scanner(s);
+		Vec3 res = new Vec3();
+		
+		res.x = Float.parseFloat(snr.next());
+		res.y = Float.parseFloat(snr.next());
+		res.z = Float.parseFloat(snr.next());
+
+		return res;
 	}
 }

@@ -1,5 +1,8 @@
 package rosick.mckesson.IV.tut16;
 
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
@@ -11,9 +14,6 @@ import static org.lwjgl.opengl.GL31.*;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.*;
-
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
@@ -42,11 +42,11 @@ import rosick.mckesson.framework.Timer;
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2016.html
  * @author integeruser
  * 
- * A		- toggles gamma correction.
- * G		- switches to a texture who's mipmaps were properly generated.
- * SPACE	- presses A and G keys.
- * Y		- toggles between plane/corridor mesh.
- * P		- toggles pausing on/off.
+ * A		- toggle gamma correction.
+ * G		- switch to a texture who's mipmaps were properly generated.
+ * SPACE	- press A and G keys.
+ * Y		- toggle between plane/corridor mesh.
+ * P		- toggle pausing.
  * 1,2		- select linear mipmap filtering and anisotropic filtering (using the maximum possible anisotropy).
  */
 public class GammaCheckers02 extends LWJGLWindow {
@@ -56,76 +56,21 @@ public class GammaCheckers02 extends LWJGLWindow {
 
 		new GammaCheckers02().start();
 	}
-	
-	
-	private final static int FLOAT_SIZE = Float.SIZE / 8;
-	
+		
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		
-	private class ProgramData {
-		int theProgram;
-
-		int modelToCameraMatrixUnif;
-	}
-		
-	
-	private final int g_projectionBlockIndex = 0;
-	private final int g_colorTexUnit = 0;
-
-	private ProgramData g_progNoGamma;
-	private ProgramData g_progGamma;
-
-	private int g_projectionUniformBuffer;
-	private int g_linearTexture;
-	private int g_gammaTexture;
-	private float g_fzNear = 1.0f;
-	private float g_fzFar = 1000.0f;
-	
-	private MatrixStack modelMatrix = new MatrixStack();
-
-	private FloatBuffer tempFloatBuffer16 = BufferUtils.createFloatBuffer(16);
-
-	
-	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	private ProgramData loadProgram(String strVertexShader, String strFragmentShader) {		
-		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	strVertexShader));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	strFragmentShader));
-
-		ProgramData data = new ProgramData();
-		data.theProgram = Framework.createProgram(shaderList);
-		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
-
-		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
-		glUniformBlockBinding(data.theProgram, projectionBlock, g_projectionBlockIndex);
-
-		int colorTextureUnif = glGetUniformLocation(data.theProgram, "colorTexture");
-		glUseProgram(data.theProgram);
-		glUniform1i(colorTextureUnif, g_colorTexUnit);
-		glUseProgram(0);
-		
-		return data;
-	}
-		
-	private void initializePrograms() {	
-		g_progNoGamma = loadProgram("PT.vert", "textureNoGamma.frag");
-		g_progGamma = loadProgram("PT.vert", "textureGamma.frag");
-	}
-	
 	
 	@Override
-	protected void init() {	
+	protected void init() {
 		initializePrograms();
 
 		try {
-			g_pCorridor = new Mesh("Corridor.xml");
-			g_pPlane = 	new Mesh("BigPlane.xml");
+			corridor = 	new Mesh("Corridor.xml");
+			plane = 	new Mesh("BigPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(0);
@@ -145,11 +90,11 @@ public class GammaCheckers02 extends LWJGLWindow {
 		glEnable(GL_DEPTH_CLAMP);
 
 		// Setup our Uniform Buffers
-		g_projectionUniformBuffer = glGenBuffers();
-		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
+		projectionUniformBuffer = glGenBuffers();
+		glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
 		glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW);
 
-		glBindBufferRange(GL_UNIFORM_BUFFER, g_projectionBlockIndex, g_projectionUniformBuffer,
+		glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
 			0, ProjectionBlock.SIZE);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -160,34 +105,34 @@ public class GammaCheckers02 extends LWJGLWindow {
 	
 
 	@Override
-	protected void update() {		
+	protected void update() {
 		while (Keyboard.next()) {
 			boolean particularKeyPressed = false;
 			
 			if (Keyboard.getEventKeyState()) {
 				switch (Keyboard.getEventKey()) {
 				case Keyboard.KEY_A:
-					g_drawGammaProgram = !g_drawGammaProgram;
+					drawGammaProgram = !drawGammaProgram;
 					particularKeyPressed = true;
 					break;
 					
 				case Keyboard.KEY_G:
-					g_drawGammaTexture = !g_drawGammaTexture;
+					drawGammaTexture = !drawGammaTexture;
 					particularKeyPressed = true;
 					break;
 					
 				case Keyboard.KEY_SPACE:
-					g_drawGammaProgram = !g_drawGammaProgram;
-					g_drawGammaTexture = !g_drawGammaTexture;
+					drawGammaProgram = !drawGammaProgram;
+					drawGammaTexture = !drawGammaTexture;
 					particularKeyPressed = true;
 					break;
 
 				case Keyboard.KEY_Y:
-					g_drawCorridor = !g_drawCorridor;
+					drawCorridor = !drawCorridor;
 					break;
 					
 				case Keyboard.KEY_P:
-					g_camTimer.togglePause();
+					camTimer.togglePause();
 					break;
 					
 				case Keyboard.KEY_ESCAPE:
@@ -199,7 +144,7 @@ public class GammaCheckers02 extends LWJGLWindow {
 				if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_SAMPLERS) {
-						g_currSampler = number;
+						currSampler = number;
 					}
 				}
 			}
@@ -207,51 +152,49 @@ public class GammaCheckers02 extends LWJGLWindow {
 			
 			if (particularKeyPressed) {
 				System.out.printf("----\n");
-				System.out.printf("Rendering:\t\t%s\n", g_drawGammaProgram ? "Gamma" : "Linear");
-				System.out.printf("Mipmap Generation:\t%s\n", g_drawGammaTexture ? "Gamma" : "Linear");
+				System.out.printf("Rendering:\t\t%s\n", drawGammaProgram ? "Gamma" : "Linear");
+				System.out.printf("Mipmap Generation:\t%s\n", drawGammaTexture ? "Gamma" : "Linear");
 			}
 		}
 	}
 	
 
 	@Override
-	protected void display() {			
+	protected void display() {
 		glClearColor(0.75f, 0.75f, 1.0f, 1.0f);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		g_camTimer.update((float) getElapsedTime());
+		camTimer.update(getElapsedTime());
 
-		float cyclicAngle = g_camTimer.getAlpha() * 6.28f;
+		float cyclicAngle = camTimer.getAlpha() * 6.28f;
 		float hOffset = (float) (Math.cos(cyclicAngle) * 0.25f);
 		float vOffset = (float) (Math.sin(cyclicAngle) * 0.25f);
-
-		modelMatrix.clear();
 
 		final Mat4 worldToCamMat = Glm.lookAt(
 				new Vec3(hOffset, 1.0f, -64.0f),
 				new Vec3(hOffset, -5.0f + vOffset, -44.0f),
 				new Vec3(0.0f, 1.0f, 0.0f));
 
+		MatrixStack modelMatrix = new MatrixStack();
 		modelMatrix.applyMatrix(worldToCamMat);	
 
-		final ProgramData prog = g_drawGammaProgram ? g_progGamma : g_progNoGamma;
+		final ProgramData prog = drawGammaProgram ? progGamma : progNoGamma;
 
 		glUseProgram(prog.theProgram);
-		glUniformMatrix4(prog.modelToCameraMatrixUnif, false,
-				modelMatrix.top().fillAndFlipBuffer(tempFloatBuffer16));
+		glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-		glActiveTexture(GL_TEXTURE0 + g_colorTexUnit);
-		glBindTexture(GL_TEXTURE_2D, g_drawGammaTexture ? g_gammaTexture : g_linearTexture);		
-		glBindSampler(g_colorTexUnit, g_samplers[g_currSampler]);
+		glActiveTexture(GL_TEXTURE0 + colorTexUnit);
+		glBindTexture(GL_TEXTURE_2D, drawGammaTexture ? gammaTexture : linearTexture);		
+		glBindSampler(colorTexUnit, samplers[currSampler]);
 
-		if (g_drawCorridor) {
-			g_pCorridor.render("tex");
+		if (drawCorridor) {
+			corridor.render("tex");
 		} else {
-			g_pPlane.render("tex");
+			plane.render("tex");
 		}
 		
-		glBindSampler(g_colorTexUnit, 0);
+		glBindSampler(colorTexUnit, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glUseProgram(0);
@@ -259,15 +202,15 @@ public class GammaCheckers02 extends LWJGLWindow {
 	
 	
 	@Override
-	protected void reshape(int width, int height) {	
+	protected void reshape(int width, int height) {
 		MatrixStack persMatrix = new MatrixStack();
-		persMatrix.perspective(90.0f, (width / (float) height), g_fzNear, g_fzFar);
+		persMatrix.perspective(90.0f, (width / (float) height), zNear, zFar);
 		
 		ProjectionBlock projData = new ProjectionBlock();
 		projData.cameraToClipMatrix = persMatrix.top();
 
-		glBindBuffer(GL_UNIFORM_BUFFER, g_projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(tempFloatBuffer16));
+		glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(mat4Buffer));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		glViewport(0, 0, width, height);
@@ -277,93 +220,160 @@ public class GammaCheckers02 extends LWJGLWindow {
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private class ProjectionBlock extends BufferableData<FloatBuffer> {
-		Mat4 cameraToClipMatrix;
-		
-		static final int SIZE = 16 * FLOAT_SIZE;
-		
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillBuffer(buffer);
-		}
+	private final int colorTexUnit = 0;
+
+	private int linearTexture;
+	private int gammaTexture;
+	private float zNear = 1.0f;
+	private float zFar = 1000.0f;
+	
+	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
+	
+	
+	private void initializePrograms() {
+		progNoGamma = loadProgram("PT.vert", "textureNoGamma.frag");
+		progGamma = loadProgram("PT.vert", "textureGamma.frag");
 	}
-			
 	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private ProgramData progNoGamma;
+	private ProgramData progGamma;
+	
+	
+	private class ProgramData {
+		int theProgram;
+
+		int modelToCameraMatrixUnif;
+	}
+	
+	
+	private ProgramData loadProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+		ArrayList<Integer> shaderList = new ArrayList<>();
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	vertexShaderFilename));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	fragmentShaderFilename));
+
+		ProgramData data = new ProgramData();
+		data.theProgram = Framework.createProgram(shaderList);
+		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
+
+		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
+		glUniformBlockBinding(data.theProgram, projectionBlock, projectionBlockIndex);
+
+		int colorTextureUnif = glGetUniformLocation(data.theProgram, "colorTexture");
+		glUseProgram(data.theProgram);
+		glUniform1i(colorTextureUnif, colorTexUnit);
+		glUseProgram(0);
+		
+		return data;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 	private final int NUM_SAMPLERS = 2;
 		
-	private Mesh g_pPlane;
-	private Mesh g_pCorridor;
+	private Mesh plane;
+	private Mesh corridor;
 
-	private Timer g_camTimer = new Timer(Timer.Type.TT_LOOP, 5.0f);
+	private Timer camTimer = new Timer(Timer.Type.TT_LOOP, 5.0f);
 
-	private boolean g_drawCorridor;
-	private boolean g_drawGammaTexture;
-	private boolean g_drawGammaProgram;
-	private int g_samplers[] = new int[NUM_SAMPLERS];
-	private int g_currSampler;
+	private boolean drawCorridor;
+	private boolean drawGammaTexture;
+	private boolean drawGammaProgram;
+	private int[] samplers = new int[NUM_SAMPLERS];
+	private int currSampler;
 
 
-	private void createSamplers() {		
-		for (int samplerIx = 0; samplerIx < NUM_SAMPLERS; samplerIx++) {
-			g_samplers[samplerIx] = glGenSamplers();
-			glSamplerParameteri(g_samplers[samplerIx], GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glSamplerParameteri(g_samplers[samplerIx], GL_TEXTURE_WRAP_T, GL_REPEAT);
+	private void createSamplers() {
+		for (int samplerIndex = 0; samplerIndex < NUM_SAMPLERS; samplerIndex++) {
+			samplers[samplerIndex] = glGenSamplers();
+			glSamplerParameteri(samplers[samplerIndex], GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glSamplerParameteri(samplers[samplerIndex], GL_TEXTURE_WRAP_T, GL_REPEAT);
 		}
 
 		// Linear mipmap linear
-		glSamplerParameteri(g_samplers[0], GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glSamplerParameteri(g_samplers[0], GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glSamplerParameteri(samplers[0], GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glSamplerParameteri(samplers[0], GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 		// Max anisotropic
 		float maxAniso = glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
 
-		glSamplerParameteri(g_samplers[1], GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glSamplerParameteri(g_samplers[1], GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glSamplerParameterf(g_samplers[1], GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAniso);
+		glSamplerParameteri(samplers[1], GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glSamplerParameteri(samplers[1], GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glSamplerParameterf(samplers[1], GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAniso);
 	}
 	
 		
 	private void loadCheckerTexture() {
 		try	{
 			String filepath = Framework.findFileOrThrow("checker_linear.dds");
-			ImageSet pImageSet = DdsLoader.loadFromFile(filepath);
+			ImageSet imageSet = DdsLoader.loadFromFile(filepath);
 
-			g_linearTexture = glGenTextures();
-			glBindTexture(GL_TEXTURE_2D, g_linearTexture);
+			linearTexture = glGenTextures();
+			glBindTexture(GL_TEXTURE_2D, linearTexture);
 
-			for (int mipmapLevel = 0; mipmapLevel < pImageSet.getMipmapCount(); mipmapLevel++) {
-				SingleImage image = pImageSet.getImage(mipmapLevel, 0, 0);
-				Dimensions dims = image.getDimensions();
+			for (int mipmapLevel = 0; mipmapLevel < imageSet.getMipmapCount(); mipmapLevel++) {
+				SingleImage image = imageSet.getImage(mipmapLevel, 0, 0);
+				Dimensions imageDimensions = image.getDimensions();
 
-				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, dims.width, dims.height, 0,
+				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0,
 						GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData());
 			}
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, imageSet.getMipmapCount() - 1);
 
 			
 			filepath = Framework.findFileOrThrow("checker_gamma.dds");
-			pImageSet = DdsLoader.loadFromFile(filepath);
+			imageSet = DdsLoader.loadFromFile(filepath);
 
-			g_gammaTexture = glGenTextures();
-			glBindTexture(GL_TEXTURE_2D, g_gammaTexture);
+			gammaTexture = glGenTextures();
+			glBindTexture(GL_TEXTURE_2D, gammaTexture);
 
-			for (int mipmapLevel = 0; mipmapLevel < pImageSet.getMipmapCount(); mipmapLevel++) {
-				SingleImage image = pImageSet.getImage(mipmapLevel, 0, 0);
-				Dimensions dims = image.getDimensions();
+			for (int mipmapLevel = 0; mipmapLevel < imageSet.getMipmapCount(); mipmapLevel++) {
+				SingleImage image = imageSet.getImage(mipmapLevel, 0, 0);
+				Dimensions imageDimensions = image.getDimensions();
 
-				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, dims.width, dims.height, 0, 
+				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0, 
 						GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData());
 			}
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pImageSet.getMipmapCount() - 1);
-
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, imageSet.getMipmapCount() - 1);
+			
 			glBindTexture(GL_TEXTURE_2D, 0);		
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private final int projectionBlockIndex = 0;
+
+	private int projectionUniformBuffer;
+
+	
+	private class ProjectionBlock extends BufferableData<FloatBuffer> {
+		Mat4 cameraToClipMatrix;
+		
+		static final int SIZE = Mat4.SIZE;
+		
+		@Override
+		public FloatBuffer fillBuffer(FloatBuffer buffer) {
+			return cameraToClipMatrix.fillBuffer(buffer);
 		}
 	}
 }

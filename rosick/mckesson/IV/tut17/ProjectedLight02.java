@@ -135,17 +135,12 @@ public class ProjectedLight02 extends LWJGLWindow {
 	protected void update() {
 		while (Mouse.next()) {
 			int eventButton = Mouse.getEventButton();
-									
+				
+			
 			if (eventButton != -1) {
-				if (Mouse.getEventButtonState()) {
-					// Mouse down
-					MousePole.forwardMouseButton(viewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
-					MousePole.forwardMouseButton(lightViewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
-				} else {
-					// Mouse up
-					MousePole.forwardMouseButton(viewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
-					MousePole.forwardMouseButton(lightViewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
-				}
+				boolean pressed = Mouse.getEventButtonState();
+				MousePole.forwardMouseButton(viewPole, eventButton, pressed, Mouse.getX(), Mouse.getY());			
+				MousePole.forwardMouseButton(lightViewPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
 			} else {
 				// Mouse moving or mouse scrolling
 				int dWheel = Mouse.getDWheel();

@@ -138,15 +138,9 @@ public class BasicTexture01 extends LWJGLWindow {
 			int eventButton = Mouse.getEventButton();
 									
 			if (eventButton != -1) {
-				if (Mouse.getEventButtonState()) {
-					// Mouse down
-					MousePole.forwardMouseButton(viewPole, eventButton, true, Mouse.getX(), Mouse.getY());			
-					MousePole.forwardMouseButton(objtPole, eventButton, true, Mouse.getX(), Mouse.getY());	
-				} else {
-					// Mouse up
-					MousePole.forwardMouseButton(viewPole, eventButton, false, Mouse.getX(), Mouse.getY());			
-					MousePole.forwardMouseButton(objtPole, eventButton, false, Mouse.getX(), Mouse.getY());
-				}
+				boolean pressed = Mouse.getEventButtonState();
+				MousePole.forwardMouseButton(viewPole, eventButton, pressed, Mouse.getX(), Mouse.getY());			
+				MousePole.forwardMouseButton(objtPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
 			} else {
 				// Mouse moving or mouse scrolling
 				int dWheel = Mouse.getDWheel();

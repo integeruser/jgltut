@@ -128,7 +128,7 @@ public class Scene {
 					imageSet = DdsLoader.loadFromFile(filePath);
 				} catch (IOException e) {
 					e.printStackTrace();
-					System.exit(0);
+					System.exit(-1);
 				}
 			}
 			else {
@@ -466,7 +466,7 @@ public class Scene {
 				document = documentBuilder.parse(xmlInputStream);
 			} catch (SAXException | ParserConfigurationException | IOException e) {
 				e.printStackTrace();
-				System.exit(0);
+				System.exit(-1);
 			}
 					
 			Element sceneXmlNode = document.getDocumentElement();

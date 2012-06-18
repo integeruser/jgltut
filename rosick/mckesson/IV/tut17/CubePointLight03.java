@@ -113,7 +113,7 @@ public class CubePointLight03 extends LWJGLWindow {
 			loadAndSetupScene();
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			System.exit(0);
+			System.exit(-1);
 		}
 
 		lightUniformBuffer = glGenBuffers();

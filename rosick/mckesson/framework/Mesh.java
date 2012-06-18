@@ -58,7 +58,7 @@ public class Mesh {
 			doc = dBuilder.parse(ClassLoader.class.getResourceAsStream(meshPath));
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();
-			System.exit(0);
+			System.exit(-1);
 		}
 		
 		Element meshElement = doc.getDocumentElement();

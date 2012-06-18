@@ -32,7 +32,7 @@ public class LWJGLWindow {
 			}
 		} catch (LWJGLException e) {
 			e.printStackTrace();
-			System.exit(0);
+			System.exit(-1);
 		}
 		
 		long startTime = System.nanoTime();

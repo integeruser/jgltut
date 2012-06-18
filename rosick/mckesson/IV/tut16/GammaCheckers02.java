@@ -73,7 +73,7 @@ public class GammaCheckers02 extends LWJGLWindow {
 			plane = 	new Mesh("BigPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			System.exit(0);
+			System.exit(-1);
 		}	
 		
 		glEnable(GL_CULL_FACE);

@@ -71,7 +71,7 @@ public class ScaleAndLighting02 extends LWJGLWindow {
 			planeMesh 	= new Mesh("LargePlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			System.exit(0);
+			System.exit(-1);
 		}		
 		
 		glEnable(GL_CULL_FACE);

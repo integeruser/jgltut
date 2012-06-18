@@ -68,7 +68,7 @@ public class WorldScene01 extends LWJGLWindow {
 			planeMesh 		= new Mesh("UnitPlane.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			System.exit(0);
+			System.exit(-1);
 		}
 
 		glEnable(GL_CULL_FACE);

@@ -54,7 +54,7 @@ public class Interpolation04 extends LWJGLWindow {
 			ship = new Mesh("Ship.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			System.exit(0);
+			System.exit(-1);
 		}		
 		
 		glEnable(GL_CULL_FACE);

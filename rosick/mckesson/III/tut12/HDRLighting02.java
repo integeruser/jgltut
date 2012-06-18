@@ -88,7 +88,7 @@ public class HDRLighting02 extends LWJGLWindow {
 			};
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			System.exit(0);
+			System.exit(-1);
 		}	
 		
 		setupDaytimeLighting();

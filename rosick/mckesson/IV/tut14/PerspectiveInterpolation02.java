@@ -50,7 +50,7 @@ public class PerspectiveInterpolation02 extends LWJGLWindow {
 			fauxHallway = new Mesh("FauxHallway.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			System.exit(0);
+			System.exit(-1);
 		}
 	}
 	

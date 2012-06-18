@@ -57,7 +57,7 @@ public class GimbalLock01 extends LWJGLWindow {
 			object = new Mesh("Ship.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			System.exit(0);
+			System.exit(-1);
 		}		
 		
 		glEnable(GL_CULL_FACE);

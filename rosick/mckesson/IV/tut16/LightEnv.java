@@ -46,7 +46,7 @@ public class LightEnv {
 			doc = dBuilder.parse(ClassLoader.class.getResourceAsStream(filepath));
 		} catch (SAXException | ParserConfigurationException | IOException e) {
 			e.printStackTrace();
-			System.exit(0);
+			System.exit(-1);
 		}	
 		
 		Element lightenvElement = doc.getDocumentElement();

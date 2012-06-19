@@ -14,6 +14,7 @@ import org.lwjgl.BufferUtils;
 import rosick.jglsdk.BufferableData;
 import rosick.jglsdk.glm.Glm;
 import rosick.jglsdk.glm.Mat3;
+import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glm.Vec3;
 import rosick.jglsdk.glm.Vec4;
 import rosick.jglsdk.glutil.MatrixStack;
@@ -243,8 +244,8 @@ public abstract class Scene {
 	private int sizeMaterialBlock;
 	private int materialUniformBuffer;
 	
-	private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
-	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(Mat3.SIZE);
+	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
 	
 	
 	

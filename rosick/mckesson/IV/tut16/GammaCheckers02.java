@@ -230,7 +230,7 @@ public class GammaCheckers02 extends LWJGLWindow {
 	private float zNear = 1.0f;
 	private float zFar = 1000.0f;
 	
-	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
 	
 	
 	private void initializePrograms() {

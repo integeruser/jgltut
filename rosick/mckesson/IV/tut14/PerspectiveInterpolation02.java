@@ -10,6 +10,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
 import rosick.LWJGLWindow;
+import rosick.jglsdk.glm.Mat4;
 import rosick.jglsdk.glutil.MatrixStack;
 import rosick.mckesson.framework.Framework;
 import rosick.mckesson.framework.Mesh;
@@ -118,7 +119,7 @@ public class PerspectiveInterpolation02 extends LWJGLWindow {
 	private float zNear = 1.0f;
 	private float zFar = 1000.0f;
 	
-	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
 
 	
 	private void initializePrograms() {

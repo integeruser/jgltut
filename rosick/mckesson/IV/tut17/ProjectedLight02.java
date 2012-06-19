@@ -373,9 +373,9 @@ public class ProjectedLight02 extends LWJGLWindow {
 	private final float zNear = 1.0f;
 	private final float zFar = 1000.0f;
 
-	private final FloatBuffer mat4Buffer		= BufferUtils.createFloatBuffer(16);
-	private final FloatBuffer lightBlockBuffer	= BufferUtils.createFloatBuffer(40);
-
+	private final FloatBuffer mat4Buffer		= BufferUtils.createFloatBuffer(Mat4.SIZE);
+	private final FloatBuffer lightBlockBuffer	= BufferUtils.createFloatBuffer(LightBlock.SIZE);
+	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

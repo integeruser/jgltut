@@ -163,8 +163,7 @@ public class GammaRamp01 extends LWJGLWindow {
 	private int noGammaProgram;
 	private int vao;
 	
-	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
-	
+	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
 
 	private void initializeProgram() {
 		ArrayList<Integer> shaderList = new ArrayList<>();

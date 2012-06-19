@@ -328,8 +328,8 @@ public class FragmentPointLighting02 extends LWJGLWindow {
 	private float zNear = 1.0f;
 	private float zFar = 1000.0f;
 	
-	private FloatBuffer vec4Buffer	= BufferUtils.createFloatBuffer(4);
-	private FloatBuffer mat4Buffer 	= BufferUtils.createFloatBuffer(16);
+	private FloatBuffer vec4Buffer	= BufferUtils.createFloatBuffer(Vec4.SIZE);
+	private FloatBuffer mat4Buffer 	= BufferUtils.createFloatBuffer(Mat4.SIZE);
 	
 	
 	private void initializePrograms() {

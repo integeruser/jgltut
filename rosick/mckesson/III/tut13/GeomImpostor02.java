@@ -370,10 +370,10 @@ public class GeomImpostor02 extends LWJGLWindow {
 	private float zNear = 1.0f;
 	private float zFar = 1000.0f;
 	
-	private FloatBuffer vec4Buffer 			= BufferUtils.createFloatBuffer(4);
-	private FloatBuffer mat3Buffer 			= BufferUtils.createFloatBuffer(9);
-	private FloatBuffer mat4Buffer 			= BufferUtils.createFloatBuffer(16);
-	private FloatBuffer lightBlockBuffer	= BufferUtils.createFloatBuffer(24);
+	private FloatBuffer vec4Buffer 			= BufferUtils.createFloatBuffer(Vec4.SIZE);
+	private FloatBuffer mat3Buffer 			= BufferUtils.createFloatBuffer(Mat3.SIZE);
+	private FloatBuffer mat4Buffer 			= BufferUtils.createFloatBuffer(Mat4.SIZE);
+	private FloatBuffer lightBlockBuffer	= BufferUtils.createFloatBuffer(LightBlock.SIZE);
 	
 	
 	private void initializePrograms() {

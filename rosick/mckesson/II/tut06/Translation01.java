@@ -118,7 +118,7 @@ public class Translation01 extends LWJGLWindow {
 	
 	private Mat4 cameraToClipMatrix = new Mat4(0.0f);
 	
-	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
 	
 	
 	private void initializeProgram() {	

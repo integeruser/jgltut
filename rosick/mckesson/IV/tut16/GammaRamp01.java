@@ -62,7 +62,7 @@ public class GammaRamp01 extends LWJGLWindow {
 		initializeVertexData();
 		loadTextures();
 
-		//Setup our Uniform Buffers
+		// Setup our Uniform Buffers
 		projectionUniformBuffer = glGenBuffers();
 		glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
 		glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW);
@@ -167,21 +167,14 @@ public class GammaRamp01 extends LWJGLWindow {
 
 	private void initializeProgram() {
 		ArrayList<Integer> shaderList = new ArrayList<>();
-
-		int vertexShader = Framework.loadShader(GL_VERTEX_SHADER, "screenCoords.vert");
-		shaderList.add(vertexShader);
-		
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, "screenCoords.vert"));	
 		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	"textureNoGamma.frag"));
-
 		noGammaProgram = Framework.createProgram(shaderList);
-		glDeleteShader(shaderList.get(1));
-
-		shaderList.remove(1);
+		
+		shaderList = new ArrayList<>();
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, "screenCoords.vert"));	
 		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	"textureGamma.frag"));
-
 		gammaProgram = Framework.createProgram(shaderList);
-		glDeleteShader(shaderList.get(1));
-		glDeleteShader(vertexShader);
 		
 		int projectionBlock = glGetUniformBlockIndex(noGammaProgram, "Projection");
 		glUniformBlockBinding(noGammaProgram, projectionBlock, projectionBlockIndex);

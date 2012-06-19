@@ -93,7 +93,7 @@ public class HDRLighting02 extends LWJGLWindow {
 		
 		setupDaytimeLighting();
 
-		lights.createTimer("tetra", Timer.Type.TT_LOOP, 2.5f);
+		lights.createTimer("tetra", Timer.Type.LOOP, 2.5f);
 		
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);

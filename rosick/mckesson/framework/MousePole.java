@@ -20,33 +20,37 @@ public class MousePole {
 	}
 	
 	
-	public static void forwardMouseButton(Pole forward, int button, boolean state, int x, int y) {
-		MouseModifiers modifiers = calc_glut_modifiers();
+	public static void forwardMouseButton(Pole forwardPole, int button, boolean state, int x, int y) {
+		MouseModifiers modifiers = calcModifiers();
 		Vec2 mouseLoc = new Vec2(x, y);
-		MouseButtons eButton = null;
+		MouseButtons mouseButtons = null;
 
 		switch (button) {
 			case 0:
-				eButton = MouseButtons.MB_LEFT_BTN;
+				mouseButtons = MouseButtons.MB_LEFT_BTN;
 				break;
 			case 1:
-				eButton = MouseButtons.MB_RIGHT_BTN;
+				mouseButtons = MouseButtons.MB_RIGHT_BTN;
 				break;
 			case 2:
-				eButton = MouseButtons.MB_MIDDLE_BTN;
+				mouseButtons = MouseButtons.MB_MIDDLE_BTN;
 				break;
 		}
 
-		forward.mouseClick(eButton, state, modifiers, mouseLoc);
+		forwardPole.mouseClick(mouseButtons, state, modifiers, mouseLoc);
 	}
 	
 	
 	public static void forwardMouseWheel(Pole forward, int wheel, int direction, int x, int y) {
-		forward.mouseWheel(direction, calc_glut_modifiers(), new Vec2(x, y));
+		forward.mouseWheel(direction, calcModifiers(), new Vec2(x, y));
 	}
 	
 	
-	private static MouseModifiers calc_glut_modifiers() {		
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private static MouseModifiers calcModifiers() {
 		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 			return MouseModifiers.MM_KEY_SHIFT;
 		}

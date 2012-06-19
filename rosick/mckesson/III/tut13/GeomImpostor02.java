@@ -481,7 +481,7 @@ public class GeomImpostor02 extends LWJGLWindow {
 	private Mesh planeMesh;
 	private Mesh cubeMesh;
 	
-	private Timer sphereTimer = new Timer(Timer.Type.TT_LOOP, 6.0f);
+	private Timer sphereTimer = new Timer(Timer.Type.LOOP, 6.0f);
 
 	private boolean drawLights = true;
 	private boolean drawCameraPos;

@@ -499,7 +499,7 @@ public class BlinnVsPhongLighting02 extends LWJGLWindow {
 	private Mesh planeMesh;
 	private Mesh cubeMesh;
 	
-	private Timer lightTimer = new Timer(Timer.Type.TT_LOOP, 5.0f);
+	private Timer lightTimer = new Timer(Timer.Type.LOOP, 5.0f);
 	
 	private boolean drawColoredCyl;
 	private boolean drawLightSource;

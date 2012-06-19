@@ -1,14 +1,5 @@
 package rosick.mckesson.framework;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL31.*;
-import static org.lwjgl.opengl.GL32.*;
-import static org.lwjgl.opengl.GL33.*;
-import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.*;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
@@ -22,6 +13,15 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.*;
+import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL31.*;
+import static org.lwjgl.opengl.GL32.*;
+import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.*;
 
 import org.lwjgl.BufferUtils;
 import org.w3c.dom.Document;
@@ -50,7 +50,7 @@ import rosick.mckesson.framework.SceneBinders.StateBinder;
 public class Scene {
 		
 	public Scene(String filename) {
-		m_sceneImpl = new SceneImpl(filename);
+		sceneImpl = new SceneImpl(filename);
 	}
 
 	
@@ -59,20 +59,20 @@ public class Scene {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	public void render(Mat4 cameraMatrix) {
-		m_sceneImpl.render(cameraMatrix);
+		sceneImpl.render(cameraMatrix);
 	}
 	
 	
-	public final SceneNode findNode(String nodeName) {
-		return m_sceneImpl.findNode(nodeName);
+	public SceneNode findNode(String nodeName) {
+		return sceneImpl.findNode(nodeName);
 	}
 	
-	public final int findProgram(String progName) {
-		return m_sceneImpl.findProgram(progName);
+	public int findProgram(String progName) {
+		return sceneImpl.findProgram(progName);
 	}
 
-	public final Mesh findMesh(String meshName) {
-		return m_sceneImpl.findMesh(meshName);
+	public Mesh findMesh(String meshName) {
+		return sceneImpl.findMesh(meshName);
 	}
 	
 	
@@ -82,10 +82,10 @@ public class Scene {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	private SceneImpl m_sceneImpl;
+	private SceneImpl sceneImpl;
 	
-	private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
-	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(Mat3.SIZE);
+	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
 	
 	
 	
@@ -95,24 +95,24 @@ public class Scene {
 	private class SceneMesh {
 		
 		SceneMesh(String filename) {
-			m_mesh = new Mesh(filename);
+			mesh = new Mesh(filename);
 		}
 		
 		
 		void render() {
-			m_mesh.render();
+			mesh.render();
 		}
 		
 		
-		final Mesh getMesh() {
-			return m_mesh;
+		Mesh getMesh() {
+			return mesh;
 		}
 		
 		
 		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
-		private Mesh m_mesh;
+		private Mesh mesh;
 	}
 	
 	
@@ -136,70 +136,70 @@ public class Scene {
 				assert false : fileExtension + " loader not yet implemented";
 			}
 
-			m_textureObj = TextureGenerator.createTexture(imageSet, creationFlags);
-			m_textureType = TextureGenerator.getTextureType(imageSet, creationFlags);
+			textureObj = TextureGenerator.createTexture(imageSet, creationFlags);
+			textureType = TextureGenerator.getTextureType(imageSet, creationFlags);
 		}
 
 		@Override
 		protected void finalize() throws Throwable {
 			super.finalize();
-			glDeleteTextures(m_textureObj);
+			glDeleteTextures(textureObj);
 		}
 		
 		
-		final int getTexture() {
-			return m_textureObj;
+		int getTexture() {
+			return textureObj;
 		}
 		
-		final int getType() {
-			return m_textureType;
+		int getType() {
+			return textureType;
 		}
 		
 		
 		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
-		private int m_textureObj, m_textureType;
+		private int textureObj, textureType;
 	}
 	
 	
 	private class SceneProgram {
 		
 		SceneProgram(int programObj, int matrixLoc, int normalMatLoc) {
-			m_programObj = programObj;
-			m_matrixLoc = matrixLoc;
-			m_normalMatLoc = normalMatLoc;
+			this.programObj = programObj;
+			this.matrixLoc = matrixLoc;
+			this.normalMatLoc = normalMatLoc;
 		}
 
 		@Override
 		protected void finalize() throws Throwable {
 			super.finalize();
-			glDeleteProgram(m_programObj);
+			glDeleteProgram(programObj);
 		}
 		
 		
 		void useProgram() {
-			glUseProgram(m_programObj);
+			glUseProgram(programObj);
 		}
 		
 		
-		final int getMatrixLoc() {
-			return m_matrixLoc;
+		int getMatrixLoc() {
+			return matrixLoc;
 		}
 		
-		final int getNormalMatLoc() {
-			return m_normalMatLoc;
+		int getNormalMatLoc() {
+			return normalMatLoc;
 		}
 
-		final int getProgram() {
-			return m_programObj;
+		int getProgram() {
+			return programObj;
 		}
 		
 				
 		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
-		private int m_programObj, m_matrixLoc, m_normalMatLoc;
+		private int programObj, matrixLoc, normalMatLoc;
 	}
 	
 	
@@ -207,86 +207,70 @@ public class Scene {
 	
 		SceneNode(SceneMesh mesh, SceneProgram program, Vec3 nodePos,
 				ArrayList<TextureBinding> textureBindings) {
-			m_mesh = mesh;
-			m_program = program;
+			this.mesh = mesh;
+			this.program = program;
 			
-			m_stateBinders = new ArrayList<StateBinder>();
-			m_textureBindings = textureBindings;
+			stateBinders = new ArrayList<StateBinder>();
+			this.textureBindings = textureBindings;
 
-			m_nodeTransform = new Transform();
-			m_objTransform = new Transform();
+			nodeTransform = new Transform();
+			objTransform = new Transform();
 
-			m_nodeTransform.m_trans = nodePos;
+			nodeTransform.trans = nodePos;
 		}
 
-	
-		/*void nodeSetScale(Vec3 scale) {
-			m_nodeTransform.m_scale = new Vec3(scale);
-		}*/
-
-		public void nodeSetOrient(Quaternion orient) {
-			m_nodeTransform.m_orient = new Quaternion(orient);
-		}
-
-		/*void nodeSetTrans(Vec3 offset) {
-			m_nodeTransform.m_trans = new Vec3(offset);
-		}
 		
-		void nodeRotate(Quaternion orient) {
-			m_nodeTransform.m_orient.mul(orient);
+		public void nodeSetOrient(Quaternion orient) {
+			nodeTransform.orient = new Quaternion(orient);
 		}
 
-		void nodeOffset(Vec3 offset) {
-			m_nodeTransform.m_trans.add(offset);
-		}*/
-
-		public final Quaternion nodeGetOrient() {
-			return m_nodeTransform.m_orient;
+		public Quaternion nodeGetOrient() {
+			return nodeTransform.orient;
 		}
 
 			
 		void setNodeScale(Vec3 nodeScale) {
-			m_nodeTransform.m_scale = new Vec3(nodeScale);
+			nodeTransform.scale = new Vec3(nodeScale);
 		}
 		
 		void setNodeOrient(Quaternion nodeOrient) {
-			m_nodeTransform.m_orient = Glm.normalize(nodeOrient);
+			nodeTransform.orient = Glm.normalize(nodeOrient);
 		}
 
 		
 		void render(int samplers[], Mat4 mat) {
 			Mat4 baseMat = new Mat4(mat);
-			baseMat.mul(m_nodeTransform.getMatrix());
-			Mat4 objMat = Mat4.mul(baseMat, m_objTransform.getMatrix());
+			baseMat.mul(nodeTransform.getMatrix());
+			Mat4 objMat = Mat4.mul(baseMat, objTransform.getMatrix());
 
-			m_program.useProgram();
-			glUniformMatrix4(m_program.getMatrixLoc(), false, objMat.fillAndFlipBuffer(mat4Buffer));
+			program.useProgram();
+			glUniformMatrix4(program.getMatrixLoc(), false, objMat.fillAndFlipBuffer(mat4Buffer));
 
-			if (m_program.getNormalMatLoc() != -1) {
+			if (program.getNormalMatLoc() != -1) {
 				Mat3 normMat = new Mat3(Glm.transpose(Glm.inverse(objMat)));
-				glUniformMatrix3(m_program.getNormalMatLoc(), false, normMat.fillAndFlipBuffer(mat3Buffer));
+				glUniformMatrix3(program.getNormalMatLoc(), false, normMat.fillAndFlipBuffer(mat3Buffer));
 			}
 
-			for (StateBinder stateBinder : m_stateBinders) {
-				stateBinder.bindState(m_program.getProgram());
+			for (StateBinder stateBinder : stateBinders) {
+				stateBinder.bindState(program.getProgram());
 			}
 			
-			for (TextureBinding binding : m_textureBindings) {
-				glActiveTexture(GL_TEXTURE0 + binding.m_textureUnit);
-				glBindTexture(binding.m_texture.getType(), binding.m_texture.getTexture());
-				glBindSampler(binding.m_textureUnit, samplers[binding.m_sampler.ordinal()]);
+			for (TextureBinding binding : textureBindings) {
+				glActiveTexture(GL_TEXTURE0 + binding.textureUnit);
+				glBindTexture(binding.texture.getType(), binding.texture.getTexture());
+				glBindSampler(binding.textureUnit, samplers[binding.sampler.ordinal()]);
 			}
 
-			m_mesh.render();
+			mesh.render();
 
-			for (TextureBinding binding : m_textureBindings) {
-				glActiveTexture(GL_TEXTURE0 + binding.m_textureUnit);
-				glBindTexture(binding.m_texture.getType(), 0);
-				glBindSampler(binding.m_textureUnit, 0);
+			for (TextureBinding binding : textureBindings) {
+				glActiveTexture(GL_TEXTURE0 + binding.textureUnit);
+				glBindTexture(binding.texture.getType(), 0);
+				glBindSampler(binding.textureUnit, 0);
 			}
 			
-			for (StateBinder stateBinder : m_stateBinders) {
-				stateBinder.unbindState(m_program.getProgram());
+			for (StateBinder stateBinder : stateBinders) {
+				stateBinder.unbindState(program.getProgram());
 			}
 
 			glUseProgram(0);
@@ -294,27 +278,26 @@ public class Scene {
 		
 	
 		void setStateBinder(StateBinder stateBinder) {
-			m_stateBinders.add(stateBinder);
+			stateBinders.add(stateBinder);
 		}
 
 		
-		final int getProgram() {
-			return m_program.getProgram();
+		int getProgram() {
+			return program.getProgram();
 		}
-		
-		
+				
 		
 		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
-		private SceneMesh m_mesh;	
-		private SceneProgram m_program;
+		private SceneMesh mesh;	
+		private SceneProgram program;
 
-		private ArrayList<StateBinder> m_stateBinders;	
-		private ArrayList<TextureBinding> m_textureBindings;
+		private ArrayList<StateBinder> stateBinders;	
+		private ArrayList<TextureBinding> textureBindings;
 
-		private Transform m_nodeTransform;
-		private Transform m_objTransform;
+		private Transform nodeTransform;
+		private Transform objTransform;
 	}
 
 	
@@ -325,17 +308,17 @@ public class Scene {
 	private class Transform {
 		
 		Transform() {
-			m_orient = new Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
-			m_scale = new Vec3(1.0f, 1.0f, 1.0f);
-			m_trans = new Vec3(0.0f, 0.0f, 0.0f);
+			orient = new Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
+			scale = new Vec3(1.0f, 1.0f, 1.0f);
+			trans = new Vec3(0.0f, 0.0f, 0.0f);
 		}
 
 		
 		Mat4 getMatrix() {
 			Mat4 ret = new Mat4();
-			ret = Glm.translate(ret, m_trans);
-			ret.mul(Glm.matCast(m_orient));
-			ret = Glm.scale(ret, m_scale);
+			ret = Glm.translate(ret, trans);
+			ret.mul(Glm.matCast(orient));
+			ret = Glm.scale(ret, scale);
 			
 			return ret;
 		}
@@ -344,8 +327,8 @@ public class Scene {
 		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
-		private Quaternion m_orient;
-		private Vec3 m_scale, m_trans;
+		private Quaternion orient;
+		private Vec3 scale, trans;
 	}
 
 	
@@ -366,18 +349,14 @@ public class Scene {
 	
 	
 	private SamplerTypes getTypeFromName(String samplerName) {
-		final String[] samplerNames = {
-			"nearest",
-			"linear",
-			"mipmap nearest",
-			"mipmap linear",
-			"anisotropic",
-			"half anisotropic",
-		};
+		final String[] samplerNames = { 
+				"nearest", "linear", 
+				"mipmap nearest", "mipmap linear", 
+				"anisotropic", "half anisotropic"};
 	
-		for (int nameIx = 0; nameIx < samplerNames.length; nameIx++) {
-			if (samplerNames[nameIx].equals(samplerName)) {
-				return SamplerTypes.values()[nameIx];
+		for (int nameIndex = 0; nameIndex < samplerNames.length; nameIndex++) {
+			if (samplerNames[nameIndex].equals(samplerName)) {
+				return SamplerTypes.values()[nameIndex];
 			}
 		}
 		
@@ -385,13 +364,13 @@ public class Scene {
 	}
 
 
-	private void makeSamplerObjects(int samplers[]) {
+	private void makeSamplerObjects(int[] samplers) {
 		// Always repeat.
-		for (int samplerIx = 0; samplerIx < SamplerTypes.MAX_SAMPLERS.ordinal(); samplerIx++) {
-			samplers[samplerIx] = glGenSamplers();
-			glSamplerParameteri(samplers[samplerIx], GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glSamplerParameteri(samplers[samplerIx], GL_TEXTURE_WRAP_T, GL_REPEAT);
-			glSamplerParameteri(samplers[samplerIx], GL_TEXTURE_WRAP_R, GL_REPEAT);
+		for (int samplerIndex = 0; samplerIndex < SamplerTypes.MAX_SAMPLERS.ordinal(); samplerIndex++) {
+			samplers[samplerIndex] = glGenSamplers();
+			glSamplerParameteri(samplers[samplerIndex], GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glSamplerParameteri(samplers[samplerIndex], GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glSamplerParameteri(samplers[samplerIndex], GL_TEXTURE_WRAP_R, GL_REPEAT);
 		}
 
 		glSamplerParameteri(samplers[0], GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -423,9 +402,9 @@ public class Scene {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	private class TextureBinding {
-		SceneTexture m_texture;
-		int m_textureUnit;
-		SamplerTypes m_sampler;
+		SceneTexture texture;
+		int textureUnit;
+		SamplerTypes sampler;
 	}
 	
 	
@@ -433,27 +412,27 @@ public class Scene {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
-	private class SceneImpl {	
-		private Map<String, SceneMesh> 		m_meshes;
-		private Map<String, SceneTexture> 	m_textures;
-		private Map<String, SceneProgram> 	m_programs;
-		private Map<String, SceneNode> 		m_nodes;
+	private class SceneImpl {
+		private Map<String, SceneMesh> 		meshes;
+		private Map<String, SceneTexture> 	textures;
+		private Map<String, SceneProgram> 	programs;
+		private Map<String, SceneNode> 		nodes;
 		
-		private ArrayList<SceneNode> m_rootNodes;
+		private ArrayList<SceneNode> rootNodes;
 
-		private int m_samplers[];
+		private int[] samplers;
 		
 
 				
-		private SceneImpl(String filename) {		
-			m_meshes = new HashMap<>();
-			m_textures = new HashMap<>();
-			m_programs = new HashMap<>();
-			m_nodes = new HashMap<>();
+		private SceneImpl(String filename) {
+			meshes = new HashMap<>();
+			textures = new HashMap<>();
+			programs = new HashMap<>();
+			nodes = new HashMap<>();
 			
-			m_rootNodes = new ArrayList<>();
+			rootNodes = new ArrayList<>();
 
-			m_samplers = new int[SamplerTypes.MAX_SAMPLERS.ordinal()];
+			samplers = new int[SamplerTypes.MAX_SAMPLERS.ordinal()];
 						
 			// Read the xml scene.
 			Document document = null;
@@ -476,14 +455,14 @@ public class Scene {
 			readPrograms(sceneXmlNode);
 			readNodes(null, sceneXmlNode);
 			
-			makeSamplerObjects(m_samplers);
+			makeSamplerObjects(samplers);
 		}
 		
 		@Override
 		protected void finalize() throws Throwable {
 			super.finalize();
 			
-			for (int sampler : m_samplers) {
+			for (int sampler : samplers) {
 				glDeleteSamplers(sampler);
 			}
 		}
@@ -494,8 +473,8 @@ public class Scene {
 		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 				
 		private void render(Mat4 cameraMat) {
-			for (SceneNode sceneNode : m_nodes.values()) {
-				sceneNode.render(m_samplers, cameraMat);
+			for (SceneNode sceneNode : nodes.values()) {
+				sceneNode.render(samplers, cameraMat);
 			}
 		}
 
@@ -505,7 +484,7 @@ public class Scene {
 		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
 		private SceneNode findNode(String nodeName) {
-			SceneNode node = m_nodes.get(nodeName);
+			SceneNode node = nodes.get(nodeName);
 			
 			if (node == null) {
 				throw new RuntimeException("Could not find the node named: " + nodeName);
@@ -515,7 +494,7 @@ public class Scene {
 		}
 		
 		private int findProgram(String progName) {
-			SceneProgram program = m_programs.get(progName);
+			SceneProgram program = programs.get(progName);
 			
 			if (program == null) {
 				throw new RuntimeException("Could not find the program named: " + progName);
@@ -525,7 +504,7 @@ public class Scene {
 		}
 
 		private Mesh findMesh(String meshName) {
-			SceneMesh mesh = m_meshes.get(meshName);
+			SceneMesh mesh = meshes.get(meshName);
 			
 			if (mesh == null) {
 				throw new RuntimeException("Could not find the mesh named: " + meshName);
@@ -555,11 +534,11 @@ public class Scene {
 				if (nameNode.equals("")) 		throw new RuntimeException("Mesh found with no `xml:id` name specified.");
 				if (filenameNode.equals("")) 	throw new RuntimeException("Mesh found with no `file` filename specified.");
 	
-				if (m_meshes.containsKey(nameNode)) throw new RuntimeException("The mesh named \"" + nameNode + "\" already exists.");
+				if (meshes.containsKey(nameNode)) throw new RuntimeException("The mesh named \"" + nameNode + "\" already exists.");
 			}
 			
 			SceneMesh mesh = new SceneMesh(filenameNode);
-			m_meshes.put(nameNode, mesh);	
+			meshes.put(nameNode, mesh);	
 		}	
 		
 		
@@ -579,7 +558,7 @@ public class Scene {
 				if (nameNode.equals("")) 		throw new RuntimeException("Texture found with no `xml:id` name specified.");
 				if (filenameNode.equals(""))	throw new RuntimeException("Texture found with no `file` filename specified.");
 	
-				if (m_textures.containsKey(nameNode)) throw new RuntimeException("The texture named \"" + nameNode + "\" already exists.");
+				if (textures.containsKey(nameNode)) throw new RuntimeException("The texture named \"" + nameNode + "\" already exists.");
 			}
 			
 			int creationFlags = 0;
@@ -588,7 +567,7 @@ public class Scene {
 			}
 			
 			SceneTexture texture = new SceneTexture(filenameNode, creationFlags);
-			m_textures.put(nameNode, texture);	
+			textures.put(nameNode, texture);	
 		}	
 		
 		
@@ -616,7 +595,7 @@ public class Scene {
 				if (fragmentShaderNode.equals("")) 	throw new RuntimeException("Program found with no `frag` name specified.");
 				if (modelMatrixNode.equals("")) 	throw new RuntimeException("Program found with no `model-to-camera` filename specified.");
 		
-				if (m_programs.containsKey(nameNode)) throw new RuntimeException("The program named \"" + nameNode + "\" already exists.");
+				if (programs.containsKey(nameNode)) throw new RuntimeException("The program named \"" + nameNode + "\" already exists.");
 			}
 			
 			int program = 0;
@@ -658,7 +637,7 @@ public class Scene {
 				}
 			}
 			
-			m_programs.put(nameNode, new SceneProgram(program, matrixLoc, normalMatLoc));
+			programs.put(nameNode, new SceneProgram(program, matrixLoc, normalMatLoc));
 			
 			readProgramContents(program, programNode);
 		}		
@@ -770,20 +749,20 @@ public class Scene {
 				if (progNode.equals("")) 		throw new RuntimeException("Node found with no `prog` name specified.");
 				if (positionNode.equals(""))	throw new RuntimeException("Node found with no `pos` name specified.");
 
-				if (m_nodes.containsKey(nameNode)) 		throw new RuntimeException("The node named \"" + nameNode + "\" already exists.");
-				if (!m_meshes.containsKey(meshNode)) 	throw new RuntimeException("The node named \"" + nameNode + "\" references the mesh \"" + meshNode + "\" which does not exist.");
-				if (!m_programs.containsKey(progNode)) 	throw new RuntimeException("The node named \"" + nameNode + "\" references the program \"" + progNode + "\" which does not exist.");
+				if (nodes.containsKey(nameNode)) 		throw new RuntimeException("The node named \"" + nameNode + "\" already exists.");
+				if (!meshes.containsKey(meshNode)) 	throw new RuntimeException("The node named \"" + nameNode + "\" references the mesh \"" + meshNode + "\" which does not exist.");
+				if (!programs.containsKey(progNode)) 	throw new RuntimeException("The node named \"" + nameNode + "\" references the program \"" + progNode + "\" which does not exist.");
 			}
 			
 			Vec3 nodePos = attribToVec3(positionNode);
 			
-			SceneNode node = new SceneNode(m_meshes.get(meshNode), m_programs.get(progNode), 
+			SceneNode node = new SceneNode(meshes.get(meshNode), programs.get(progNode), 
 					nodePos, readNodeTextures(nodeNode));
-			m_nodes.put(nameNode, node);
+			nodes.put(nameNode, node);
 			
 			//TODO: parent/child nodes.
 			if (parent == null) {
-				m_rootNodes.add(node);
+				rootNodes.add(node);
 			}
 			 
 			if (!orientNode.equals("")) {
@@ -817,21 +796,21 @@ public class Scene {
 					if (unitName.equals("")) 	throw new RuntimeException("Textures on nodes must have a `unit` attribute.");
 					if (samplerName.equals("")) throw new RuntimeException("Textures on nodes must have a `sampler` attribute.");
 			
-					if (!m_textures.containsKey(nameNode)) throw new RuntimeException("The node texture named \"" + nameNode + "\" is a texture which does not exist.");
+					if (!textures.containsKey(nameNode)) throw new RuntimeException("The node texture named \"" + nameNode + "\" is a texture which does not exist.");
 				}
 				
 				TextureBinding binding = new TextureBinding();
-				binding.m_texture = m_textures.get(nameNode);
-				binding.m_textureUnit = attribToInt(unitName);
-				binding.m_sampler = getTypeFromName(samplerName);
+				binding.texture = textures.get(nameNode);
+				binding.textureUnit = attribToInt(unitName);
+				binding.sampler = getTypeFromName(samplerName);
 		
 				{
-					if (textureUnits.contains(binding.m_textureUnit)) throw new RuntimeException("Multiply bound texture unit in node texture " + nameNode);	
+					if (textureUnits.contains(binding.textureUnit)) throw new RuntimeException("Multiply bound texture unit in node texture " + nameNode);	
 				}
 				
 				textureBindings.add(binding);
 				
-				textureUnits.add(binding.m_textureUnit);
+				textureUnits.add(binding.textureUnit);
 			}
 			
 			return textureBindings;

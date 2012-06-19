@@ -435,7 +435,7 @@ public class BasicTexture01 extends LWJGLWindow {
 	private Mesh objectMesh;
 	private Mesh cubeMesh;
 	
-	private Timer lightTimer = new Timer(Timer.Type.TT_LOOP, 6.0f);
+	private Timer lightTimer = new Timer(Timer.Type.LOOP, 6.0f);
 	
 	private boolean drawLights = true;
 	private boolean drawCameraPos;

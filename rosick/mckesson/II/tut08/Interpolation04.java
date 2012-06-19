@@ -319,7 +319,7 @@ public class Interpolation04 extends LWJGLWindow {
 			
 		void startAnimation(int destinationIndex, float duration) {
 			finalOrientIndex = destinationIndex;
-			currTimer = new Timer(Timer.Type.TT_SINGLE, duration);
+			currTimer = new Timer(Timer.Type.SINGLE, duration);
 		}
 		
 		

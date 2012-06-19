@@ -1,14 +1,14 @@
 package rosick.mckesson.framework;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL33.*;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL33.*;
 
 import org.lwjgl.BufferUtils;
 
@@ -31,7 +31,7 @@ public class SceneBinders {
 		}
 	};
 	
-	public static void setStateBinderWithNodes(ArrayList<SceneNode> nodes,
+	public static void setStateBinderWithNodes(ArrayList<SceneNode> nodes, 
 			UniformBinderBase binder) {
 		for (SceneNode nodeRef : nodes) {
 			nodeRef.setStateBinder(binder);
@@ -39,41 +39,55 @@ public class SceneBinders {
 	}
 	
 	
-	public static abstract class StateBinder {
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	static abstract class StateBinder {
 		abstract void bindState(int prog);
 		abstract void unbindState(int prog);
 	}
 	
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
 	static abstract class UniformBinderBase extends StateBinder {
-		private Map<Integer, Integer> m_progUnifLoc;		
-		
-		public UniformBinderBase() {
-			m_progUnifLoc = new HashMap<Integer, Integer>();
+
+		UniformBinderBase() {
+			progUnifLoc = new HashMap<Integer, Integer>();
 		}
 		
 		void associateWithProgram(int prog, String unifName) {
-			m_progUnifLoc.put(prog, glGetUniformLocation(prog, unifName));
+			progUnifLoc.put(prog, glGetUniformLocation(prog, unifName));
 		}
 
 		int getUniformLoc(int prog) {
-			Object unif = m_progUnifLoc.get(prog);
+			Object unif = progUnifLoc.get(prog);
 			
 			return unif == null ? -1 : (int) unif;
 		}
+	
+		
+
+		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+		
+		private Map<Integer, Integer> progUnifLoc;		
 	};
 	
+	
 	public static class UniformIntBinder extends UniformBinderBase {
-		private int m_val;
 
+		public void setValue(int val) { 
+			this.val = val; 
+		}
+		
+		
+		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
 		
 		@Override
 		void bindState(int prog) {
-			glUniform1i(getUniformLoc(prog), m_val);	
+			glUniform1i(getUniformLoc(prog), val);	
 		}
 
 		@Override
@@ -81,41 +95,28 @@ public class SceneBinders {
 		};
 		
 		
-		public void setValue(int val) { 
-			m_val = val; 
-		}
+		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
+		private int val;
 	}
 
 	
 	public static class UniformVec3Binder extends UniformBinderBase {
-		private Vec3 m_val = new Vec3();
-		private FloatBuffer temp = BufferUtils.createFloatBuffer(3);
-		
-		
-		@Override
-		void bindState(int prog) {
-			glUniform3(getUniformLoc(prog), m_val.fillAndFlipBuffer(temp));
-		}
 
-		@Override
-		void unbindState(int prog) {
-		};
-		
-		
 		public void setValue(Vec3 val) { 
-			m_val = new Vec3(val); 
+			this.val = new Vec3(val); 
 		}
-	}
-	
-	
-	public static class UniformMat4Binder extends UniformBinderBase {
-		private Mat4 m_val = new Mat4(1.0f);
-		private FloatBuffer temp = BufferUtils.createFloatBuffer(16);
+		
+		
+		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
 		
 		@Override
 		void bindState(int prog) {
-			glUniformMatrix4(getUniformLoc(prog), false, m_val.fillAndFlipBuffer(temp));
+			glUniform3(getUniformLoc(prog), val.fillAndFlipBuffer(vec3Buffer));
 		}
 
 		@Override
@@ -123,49 +124,88 @@ public class SceneBinders {
 		};
 		
 		
+		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
+		private Vec3 val = new Vec3();
+		private FloatBuffer vec3Buffer = BufferUtils.createFloatBuffer(Vec3.SIZE);
+	}
+	
+	
+	public static class UniformMat4Binder extends UniformBinderBase {		
+
 		public void setValue(Mat4 val) { 
-			m_val = new Mat4(val); 
+			this.val = new Mat4(val); 
 		}
+		
+		
+		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+		
+		@Override
+		void bindState(int prog) {
+			glUniformMatrix4(getUniformLoc(prog), false, val.fillAndFlipBuffer(mat4Buffer));
+		}
+
+		@Override
+		void unbindState(int prog) {
+		};
+		
+	
+		
+		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+		private Mat4 val = new Mat4(1.0f);
+		private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
 	}
 	
 	
 	
-
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	public class TextureBinder extends StateBinder {
-		private int m_texUnit;
-		private int m_texType;
-		private int m_texObj;
-		private int m_samplerObj;
 	
 		public TextureBinder() {
-			m_texType = GL_TEXTURE_2D;		
+			texType = GL_TEXTURE_2D;		
 		}
 	
 		
+		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+		
 		@Override
 		void bindState(int prog) {
-			glActiveTexture(GL_TEXTURE0 + m_texUnit);
-			glBindTexture(m_texType, m_texObj);
-			glBindSampler(m_texUnit, m_samplerObj);			
+			glActiveTexture(GL_TEXTURE0 + texUnit);
+			glBindTexture(texType, texObj);
+			glBindSampler(texUnit, samplerObj);			
 		}
 
 		@Override
 		void unbindState(int prog) {
-			glActiveTexture(GL_TEXTURE0 + m_texUnit);
-			glBindTexture(m_texType, 0);
-			glBindSampler(m_texUnit, 0);			
+			glActiveTexture(GL_TEXTURE0 + texUnit);
+			glBindTexture(texType, 0);
+			glBindSampler(texUnit, 0);			
 		}
 		
 		void setTexture(int texUnit, int texType, int texObj, int samplerObj) {
-			m_texUnit = texUnit;
-			m_texType = texType;
-			m_texObj = texObj;
-			m_samplerObj = samplerObj;
+			this.texUnit = texUnit;
+			this.texType = texType;
+			this.texObj = texObj;
+			this.samplerObj = samplerObj;
 		}
+	
+	
+		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+		private int texUnit;
+		private int texType;
+		private int texObj;
+		private int samplerObj;
 	}
-
-
 }

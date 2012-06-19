@@ -1,11 +1,14 @@
 package rosick.mckesson.framework;
 
-import static org.lwjgl.opengl.GL20.*;
-
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import rosick.jglsdk.glutil.Shader;
+
+import static org.lwjgl.opengl.GL20.*;
 
 
 /**
@@ -19,7 +22,7 @@ public class Framework {
 	public static String CURRENT_TUTORIAL_DATAPATH = null;
 	
 	
-	public static String findFileOrThrow(String filename) {		
+	public static String findFileOrThrow(String filename) {
 		InputStream fileStream = ClassLoader.class.getResourceAsStream(CURRENT_TUTORIAL_DATAPATH + filename);
 		if (fileStream != null) {
 			return CURRENT_TUTORIAL_DATAPATH + filename;
@@ -38,58 +41,23 @@ public class Framework {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-    public static int loadShader(int shaderType, String filename){
-    	String filepath = Framework.findFileOrThrow(filename);
+    public static int loadShader(int shaderType, String shaderFilename){
+    	String filepath = Framework.findFileOrThrow(shaderFilename);
+    	String shaderCode = loadShaderFile(filepath);
     	
-        int shader = glCreateShader(shaderType);
-       
-        if (shader != 0) {
-        	String shaderCode;
-        	
-        	{
-        		// Load file as a string
-                StringBuilder text = new StringBuilder();
-                
-                try {
-                	BufferedReader reader = new BufferedReader(new InputStreamReader(ClassLoader.class.getResourceAsStream(filepath)));
-                	String line;
-                	
-                	while ((line = reader.readLine()) != null) {
-                		text.append(line).append("\n");
-                	}
-                	
-                	reader.close();
-                } catch (Exception e){
-                	throw new RuntimeException("Unexpected error");
-                }
-                
-                shaderCode = text.toString();
-        	}
-            
-            glShaderSource(shader, shaderCode);
-            glCompileShader(shader);
-        }
-        
-        return shader;
+        return Shader.compileShader(shaderType, shaderCode);
     }
     
     
-	public static int createProgram(ArrayList<Integer> shaderList) {		
-	    int program = glCreateProgram();
-	    
-	    if (program != 0) {
-		    for (Integer shader : shaderList) {
-		    	glAttachShader(program, shader);
+	public static int createProgram(ArrayList<Integer> shaders) {
+		try {
+			int prog = Shader.linkProgram(shaders);
+			return prog;
+		} finally {
+			for (Integer shader : shaders) {
+				glDeleteShader(shader);
 			}
-		    	    
-		    glLinkProgram(program);
-	        
-		    for (Integer shader : shaderList) {
-		    	glDetachShader(program, shader);
-			}
-	    }
-	    
-	    return program;
+		}
 	}
 
 	
@@ -97,9 +65,35 @@ public class Framework {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	public static float degToRad(float fAngDeg) {
-		final float fDegToRad = 3.14159f * 2.0f / 360.0f;
+	public static float degToRad(float angDeg) {
+		final float degToRad = 3.14159f * 2.0f / 360.0f;
 		
-		return fAngDeg * fDegToRad;
+		return angDeg * degToRad;
+	}
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	private static String loadShaderFile(String shaderFilepath) {
+    	StringBuilder text = new StringBuilder();
+        
+        try {
+        	BufferedReader reader = new BufferedReader(new InputStreamReader(ClassLoader.class.getResourceAsStream(shaderFilepath)));
+        	String line;
+        	
+        	while ((line = reader.readLine()) != null) {
+        		text.append(line).append("\n");
+        	}
+        	
+        	reader.close();
+        } catch (IOException e){
+        	e.printStackTrace();
+        }
+        
+        return text.toString();
 	}
 }

@@ -469,7 +469,7 @@ public class BasicImpostor01 extends LWJGLWindow {
 	private Mesh sphereMesh;
 	private Mesh cubeMesh;
 	
-	private Timer sphereTimer = new Timer(Timer.Type.TT_LOOP, 6.0f);
+	private Timer sphereTimer = new Timer(Timer.Type.LOOP, 6.0f);
 	
 	private boolean[] drawImposter = {false, false, false, false};
 	private boolean drawLights = true;

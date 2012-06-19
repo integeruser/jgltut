@@ -480,7 +480,7 @@ public class MaterialTexture03 extends LWJGLWindow {
 	private Mesh cubeMesh;
 	private Mesh planeMesh;
 
-	private Timer lightTimer = new Timer(Timer.Type.TT_LOOP, 6.0f);
+	private Timer lightTimer = new Timer(Timer.Type.LOOP, 6.0f);
 
 	private enum ShaderMode {
 		FIXED,

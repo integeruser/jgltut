@@ -23,7 +23,7 @@ import rosick.mckesson.framework.Interpolators.WeightedLinearInterpolatorVec4;
 class LightManager {
 	
 	LightManager() {
-		sunTimer = new Timer(Timer.Type.TT_LOOP, 30.0f);
+		sunTimer = new Timer(Timer.Type.LOOP, 30.0f);
 		
 		ambientInterpolator = new TimedLinearInterpolatorVec4();
 		backgroundInterpolator = new TimedLinearInterpolatorVec4();
@@ -55,7 +55,7 @@ class LightManager {
 		posValues.add(new Vec3(70.0f, 30.0f, 50.0f));
 		posValues.add(new Vec3(50.0f, 30.0f, 70.0f));
 		lightPos.get(0).setValues(posValues);
-		lightTimers.add(new Timer(Timer.Type.TT_LOOP, 15.0f));
+		lightTimers.add(new Timer(Timer.Type.LOOP, 15.0f));
 		
 		// Right-side light.
 		posValues = new ArrayList<>();
@@ -82,7 +82,7 @@ class LightManager {
 		posValues.add(new Vec3(72.0f, 44.0f, -90.0f));
 
 		lightPos.get(1).setValues(posValues);
-		lightTimers.add(new Timer(Timer.Type.TT_LOOP, 25.0f));
+		lightTimers.add(new Timer(Timer.Type.LOOP, 25.0f));
 
 		// Left-side light.
 		posValues = new ArrayList<>();
@@ -111,7 +111,7 @@ class LightManager {
 		posValues.add(new Vec3(-40.0f, 25.0f, 90.0f));
 
 		lightPos.get(2).setValues(posValues);
-		lightTimers.add(new Timer(Timer.Type.TT_LOOP, 15.0f));
+		lightTimers.add(new Timer(Timer.Type.LOOP, 15.0f));
 	}
 	
 	
@@ -260,28 +260,28 @@ class LightManager {
 		}
 		
 		void setValues(ArrayList<MaxIntensityData> data, boolean isLooping) {
-			m_values.clear();
+			values.clear();
 
 			for (MaxIntensityData curr : data) {				
 				Data temp = new Data();
 				temp.data = getValue(curr);
 				temp.weight = LightManager.getTime(curr);
 
-				m_values.add(temp);
+				values.add(temp);
 			}
 			
-			if (isLooping && !m_values.isEmpty()) {
+			if (isLooping && !values.isEmpty()) {
 				Data temp = new Data();
-				temp.data = m_values.get(0).data;
-				temp.weight = m_values.get(0).weight;
+				temp.data = values.get(0).data;
+				temp.weight = values.get(0).weight;
 
-				m_values.add(temp);
+				values.add(temp);
 			}
 				
 			// Ensure first is weight 0, and last is weight 1.
-			if (!m_values.isEmpty()) {
-				m_values.get(0).weight = 0.0f;
-				m_values.get(m_values.size() - 1).weight = 1.0f;
+			if (!values.isEmpty()) {
+				values.get(0).weight = 0.0f;
+				values.get(values.size() - 1).weight = 1.0f;
 			}
 		}
 	}
@@ -293,28 +293,28 @@ class LightManager {
 		}
 		
 		void setValues(ArrayList<LightData> data, boolean isLooping) {
-			m_values.clear();
+			values.clear();
 
 			for (LightData curr : data) {				
 				Data temp = new Data();
 				temp.data = new Vec4(LightManager.getValue(curr));
 				temp.weight = LightManager.getTime(curr);
 
-				m_values.add(temp);
+				values.add(temp);
 			}
 			
-			if (isLooping && !m_values.isEmpty()) {
+			if (isLooping && !values.isEmpty()) {
 				Data temp = new Data();
-				temp.data = new Vec4(m_values.get(0).data);
-				temp.weight = m_values.get(0).weight;
+				temp.data = new Vec4(values.get(0).data);
+				temp.weight = values.get(0).weight;
 
-				m_values.add(temp);
+				values.add(temp);
 			}
 				
 			// Ensure first is weight 0, and last is weight 1.
-			if (!m_values.isEmpty()) {
-				m_values.get(0).weight = 0.0f;
-				m_values.get(m_values.size() - 1).weight = 1.0f;
+			if (!values.isEmpty()) {
+				values.get(0).weight = 0.0f;
+				values.get(values.size() - 1).weight = 1.0f;
 			}
 		}
 	}

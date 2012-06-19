@@ -58,7 +58,7 @@ public class LightEnv {
 		
 		float timerTime = Float.parseFloat(sunNode.getAttribute("time"));
 		
-		sunTimer = new Timer(Timer.Type.TT_LOOP, timerTime);
+		sunTimer = new Timer(Timer.Type.LOOP, timerTime);
 		
 		ArrayList<LightData> ambient = new ArrayList<>();
 		ArrayList<LightData> light = new ArrayList<>();
@@ -104,7 +104,7 @@ public class LightEnv {
 					throw new RuntimeException("Too many lights specified.");
 				
 				float lightTime = Float.parseFloat(elemlight.getAttribute("time"));
-				lightTimers.add(new Timer(Timer.Type.TT_LOOP, lightTime));
+				lightTimers.add(new Timer(Timer.Type.LOOP, lightTime));
 				
 				String strVec4 = elemlight.getAttribute("intensity");
 				lightIntensity.add(parseVec4(strVec4));
@@ -191,28 +191,28 @@ public class LightEnv {
 		}
 		
 		public void setValues(ArrayList<MaxIntensityData> data, boolean isLooping) {
-			m_values.clear();
+			values.clear();
 
 			for (MaxIntensityData curr : data) {				
 				Data temp = new Data();
 				temp.data = getValue(curr);
 				temp.weight = getTime(curr);
 
-				m_values.add(temp);
+				values.add(temp);
 			}
 			
-			if (isLooping && !m_values.isEmpty()) {
+			if (isLooping && !values.isEmpty()) {
 				Data temp = new Data();
-				temp.data = m_values.get(0).data;
-				temp.weight = m_values.get(0).weight;
+				temp.data = values.get(0).data;
+				temp.weight = values.get(0).weight;
 
-				m_values.add(temp);
+				values.add(temp);
 			}
 				
 			// Ensure first is weight 0, and last is weight 1.
-			if (!m_values.isEmpty()) {
-				m_values.get(0).weight = 0.0f;
-				m_values.get(m_values.size() - 1).weight = 1.0f;
+			if (!values.isEmpty()) {
+				values.get(0).weight = 0.0f;
+				values.get(values.size() - 1).weight = 1.0f;
 			}
 		}
 	}
@@ -224,28 +224,28 @@ public class LightEnv {
 		}
 		
 		public void setValues(ArrayList<LightData> data, boolean isLooping) {
-			m_values.clear();
+			values.clear();
 
 			for (LightData curr : data) {				
 				Data temp = new Data();
 				temp.data = new Vec4(getValue(curr));
 				temp.weight = getTime(curr);
 
-				m_values.add(temp);
+				values.add(temp);
 			}
 			
-			if (isLooping && !m_values.isEmpty()) {
+			if (isLooping && !values.isEmpty()) {
 				Data temp = new Data();
-				temp.data = new Vec4(m_values.get(0).data);
-				temp.weight = m_values.get(0).weight;
+				temp.data = new Vec4(values.get(0).data);
+				temp.weight = values.get(0).weight;
 
-				m_values.add(temp);
+				values.add(temp);
 			}
 				
 			// Ensure first is weight 0, and last is weight 1.
-			if (!m_values.isEmpty()) {
-				m_values.get(0).weight = 0.0f;
-				m_values.get(m_values.size() - 1).weight = 1.0f;
+			if (!values.isEmpty()) {
+				values.get(0).weight = 0.0f;
+				values.get(values.size() - 1).weight = 1.0f;
 			}
 		}
 	}

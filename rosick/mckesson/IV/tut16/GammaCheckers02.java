@@ -284,7 +284,7 @@ public class GammaCheckers02 extends LWJGLWindow {
 	private Mesh plane;
 	private Mesh corridor;
 
-	private Timer camTimer = new Timer(Timer.Type.TT_LOOP, 5.0f);
+	private Timer camTimer = new Timer(Timer.Type.LOOP, 5.0f);
 
 	private boolean drawCorridor;
 	private boolean drawGammaTexture;

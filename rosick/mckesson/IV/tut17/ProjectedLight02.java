@@ -435,7 +435,7 @@ public class ProjectedLight02 extends LWJGLWindow {
 	
 	private Scene scene;
 	private ArrayList<SceneNode> nodes;
-	private Timer timer = new Timer(Timer.Type.TT_LOOP, 10.0f);
+	private Timer timer = new Timer(Timer.Type.LOOP, 10.0f);
 
 	private UniformMat4Binder lightProjMatBinder;
 	private UniformVec3Binder camLightPosBinder;

@@ -334,7 +334,7 @@ public class DoubleProjection01 extends LWJGLWindow {
 
 	private Scene scene;
 	private ArrayList<SceneNode> nodes;
-	private Timer timer = new Timer(Timer.Type.TT_LOOP, 10.0f);
+	private Timer timer = new Timer(Timer.Type.LOOP, 10.0f);
 
 	private Quaternion spinBarOrient;
 	

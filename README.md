@@ -7,11 +7,7 @@ The tutorials use many features of *[Unofficial OpenGL SDK](https://bitbucket.or
 so you don't need to download it.
 
 
-Tutorials ported so far: 16.3 of 17.3
-
-
-Upcoming commits: tutorial 17, final refactoring
-
+Tutorials ported so far: 17.3 of 17.3
 
 
 If you don't want to download the source code you can play with the tutorials with [this runnable jar](https://github.com/downloads/rosickteam/OpenGL/tutorial-chooser.zip). In several tutorials you can interact using the keyboard: key mappings are written at the top of each tutorial class.

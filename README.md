@@ -10,7 +10,7 @@ so you don't need to download it.
 Tutorials ported so far: 17.3 of 17.3
 
 
-If you don't want to download the source code you can play with the tutorials with [this runnable jar](https://github.com/downloads/rosickteam/OpenGL/tutorial-chooser.zip). In several tutorials you can interact using the keyboard: key mappings are written at the top of each tutorial class.
+If you don't want to download the source code you can play with the tutorials with [this runnable jar](https://github.com/downloads/integeruser/gltut-lwjgl/tutorial-chooser.zip). In several tutorials you can interact using the keyboard: key mappings are written at the top of each tutorial class.
 
 
 To suggest a feature, report a bug (please do it!), or general discussion please use the [issue tracker](https://github.com/rosickteam/OpenGL/issues).  

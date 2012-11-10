@@ -58,7 +58,7 @@ public class AspectRatio04 extends LWJGLWindow {
 
 		glUseProgram(theProgram);
 
-		glUniform2f(offsetUniform, 0.5f, 0.5f);
+		glUniform2f(offsetUniform, 1.5f, 0.5f);
 
 		int colorData = (vertexData.length * FLOAT_SIZE) / 2;
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);

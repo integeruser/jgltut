@@ -137,9 +137,9 @@ public class HelloTriangle01 extends LWJGLWindow {
 
         glCompileShader(shader);
 
-        int status = glGetShader(shader, GL_COMPILE_STATUS);
+        int status = glGetShaderi(shader, GL_COMPILE_STATUS);
         if (status == GL_FALSE) {
-    		int infoLogLength = glGetShader(shader, GL_INFO_LOG_LENGTH);
+    		int infoLogLength = glGetShaderi(shader, GL_INFO_LOG_LENGTH);
 
     		String infoLog = glGetShaderInfoLog(shader, infoLogLength);
 
@@ -174,9 +174,9 @@ public class HelloTriangle01 extends LWJGLWindow {
 
 		glLinkProgram(program);
 		
-		int status = glGetProgram(program, GL_LINK_STATUS);
+		int status = glGetProgrami(program, GL_LINK_STATUS);
 		if (status == GL_FALSE) {
-			int infoLogLength = glGetProgram(program, GL_INFO_LOG_LENGTH);
+			int infoLogLength = glGetProgrami(program, GL_INFO_LOG_LENGTH);
 
 			String strInfoLog = glGetProgramInfoLog(program, infoLogLength);
 			System.err.printf("Linker failure: %s\n", strInfoLog);

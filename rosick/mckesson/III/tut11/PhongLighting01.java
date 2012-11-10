@@ -232,6 +232,8 @@ public class PhongLighting01 extends LWJGLWindow {
 						case SPECULAR_ONLY:
 							lightModel = LightingModel.PURE_DIFFUSE;
 							break;
+						default:
+							break;
 						}
 					} else {
 						int index = lightModel.ordinal() + 1;
@@ -282,6 +284,8 @@ public class PhongLighting01 extends LWJGLWindow {
 		case SPECULAR_ONLY:
 			pWhiteProg = whitePhongOnly;
 			pColorProg = colorPhongOnly;
+			break;
+		default:
 			break;
 		}
 			

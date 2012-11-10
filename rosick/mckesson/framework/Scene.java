@@ -864,6 +864,7 @@ public class Scene {
 			vec.y = Float.parseFloat(scanner.next());
 			vec.z = Float.parseFloat(scanner.next());
 
+			scanner.close();
 			return vec;
 		}
 		
@@ -876,6 +877,7 @@ public class Scene {
 			quat.z = Float.parseFloat(scanner.next());
 			quat.w = Float.parseFloat(scanner.next());
 
+			scanner.close();
 			return quat;
 		}
 	}

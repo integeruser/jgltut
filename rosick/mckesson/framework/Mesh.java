@@ -445,6 +445,8 @@ public class Mesh {
 					buff.put(data);
 				}
 				buff.flip();
+				
+				scn.close();
 				return buff;
 			}
 		};
@@ -463,6 +465,8 @@ public class Mesh {
 					buff.put(data);
 				}
 				buff.flip();
+				
+				scn.close();
 				return buff;
 			}
 		};
@@ -481,6 +485,8 @@ public class Mesh {
 					buff.put(data);
 				}
 				buff.flip();
+				
+				scn.close();
 				return buff;
 			}
 		};
@@ -499,6 +505,8 @@ public class Mesh {
 					buff.put(data);
 				}
 				buff.flip();
+				
+				scn.close();
 				return buff;
 			}
 		};

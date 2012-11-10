@@ -448,6 +448,7 @@ public class LightEnv {
 		res.z = Float.parseFloat(snr.next());
 		res.w = Float.parseFloat(snr.next());
 
+		snr.close();
 		return res;
 	}
 	
@@ -459,6 +460,7 @@ public class LightEnv {
 		res.y = Float.parseFloat(snr.next());
 		res.z = Float.parseFloat(snr.next());
 
+		snr.close();
 		return res;
 	}
 }

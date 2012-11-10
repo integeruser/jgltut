@@ -618,6 +618,8 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 							blinnExponent += 0.1f;
 						}
 						break;
+					default:
+						break;
 				}
 			}
 					
@@ -650,6 +652,8 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 							blinnExponent += 0.1f;
 						}
 						break;
+					default:
+						break;
 				}
 			}
 						
@@ -669,7 +673,9 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 					
 				case GAUSSIAN_SPECULAR:
 				case GAUSSIAN_ONLY:
-					return daussianRoughness;	
+					return daussianRoughness;
+				default:
+					break;	
 			}
 
 			float stopComplaint = 0.0f;
@@ -697,6 +703,8 @@ public class GaussianSpecularLighting03 extends LWJGLWindow {
 				case GAUSSIAN_ONLY:
 					daussianRoughness = Math.max(0.0001f, daussianRoughness);
 					daussianRoughness = Math.min(1.0f, daussianRoughness);
+					break;
+				default:
 					break;
 			}
 		}		

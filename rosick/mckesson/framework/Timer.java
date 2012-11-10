@@ -119,6 +119,9 @@ public class Timer {
 				
 			case SINGLE:
 				return Glm.clamp(secAccumTime / secDuration, 0.0f, 1.0f);
+		
+			default:
+				break;
 		}
 
 		return -1.0f;						// Garbage.
@@ -135,6 +138,9 @@ public class Timer {
 				
 			case SINGLE:
 				return Glm.clamp(secAccumTime, 0.0f, secDuration);
+			
+			default:
+				break;
 		}
 
 		return -1.0f;						// Garbage.

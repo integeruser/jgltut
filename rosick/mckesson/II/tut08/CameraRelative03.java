@@ -149,6 +149,9 @@ public class CameraRelative03 extends LWJGLWindow {
 					case CAMERA_RELATIVE:
 						System.out.printf("Camera Relative\n");
 						break;
+					
+					default:
+						break;
 					}
 					
 					break;
@@ -316,6 +319,9 @@ public class CameraRelative03 extends LWJGLWindow {
 
 			final Quaternion worldQuat = invViewQuat.mul(offset.mul(viewQuat));
 			orientation = Quaternion.mul(worldQuat, orientation);
+			break;
+		
+		default:
 			break;
 		}
 

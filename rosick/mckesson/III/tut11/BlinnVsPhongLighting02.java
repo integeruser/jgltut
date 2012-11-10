@@ -599,6 +599,8 @@ public class BlinnVsPhongLighting02 extends LWJGLWindow {
 					blinnExponent += 0.1f;
 				}
 				break;
+			default:
+				break;
 			}
 
 			clampParam();
@@ -623,6 +625,8 @@ public class BlinnVsPhongLighting02 extends LWJGLWindow {
 					blinnExponent -= 0.1f;
 				}
 				break;
+			default:
+				break;
 			}
 
 			clampParam();
@@ -638,6 +642,8 @@ public class BlinnVsPhongLighting02 extends LWJGLWindow {
 			case BLINN_SPECULAR:
 			case BLINN_ONLY:
 				return blinnExponent;
+			default:
+				break;
 			}
 
 			float stopComplaint = 0.0f;
@@ -659,6 +665,8 @@ public class BlinnVsPhongLighting02 extends LWJGLWindow {
 				if (blinnExponent <= 0.0f) {
 					blinnExponent = 0.0001f;
 				}
+				break;
+			default:
 				break;
 			}
 		}	

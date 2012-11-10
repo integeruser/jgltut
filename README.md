@@ -22,7 +22,7 @@ Francesco
 
 General information
 -------------------
-The project uses features of Java 7 and doesn't work with older versions. It is tested with LWJGL 2.8.3.  
+The project uses features of Java 7 and doesn't work with older versions. It is tested with LWJGL 2.8.5.  
 To download and install LWJGL visit the [official site](http://www.lwjgl.org/). 
 
 - "rosick/jglsdk" 	: package with the [glsdk port](https://github.com/integeruser/jglsdk).

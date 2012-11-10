@@ -19,7 +19,7 @@ public class Shader {
         glShaderSource(shader, shaderCode);
         glCompileShader(shader);
         
-		int status = glGetShader(shader, GL_COMPILE_STATUS);
+		int status = glGetShaderi(shader, GL_COMPILE_STATUS);
 		if (status == GL_FALSE) {
 			glDeleteShader(shader);
 			throw new CompileLinkShaderException(shader);
@@ -49,7 +49,7 @@ public class Shader {
 
 		glLinkProgram(program);
 		
-		int status = glGetProgram(program, GL_LINK_STATUS);
+		int status = glGetProgrami(program, GL_LINK_STATUS);
 		if (status == GL_FALSE) {
 			glDeleteProgram(program);
 			throw new CompileLinkProgramException(program);
@@ -73,7 +73,7 @@ public class Shader {
 		CompileLinkShaderException(int shader) {
 			super(glGetShaderInfoLog(
 					shader, 
-					glGetShader(shader, GL_INFO_LOG_LENGTH)));
+					glGetShaderi(shader, GL_INFO_LOG_LENGTH)));
 		}
 	}
 	
@@ -83,7 +83,7 @@ public class Shader {
 		CompileLinkProgramException(int program) {
 			super(glGetShaderInfoLog(
 					program, 
-					glGetShader(program, GL_INFO_LOG_LENGTH)));
+					glGetShaderi(program, GL_INFO_LOG_LENGTH)));
 		}
 	}
 }

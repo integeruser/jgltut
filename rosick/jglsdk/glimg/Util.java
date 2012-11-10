@@ -57,6 +57,8 @@ class Util {
 		case PACKED_32_BIT_2101010_REV:	bytesPerPixel = 4;		break;
 		case PACKED_32_BIT_101111_REV:	bytesPerPixel = 4;		break;
 		case PACKED_32_BIT_5999_REV:	bytesPerPixel = 4;		break;
+		default:
+			break;
 		}
 
 		if (format.getBitDepth().ordinal() < BitDepth.NUM_PER_COMPONENT.ordinal()) {

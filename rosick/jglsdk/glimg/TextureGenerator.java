@@ -18,7 +18,6 @@ import static org.lwjgl.opengl.EXTTextureCompressionLATC.*;
 import static org.lwjgl.opengl.NVTextureCompressionVTC.*;
 
 import org.lwjgl.opengl.EXTTextureSnorm;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GLContext;
 
@@ -269,7 +268,7 @@ public class TextureGenerator {
 	
 	// Non-integral vs. integral.
 	private static int[] s_rgbaFormats = { 
-			GL30.GL_RED, 	GL_RED_INTEGER, 					// PixelComponents.COLOR_RED
+			GL_RED, 		GL_RED_INTEGER, 					// PixelComponents.COLOR_RED
 			GL_RG, 			GL_RG_INTEGER, 						// PixelComponents.COLOR_RG
 			GL_RGB, 		GL_RGB_INTEGER, 					// PixelComponents.COLOR_RGB
 			GL_RGBA, 		GL_RGBA_INTEGER, 					// PixelComponents.COLOR_RGBX
@@ -335,6 +334,9 @@ public class TextureGenerator {
 			if (bForceSigned) {
 				return PixelDataType.COMPRESSED_SIGNED_BC5;
 			}
+			break;
+			
+		default:
 			break;
 		}
 
@@ -820,6 +822,9 @@ public class TextureGenerator {
 			case PACKED_32_BIT_1010102:
 			case PACKED_32_BIT_2101010_REV:
 				return GL_RGB10_A2;
+			
+			default:
+				break;
 			}
 
 			throw new ImageFormatUnsupportedException("Unisgned normalize integer doesn't match accepted bitdepths.");
@@ -960,6 +965,9 @@ public class TextureGenerator {
 			} else {
 				return GL_COMPRESSED_RGBA_BPTC_UNORM_ARB;
 			}
+			
+		default:
+			break;
 		}
 
 		throw new ImageFormatUnsupportedException("???");

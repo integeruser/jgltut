@@ -79,8 +79,8 @@ public class FragChangeColor04 extends LWJGLWindow {
 	
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"calcOffset.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "calcColor.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"CalcOffset.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "CalcColor.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		

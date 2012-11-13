@@ -80,8 +80,8 @@ public class VertCalcOffset03 extends LWJGLWindow {
 	
 	private void initializeProgram() {
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"calcOffset.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "standard.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"CalcOffset.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "Standard.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 		

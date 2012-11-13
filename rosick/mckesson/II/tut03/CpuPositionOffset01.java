@@ -83,8 +83,8 @@ public class CpuPositionOffset01 extends LWJGLWindow {
 	
 	private void initializeProgram() {			
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"standard.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "standard.frag"));
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"Standard.vert"));
+		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "Standard.frag"));
 
 		theProgram = Framework.createProgram(shaderList);
 	}

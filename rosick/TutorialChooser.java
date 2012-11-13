@@ -46,7 +46,7 @@ public class TutorialChooser extends JPanel implements TreeSelectionListener {
 	public void valueChanged(TreeSelectionEvent e) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 		
-		if (node.isLeaf()) {
+		if (node != null && node.isLeaf()) {
 			final Tutorial selectedTutorial = (Tutorial) node.getUserObject();
 
 			new Thread(new Runnable() {
@@ -70,7 +70,7 @@ public class TutorialChooser extends JPanel implements TreeSelectionListener {
 			}).start();
 		}	
 	}
-		
+	
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

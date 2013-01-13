@@ -15,7 +15,7 @@ If you don't want to download the source code, you can play with the tutorials w
 
 To suggest a feature, report a bug (please do it!), or general discussion use the [issue tracker](https://github.com/integeruser/gltut-lwjgl/issues).  
 
-Happy coding! :)
+Happy coding! :)  
 Francesco
 
 

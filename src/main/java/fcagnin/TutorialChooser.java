@@ -1,52 +1,52 @@
 package fcagnin;
 
-import fcagnin.gltut.I.tut01.Tut1;
-import fcagnin.gltut.I.tut02.FragPosition;
-import fcagnin.gltut.I.tut02.VertexColor;
-import fcagnin.gltut.II.tut03.CpuPositionOffset;
-import fcagnin.gltut.II.tut03.FragChangeColor;
-import fcagnin.gltut.II.tut03.VertCalcOffset;
-import fcagnin.gltut.II.tut03.VertPositionOffset;
-import fcagnin.gltut.II.tut04.AspectRatio;
-import fcagnin.gltut.II.tut04.MatrixPerspective;
-import fcagnin.gltut.II.tut04.OrthoCube;
-import fcagnin.gltut.II.tut04.ShaderPerspective;
-import fcagnin.gltut.II.tut05.*;
-import fcagnin.gltut.II.tut06.Hierarchy;
-import fcagnin.gltut.II.tut06.Rotation;
-import fcagnin.gltut.II.tut06.Scale;
-import fcagnin.gltut.II.tut06.Translation;
-import fcagnin.gltut.II.tut07.WorldScene;
-import fcagnin.gltut.II.tut07.WorldWithUBO;
-import fcagnin.gltut.II.tut08.CameraRelative;
-import fcagnin.gltut.II.tut08.GimbalLock;
-import fcagnin.gltut.II.tut08.Interpolation;
-import fcagnin.gltut.II.tut08.QuaternionYPR;
-import fcagnin.gltut.III.tut09.AmbientLighting;
-import fcagnin.gltut.III.tut09.BasicLighting;
-import fcagnin.gltut.III.tut09.ScaleAndLighting;
-import fcagnin.gltut.III.tut10.FragmentAttenuation;
-import fcagnin.gltut.III.tut10.FragmentPointLighting;
-import fcagnin.gltut.III.tut10.VertexPointLighting;
-import fcagnin.gltut.III.tut11.BlinnVsPhongLighting;
-import fcagnin.gltut.III.tut11.GaussianSpecularLighting;
-import fcagnin.gltut.III.tut11.PhongLighting;
-import fcagnin.gltut.III.tut12.GammaCorrection;
-import fcagnin.gltut.III.tut12.HDRLighting;
-import fcagnin.gltut.III.tut12.SceneLighting;
-import fcagnin.gltut.III.tut13.BasicImpostor;
-import fcagnin.gltut.III.tut13.GeomImpostor;
-import fcagnin.gltut.IV.tut14.BasicTexture;
-import fcagnin.gltut.IV.tut14.MaterialTexture;
-import fcagnin.gltut.IV.tut14.PerspectiveInterpolation;
-import fcagnin.gltut.IV.tut15.ManyImages;
-import fcagnin.gltut.IV.tut16.GammaCheckers;
-import fcagnin.gltut.IV.tut16.GammaLandscape;
-import fcagnin.gltut.IV.tut16.GammaRamp;
-import fcagnin.gltut.IV.tut17.CubePointLight;
-import fcagnin.gltut.IV.tut17.DoubleProjection;
-import fcagnin.gltut.IV.tut17.ProjectedLight;
 import fcagnin.gltut.framework.Framework;
+import fcagnin.gltut.tut01.Tut1;
+import fcagnin.gltut.tut02.FragPosition;
+import fcagnin.gltut.tut02.VertexColor;
+import fcagnin.gltut.tut03.CpuPositionOffset;
+import fcagnin.gltut.tut03.FragChangeColor;
+import fcagnin.gltut.tut03.VertCalcOffset;
+import fcagnin.gltut.tut03.VertPositionOffset;
+import fcagnin.gltut.tut04.AspectRatio;
+import fcagnin.gltut.tut04.MatrixPerspective;
+import fcagnin.gltut.tut04.OrthoCube;
+import fcagnin.gltut.tut04.ShaderPerspective;
+import fcagnin.gltut.tut05.*;
+import fcagnin.gltut.tut06.Hierarchy;
+import fcagnin.gltut.tut06.Rotation;
+import fcagnin.gltut.tut06.Scale;
+import fcagnin.gltut.tut06.Translation;
+import fcagnin.gltut.tut07.WorldScene;
+import fcagnin.gltut.tut07.WorldWithUBO;
+import fcagnin.gltut.tut08.CameraRelative;
+import fcagnin.gltut.tut08.GimbalLock;
+import fcagnin.gltut.tut08.Interpolation;
+import fcagnin.gltut.tut08.QuaternionYPR;
+import fcagnin.gltut.tut09.AmbientLighting;
+import fcagnin.gltut.tut09.BasicLighting;
+import fcagnin.gltut.tut09.ScaleAndLighting;
+import fcagnin.gltut.tut10.FragmentAttenuation;
+import fcagnin.gltut.tut10.FragmentPointLighting;
+import fcagnin.gltut.tut10.VertexPointLighting;
+import fcagnin.gltut.tut11.BlinnVsPhongLighting;
+import fcagnin.gltut.tut11.GaussianSpecularLighting;
+import fcagnin.gltut.tut11.PhongLighting;
+import fcagnin.gltut.tut12.GammaCorrection;
+import fcagnin.gltut.tut12.HDRLighting;
+import fcagnin.gltut.tut12.SceneLighting;
+import fcagnin.gltut.tut13.BasicImpostor;
+import fcagnin.gltut.tut13.GeomImpostor;
+import fcagnin.gltut.tut14.BasicTexture;
+import fcagnin.gltut.tut14.MaterialTexture;
+import fcagnin.gltut.tut14.PerspectiveInterpolation;
+import fcagnin.gltut.tut15.ManyImages;
+import fcagnin.gltut.tut16.GammaCheckers;
+import fcagnin.gltut.tut16.GammaLandscape;
+import fcagnin.gltut.tut16.GammaRamp;
+import fcagnin.gltut.tut17.CubePointLight;
+import fcagnin.gltut.tut17.DoubleProjection;
+import fcagnin.gltut.tut17.ProjectedLight;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -106,217 +106,217 @@ public class TutorialChooser extends JPanel implements TreeSelectionListener {
                             break;
 
                         case "FragPosition":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/I/tut02/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut02/data/";
                             new FragPosition().start();
                             break;
                         case "VertexColor":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/I/tut02/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut02/data/";
                             new VertexColor().start();
                             break;
 
 
                         case "CpuPositionOffset":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut03/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut03/data/";
                             new CpuPositionOffset().start();
                             break;
                         case "VertPositionOffset":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut03/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut03/data/";
                             new VertPositionOffset().start();
                             break;
                         case "VertCalcOffset":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut03/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut03/data/";
                             new VertCalcOffset().start();
                             break;
                         case "FragChangeColor":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut03/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut03/data/";
                             new FragChangeColor().start();
                             break;
 
                         case "OrthoCube":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut04/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut04/data/";
                             new OrthoCube().start();
                             break;
                         case "ShaderPerspective":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut04/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut04/data/";
                             new ShaderPerspective().start();
                             break;
                         case "MatrixPerspective":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut04/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut04/data/";
                             new MatrixPerspective().start();
                             break;
                         case "AspectRatio":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut04/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut04/data/";
                             new AspectRatio().start();
                             break;
 
                         case "OverlapNoDepth":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut05/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut05/data/";
                             new OverlapNoDepth().start();
                             break;
                         case "BaseVertexOverlap":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut05/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut05/data/";
                             new BaseVertexOverlap().start();
                             break;
                         case "DepthBuffer":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut05/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut05/data/";
                             new DepthBuffer().start();
                             break;
                         case "VertexClipping":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut05/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut05/data/";
                             new VertexClipping().start();
                             break;
                         case "DepthClamping":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut05/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut05/data/";
                             new DepthClamping().start();
                             break;
 
                         case "Translation":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut06/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut06/data/";
                             new Translation().start();
                             break;
                         case "Scale":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut06/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut06/data/";
                             new Scale().start();
                             break;
                         case "Rotation":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut06/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut06/data/";
                             new Rotation().start();
                             break;
                         case "Hierarchy":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut06/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut06/data/";
                             new Hierarchy().start( 700, 700 );
                             break;
 
                         case "World Scene":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut07/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut07/data/";
                             new WorldScene().start( 700, 700 );
                             break;
                         case "World With UBO":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut07/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut07/data/";
                             new WorldWithUBO().start( 700, 700 );
                             break;
 
                         case "GimbalLock":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut08/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut08/data/";
                             new GimbalLock().start();
                             break;
                         case "QuaternionYPR":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut08/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut08/data/";
                             new QuaternionYPR().start();
                             break;
                         case "CameraRelative":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut08/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut08/data/";
                             new CameraRelative().start();
                             break;
                         case "Interpolation":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/II/tut08/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut08/data/";
                             new Interpolation().start();
                             break;
 
 
                         case "Basic Lighting":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut09/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut09/data/";
                             new BasicLighting().start();
                             break;
                         case "Scale and Lighting":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut09/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut09/data/";
                             new ScaleAndLighting().start();
                             break;
                         case "Ambient Lighting":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut09/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut09/data/";
                             new AmbientLighting().start();
                             break;
 
                         case "Vertex Point Lighting":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut10/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut10/data/";
                             new VertexPointLighting().start();
                             break;
                         case "Fragment Point Lighting":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut10/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut10/data/";
                             new FragmentPointLighting().start();
                             break;
                         case "Fragment Attenuation":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut10/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut10/data/";
                             new FragmentAttenuation().start();
                             break;
 
                         case "Phong Lighting":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut11/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut11/data/";
                             new PhongLighting().start();
                             break;
                         case "Blinn vs Phong Lighting":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut11/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut11/data/";
                             new BlinnVsPhongLighting().start();
                             break;
                         case "Gaussian Specular Lighting":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut11/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut11/data/";
                             new GaussianSpecularLighting().start();
                             break;
 
                         case "Scene Lighting":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut12/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut12/data/";
                             new SceneLighting().start( 700, 700 );
                             break;
                         case "HDR Lighting":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut12/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut12/data/";
                             new HDRLighting().start( 700, 700 );
                             break;
                         case "Gamma Correction":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut12/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut12/data/";
                             new GammaCorrection().start( 700, 700 );
                             break;
 
                         case "BasicImpostor":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut13/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut13/data/";
                             new BasicImpostor().start();
                             break;
                         case "GeomImpostor":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/III/tut13/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut13/data/";
                             new GeomImpostor().start();
                             break;
 
 
                         case "Basic Texture":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/IV/tut14/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut14/data/";
                             new BasicTexture().start();
                             break;
                         case "Perspective Interpolation":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/IV/tut14/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut14/data/";
                             new PerspectiveInterpolation().start();
                             break;
                         case "Material Texture":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/IV/tut14/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut14/data/";
                             new MaterialTexture().start();
                             break;
 
                         case "Many Images":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/IV/tut15/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut15/data/";
                             new ManyImages().start();
                             break;
 
                         case "GammaRamp":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/IV/tut16/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut16/data/";
                             new GammaRamp().start( 500, 195 );
                             break;
                         case "Gamma Checkers":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/IV/tut16/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut16/data/";
                             new GammaCheckers().start();
                             break;
                         case "Gamma Landscape":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/IV/tut16/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut16/data/";
                             new GammaLandscape().start( 700, 700 );
                             break;
 
                         case "Double Projection":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/IV/tut17/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut17/data/";
                             new DoubleProjection().start( 700, 350 );
                             break;
                         case "Projected Light":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/IV/tut17/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut17/data/";
                             new ProjectedLight().start( 500, 500 );
                             break;
                         case "Cube Point Light":
-                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/IV/tut17/data/";
+                            Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut17/data/";
                             new CubePointLight().start( 500, 500 );
                             break;
 

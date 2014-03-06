@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL30.*;
 
 import org.lwjgl.BufferUtils;
 
-import fcagnin.LWJGLWindow;
+import fcagnin.gltut.LWJGLWindow;
 import fcagnin.jglsdk.glm.Glm;
 import fcagnin.jglsdk.glm.Mat3;
 import fcagnin.jglsdk.glm.Mat4;

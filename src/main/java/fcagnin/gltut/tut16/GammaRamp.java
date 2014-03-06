@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import fcagnin.LWJGLWindow;
+import fcagnin.gltut.LWJGLWindow;
 import fcagnin.jglsdk.BufferableData;
 import fcagnin.jglsdk.glimg.ImageSet;
 import fcagnin.jglsdk.glimg.ImageSet.Dimensions;

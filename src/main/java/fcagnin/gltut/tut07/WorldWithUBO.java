@@ -13,7 +13,7 @@ import static org.lwjgl.opengl.GL32.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import fcagnin.LWJGLWindow;
+import fcagnin.gltut.LWJGLWindow;
 import fcagnin.gltut.framework.Framework;
 import fcagnin.gltut.framework.Mesh;
 import fcagnin.jglsdk.glm.Glm;

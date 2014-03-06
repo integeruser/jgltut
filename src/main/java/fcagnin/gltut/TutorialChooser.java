@@ -1,4 +1,4 @@
-package fcagnin;
+package fcagnin.gltut;
 
 import fcagnin.gltut.framework.Framework;
 import fcagnin.gltut.tut01.Tut1;

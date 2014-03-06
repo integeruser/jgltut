@@ -13,7 +13,7 @@ import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
-import fcagnin.LWJGLWindow;
+import fcagnin.gltut.LWJGLWindow;
 import fcagnin.jglsdk.glm.Mat3;
 import fcagnin.jglsdk.glm.Mat4;
 import fcagnin.jglsdk.glm.Vec3;

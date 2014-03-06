@@ -1,4 +1,4 @@
-package fcagnin;
+package fcagnin.gltut;
 
 import static org.lwjgl.opengl.GL11.*;
 

@@ -19,7 +19,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import fcagnin.LWJGLWindow;
+import fcagnin.gltut.LWJGLWindow;
 import fcagnin.jglsdk.BufferableData;
 import fcagnin.jglsdk.glm.Glm;
 import fcagnin.jglsdk.glm.Mat3;

@@ -22,14 +22,15 @@ import fcagnin.gltut.framework.Timer;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part II. Positioning
  * Chapter 8. Getting Oriented
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2008.html
- * @author integeruser
+ * <p/>
+ * SPACE            - toggles between regular linear interpolation and slerp.
+ * Q,W,E,R,T,Y,U    - cause the ship to interpolate to a new orientation.
  *
- * SPACE			- toggles between regular linear interpolation and slerp.
- * Q,W,E,R,T,Y,U 	- cause the ship to interpolate to a new orientation.
+ * @author integeruser
  */
 public class Interpolation extends LWJGLWindow {
 

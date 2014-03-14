@@ -37,28 +37,30 @@ import fcagnin.gltut.framework.SceneBinders.UniformIntBinder;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part IV. Texturing
  * Chapter 17. Spotlight on Textures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2017.html
+ * <p/>
+ * W,A,S,D  - move the camera forward/backwards and left/right, relative to the camera's current orientation. Holding SHIFT with these
+ * keys will move in smaller increments.
+ * Q,E      - raise and lower the camera, relative to its current orientation. Holding SHIFT with these keys will move in smaller
+ * increments.
+ * SPACE    - reset the right camera back to a neutral view.
+ * T        - toggle viewing of the current target point.
+ * Y        - toggle depth clamping in the right camera.
+ * P        - toggle pausing.
+ * <p/>
+ * LEFT   CLICKING and DRAGGING     - rotate the left camera around the target point, both horizontally and vertically.
+ * LEFT   CLICKING and DRAGGING + CTRL  - rotate the left camera around the target point, either horizontally or vertically.
+ * LEFT   CLICKING and DRAGGING + ALT   - change the left camera's up direction.
+ * RIGHT  CLICKING and DRAGGING         - rotate the right camera horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the right camera flashlight horizontally or vertically only,
+ * relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT   - change the right camera's up direction.
+ * WHEEL  SCROLLING                     - move the left camera and the right camera  closer to it's target point or farther away.
+ *
  * @author integeruser
- *
- * W,A,S,D	- move the camera forward/backwards and left/right, relative to the camera's current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.
- * Q,E		- raise and lower the camera, relative to its current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.
- * SPACE	- reset the right camera back to a neutral view.
- * T		- toggle viewing of the current target point.
- * Y		- toggle depth clamping in the right camera.
- * P		- toggle pausing.
- *
- * LEFT	  CLICKING and DRAGGING			- rotate the left camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the left camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + ALT	- change the left camera's up direction.
- * RIGHT  CLICKING and DRAGGING			- rotate the right camera horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the right camera flashlight horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + ALT	- change the right camera's up direction.
- * WHEEL  SCROLLING						- move the left camera and the right camera  closer to it's target point or farther away.
  */
 public class DoubleProjection extends LWJGLWindow {
 

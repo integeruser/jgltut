@@ -19,16 +19,17 @@ import fcagnin.gltut.framework.Mesh;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part II. Positioning
  * Chapter 8. Getting Oriented
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2008.html
- * @author integeruser
+ * <p/>
+ * SPACE    - toggle drawing the gimbal rings.
+ * W,S      - control the outer gimbal.
+ * A,D      - control the middle gimbal.
+ * Q,E      - control the inner gimbal.
  *
- * SPACE	- toggle drawing the gimbal rings.
- * W,S		- control the outer gimbal.
- * A,D 		- control the middle gimbal.
- * Q,E  	- control the inner gimbal.
+ * @author integeruser
  */
 public class GimbalLock extends LWJGLWindow {
 

@@ -32,14 +32,15 @@ import fcagnin.gltut.framework.Framework;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part IV. Texturing
  * Chapter 16. Gamma and Textures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2016.html
- * @author integeruser
+ * <p/>
+ * 1    - switch the top texture between lRGB and sRGB.
+ * 2    - switch the bottom texture between lRGB and sRGB.
  *
- * 1 		- switch the top texture between lRGB and sRGB.
- * 2		- switch the bottom texture between lRGB and sRGB.
+ * @author integeruser
  */
 public class GammaRamp extends LWJGLWindow {
 

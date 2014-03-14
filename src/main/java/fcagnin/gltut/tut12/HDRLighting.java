@@ -36,28 +36,29 @@ import fcagnin.gltut.framework.Timer;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part III. Illumination
  * Chapter 12. Dynamic Range
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2012.html
+ * <p/>
+ * W,A,S,D  - move the cameras forward/backwards and left/right, relative to the camera's current orientation. Holding SHIFT with these
+ * keys will move in smaller increments.
+ * Q,E      - raise and lower the camera, relative to its current orientation. Holding SHIFT with these keys will move in smaller
+ * increments.
+ * P        - toggle pausing.
+ * -,=      - rewind/jump forward time by one second (of real-time).
+ * T        - toggle viewing of the current target point.
+ * 1,2,3    - timer commands affect both the sun and the other lights/only the sun/only the other lights.
+ * L        - switch to day-optimized lighting. Pressing SHIFT+L will switch to a night-time optimized version.
+ * K        - switch to HDR lighting.
+ * SPACE    - print out the current sun-based time, in 24-hour notation.
+ * <p/>
+ * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
+ * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
+ * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
+ * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
+ *
  * @author integeruser
- *
- * W,A,S,D	- move the cameras forward/backwards and left/right, relative to the camera's current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.
- * Q,E		- raise and lower the camera, relative to its current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.
- * P		- toggle pausing.
- * -,=		- rewind/jump forward time by one second (of real-time).
- * T		- toggle viewing of the current target point.
- * 1,2,3	- timer commands affect both the sun and the other lights/only the sun/only the other lights.
- * L		- switch to day-optimized lighting. Pressing SHIFT+L will switch to a night-time optimized version.
- * K 		- switch to HDR lighting.
- * SPACE	- print out the current sun-based time, in 24-hour notation.
- *
- * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
- * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away.
  */
 public class HDRLighting extends LWJGLWindow {
 

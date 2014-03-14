@@ -32,25 +32,26 @@ import fcagnin.gltut.framework.Timer;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part III. Illumination
  * Chapter 13. Lies and Impostors
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2013.html
+ * <p/>
+ * W,A,S,D  - move the cameras forward/backwards and left/right, relative to the camera's current orientation. Holding SHIFT with these
+ * keys will move in smaller increments.
+ * Q,E      - raise and lower the camera, relative to its current orientation. Holding SHIFT with these keys will move in smaller
+ * increments.
+ * P        - toggle pausing on/off.
+ * -,=      - rewind/jump forward time by 0.5 second (of real-time).
+ * T        - toggle viewing the look-at point.
+ * G        - toggle the drawing of the light source.
+ * <p/>
+ * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
+ * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
+ * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
+ * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
+ *
  * @author integeruser
- *
- * W,A,S,D	- move the cameras forward/backwards and left/right, relative to the camera's current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.
- * Q,E		- raise and lower the camera, relative to its current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.
- * P		- toggle pausing on/off.
- * -,=		- rewind/jump forward time by 0.5 second (of real-time).
- * T		- toggle viewing the look-at point.
- * G		- toggle the drawing of the light source.
- *
- * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
- * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away.
  */
 public class GeomImpostor extends LWJGLWindow {
 

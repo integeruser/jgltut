@@ -43,33 +43,35 @@ import fcagnin.gltut.framework.SceneBinders.UniformVec3Binder;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part IV. Texturing
  * Chapter 17. Spotlight on Textures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2017.html
- * @author integeruser
- *
- * W,A,S,D	- move the camera forward/backwards and left/right, relative to the camera's current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.
+ * <p/>
+ * W,A,S,D  - move the camera forward/backwards and left/right, relative to the camera's current orientation. Holding SHIFT with these
+ * keys will move in smaller increments.
  * I,J,K,L  - control the projected flashlight's position. Holding SHIFT with these keys will move in smaller increments.
- * O,U		- raise and lower the projected flashlight, relative to its current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.
- * SPACE	- reset the projected flashlight direction.
- * T		- toggle viewing of the current target point.
- * G		- toggle all of the regular lighting on and off.
- * H		- toggle between the edge clamping sampler and the border clamping one.
- * P		- toggle pausing.
- * Y		- increase the FOV.
- * N		- decrease the FOV.
- * 1,2,3	- toggle between different light textures.
+ * O,U       raise and lower the projected flashlight, relative to its current orientation. Holding SHIFT with these keys will move in
+ * smaller increments.
+ * SPACE    - reset the projected flashlight direction.
+ * T        - toggle viewing of the current target point.
+ * G        - toggle all of the regular lighting on and off.
+ * H        - toggle between the edge clamping sampler and the border clamping one.
+ * P        - toggle pausing.
+ * Y        - increase the FOV.
+ * N        - decrease the FOV.
+ * 1,2,3    - toggle between different light textures.
+ * <p/>
+ * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
+ * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
+ * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING         - rotate the projected flashlight horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the projected flashlight horizontally or vertically only,
+ * relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT   - spin the projected flashlight.
+ * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  *
- * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING			- rotate the projected flashlight horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the projected flashlight horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + ALT	- spin the projected flashlight.
- * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away.
+ * @author integeruser
  */
 public class ProjectedLight extends LWJGLWindow {
 

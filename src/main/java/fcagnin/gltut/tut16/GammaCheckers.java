@@ -36,18 +36,19 @@ import fcagnin.gltut.framework.Timer;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part IV. Texturing
  * Chapter 16. Gamma and Textures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2016.html
- * @author integeruser
+ * <p/>
+ * A        - toggle gamma correction.
+ * G        - switch to a texture who's mipmaps were properly generated.
+ * SPACE    - press A and G keys.
+ * Y        - toggle between plane/corridor mesh.
+ * P        - toggle pausing.
+ * 1,2      - select linear mipmap filtering and anisotropic filtering (using the maximum possible anisotropy).
  *
- * A		- toggle gamma correction.
- * G		- switch to a texture who's mipmaps were properly generated.
- * SPACE	- press A and G keys.
- * Y		- toggle between plane/corridor mesh.
- * P		- toggle pausing.
- * 1,2		- select linear mipmap filtering and anisotropic filtering (using the maximum possible anisotropy).
+ * @author integeruser
  */
 public class GammaCheckers extends LWJGLWindow {
 

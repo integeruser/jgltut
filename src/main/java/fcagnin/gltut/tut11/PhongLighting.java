@@ -32,30 +32,31 @@ import fcagnin.gltut.framework.Timer;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part III. Illumination
  * Chapter 11. Shinies
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2011.html
- * @author integeruser
- *
+ * <p/>
  * I,J,K,L  - control the light's position. Holding SHIFT with these keys will move in smaller increments.
- * SPACE	- toggles between drawing the uncolored cylinder and the colored one.
- * U,O      - control the specular value. They raise and low the specular exponent. Using SHIFT in combination
- * 				with them will raise/lower the exponent by smaller amounts.
- * Y 		- toggles the drawing of the light source.
- * T 		- toggles between the scaled and unscaled cylinder.
- * B 		- toggles the light's rotation on/off.
- * G 		- toggles between a diffuse color of (1, 1, 1) and a darker diffuse color of (0.2, 0.2, 0.2).
- * H 		- selects between specular and diffuse, just specular and just diffuse. Pressing SHIFT+H will toggle
- * 				between diffuse only and diffuse+specular.
+ * SPACE    - toggles between drawing the uncolored cylinder and the colored one.
+ * U,O      - control the specular value. They raise and low the specular exponent. Using SHIFT in combination with them will raise/lower
+ * the exponent by smaller amounts.
+ * Y        - toggles the drawing of the light source.
+ * T        - toggles between the scaled and unscaled cylinder.
+ * B        - toggles the light's rotation on/off.
+ * G        - toggles between a diffuse color of (1, 1, 1) and a darker diffuse color of (0.2, 0.2, 0.2).
+ * H        - selects between specular and diffuse, just specular and just diffuse. Pressing SHIFT+H will toggle between diffuse only and
+ * diffuse+specular.
+ * <p/>
+ * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
+ * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
+ * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
+ * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  *
- * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING			- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + ALT	- spin the object.
- * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away.
+ * @author integeruser
  */
 public class PhongLighting extends LWJGLWindow {
 

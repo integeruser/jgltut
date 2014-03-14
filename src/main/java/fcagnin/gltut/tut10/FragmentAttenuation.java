@@ -34,27 +34,28 @@ import fcagnin.gltut.framework.Timer;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part III. Illumination
  * Chapter 10. Plane Lights
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2010.html
- * @author integeruser
- *
+ * <p/>
  * I,J,K,L  - control the light's position. Holding LEFT_SHIFT with these keys will move in smaller increments.
- * SPACE	- toggle between drawing the uncolored cylinder and the colored one.
- * O,U		- increase/decrease the attenuation constant.
- * Y 		- toggle the drawing of the light source.
- * T 		- toggle between the scaled and unscaled cylinder.
- * B 		- toggle the light's rotation on/off.
- * H 		- swap between the linear and quadratic interpolation functions.
+ * SPACE    - toggle between drawing the uncolored cylinder and the colored one.
+ * O,U      - increase/decrease the attenuation constant.
+ * Y        - toggle the drawing of the light source.
+ * T        - toggle between the scaled and unscaled cylinder.
+ * B        - toggle the light's rotation on/off.
+ * H        - swap between the linear and quadratic interpolation functions.
+ * <p/>
+ * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
+ * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
+ * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
+ * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  *
- * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING			- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + ALT	- spin the object.
- * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away.
+ * @author integeruser
  */
 public class FragmentAttenuation extends LWJGLWindow {
 

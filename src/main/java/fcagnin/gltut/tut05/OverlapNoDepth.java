@@ -17,10 +17,11 @@ import fcagnin.gltut.framework.Framework;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part II. Positioning
  * Chapter 5. Objects in Depth
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2005.html
+ *
  * @author integeruser
  */
 public class OverlapNoDepth extends LWJGLWindow {

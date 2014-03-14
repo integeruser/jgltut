@@ -42,29 +42,30 @@ import fcagnin.gltut.framework.UniformBlockArray;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part IV. Texturing
  * Chapter 14. Textures are not Pictures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
+ * <p/>
+ * P        - toggle pausing.
+ * -,=      - rewind/jump forward time by 0.5 second (of real-time).
+ * T        - toggle viewing the look-at point.
+ * G        - toggle the drawing of the light source.
+ * Y        - switch between the infinity symbol and a flat plane.
+ * SPACE    - switch between one of three rendering modes: fixed shininess with a Gaussian lookup-table,
+ * a texture-based shininess with a Gaussian lookup-table, and a texture-based shininess with a shader-computed Gaussian term.
+ * 1,2,3,4  - switch to progressively larger textures.
+ * 8,9      - switch to the gold material/a material with a dark diffuse color and bright specular color.
+ * <p/>
+ * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
+ * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
+ * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
+ * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
+ *
  * @author integeruser
- *
- * P		- toggle pausing.
- * -,=		- rewind/jump forward time by 0.5 second (of real-time).
- * T		- toggle viewing the look-at point.
- * G		- toggle the drawing of the light source.
- * Y		- switch between the infinity symbol and a flat plane.
- * SPACE	- switch between one of three rendering modes: fixed shininess with a Gaussian lookup-table, a texture-based shininess with a
- * 				Gaussian lookup-table, and a texture-based shininess with a shader-computed Gaussian term.
- * 1,2,3,4	- switch to progressively larger textures.
- * 8,9		- switch to the gold material/a material with a dark diffuse color and bright specular color.
- *
- * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING			- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + ALT	- spin the object.
- * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away.
  */
 public class MaterialTexture extends LWJGLWindow {
 

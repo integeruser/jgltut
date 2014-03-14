@@ -20,10 +20,11 @@ import fcagnin.jglsdk.glm.Vec4;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part II. Positioning
  * Chapter 6. Objects in Motion
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2006.html
+ *
  * @author integeruser
  */
 public class Translation extends LWJGLWindow {

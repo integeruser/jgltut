@@ -41,26 +41,27 @@ import fcagnin.gltut.framework.MousePole;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part IV. Texturing
  * Chapter 16. Gamma and Textures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2016.html
+ * <p/>
+ * W,A,S,D  - move the cameras forward/backwards and left/right, relative to the camera's current orientation. Holding SHIFT with these
+ * keys will move in smaller increments.
+ * Q,E      - raise and lower the camera, relative to its current orientation. Holding SHIFT with these keys will move in smaller
+ * increments.
+ * SPACE    - toggle non-shader-based gamma correction.
+ * -,=      - rewind/jump forward time by 0.5 second (of real-time).
+ * T        - toggle viewing the look-at point.
+ * P        - toggle pausing.
+ * 1,2      - select linear mipmap filtering and anisotropic filtering (using the maximum possible anisotropy).
+ * <p/>
+ * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
+ * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
+ * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
+ * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
+ *
  * @author integeruser
- *
- * W,A,S,D	- move the cameras forward/backwards and left/right, relative to the camera's current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.
- * Q,E		- raise and lower the camera, relative to its current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.
- * SPACE	- toggle non-shader-based gamma correction.
- * -,=		- rewind/jump forward time by 0.5 second (of real-time).
- * T		- toggle viewing the look-at point.
- * P		- toggle pausing.
- * 1,2		- select linear mipmap filtering and anisotropic filtering (using the maximum possible anisotropy).
- *
- * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
- * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away.
  */
 public class GammaLandscape extends LWJGLWindow {
 

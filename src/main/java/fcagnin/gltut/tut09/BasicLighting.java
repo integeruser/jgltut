@@ -30,21 +30,22 @@ import fcagnin.gltut.framework.MousePole;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part III. Illumination
  * Chapter 9. Lights On
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2009.html
+ * <p/>
+ * SPACE    - toggle between drawing the uncolored cylinder and the colored one.
+ * <p/>
+ * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
+ * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
+ * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
+ * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
+ * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
+ *
  * @author integeruser
- *
- * SPACE	- toggle between drawing the uncolored cylinder and the colored one.
- *
- * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
- * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
- * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING			- rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL	- rotate the object horizontally or vertically only, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + ALT	- spin the object.
- * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away.
  */
 public class BasicLighting extends LWJGLWindow {
 

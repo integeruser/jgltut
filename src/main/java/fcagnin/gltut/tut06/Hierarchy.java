@@ -23,21 +23,22 @@ import fcagnin.gltut.framework.Framework;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part II. Positioning
  * Chapter 6. Objects in Motion
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2006.html
+ * <p/>
+ * Node Angle      Increase/Left   Decrease/Right
+ * Base Spin              D               A
+ * Arm Raise              S               W
+ * Elbow Raise            F               R
+ * Wrist Raise            G               T
+ * Wrist Spin             C               Z
+ * Finger                 Q               E
+ * <p/>
+ * SPACE   - print current armature position.
+ *
  * @author integeruser
- *
- *  Node Angle		Increase/Left	Decrease/Right
- *  Base Spin			   D			   A
- *	Arm Raise		       S			   W
- *	Elbow Raise		       F			   R
- *	Wrist Raise		       G			   T
- *	Wrist Spin		       C		       Z
- *	Finger     		       Q		       E
- *
- *  SPACE	- print current armature position.
  */
 public class Hierarchy extends LWJGLWindow {
 

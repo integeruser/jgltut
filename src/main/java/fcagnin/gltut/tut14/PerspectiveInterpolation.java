@@ -18,14 +18,15 @@ import fcagnin.gltut.framework.Mesh;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part IV. Texturing
  * Chapter 14. Textures are not Pictures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
- * @author integeruser
+ * <p/>
+ * S        - switch meshes.
+ * P        - toggle between perspective-correct interpolation/window-space linear interpolation.
  *
- * S		- switch meshes.
- * P		- toggle between perspective-correct interpolation/window-space linear interpolation.
+ * @author integeruser
  */
 public class PerspectiveInterpolation extends LWJGLWindow {
 

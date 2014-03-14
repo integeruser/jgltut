@@ -22,24 +22,23 @@ import fcagnin.jglsdk.glutil.MatrixStack;
 
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
- *
+ * <p/>
  * Part II. Positioning
  * Chapter 7. World in Motion
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2007.html
+ * <p/>
+ * Function                                     Increase/Left   Decrease/Right
+ * Move camera target up/down                          E               Q
+ * Move camera target horizontally                     A               D
+ * Move camera target vertically                       W               S
+ * Rotate camera horizontally around target            L               J
+ * Rotate camera vertically around target              I               K
+ * Move camera towards/away from target                U               O
+ * In addition, if you hold down the SHIFT key while pressing any of the last six keys, then the affected control will be much slower.
+ * <p/>
+ * SPACE    - toggle the appearance of an object indicating the position of the camera point.
+ *
  * @author integeruser
- *
- * Function										Increase/Left	Decrease/Right
- * Move camera target up/down					       E			   Q
- * Move camera target horizontally				       A			   D
- * Move camera target vertically				       W			   S
- * Rotate camera horizontally around target		       L			   J
- * Rotate camera vertically around target		       I			   K
- * Move camera towards/away from target			       U			   O
- *
- * In addition, if you hold down the SHIFT key while pressing any of the last six keys, then
- * 		the affected control will be much slower.
- *
- * SPACE	- toggle the appearance of an object indicating the position of the camera point.
  */
 public class WorldScene extends LWJGLWindow {
 

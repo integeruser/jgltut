@@ -38,8 +38,8 @@ import fcagnin.gltut.framework.Timer;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * IV. Texturing
- * 14. Textures are not Pictures
+ * Part IV. Texturing
+ * Chapter 14. Textures are not Pictures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
  * @author integeruser
  *

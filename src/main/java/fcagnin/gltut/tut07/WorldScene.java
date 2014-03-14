@@ -23,8 +23,8 @@ import fcagnin.jglsdk.glutil.MatrixStack;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * II. Positioning
- * 7. World in Motion
+ * Part II. Positioning
+ * Chapter 7. World in Motion
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2007.html
  * @author integeruser
  *

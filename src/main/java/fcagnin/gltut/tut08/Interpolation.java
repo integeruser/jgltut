@@ -23,8 +23,8 @@ import fcagnin.gltut.framework.Timer;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * II. Positioning
- * 8. Getting Oriented
+ * Part II. Positioning
+ * Chapter 8. Getting Oriented
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2008.html
  * @author integeruser
  *

@@ -17,7 +17,7 @@ import fcagnin.gltut.framework.Framework;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * I. The Basics
+ * Part I. The Basics
  * Chapter 2. Playing with Colors
  * http://www.arcsynthesis.org/gltut/Basics/Tutorial%2002.html
  * @author integeruser

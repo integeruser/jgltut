@@ -42,8 +42,8 @@ import fcagnin.gltut.framework.MousePole;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * IV. Texturing
- * 16. Gamma and Textures
+ * Part IV. Texturing
+ * Chapter 16. Gamma and Textures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2016.html
  * @author integeruser
  *

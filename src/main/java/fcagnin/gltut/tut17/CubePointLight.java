@@ -46,8 +46,8 @@ import fcagnin.gltut.framework.SceneBinders.UniformVec3Binder;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * IV. Texturing
- * 17. Spotlight on Textures
+ * Part IV. Texturing
+ * Chapter 17. Spotlight on Textures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2017.html
  * @author integeruser
  *

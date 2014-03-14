@@ -17,8 +17,8 @@ import fcagnin.gltut.framework.Framework;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * II. Positioning
- * 4. Objects at Rest
+ * Part II. Positioning
+ * Chapter 4. Objects at Rest
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2004.html
  * @author integeruser
  */

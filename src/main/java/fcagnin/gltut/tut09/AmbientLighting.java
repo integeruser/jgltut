@@ -31,8 +31,8 @@ import fcagnin.gltut.framework.MousePole;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * III. Illumination
- * 9. Lights On
+ * Part III. Illumination
+ * Chapter 9. Lights On
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2009.html
  * @author integeruser
  *

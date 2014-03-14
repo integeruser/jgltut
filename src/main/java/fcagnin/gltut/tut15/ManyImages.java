@@ -37,8 +37,8 @@ import fcagnin.gltut.framework.Timer;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * IV. Texturing
- * 15. Many Images
+ * Part IV. Texturing
+ * Chapter 15. Many Images
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2015.html
  * @author integeruser
  *

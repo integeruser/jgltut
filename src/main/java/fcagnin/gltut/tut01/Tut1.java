@@ -17,7 +17,7 @@ import fcagnin.gltut.LWJGLWindow;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * I. The Basics
+ * Part I. The Basics
  * Chapter 1. Hello, Triangle!
  * http://www.arcsynthesis.org/gltut/Basics/Tutorial%2001.html
  * @author integeruser

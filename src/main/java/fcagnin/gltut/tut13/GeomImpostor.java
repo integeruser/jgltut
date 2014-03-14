@@ -33,8 +33,8 @@ import fcagnin.gltut.framework.Timer;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * III. Illumination
- * 13. Lies and Impostors
+ * Part III. Illumination
+ * Chapter 13. Lies and Impostors
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2013.html
  * @author integeruser
  *

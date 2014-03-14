@@ -36,8 +36,8 @@ import fcagnin.gltut.framework.Timer;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * III. Illumination
- * 12. Dynamic Range
+ * Part III. Illumination
+ * Chapter 12. Dynamic Range
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2012.html
  * @author integeruser
  *

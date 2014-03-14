@@ -33,8 +33,8 @@ import fcagnin.gltut.framework.Timer;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * III. Illumination
- * 11. Shinies
+ * Part III. Illumination
+ * Chapter 11. Shinies
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2011.html
  * @author integeruser
  *

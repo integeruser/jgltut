@@ -32,8 +32,8 @@ import fcagnin.gltut.framework.Timer;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * III. Illumination
- * 10. Plane Lights
+ * Part III. Illumination
+ * Chapter 10. Plane Lights
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2010.html
  * @author integeruser
  *

@@ -17,7 +17,7 @@ import fcagnin.gltut.framework.Framework;
 /**
  * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
  *
- * II. Positioning
+ * Part II. Positioning
  * Chapter 3. OpenGL's Moving Triangle
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2003.html
  * @author integeruser

@@ -35,33 +35,33 @@ import fcagnin.gltut.framework.Timer;
 
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
- * 
+ * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
+ *
  * IV. Texturing
  * 15. Many Images
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2015.html
  * @author integeruser
- * 
+ *
  * SPACE		- toggle between loaded/constructed texture.
  * Y			- toggle between plane/corridor mesh.
  * P			- toggle pausing.
  * 1,2,3,4,5,6	- switch filtering technique.
  */
 public class ManyImages extends LWJGLWindow {
-	
+
 	public static void main(String[] args) {
 		Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut15/data/";
 
 		new ManyImages().start();
 	}
-		
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	@Override
 	protected void init() {
 		initializePrograms();
@@ -72,12 +72,12 @@ public class ManyImages extends LWJGLWindow {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(-1);
-		}	
-		
+		}
+
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		glFrontFace(GL_CW);
-		
+
 		final float depthZNear = 0.0f;
 		final float depthZFar = 1.0f;
 
@@ -101,7 +101,7 @@ public class ManyImages extends LWJGLWindow {
 		loadMipmapTexture();
 		createSamplers();
 	}
-	
+
 
 	@Override
 	protected void update() {
@@ -111,21 +111,21 @@ public class ManyImages extends LWJGLWindow {
 				case Keyboard.KEY_SPACE:
 					useMipmapTexture = !useMipmapTexture;
 					break;
-					
+
 				case Keyboard.KEY_Y:
 					drawCorridor = !drawCorridor;
 					break;
-					
+
 				case Keyboard.KEY_P:
 					camTimer.togglePause();
 					break;
-					
+
 				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
 					break;
 				}
-				
-				
+
+
 				if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_SAMPLERS) {
@@ -136,14 +136,14 @@ public class ManyImages extends LWJGLWindow {
 			}
 		}
 	}
-	
+
 
 	@Override
 	protected void display() {
 		glClearColor(0.75f, 0.75f, 1.0f, 1.0f);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		camTimer.update(getElapsedTime());
 
 		float cyclicAngle = camTimer.getAlpha() * 6.28f;
@@ -151,19 +151,19 @@ public class ManyImages extends LWJGLWindow {
 		float vOffset = (float) (Math.sin(cyclicAngle) * 0.25f);
 
 		MatrixStack modelMatrix = new MatrixStack();
-		
+
 		final Mat4 worldToCamMat = Glm.lookAt(
 				new Vec3(hOffset, 1.0f, -64.0f),
 				new Vec3(hOffset, -5.0f + vOffset, -44.0f),
 				new Vec3(0.0f, 1.0f, 0.0f));
 
-		modelMatrix.applyMatrix(worldToCamMat);	
+		modelMatrix.applyMatrix(worldToCamMat);
 
 		glUseProgram(program.theProgram);
 		glUniformMatrix4(program.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
 		glActiveTexture(GL_TEXTURE0 + colorTexUnit);
-		glBindTexture(GL_TEXTURE_2D, useMipmapTexture ? mipmapTestTexture : checkerTexture);		
+		glBindTexture(GL_TEXTURE_2D, useMipmapTexture ? mipmapTestTexture : checkerTexture);
 		glBindSampler(colorTexUnit, samplers[currSampler]);
 
 		if (drawCorridor) {
@@ -171,65 +171,65 @@ public class ManyImages extends LWJGLWindow {
 		} else {
 			plane.render("tex");
 		}
-			
+
 		glBindSampler(colorTexUnit, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glUseProgram(0);
 	}
-	
-	
+
+
 	@Override
-	protected void reshape(int width, int height) {	
+	protected void reshape(int width, int height) {
 		MatrixStack persMatrix = new MatrixStack();
 		persMatrix.perspective(90.0f, (width / (float) height), zNear, zFar);
-		
+
 		ProjectionBlock projData = new ProjectionBlock();
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(mat4Buffer));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		
+
 		glViewport(0, 0, width, height);
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private final int colorTexUnit = 0;
-	
+
 	private int checkerTexture;
 	private int mipmapTestTexture;
 	private float zNear = 1.0f;
 	private float zFar = 1000.0f;
-	
+
 	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
-	
-	
-	private void initializePrograms() {	
+
+
+	private void initializePrograms() {
 		program = loadProgram("PT.vert", "Tex.frag");
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private ProgramData program;
 
-	
+
 	private class ProgramData {
 		int theProgram;
 
 		int modelToCameraMatrixUnif;
 	}
-	
-	
+
+
 	private ProgramData loadProgram(String vertexShaderFilename, String fragmentShaderFilename) {
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	vertexShaderFilename));
@@ -246,15 +246,15 @@ public class ManyImages extends LWJGLWindow {
 		glUseProgram(data.theProgram);
 		glUniform1i(colorTextureUnif, colorTexUnit);
 		glUseProgram(0);
-		
+
 		return data;
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private final int NUM_SAMPLERS = 6;
 
 	private final byte[] mipmapColors = {
@@ -266,7 +266,7 @@ public class ManyImages extends LWJGLWindow {
 				   0x00, 		0x00, (byte) 0xFF,
 				   0x00, 		0x00, 		 0x00,
 			(byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
-	
+
 	private final String[] samplerNames = {
 			"Nearest",
 			"Linear",
@@ -274,7 +274,7 @@ public class ManyImages extends LWJGLWindow {
 			"Linear with linear mipmaps",
 			"Low anisotropic",
 			"Max anisotropic"};
-	
+
 	private Mesh plane;
 	private Mesh corridor;
 
@@ -285,7 +285,7 @@ public class ManyImages extends LWJGLWindow {
 	private int[] samplers = new int[NUM_SAMPLERS];
 	private int currSampler;
 
-	
+
 	private void loadMipmapTexture() {
 		mipmapTestTexture = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, mipmapTestTexture);
@@ -306,8 +306,8 @@ public class ManyImages extends LWJGLWindow {
 				textureBuffer.put((byte) b);
 			}
 			textureBuffer.flip();
-			
-			glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_RGB8, width, height, 0, 
+
+			glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_RGB8, width, height, 0,
 					GL_RGB, GL_UNSIGNED_BYTE, textureBuffer);
 		}
 
@@ -317,7 +317,7 @@ public class ManyImages extends LWJGLWindow {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 7);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-	
+
 	private void fillWithColor(ArrayList<Byte> buffer, byte red, byte green, byte blue, int width, int height) {
 		int numTexels = width * height;
 
@@ -327,8 +327,8 @@ public class ManyImages extends LWJGLWindow {
 			buffer.add(blue);
 		}
 	}
-	
-	
+
+
 	private void loadCheckerTexture() {
 		try	{
 			String filepath = Framework.findFileOrThrow("checker.dds");
@@ -336,7 +336,7 @@ public class ManyImages extends LWJGLWindow {
 
 			checkerTexture = glGenTextures();
 			glBindTexture(GL_TEXTURE_2D, checkerTexture);
-			
+
 			for (int mipmapLevel = 0; mipmapLevel < imageSet.getMipmapCount(); mipmapLevel++) {
 				SingleImage image = imageSet.getImage(mipmapLevel, 0, 0);
 				Dimensions imageDimensions = image.getDimensions();
@@ -369,7 +369,7 @@ public class ManyImages extends LWJGLWindow {
 		// Linear
 		glSamplerParameteri(samplers[1], GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glSamplerParameteri(samplers[1], GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		
+
 		// Linear mipmap Nearest
 		glSamplerParameteri(samplers[2], GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glSamplerParameteri(samplers[2], GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
@@ -391,22 +391,22 @@ public class ManyImages extends LWJGLWindow {
 		glSamplerParameteri(samplers[5], GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glSamplerParameterf(samplers[5], GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAniso);
 	}
-	
-	
+
+
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private final int projectionBlockIndex = 0;
 
 	private int projectionUniformBuffer;
 
-		
+
 	private class ProjectionBlock extends BufferableData<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
-		
+
 		static final int SIZE = Mat4.SIZE;
-		
+
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			return cameraToClipMatrix.fillBuffer(buffer);

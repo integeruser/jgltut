@@ -40,61 +40,61 @@ import fcagnin.gltut.framework.MousePole;
 
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
- * 
+ * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
+ *
  * IV. Texturing
  * 16. Gamma and Textures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2016.html
  * @author integeruser
- * 
+ *
  * W,A,S,D	- move the cameras forward/backwards and left/right, relative to the camera's current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.  
- * Q,E		- raise and lower the camera, relative to its current orientation. 
+ * 				Holding SHIFT with these keys will move in smaller increments.
+ * Q,E		- raise and lower the camera, relative to its current orientation.
  * 				Holding SHIFT with these keys will move in smaller increments.
  * SPACE	- toggle non-shader-based gamma correction.
  * -,=		- rewind/jump forward time by 0.5 second (of real-time).
  * T		- toggle viewing the look-at point.
  * P		- toggle pausing.
  * 1,2		- select linear mipmap filtering and anisotropic filtering (using the maximum possible anisotropy).
- * 
+ *
  * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
  * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
  * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
- * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
+ * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away.
  */
 public class GammaLandscape extends LWJGLWindow {
-	
+
 	public static void main(String[] args) {
 		Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut16/data/";
 
 		new GammaLandscape().start(700, 700);
 	}
-	
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 	@Override
 	protected void init() {
 		try {
 			lightEnv = new LightEnv("LightEnv.xml");
-			
+
 			initializePrograms();
-			
+
 			terrain = 	new Mesh("terrain.xml");
 			sphere = 	new Mesh("UnitSphere.xml");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(-1);
-		}	
-		
+		}
+
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		glFrontFace(GL_CW);
-		
+
 		final float depthZNear = 0.0f;
 		final float depthZFar = 1.0f;
 
@@ -118,37 +118,37 @@ public class GammaLandscape extends LWJGLWindow {
 
 		glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer,
 			0, LightBlock.SIZE);
-		
+
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		loadTextures();
 		createSamplers();
 	}
-	
+
 
 	@Override
 	protected void update() {
 		while (Mouse.next()) {
 			int eventButton = Mouse.getEventButton();
-									
+
 			if (eventButton != -1) {
 				boolean pressed = Mouse.getEventButtonState();
 				MousePole.forwardMouseButton(viewPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
 			} else {
 				// Mouse moving or mouse scrolling
 				int dWheel = Mouse.getDWheel();
-				
+
 				if (dWheel != 0) {
 					MousePole.forwardMouseWheel(viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
 				}
-				
+
 				if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)) {
-					MousePole.forwardMouseMotion(viewPole, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseMotion(viewPole, Mouse.getX(), Mouse.getY());
 				}
 			}
 		}
-		
-		
+
+
 		float lastFrameDuration = getLastFrameDuration() * 20 / 1000.0f;
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
@@ -156,7 +156,7 @@ public class GammaLandscape extends LWJGLWindow {
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
 			viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
-		
+
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
 			viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
@@ -168,15 +168,15 @@ public class GammaLandscape extends LWJGLWindow {
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
 			viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
-		
-		
+
+
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
 				switch (Keyboard.getEventKey()) {
 				case Keyboard.KEY_SPACE:
 					useGammaDisplay = !useGammaDisplay;
 					break;
-					
+
 				case Keyboard.KEY_MINUS:
 					lightEnv.rewindTime(1.0f);
 					break;
@@ -184,21 +184,21 @@ public class GammaLandscape extends LWJGLWindow {
 				case Keyboard.KEY_EQUALS:
 					lightEnv.fastForwardTime(1.0f);
 					break;
-					
+
 				case Keyboard.KEY_T:
 					drawCameraPos = !drawCameraPos;
 					break;
-					
+
 				case Keyboard.KEY_P:
 					lightEnv.togglePause();
 					break;
-				
+
 				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
 					break;
 				}
-				
-				
+
+
 				if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
 					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
 					if (number < NUM_SAMPLERS) {
@@ -208,7 +208,7 @@ public class GammaLandscape extends LWJGLWindow {
 			}
 		}
 	}
-	
+
 
 	@Override
 	protected void display() {
@@ -217,14 +217,14 @@ public class GammaLandscape extends LWJGLWindow {
 		} else {
 			glDisable(GL_FRAMEBUFFER_SRGB);
 		}
-		
+
 		lightEnv.updateTime(getElapsedTime());
 
 		Vec4 bgColor = lightEnv.getBackgroundColor();
 		glClearColor(bgColor.x, bgColor.y, bgColor.z, bgColor.w);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		MatrixStack modelMatrix = new MatrixStack();
 		modelMatrix.applyMatrix(viewPole.calcMatrix());
 
@@ -236,7 +236,7 @@ public class GammaLandscape extends LWJGLWindow {
 
 		modelMatrix.push();
 		modelMatrix.rotateX(-90.0f);
-	
+
 		glUseProgram(progStandard.theProgram);
 		glUniformMatrix4(progStandard.modelToCameraMatrixUnif, false,
 			modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
@@ -256,9 +256,9 @@ public class GammaLandscape extends LWJGLWindow {
 		modelMatrix.pop();
 
 		// Render the sun
-		{		
+		{
 			modelMatrix.push();
-			
+
 			Vec3 sunlightDir = new Vec3(lightEnv.getSunlightDirection());
 			modelMatrix.translate(sunlightDir.scale(500.0f));
 			modelMatrix.scale(30.0f, 30.0f, 30.0f);
@@ -270,14 +270,14 @@ public class GammaLandscape extends LWJGLWindow {
 			Vec4 lightColor = lightEnv.getSunlightScaledIntensity();
 			glUniform4(progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
 			sphere.render("flat");
-			
+
 			modelMatrix.pop();
 		}
 
 		// Draw lights
 		for (int light = 0; light < lightEnv.getNumPointLights(); light++) {
 			modelMatrix.push();
-			
+
 			modelMatrix.translate(lightEnv.getPointLightWorldPos(light));
 
 			glUseProgram(progUnlit.theProgram);
@@ -287,7 +287,7 @@ public class GammaLandscape extends LWJGLWindow {
 			Vec4 lightColor = lightEnv.getPointLightScaledIntensity(light);
 			glUniform4(progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
 			sphere.render("flat");
-			
+
 			modelMatrix.pop();
 		}
 
@@ -309,29 +309,29 @@ public class GammaLandscape extends LWJGLWindow {
 			glEnable(GL_DEPTH_TEST);
 			glUniform4f(progUnlit.objectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
 			sphere.render("flat");
-			
+
 			modelMatrix.pop();
 		}
 	}
-	
-	
+
+
 	@Override
 	protected void reshape(int width, int height) {
 		MatrixStack persMatrix = new MatrixStack();
 		persMatrix.perspective(60.0f, (width / (float) height), zNear, zFar);
-		
+
 		ProjectionBlock projData = new ProjectionBlock();
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(mat4Buffer));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		
+
 		glViewport(0, 0, width, height);
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -344,41 +344,41 @@ public class GammaLandscape extends LWJGLWindow {
 	private int linearTexture;
 	private float zNear = 1.0f;
 	private float zFar = 1000.0f;
-	
+
 	private FloatBuffer vec4Buffer 			= BufferUtils.createFloatBuffer(Vec4.SIZE);
 	private FloatBuffer mat4Buffer 			= BufferUtils.createFloatBuffer(Mat4.SIZE);
 	private FloatBuffer lightBlockBuffer 	= BufferUtils.createFloatBuffer(LightBlock.SIZE);
-	
-	
+
+
 	private void initializePrograms() {
 		progStandard = loadProgram("PNT.vert", "litTexture.frag");
 		progUnlit = loadUnlitProgram("Unlit.vert", "Unlit.frag");
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private ProgramData progStandard;
 	private UnlitProgData progUnlit;
-	
-	
+
+
 	private class ProgramData {
 		int theProgram;
 
 		int modelToCameraMatrixUnif;
 		int numberOfLightsUnif;
 	}
-	
+
 	private class UnlitProgData {
 		int theProgram;
 
 		int modelToCameraMatrixUnif;
 		int objectColorUnif;
 	};
-	
-	
+
+
 	private ProgramData loadProgram(String vertexShaderFilename, String fragmentShaderFilename) {
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	vertexShaderFilename));
@@ -399,10 +399,10 @@ public class GammaLandscape extends LWJGLWindow {
 		glUseProgram(data.theProgram);
 		glUniform1i(colorTextureUnif, colorTexUnit);
 		glUseProgram(0);
-		
+
 		return data;
 	}
-	
+
 	private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	vertexShaderFilename));
@@ -418,25 +418,25 @@ public class GammaLandscape extends LWJGLWindow {
 
 		return data;
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private final int NUM_SAMPLERS = 2;
-		
+
 	private Mesh terrain;
 	private Mesh sphere;
 
 	private LightEnv lightEnv;
-	
+
 	private boolean useGammaDisplay = true;
 	private boolean drawCameraPos;
 	private int[] samplers = new int[NUM_SAMPLERS];
 	private int currSampler;
 
-	
+
 	////////////////////////////////
 	// View setup.
 	private ViewData initialView = new ViewData(
@@ -451,10 +451,10 @@ public class GammaLandscape extends LWJGLWindow {
 			4.0f, 1.0f,
 			90.0f / 250.0f);
 
-	
+
 	private ViewPole viewPole = new ViewPole(initialView, initialViewScale, MouseButtons.MB_LEFT_BTN);
-		
-		
+
+
 	private void loadTextures() {
 		try	{
 			String filepath = Framework.findFileOrThrow("terrain_tex.dds");
@@ -464,25 +464,25 @@ public class GammaLandscape extends LWJGLWindow {
 			glBindTexture(GL_TEXTURE_2D, linearTexture);
 
 			OpenGLPixelTransferParams xfer = TextureGenerator.getUploadFormatType(imageSet.getFormat(), 0);
-				
+
 			for (int mipmapLevel = 0; mipmapLevel < imageSet.getMipmapCount(); mipmapLevel++) {
 				SingleImage image = imageSet.getImage(mipmapLevel, 0, 0);
 				Dimensions imageDimensions = image.getDimensions();
 
-				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_SRGB8_ALPHA8, imageDimensions.width, imageDimensions.height, 0, 
+				glTexImage2D(GL_TEXTURE_2D, mipmapLevel, GL_SRGB8_ALPHA8, imageDimensions.width, imageDimensions.height, 0,
 						xfer.format, xfer.type, image.getImageData());
 			}
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, imageSet.getMipmapCount() - 1);
-			
+
 			glBindTexture(GL_TEXTURE_2D, 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	
+
 	private void createSamplers() {
 		for (int samplerIndex = 0; samplerIndex < NUM_SAMPLERS; samplerIndex++) {
 			samplers[samplerIndex] = glGenSamplers();
@@ -501,22 +501,22 @@ public class GammaLandscape extends LWJGLWindow {
 		glSamplerParameteri(samplers[1], GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glSamplerParameterf(samplers[1], GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAniso);
 	}
-	
-	
+
+
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private final int projectionBlockIndex = 0;
 
 	private int projectionUniformBuffer;
 
-	
+
 	private class ProjectionBlock extends BufferableData<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
-		
+
 		static final int SIZE = Mat4.SIZE;
-		
+
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			return cameraToClipMatrix.fillBuffer(buffer);

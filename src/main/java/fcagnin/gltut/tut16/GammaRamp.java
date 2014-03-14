@@ -31,31 +31,31 @@ import fcagnin.gltut.framework.Framework;
 
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
- * 
+ * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
+ *
  * IV. Texturing
  * 16. Gamma and Textures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2016.html
  * @author integeruser
- * 
+ *
  * 1 		- switch the top texture between lRGB and sRGB.
  * 2		- switch the bottom texture between lRGB and sRGB.
  */
 public class GammaRamp extends LWJGLWindow {
-	
+
 	public static void main(String[] args) {
 		Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut16/data/";
 
 		new GammaRamp().start(500, 195);
 	}
-		
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	@Override
 	protected void init() {
 		initializeProgram();
@@ -72,7 +72,7 @@ public class GammaRamp extends LWJGLWindow {
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
-	
+
 
 	@Override
 	protected void update() {
@@ -87,7 +87,7 @@ public class GammaRamp extends LWJGLWindow {
 						System.out.printf("Top:\tlinear texture.\n");
 					}
 					break;
-					
+
 				case Keyboard.KEY_2:
 					useGammaCorrect[1] = !useGammaCorrect[1];
 					if (useGammaCorrect[1]) {
@@ -96,7 +96,7 @@ public class GammaRamp extends LWJGLWindow {
 						System.out.printf("Bottom:\tlinear texture.\n");
 					}
 					break;
-					
+
 				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
 					break;
@@ -104,7 +104,7 @@ public class GammaRamp extends LWJGLWindow {
 			}
 		}
 	}
-	
+
 
 	@Override
 	protected void display() {
@@ -132,50 +132,50 @@ public class GammaRamp extends LWJGLWindow {
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindSampler(gammaRampTextureUnit, 0);
 	}
-	
-	
+
+
 	@Override
 	protected void reshape(int width, int height) {
 		MatrixStack persMatrix = new MatrixStack();
 		persMatrix.translate(-1.0f, 1.0f, 0.0f);
 		persMatrix.scale(2.0f / width, -2.0f / height, 1.0f);
-		
+
 		ProjectionBlock projData = new ProjectionBlock();
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(mat4Buffer));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		
+
 		glViewport(0, 0, width, height);
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private final int gammaRampTextureUnit = 0;
 
 	private int gammaProgram;
 	private int noGammaProgram;
 	private int vao;
-	
+
 	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
 
 	private void initializeProgram() {
 		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, "screenCoords.vert"));	
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, "screenCoords.vert"));
 		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	"textureNoGamma.frag"));
 		noGammaProgram = Framework.createProgram(shaderList);
-		
+
 		shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, "screenCoords.vert"));	
+		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, "screenCoords.vert"));
 		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	"textureGamma.frag"));
 		gammaProgram = Framework.createProgram(shaderList);
-		
+
 		int projectionBlock = glGetUniformBlockIndex(noGammaProgram, "Projection");
 		glUniformBlockBinding(noGammaProgram, projectionBlock, projectionBlockIndex);
 
@@ -192,34 +192,34 @@ public class GammaRamp extends LWJGLWindow {
 		glUniform1i(colorTextureUnif, gammaRampTextureUnit);
 		glUseProgram(0);
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private final short[] vertexData = {
 			 90, 80,				0,				0,
 			 90, 16,				0,	(short) 65535,
 			410, 80,	(short) 65535,				0,
 			410, 16,	(short) 65535,	(short) 65535,
-			
+
 			 90, 176,				0,				0,
 			 90, 112,				0,	(short) 65535,
 			410, 176,	(short) 65535,				0,
 			410, 112,	(short) 65535,	(short) 65535};
-	
+
 	private int dataBufferObject;
 
-	
+
 	private void initializeVertexData() {
 		dataBufferObject = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, dataBufferObject);
-		
+
 		ShortBuffer vertexDataBuffer = BufferUtils.createShortBuffer(vertexData.length);
 		vertexDataBuffer.put(vertexData);
 		vertexDataBuffer.flip();
-		
+
 		glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
 
 		vao = glGenVertexArrays();
@@ -234,32 +234,32 @@ public class GammaRamp extends LWJGLWindow {
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
-	
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 	private boolean[] useGammaCorrect = {false, false};
 	private int[] textures = new int[2];
 	private int samplerObj;
 
-	
+
 	private void loadTextures() {
 		textures[0] = glGenTextures();
 		textures[1] = glGenTextures();
-		
+
 		try {
 			String filepath = Framework.findFileOrThrow("gamma_ramp.png");
 			ImageSet imageSet = StbLoader.loadFromFile(filepath);
-			
+
 			SingleImage image = imageSet.getImage(0, 0, 0);
 			Dimensions imageDimensions = image.getDimensions();
 
 			OpenGLPixelTransferParams pxTrans = TextureGenerator.getUploadFormatType(imageSet.getFormat(), 0);
 
 			glBindTexture(GL_TEXTURE_2D, textures[0]);
-			
+
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, imageDimensions.width, imageDimensions.height, 0,
 					pxTrans.format, pxTrans.type, image.getImageData());
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
@@ -282,9 +282,9 @@ public class GammaRamp extends LWJGLWindow {
 		glSamplerParameteri(samplerObj, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glSamplerParameteri(samplerObj, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	}
-	
-		
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -292,12 +292,12 @@ public class GammaRamp extends LWJGLWindow {
 
 	private int projectionUniformBuffer;
 
-	
+
 	private class ProjectionBlock extends BufferableData<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
-		
+
 		static final int SIZE = Mat4.SIZE;
-		
+
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			return cameraToClipMatrix.fillBuffer(buffer);

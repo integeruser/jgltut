@@ -30,9 +30,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and
+ * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and
  * license terms.
- * 
+ *
  * @author xire
  */
 public class Mesh {
@@ -93,7 +93,7 @@ public class Mesh {
 		int iNumElements = 0;
 
 		for (int i = 0; i < attribs.size(); i++) {
-			iAttrbBufferSize = iAttrbBufferSize % 16 != 0 ? 
+			iAttrbBufferSize = iAttrbBufferSize % 16 != 0 ?
 					(iAttrbBufferSize + (16 - iAttrbBufferSize % 16))
 					: iAttrbBufferSize;
 			attribStartLocs.add(iAttrbBufferSize);
@@ -157,7 +157,7 @@ public class Mesh {
 		int iIndexBufferSize = 0;
 		ArrayList<Integer> indexStartLocs = new ArrayList<>(indexData.size());
 		for (int i = 0; i < indexData.size(); i++) {
-			iIndexBufferSize = iIndexBufferSize % 16 != 0 ? 
+			iIndexBufferSize = iIndexBufferSize % 16 != 0 ?
 					(iIndexBufferSize + (16 - iIndexBufferSize % 16))
 					: iIndexBufferSize;
 
@@ -243,8 +243,8 @@ public class Mesh {
 		}
 	}
 
-	
-	
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -255,8 +255,8 @@ public class Mesh {
 	private ArrayList<RenderCmd> primitives = new ArrayList<>();
 	private Map<String, Integer> namedVAOs = new HashMap<>();
 
-	
-	
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -269,9 +269,9 @@ public class Mesh {
 				int iOffset);
 	}
 
-	
+
 	private static class Attribute {
-		
+
 		Attribute(Node attributeNode) {
 			NamedNodeMap attrs = attributeNode.getAttributes();
 
@@ -280,12 +280,12 @@ public class Mesh {
 				if (indexNode == null) {
 					throw new RuntimeException("Missing 'index' attribute in an 'attribute' element.");
 				}
-				
+
 				int index = Integer.parseInt(indexNode.getNodeValue());
 				if (!((0 <= index) && (index < 16))) {
 					throw new RuntimeException("Attribute index must be between 0 and 16.");
 				}
-				
+
 				attribIndex = index;
 			}
 
@@ -294,12 +294,12 @@ public class Mesh {
 				if (sizeNode == null) {
 					throw new RuntimeException("Missing 'size' attribute in an 'attribute' element.");
 				}
-				
+
 				int size = Integer.parseInt(sizeNode.getNodeValue());
 				if (!((1 <= size) && (size < 5))) {
 					throw new RuntimeException("Attribute size must be between 1 and 4.");
 				}
-				
+
 				this.size = size;
 			}
 
@@ -309,7 +309,7 @@ public class Mesh {
 				if (typeNode == null) {
 					throw new RuntimeException("Missing 'type' attribute in an 'attribute' element.");
 				}
-				
+
 				strType = typeNode.getNodeValue();
 				attribType = AttribType.get(strType);
 			}
@@ -346,7 +346,7 @@ public class Mesh {
 			}
 		}
 
-		
+
 		int numElements() {
 			return getDataNumElem() / size;
 		}
@@ -369,24 +369,24 @@ public class Mesh {
 			}
 		}
 
-		
+
 		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		
+
 		private int attribIndex = 0xFFFFFFFF;
 		private AttribType attribType = null;
 		private int size = -1;
 		private boolean isIntegral = false;
 		private Buffer dataArray;
-		
-		
+
+
 		private int getDataNumElem() {
 			return dataArray.limit();
 		}
 	}
 
 	private static class AttribType {
-		
+
 		AttribType(boolean normalized, int glType, int numBytes,
 				ParseFunc parseFunc, WriteFunc writeFunc) {
 			this.normalized = normalized;
@@ -396,7 +396,7 @@ public class Mesh {
 			this.writeFunc = writeFunc;
 		}
 
-		
+
 		Buffer parse(String strData) {
 			return parseFunc.parse(strData);
 		}
@@ -404,28 +404,28 @@ public class Mesh {
 		void writeToBuffer(int eBuffer, Buffer buffer, int offset) {
 			writeFunc.writeToBuffer(eBuffer, buffer, offset);
 		}
-		
-		
+
+
 		static AttribType get(String type) {
 			AttribType attType = allAttribType.get(type);
 			if (attType == null) {
 				throw new RuntimeException("Unknown 'type' field.");
 			}
-			
+
 			return attType;
 		}
-		
-		
+
+
 		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		
+
 		private static final Map<String, AttribType> allAttribType = new HashMap<>();
 		private static final Map<String, Integer> allPrimitiveType = new HashMap<>();
-		
+
 		private boolean normalized;
 		private int glType;
 		private int numBytes;
-		
+
 		private ParseFunc parseFunc;
 		private WriteFunc writeFunc;
 
@@ -445,7 +445,7 @@ public class Mesh {
 					buff.put(data);
 				}
 				buff.flip();
-				
+
 				scn.close();
 				return buff;
 			}
@@ -465,7 +465,7 @@ public class Mesh {
 					buff.put(data);
 				}
 				buff.flip();
-				
+
 				scn.close();
 				return buff;
 			}
@@ -485,7 +485,7 @@ public class Mesh {
 					buff.put(data);
 				}
 				buff.flip();
-				
+
 				scn.close();
 				return buff;
 			}
@@ -505,7 +505,7 @@ public class Mesh {
 					buff.put(data);
 				}
 				buff.flip();
-				
+
 				scn.close();
 				return buff;
 			}
@@ -573,8 +573,8 @@ public class Mesh {
 		}
 	}
 
-	
-	
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -585,7 +585,7 @@ public class Mesh {
 		private int elemCount;
 		private int eIndexDataType; 		// Only if isIndexedCmd is true.
 
-		
+
 		RenderCmd(Node cmdNode) {
 			NamedNodeMap attrs = cmdNode.getAttributes();
 
@@ -594,13 +594,13 @@ public class Mesh {
 				if (cmdAttr == null) {
 					throw new RuntimeException("Missing 'cmd' attribute in an 'arrays' or 'indices' element.");
 				}
-				
+
 				String strCmd = cmdAttr.getNodeValue();
 				Integer primitive = AttribType.allPrimitiveType.get(strCmd);
 				if (primitive == null) {
 					throw new RuntimeException("Unknown 'cmd' field.");
 				}
-				
+
 				primType = primitive;
 			}
 
@@ -614,12 +614,12 @@ public class Mesh {
 					if (nodeStart == null) {
 						throw new RuntimeException("Missing 'start' attribute in an 'arrays' element.");
 					}
-					
+
 					int iStart = Integer.parseInt(nodeStart.getNodeValue());
 					if (iStart < 0) {
 						throw new RuntimeException("Attribute 'start' must be between 0 or greater.");
 					}
-					
+
 					start = iStart;
 				}
 				{
@@ -627,12 +627,12 @@ public class Mesh {
 					if (nodeCount == null) {
 						throw new RuntimeException("Missing 'count' attribute in an 'arrays' element.");
 					}
-					
+
 					int iCount = Integer.parseInt(nodeCount.getNodeValue());
 					if (iCount <= 0) {
 						throw new RuntimeException("Attribute 'count' must be greater than 0.");
 					}
-					
+
 					elemCount = iCount;
 				}
 			} else {
@@ -640,7 +640,7 @@ public class Mesh {
 			}
 		}
 
-		
+
 		void render() {
 			if (isIndexedCmd) {
 				glDrawElements(primType, elemCount, eIndexDataType, start);
@@ -654,7 +654,7 @@ public class Mesh {
 		private AttribType attribType;
 		private Buffer dataArray;
 
-		
+
 		IndexData(Node indexElem) {
 			NamedNodeMap attrs = indexElem.getAttributes();
 			// controlla che type sia valido
@@ -663,7 +663,7 @@ public class Mesh {
 				if (typeAttr == null) {
 					throw new RuntimeException("Missing 'type' attribute in an 'index' element.");
 				}
-				
+
 				String strType = typeAttr.getNodeValue();
 				if (!(strType.equals("uint") || strType.equals("ushort") || strType.equals("ubyte"))) {
 					throw new RuntimeException("Improper 'type' attribute value on 'index' element.");
@@ -682,7 +682,7 @@ public class Mesh {
 			}
 		}
 
-		
+
 		void fillBoundBufferObject(int iOffset) {
 			attribType.writeToBuffer(GL_ELEMENT_ARRAY_BUFFER, dataArray,
 					iOffset);
@@ -711,7 +711,7 @@ public class Mesh {
 				if (nameAttr == null) {
 					throw new RuntimeException("Missing 'name' attribute in an 'vao' element.");
 				}
-				
+
 				name = nameAttr.getNodeValue();
 			}
 
@@ -722,7 +722,7 @@ public class Mesh {
 				if (attrib == null) {
 					throw new RuntimeException("Missing 'attrib' attribute in an 'source' element.");
 				}
-				
+
 				attributes.add(Integer.parseInt(attrib.getNodeValue()));
 			}
 		}

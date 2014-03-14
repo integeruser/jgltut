@@ -15,38 +15,38 @@ import fcagnin.gltut.LWJGLWindow;
 
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
- * 
+ * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
+ *
  * I. The Basics
- * Chapter 1. Hello, Triangle! 
+ * Chapter 1. Hello, Triangle!
  * http://www.arcsynthesis.org/gltut/Basics/Tutorial%2001.html
  * @author integeruser
  */
 public class Tut1 extends LWJGLWindow {
-	
+
 	public static void main(String[] args) {
 		new Tut1().start();
 	}
 
-	
-	
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		
+
 	@Override
 	protected void init() {
 		initializeProgram();
-		initializeVertexBuffer(); 
+		initializeVertexBuffer();
 
 		vao = glGenVertexArrays();
 		glBindVertexArray(vao);
 	}
-	
-		
+
+
 	@Override
-	protected void display() {	
+	protected void display() {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
@@ -61,15 +61,15 @@ public class Tut1 extends LWJGLWindow {
 		glDisableVertexAttribArray(0);
 		glUseProgram(0);
 	}
-	
-	
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	private final String strVertexShader = 
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	private final String strVertexShader =
 			"#version 330 \n" +
 			"\n" +
 			"layout(location = 0) in vec4 position;\n" +
@@ -77,7 +77,7 @@ public class Tut1 extends LWJGLWindow {
 			"{\n" +
 			"    gl_Position = position;\n" +
 			"}";
-	private final String strFragmentShader = 
+	private final String strFragmentShader =
 			"#version 330\n" +
 			"\n" +
 			"out vec4 outputColor;\n" +
@@ -85,52 +85,52 @@ public class Tut1 extends LWJGLWindow {
 			"{\n" +
 			"   outputColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n" +
 			"}";
-	
+
 	private int theProgram;
 	private int vao;
 
-	
-	private void initializeProgram() {	
+
+	private void initializeProgram() {
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(createShader(GL_VERTEX_SHADER,	strVertexShader));
 		shaderList.add(createShader(GL_FRAGMENT_SHADER,	strFragmentShader));
 
 		theProgram = createProgram(shaderList);
-		
+
 	    for (Integer shader : shaderList) {
 	    	glDeleteShader(shader);
 		}
 	}
 
-	
-	
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private final float vertexPositions[] = {
 			0.75f,  0.75f, 0.0f, 1.0f,
 			0.75f, -0.75f, 0.0f, 1.0f,
 		   -0.75f, -0.75f, 0.0f, 1.0f};
-	
+
 	private int positionBufferObject;
-	
-	
+
+
 	private void initializeVertexBuffer() {
 		FloatBuffer vertexPositionsBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
 		vertexPositionsBuffer.put(vertexPositions);
 		vertexPositionsBuffer.flip();
-        
-		positionBufferObject = glGenBuffers();	       
+
+		positionBufferObject = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
 	    glBufferData(GL_ARRAY_BUFFER, vertexPositionsBuffer, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private int createShader(int shaderType, String shaderFile) {
         int shader = glCreateShader(shaderType);
         glShaderSource(shader, shaderFile);
@@ -148,11 +148,11 @@ public class Tut1 extends LWJGLWindow {
 			case GL_VERTEX_SHADER:
 				strShaderType = "vertex";
 				break;
-				
+
 			case GL_GEOMETRY_SHADER:
 				strShaderType = "geometry";
 				break;
-				
+
 			case GL_FRAGMENT_SHADER:
 				strShaderType = "fragment";
 				break;
@@ -160,12 +160,12 @@ public class Tut1 extends LWJGLWindow {
 
     		System.err.printf("Compile failure in %s shader:\n%s\n", strShaderType, infoLog);
         }
-        
+
 		return shader;
 	}
-	
-	
-	private int createProgram(ArrayList<Integer> shaderList) {		
+
+
+	private int createProgram(ArrayList<Integer> shaderList) {
 		int program = glCreateProgram();
 
 		for (Integer shader : shaderList) {
@@ -173,7 +173,7 @@ public class Tut1 extends LWJGLWindow {
 		}
 
 		glLinkProgram(program);
-		
+
 		int status = glGetProgrami(program, GL_LINK_STATUS);
 		if (status == GL_FALSE) {
 			int infoLogLength = glGetProgrami(program, GL_INFO_LOG_LENGTH);
@@ -181,7 +181,7 @@ public class Tut1 extends LWJGLWindow {
 			String strInfoLog = glGetProgramInfoLog(program, infoLogLength);
 			System.err.printf("Linker failure: %s\n", strInfoLog);
 		}
-		
+
 		for (Integer shader : shaderList) {
 			glDetachShader(program, shader);
 		}

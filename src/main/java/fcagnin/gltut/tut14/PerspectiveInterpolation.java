@@ -17,31 +17,31 @@ import fcagnin.gltut.framework.Mesh;
 
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
- * 
+ * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
+ *
  * IV. Texturing
  * 14. Textures are not Pictures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
  * @author integeruser
- *  
- * S		- switch meshes. 
+ *
+ * S		- switch meshes.
  * P		- toggle between perspective-correct interpolation/window-space linear interpolation.
  */
 public class PerspectiveInterpolation extends LWJGLWindow {
-	
-	public static void main(String[] args) {	
+
+	public static void main(String[] args) {
 		Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut14/data/";
 
 		new PerspectiveInterpolation().start();
 	}
-		
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		
+
 	@Override
 	protected void init() {
 		initializePrograms();
@@ -54,7 +54,7 @@ public class PerspectiveInterpolation extends LWJGLWindow {
 			System.exit(-1);
 		}
 	}
-	
+
 
 	@Override
 	protected void update() {
@@ -86,42 +86,42 @@ public class PerspectiveInterpolation extends LWJGLWindow {
 			}
 		}
 	}
-	
+
 
 	@Override
 	protected void display() {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		if (useSmoothInterpolation) {
 			glUseProgram(smoothInterp.theProgram);
 		} else {
 			glUseProgram(linearInterp.theProgram);
 		}
-		
+
 		if (useFakeHallway) {
 			fauxHallway.render();
 		} else {
 			realHallway.render();
 		}
-			
+
 		glUseProgram(0);
-	}	
-	
-	
-	
+	}
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private float zNear = 1.0f;
 	private float zFar = 1000.0f;
-	
+
 	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
 
-	
+
 	private void initializePrograms() {
 		smoothInterp = loadProgram("SmoothVertexColors.vert", 		"SmoothVertexColors.frag");
 		linearInterp = loadProgram("NoCorrectVertexColors.vert", 	"NoCorrectVertexColors.frag");
@@ -133,25 +133,25 @@ public class PerspectiveInterpolation extends LWJGLWindow {
 		glUniformMatrix4(smoothInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer(mat4Buffer));
 		glUseProgram(linearInterp.theProgram);
 		glUniformMatrix4(linearInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer(mat4Buffer));
-		glUseProgram(0);	
+		glUseProgram(0);
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private ProgramData smoothInterp;
-	private ProgramData linearInterp;	
-	
-	
+	private ProgramData linearInterp;
+
+
 	private class ProgramData {
 		int theProgram;
 
 		int cameraToClipMatrixUnif;
 	}
-	
-	
+
+
 	private ProgramData loadProgram(String vertexShaderFilename, String fragmentShaderFilename) {
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	vertexShaderFilename));
@@ -163,12 +163,12 @@ public class PerspectiveInterpolation extends LWJGLWindow {
 
 		return data;
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private Mesh realHallway;
 	private Mesh fauxHallway;
 

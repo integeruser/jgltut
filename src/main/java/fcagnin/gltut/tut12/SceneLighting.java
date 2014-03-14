@@ -33,44 +33,44 @@ import fcagnin.gltut.tut12.Scene.ProgramData;
 
 
 /**
- * Visit https://github.com/rosickteam/OpenGL for project info, updates and license terms.
- * 
+ * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
+ *
  * III. Illumination
  * 12. Dynamic Range
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2012.html
  * @author integeruser
- * 
+ *
  * W,A,S,D	- move the cameras forward/backwards and left/right, relative to the camera's current orientation.
- * 				Holding SHIFT with these keys will move in smaller increments.  
- * Q,E		- raise and lower the camera, relative to its current orientation. 
- * 				Holding SHIFT with these keys will move in smaller increments.  
+ * 				Holding SHIFT with these keys will move in smaller increments.
+ * Q,E		- raise and lower the camera, relative to its current orientation.
+ * 				Holding SHIFT with these keys will move in smaller increments.
  * P		- toggle pausing.
  * -,=		- rewind/jump forward time by one second (of real-time).
  * T		- toggle viewing of the current target point.
  * 1,2,3	- timer commands affect both the sun and the other lights/only the sun/only the other lights.
  * L		- switch to day-optimized lighting. Pressing SHIFT+L will switch to a night-time optimized version.
  * SPACE	- print out the current sun-based time, in 24-hour notation.
- * 
+ *
  * LEFT	  CLICKING and DRAGGING			- rotate the camera around the target point, both horizontally and vertically.
  * LEFT	  CLICKING and DRAGGING + CTRL	- rotate the camera around the target point, either horizontally or vertically.
  * LEFT	  CLICKING and DRAGGING + ALT	- change the camera's up direction.
- * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away. 
+ * WHEEL  SCROLLING						- move the camera closer to it's target point or farther away.
  */
 public class SceneLighting extends LWJGLWindow {
-	
+
 	public static void main(String[] args) {
 		Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut12/data/";
 
 		new SceneLighting().start(700, 700);
 	}
-	
-	
-		
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 	@Override
 	protected void init() {
 		initializePrograms();
@@ -86,16 +86,16 @@ public class SceneLighting extends LWJGLWindow {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			System.exit(-1);
-		}	
-		
+		}
+
 		setupDaytimeLighting();
 
 		lights.createTimer("tetra", Timer.Type.LOOP, 2.5f);
-		
+
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		glFrontFace(GL_CW);
-		
+
 		final float depthZNear = 0.0f;
 		final float depthZFar = 1.0f;
 
@@ -104,51 +104,51 @@ public class SceneLighting extends LWJGLWindow {
 		glDepthFunc(GL_LEQUAL);
 		glDepthRange(depthZNear, depthZFar);
 		glEnable(GL_DEPTH_CLAMP);
-		
+
 		// Setup our Uniform Buffers
-		lightUniformBuffer = glGenBuffers();	       
+		lightUniformBuffer = glGenBuffers();
 		glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
-		glBufferData(GL_UNIFORM_BUFFER, LightBlock.SIZE, GL_DYNAMIC_DRAW);	
-		
-		projectionUniformBuffer = glGenBuffers();	       
+		glBufferData(GL_UNIFORM_BUFFER, LightBlock.SIZE, GL_DYNAMIC_DRAW);
+
+		projectionUniformBuffer = glGenBuffers();
 		glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-		glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW);	
-		
+		glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW);
+
 		// Bind the static buffers.
-		glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 
+		glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer,
 				0, LightBlock.SIZE);
-		
-		glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 
+
+		glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
 				0, ProjectionBlock.SIZE);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
-	
+
 
 	@Override
 	protected void update() {
 		while (Mouse.next()) {
 			int eventButton = Mouse.getEventButton();
-									
-			
-			if (eventButton != -1) {				
+
+
+			if (eventButton != -1) {
 				boolean pressed = Mouse.getEventButtonState();
 				MousePole.forwardMouseButton(viewPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
 			} else {
 				// Mouse moving or mouse scrolling
 				int dWheel = Mouse.getDWheel();
-				
+
 				if (dWheel != 0) {
 					MousePole.forwardMouseWheel(viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
 				}
-				
+
 				if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)) {
-					MousePole.forwardMouseMotion(viewPole, Mouse.getX(), Mouse.getY());			
+					MousePole.forwardMouseMotion(viewPole, Mouse.getX(), Mouse.getY());
 				}
 			}
 		}
-		
-		
+
+
 		float lastFrameDuration = getLastFrameDuration() * 20 / 1000.f;
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
@@ -156,7 +156,7 @@ public class SceneLighting extends LWJGLWindow {
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
 			viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
-		
+
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
 			viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
@@ -168,15 +168,15 @@ public class SceneLighting extends LWJGLWindow {
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
 			viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
 		}
-		
-		
+
+
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
 				switch (Keyboard.getEventKey()) {
 				case Keyboard.KEY_P:
 					lights.togglePause(timerMode);
 					break;
-					
+
 				case Keyboard.KEY_MINUS:
 					lights.rewindTime(timerMode, 1.0f);
 					break;
@@ -184,16 +184,16 @@ public class SceneLighting extends LWJGLWindow {
 				case Keyboard.KEY_EQUALS:
 					lights.fastForwardTime(timerMode, 1.0f);
 					break;
-					
+
 				case Keyboard.KEY_T:
 					drawCameraPos = !drawCameraPos;
 					break;
-					
+
 				case Keyboard.KEY_1:
 					timerMode = TimerTypes.ALL;
 					System.out.printf("All\n");
 					break;
-					
+
 				case Keyboard.KEY_2:
 					timerMode = TimerTypes.SUN;
 					System.out.printf("Sun\n");
@@ -203,7 +203,7 @@ public class SceneLighting extends LWJGLWindow {
 					timerMode = TimerTypes.LIGHTS;
 					System.out.printf("Lights\n");
 					break;
-					
+
 				case Keyboard.KEY_L:
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 						setupNighttimeLighting();
@@ -211,7 +211,7 @@ public class SceneLighting extends LWJGLWindow {
 						setupDaytimeLighting();
 					}
 					break;
-					
+
 				case Keyboard.KEY_SPACE:
 					float sunAlpha = lights.getSunTime();
 					float sunTimeHours = sunAlpha * 24.0f + 12.0f;
@@ -221,7 +221,7 @@ public class SceneLighting extends LWJGLWindow {
 					int sunMinutes = (int) sunTimeMinutes;
 					System.out.printf("%02d:%02d\n", sunHours, sunMinutes);
 					break;
-				
+
 				case Keyboard.KEY_ESCAPE:
 					leaveMainLoop();
 					break;
@@ -229,12 +229,12 @@ public class SceneLighting extends LWJGLWindow {
 			}
 		}
 	}
-	
+
 
 	@Override
 	protected void display() {
 		lights.updateTime(getElapsedTime());
-		
+
 		Vec4 bkg = lights.getBackgroundColor();
 
 		glClearColor(bkg.x, bkg.y, bkg.z, bkg.w);
@@ -246,19 +246,19 @@ public class SceneLighting extends LWJGLWindow {
 
 		final Mat4 worldToCamMat = modelMatrix.top();
 		LightBlock lightData = lights.getLightInformation(worldToCamMat);
-		
+
 		glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillAndFlipBuffer(lightBlockBuffer));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		
+
 		{
 			modelMatrix.push();
 
 			scene.draw(modelMatrix, materialBlockIndex, lights.getTimerValue("tetra"));
-			
+
 			modelMatrix.pop();
 		}
-		
+
 		{
 			modelMatrix.push();
 
@@ -276,7 +276,7 @@ public class SceneLighting extends LWJGLWindow {
 				Vec4 lightColor = lights.getSunlightIntensity();
 				glUniform4(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
 				scene.getSphereMesh().render("flat");
-				
+
 				modelMatrix.pop();
 			}
 
@@ -297,7 +297,7 @@ public class SceneLighting extends LWJGLWindow {
 					modelMatrix.pop();
 				}
 			}
-			
+
 			if (drawCameraPos) {
 				modelMatrix.push();
 
@@ -314,50 +314,50 @@ public class SceneLighting extends LWJGLWindow {
 				glEnable(GL_DEPTH_TEST);
 				glUniform4f(unlit.objectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
 				scene.getCubeMesh().render("flat");
-				
+
 				modelMatrix.pop();
 			}
-			
+
 			modelMatrix.pop();
 		}
 	}
-	
-	
+
+
 	@Override
 	protected void reshape(int width, int height) {
 		MatrixStack persMatrix = new MatrixStack();
 		persMatrix.perspective(45.0f, (width / (float) height), zNear, zFar);
-		
+
 		ProjectionBlock projData = new ProjectionBlock();
 		projData.cameraToClipMatrix = persMatrix.top();
 
 		glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(mat4Buffer));
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		
+
 		glViewport(0, 0, width, height);
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private final int materialBlockIndex = 0;
 	private final int lightBlockIndex = 1;
-	
+
 	private int lightUniformBuffer;
 	private float zNear = 1.0f;
 	private float zFar = 1000.0f;
-	
+
 	private FloatBuffer vec4Buffer 			= BufferUtils.createFloatBuffer(Vec4.SIZE);
 	private FloatBuffer mat4Buffer 			= BufferUtils.createFloatBuffer(Mat4.SIZE);
 	private FloatBuffer lightBlockBuffer 	= BufferUtils.createFloatBuffer(LightBlock.SIZE);
-	
-	
-	private void initializePrograms() {	
+
+
+	private void initializePrograms() {
 		for (int progIndex = 0; progIndex < LightingProgramTypes.MAX_LIGHTING_PROGRAM_TYPES.ordinal(); progIndex++) {
 			programs[progIndex] = new ProgramData();
 			programs[progIndex] = loadLitProgram(shaderFilenames[progIndex].vertexShaderFilename, shaderFilenames[progIndex].fragmentShaderFilename);
@@ -365,40 +365,40 @@ public class SceneLighting extends LWJGLWindow {
 
 		unlit = loadUnlitProgram("PosTransform.vert", "UniformColor.frag");
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
+
 	private ProgramData[] programs = new ProgramData[LightingProgramTypes.MAX_LIGHTING_PROGRAM_TYPES.ordinal()];
 	private Shaders[] shaderFilenames = new Shaders[] {
 		new Shaders("PCN.vert", "DiffuseSpecular.frag"),
 		new Shaders("PCN.vert", "DiffuseOnly.frag"),
-		
+
 		new Shaders("PN.vert", "DiffuseSpecularMtl.frag"),
 		new Shaders("PN.vert", "DiffuseOnlyMtl.frag")};
 	private UnlitProgData unlit;
-	
-	
+
+
 	private class Shaders {
 		String vertexShaderFilename;
 		String fragmentShaderFilename;
-		
+
 		Shaders(String vertexShaderFilename, String fragmentShaderFilename) {
 			this.vertexShaderFilename = vertexShaderFilename;
 			this.fragmentShaderFilename = fragmentShaderFilename;
 		}
 	}
-	
+
 	private class UnlitProgData {
 		int theProgram;
 
 		int objectColorUnif;
 		int modelToCameraMatrixUnif;
 	}
-	
-	
+
+
 	private ProgramData loadLitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	vertexShaderFilename));
@@ -422,7 +422,7 @@ public class SceneLighting extends LWJGLWindow {
 
 		return data;
 	}
-	
+
 	private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
 		ArrayList<Integer> shaderList = new ArrayList<>();
 		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	vertexShaderFilename));
@@ -438,23 +438,23 @@ public class SceneLighting extends LWJGLWindow {
 
 		return data;
 	}
-	
-	
-	
+
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-		
+
 	private final Vec4 skyDaylightColor = new Vec4(0.65f, 0.65f, 1.0f, 1.0f);
 
 	private Scene scene;
 	private LightManager lights = new LightManager();
-	
+
 	private TimerTypes timerMode = TimerTypes.ALL;
 
 	private boolean drawLights = true;
 	private boolean drawCameraPos;
-	
-	
+
+
 	////////////////////////////////
 	// View setup.
 	private ViewData initialViewData = new ViewData(
@@ -469,10 +469,10 @@ public class SceneLighting extends LWJGLWindow {
 			5.0f, 1.0f,
 			90.0f / 250.0f);
 
-	
+
 	private ViewPole viewPole = new ViewPole(initialViewData, viewScale, MouseButtons.MB_LEFT_BTN);
-		
-	
+
+
 	private void setupDaytimeLighting() {
 		SunlightValue values[] = {
 				new SunlightValue( 0.0f/24.0f, new Vec4(0.2f, 0.2f, 0.2f, 1.0f), 	new Vec4(0.6f, 0.6f, 0.6f, 1.0f), 	new Vec4(skyDaylightColor)),
@@ -508,7 +508,7 @@ public class SceneLighting extends LWJGLWindow {
 	}
 
 
-	
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -516,12 +516,12 @@ public class SceneLighting extends LWJGLWindow {
 
 	private int projectionUniformBuffer;
 
-	
+
 	private class ProjectionBlock extends BufferableData<FloatBuffer> {
 		Mat4 cameraToClipMatrix;
-		
+
 		static final int SIZE = Mat4.SIZE;
-		
+
 		@Override
 		public FloatBuffer fillBuffer(FloatBuffer buffer) {
 			return cameraToClipMatrix.fillBuffer(buffer);

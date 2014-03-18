@@ -1,23 +1,18 @@
 package fcagnin.gltut.tut08;
 
+import fcagnin.gltut.LWJGLWindow;
+import fcagnin.gltut.framework.Framework;
+import fcagnin.gltut.framework.Mesh;
+import fcagnin.jglsdk.glm.*;
+import fcagnin.jglsdk.glutil.MatrixStack;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Keyboard;
+
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
-
-import fcagnin.gltut.LWJGLWindow;
-import fcagnin.jglsdk.glm.Glm;
-import fcagnin.jglsdk.glm.Mat4;
-import fcagnin.jglsdk.glm.Quaternion;
-import fcagnin.jglsdk.glm.Vec3;
-import fcagnin.jglsdk.glm.Vec4;
-import fcagnin.jglsdk.glutil.MatrixStack;
-import fcagnin.gltut.framework.Framework;
-import fcagnin.gltut.framework.Mesh;
 
 
 /**
@@ -39,343 +34,322 @@ import fcagnin.gltut.framework.Mesh;
  * @author integeruser
  */
 public class CameraRelative extends LWJGLWindow {
+    public static void main(String[] args) {
+        Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut08/data/";
 
-	public static void main(String[] args) {
-		Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut08/data/";
-
-		new CameraRelative().start();
-	}
-
-
-
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	@Override
-	protected void init() {
-		initializeProgram();
-
-		try {
-			ship = new Mesh("Ship.xml");
-			plane = new Mesh("UnitPlane.xml");
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			System.exit(-1);
-		}
-
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		glFrontFace(GL_CW);
-
-		glEnable(GL_DEPTH_TEST);
-		glDepthMask(true);
-		glDepthFunc(GL_LEQUAL);
-		glDepthRange(0.0f, 1.0f);
-	}
-
-
-	@Override
-	protected void update() {
-		float lastFrameDuration = getLastFrameDuration() * 10 / 1000.0f;
-
-		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-			offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration);
-		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration);
-		}
-
-		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-			offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration);
-		} else if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration);
-		}
-
-		if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-			offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration);
-		} else if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
-			offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration);
-		}
-
-
-		if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-				sphereCamRelPos.y = sphereCamRelPos.y - 1.125f * lastFrameDuration;
-			} else {
-				sphereCamRelPos.y = sphereCamRelPos.y - 11.25f * lastFrameDuration;
-			}
-		} else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-				sphereCamRelPos.y = sphereCamRelPos.y + 1.125f * lastFrameDuration;
-			} else {
-				sphereCamRelPos.y = sphereCamRelPos.y + 11.25f * lastFrameDuration;
-			}
-		}
-
-		if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-				sphereCamRelPos.x = sphereCamRelPos.x - 1.125f * lastFrameDuration;
-			} else {
-				sphereCamRelPos.x = sphereCamRelPos.x - 11.25f * lastFrameDuration;
-			}
-		} else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-				sphereCamRelPos.x = sphereCamRelPos.x + 1.125f * lastFrameDuration;
-			} else {
-				sphereCamRelPos.x = sphereCamRelPos.x + 11.25f * lastFrameDuration;
-			}
-		}
+        new CameraRelative().start();
+    }
 
 
-		while (Keyboard.next()) {
-			if (Keyboard.getEventKeyState()) {
-				switch (Keyboard.getEventKey()) {
-				case Keyboard.KEY_SPACE:
-					int ordinal = iOffset.ordinal();
-					ordinal += 1;
-					ordinal = ordinal % OffsetRelative.NUM_RELATIVES.ordinal();
+    @Override
+    protected void init() {
+        initializeProgram();
 
-					iOffset = OffsetRelative.values()[ordinal];
+        try {
+            ship = new Mesh( "Ship.xml" );
+            plane = new Mesh( "UnitPlane.xml" );
+        } catch ( Exception exception ) {
+            exception.printStackTrace();
+            System.exit( -1 );
+        }
+
+        glEnable( GL_CULL_FACE );
+        glCullFace( GL_BACK );
+        glFrontFace( GL_CW );
+
+        glEnable( GL_DEPTH_TEST );
+        glDepthMask( true );
+        glDepthFunc( GL_LEQUAL );
+        glDepthRange( 0.0f, 1.0f );
+    }
+
+    @Override
+    protected void display() {
+        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+        glClearDepth( 1.0f );
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+        MatrixStack currMatrix = new MatrixStack();
+        final Vec3 camPos = resolveCamPosition();
+        currMatrix.setMatrix( calcLookAtMatrix( camPos, camTarget, new Vec3( 0.0f, 1.0f, 0.0f ) ) );
+
+        glUseProgram( theProgram );
+
+        {
+            currMatrix.push();
+
+            currMatrix.scale( 100.0f, 1.0f, 100.0f );
+
+            glUniform4f( baseColorUnif, 0.2f, 0.5f, 0.2f, 1.0f );
+            glUniformMatrix4( modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+
+            plane.render();
+
+            currMatrix.pop();
+        }
+
+        {
+            currMatrix.push();
+
+            currMatrix.translate( camTarget );
+            currMatrix.applyMatrix( Glm.matCast( orientation ) );
+            currMatrix.rotateX( -90.0f );
+
+            // Set the base color for this object.
+            glUniform4f( baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f );
+            glUniformMatrix4( modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+
+            ship.render( "tint" );
+
+            currMatrix.pop();
+        }
+
+        glUseProgram( 0 );
+    }
+
+    @Override
+    protected void reshape(int width, int height) {
+        cameraToClipMatrix.set( 0, 0, frustumScale / (width / (float) height) );
+        cameraToClipMatrix.set( 1, 1, frustumScale );
+
+        glUseProgram( theProgram );
+        glUniformMatrix4( cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer( mat4Buffer ) );
+        glUseProgram( 0 );
+
+        glViewport( 0, 0, width, height );
+    }
+
+    @Override
+    protected void update() {
+        float lastFrameDuration = getLastFrameDuration() * 10 / 1000.0f;
+
+        if ( Keyboard.isKeyDown( Keyboard.KEY_W ) ) {
+            offsetOrientation( new Vec3( 1.0f, 0.0f, 0.0f ), SMALL_ANGLE_INCREMENT * lastFrameDuration );
+        } else if ( Keyboard.isKeyDown( Keyboard.KEY_S ) ) {
+            offsetOrientation( new Vec3( 1.0f, 0.0f, 0.0f ), -SMALL_ANGLE_INCREMENT * lastFrameDuration );
+        }
 
-					switch (iOffset) {
-					case MODEL_RELATIVE:
-						System.out.printf("Model Relative\n");
-						break;
+        if ( Keyboard.isKeyDown( Keyboard.KEY_A ) ) {
+            offsetOrientation( new Vec3( 0.0f, 0.0f, 1.0f ), SMALL_ANGLE_INCREMENT * lastFrameDuration );
+        } else if ( Keyboard.isKeyDown( Keyboard.KEY_D ) ) {
+            offsetOrientation( new Vec3( 0.0f, 0.0f, 1.0f ), -SMALL_ANGLE_INCREMENT * lastFrameDuration );
+        }
 
-					case WORLD_RELATIVE:
-						System.out.printf("World Relative\n");
-						break;
+        if ( Keyboard.isKeyDown( Keyboard.KEY_Q ) ) {
+            offsetOrientation( new Vec3( 0.0f, 1.0f, 0.0f ), SMALL_ANGLE_INCREMENT * lastFrameDuration );
+        } else if ( Keyboard.isKeyDown( Keyboard.KEY_E ) ) {
+            offsetOrientation( new Vec3( 0.0f, 1.0f, 0.0f ), -SMALL_ANGLE_INCREMENT * lastFrameDuration );
+        }
 
-					case CAMERA_RELATIVE:
-						System.out.printf("Camera Relative\n");
-						break;
 
-					default:
-						break;
-					}
+        if ( Keyboard.isKeyDown( Keyboard.KEY_I ) ) {
+            if ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) {
+                sphereCamRelPos.y = sphereCamRelPos.y - 1.125f * lastFrameDuration;
+            } else {
+                sphereCamRelPos.y = sphereCamRelPos.y - 11.25f * lastFrameDuration;
+            }
+        } else if ( Keyboard.isKeyDown( Keyboard.KEY_K ) ) {
+            if ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) {
+                sphereCamRelPos.y = sphereCamRelPos.y + 1.125f * lastFrameDuration;
+            } else {
+                sphereCamRelPos.y = sphereCamRelPos.y + 11.25f * lastFrameDuration;
+            }
+        }
+
+        if ( Keyboard.isKeyDown( Keyboard.KEY_J ) ) {
+            if ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) {
+                sphereCamRelPos.x = sphereCamRelPos.x - 1.125f * lastFrameDuration;
+            } else {
+                sphereCamRelPos.x = sphereCamRelPos.x - 11.25f * lastFrameDuration;
+            }
+        } else if ( Keyboard.isKeyDown( Keyboard.KEY_L ) ) {
+            if ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) {
+                sphereCamRelPos.x = sphereCamRelPos.x + 1.125f * lastFrameDuration;
+            } else {
+                sphereCamRelPos.x = sphereCamRelPos.x + 11.25f * lastFrameDuration;
+            }
+        }
 
-					break;
 
-				case Keyboard.KEY_ESCAPE:
-					leaveMainLoop();
-					break;
-				}
-			}
-		}
+        while ( Keyboard.next() ) {
+            if ( Keyboard.getEventKeyState() ) {
+                switch ( Keyboard.getEventKey() ) {
+                    case Keyboard.KEY_SPACE:
+                        int ordinal = iOffset.ordinal();
+                        ordinal += 1;
+                        ordinal = ordinal % OffsetRelative.NUM_RELATIVES.ordinal();
 
+                        iOffset = OffsetRelative.values()[ordinal];
 
-		sphereCamRelPos.y = Glm.clamp(sphereCamRelPos.y, -78.75f, 10.0f);
-	}
+                        switch ( iOffset ) {
+                            case MODEL_RELATIVE:
+                                System.out.printf( "Model Relative\n" );
+                                break;
 
+                            case WORLD_RELATIVE:
+                                System.out.printf( "World Relative\n" );
+                                break;
 
-	@Override
-	protected void display() {
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glClearDepth(1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                            case CAMERA_RELATIVE:
+                                System.out.printf( "Camera Relative\n" );
+                                break;
 
-		MatrixStack currMatrix = new MatrixStack();
-		final Vec3 camPos = resolveCamPosition();
-		currMatrix.setMatrix(calcLookAtMatrix(camPos, camTarget, new Vec3(0.0f, 1.0f, 0.0f)));
+                            default:
+                                break;
+                        }
 
-		glUseProgram(theProgram);
+                        break;
 
-		{
-			currMatrix.push();
+                    case Keyboard.KEY_ESCAPE:
+                        leaveMainLoop();
+                        break;
+                }
+            }
+        }
 
-			currMatrix.scale(100.0f, 1.0f, 100.0f);
 
-			glUniform4f(baseColorUnif, 0.2f, 0.5f, 0.2f, 1.0f);
-			glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        sphereCamRelPos.y = Glm.clamp( sphereCamRelPos.y, -78.75f, 10.0f );
+    }
 
-			plane.render();
 
-			currMatrix.pop();
-		}
+    ////////////////////////////////
+    private int theProgram;
 
-		{
-			currMatrix.push();
+    private int modelToCameraMatrixUnif;
+    private int cameraToClipMatrixUnif;
+    private int baseColorUnif;
 
-			currMatrix.translate(camTarget);
-			currMatrix.applyMatrix(Glm.matCast(orientation));
-			currMatrix.rotateX(-90.0f);
+    private Mat4 cameraToClipMatrix = new Mat4( 0.0f );
 
-			// Set the base color for this object.
-			glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-			glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
 
-			ship.render("tint");
+    private final float frustumScale = calcFrustumScale( 20.0f );
 
-			currMatrix.pop();
-		}
 
-		glUseProgram(0);
-	}
+    private void initializeProgram() {
+        ArrayList<Integer> shaderList = new ArrayList<>();
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, "PosColorLocalTransform.vert" ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, "ColorMultUniform.frag" ) );
 
+        theProgram = Framework.createProgram( shaderList );
 
-	@Override
-	protected void reshape(int width, int height) {
-		cameraToClipMatrix.set(0, 0, frustumScale / (width / (float) height));
-		cameraToClipMatrix.set(1, 1, frustumScale);
+        modelToCameraMatrixUnif = glGetUniformLocation( theProgram, "modelToCameraMatrix" );
+        cameraToClipMatrixUnif = glGetUniformLocation( theProgram, "cameraToClipMatrix" );
+        baseColorUnif = glGetUniformLocation( theProgram, "baseColor" );
 
-		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
-		glUseProgram(0);
+        float zNear = 1.0f;
+        float zFar = 600.0f;
 
-		glViewport(0, 0, width, height);
-	}
+        cameraToClipMatrix.set( 0, 0, frustumScale );
+        cameraToClipMatrix.set( 1, 1, frustumScale );
+        cameraToClipMatrix.set( 2, 2, (zFar + zNear) / (zNear - zFar) );
+        cameraToClipMatrix.set( 2, 3, -1.0f );
+        cameraToClipMatrix.set( 3, 2, (2 * zFar * zNear) / (zNear - zFar) );
 
+        glUseProgram( theProgram );
+        glUniformMatrix4( cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer( mat4Buffer ) );
+        glUseProgram( 0 );
+    }
 
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private float calcFrustumScale(float fovDeg) {
+        final float degToRad = 3.14159f * 2.0f / 360.0f;
+        float fovRad = fovDeg * degToRad;
 
-	private int theProgram;
-	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif, baseColorUnif;
+        return (float) (1.0f / Math.tan( fovRad / 2.0f ));
+    }
 
-	private Mat4 cameraToClipMatrix = new Mat4(0.0f);
 
-	private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    ////////////////////////////////
+    private final float SMALL_ANGLE_INCREMENT = 9.0f;
 
+    private Mesh ship;
+    private Mesh plane;
 
-	private void initializeProgram() {
-		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	"PosColorLocalTransform.vert"));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "ColorMultUniform.frag"));
+    private Vec3 camTarget = new Vec3( 0.0f, 10.0f, 0.0f );
+    private Quaternion orientation = new Quaternion( 1.0f, 0.0f, 0.0f, 0.0f );
+    private OffsetRelative iOffset = OffsetRelative.MODEL_RELATIVE;
 
-		theProgram = Framework.createProgram(shaderList);
+    // In spherical coordinates.
+    private Vec3 sphereCamRelPos = new Vec3( 90.0f, 0.0f, 66.0f );
 
-		modelToCameraMatrixUnif = glGetUniformLocation(theProgram, "modelToCameraMatrix");
-		cameraToClipMatrixUnif = glGetUniformLocation(theProgram, "cameraToClipMatrix");
-		baseColorUnif = glGetUniformLocation(theProgram, "baseColor");
+    private enum OffsetRelative {
+        MODEL_RELATIVE,
+        WORLD_RELATIVE,
+        CAMERA_RELATIVE,
 
-		float zNear = 1.0f; float zFar = 600.0f;
+        NUM_RELATIVES
+    }
 
-		cameraToClipMatrix.set(0, 0, 	frustumScale);
-		cameraToClipMatrix.set(1, 1, 	frustumScale);
-		cameraToClipMatrix.set(2, 2,	(zFar + zNear) / (zNear - zFar));
-		cameraToClipMatrix.set(2, 3,	-1.0f);
-		cameraToClipMatrix.set(3, 2,	(2 * zFar * zNear) / (zNear - zFar));
 
-		glUseProgram(theProgram);
-		glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
-		glUseProgram(0);
-	}
+    private void offsetOrientation(Vec3 _axis, float angDeg) {
+        float fAngRad = Framework.degToRad( angDeg );
 
+        Vec3 axis = Glm.normalize( _axis );
+        axis.scale( (float) Math.sin( fAngRad / 2.0f ) );
 
+        float scalar = (float) Math.cos( fAngRad / 2.0f );
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        Quaternion offset = new Quaternion( scalar, axis.x, axis.y, axis.z );
 
-	private final float SMALL_ANGLE_INCREMENT = 9.0f;
+        switch ( iOffset ) {
+            case MODEL_RELATIVE:
+                orientation = Quaternion.mul( orientation, offset );
+                break;
 
-	private Mesh ship;
-	private Mesh plane;
+            case WORLD_RELATIVE:
+                orientation = Quaternion.mul( offset, orientation );
+                break;
 
-	private Vec3 camTarget = new Vec3(0.0f, 10.0f, 0.0f);
-	private Quaternion orientation = new Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
-	private OffsetRelative iOffset = OffsetRelative.MODEL_RELATIVE;
+            case CAMERA_RELATIVE:
+                final Vec3 camPos = resolveCamPosition();
+                final Mat4 camMat = calcLookAtMatrix( camPos, camTarget, new Vec3( 0.0f, 1.0f, 0.0f ) );
 
-	// In spherical coordinates.
-	private Vec3 sphereCamRelPos = new Vec3(90.0f, 0.0f, 66.0f);
+                Quaternion viewQuat = Glm.quatCast( camMat );
+                Quaternion invViewQuat = Glm.conjugate( viewQuat );
 
+                final Quaternion worldQuat = invViewQuat.mul( offset.mul( viewQuat ) );
+                orientation = Quaternion.mul( worldQuat, orientation );
+                break;
 
-	private enum OffsetRelative {
-		MODEL_RELATIVE,
-		WORLD_RELATIVE,
-		CAMERA_RELATIVE,
+            default:
+                break;
+        }
 
-		NUM_RELATIVES
-	};
+        orientation = Glm.normalize( orientation );
+    }
 
+    private Vec3 resolveCamPosition() {
+        float phi = Framework.degToRad( sphereCamRelPos.x );
+        float theta = Framework.degToRad( sphereCamRelPos.y + 90.0f );
 
-	private void offsetOrientation(Vec3 _axis, float angDeg) {
-		float fAngRad = Framework.degToRad(angDeg);
+        float sinTheta = (float) Math.sin( theta );
+        float cosTheta = (float) Math.cos( theta );
+        float cosPhi = (float) Math.cos( phi );
+        float sinPhi = (float) Math.sin( phi );
 
-		Vec3 axis = Glm.normalize(_axis);
-		axis.scale((float) Math.sin(fAngRad / 2.0f));
+        Vec3 dirToCamera = new Vec3( sinTheta * cosPhi, cosTheta, sinTheta * sinPhi );
 
-		float scalar = (float) Math.cos(fAngRad / 2.0f);
+        return (dirToCamera.scale( sphereCamRelPos.z )).add( camTarget );
+    }
 
-		Quaternion offset = new Quaternion(scalar, axis.x, axis.y, axis.z);
+    private Mat4 calcLookAtMatrix(Vec3 cameraPt, Vec3 lookPt, Vec3 upPt) {
+        Vec3 lookDir = Glm.normalize( Vec3.sub( lookPt, cameraPt ) );
+        Vec3 upDir = Glm.normalize( upPt );
 
-		switch (iOffset) {
-		case MODEL_RELATIVE:
-			orientation = Quaternion.mul(orientation, offset);
-			break;
+        Vec3 rightDir = Glm.normalize( Glm.cross( lookDir, upDir ) );
+        Vec3 perpUpDir = Glm.cross( rightDir, lookDir );
 
-		case WORLD_RELATIVE:
-			orientation = Quaternion.mul(offset, orientation);
-			break;
+        Mat4 rotMat = new Mat4( 1.0f );
+        rotMat.setColumn( 0, new Vec4( rightDir, 0.0f ) );
+        rotMat.setColumn( 1, new Vec4( perpUpDir, 0.0f ) );
+        rotMat.setColumn( 2, new Vec4( Vec3.negate( lookDir ), 0.0f ) );
 
-		case CAMERA_RELATIVE:
-			final Vec3 camPos = resolveCamPosition();
-			final Mat4 camMat = calcLookAtMatrix(camPos, camTarget, new Vec3(0.0f, 1.0f, 0.0f));
+        rotMat = Glm.transpose( rotMat );
 
-			Quaternion viewQuat = Glm.quatCast(camMat);
-			Quaternion invViewQuat = Glm.conjugate(viewQuat);
+        Mat4 transMat = new Mat4( 1.0f );
+        transMat.setColumn( 3, new Vec4( Vec3.negate( cameraPt ), 1.0f ) );
 
-			final Quaternion worldQuat = invViewQuat.mul(offset.mul(viewQuat));
-			orientation = Quaternion.mul(worldQuat, orientation);
-			break;
-
-		default:
-			break;
-		}
-
-		orientation = Glm.normalize(orientation);
-	}
-
-	private Mat4 calcLookAtMatrix(Vec3 cameraPt, Vec3 lookPt, Vec3 upPt) {
-		Vec3 lookDir = Glm.normalize(Vec3.sub(lookPt, cameraPt));
-		Vec3 upDir = Glm.normalize(upPt);
-
-		Vec3 rightDir = Glm.normalize(Glm.cross(lookDir, upDir));
-		Vec3 perpUpDir = Glm.cross(rightDir, lookDir);
-
-		Mat4 rotMat = new Mat4(1.0f);
-		rotMat.setColumn(0, new Vec4(rightDir, 0.0f));
-		rotMat.setColumn(1, new Vec4(perpUpDir, 0.0f));
-		rotMat.setColumn(2, new Vec4(Vec3.negate(lookDir), 0.0f));
-
-		rotMat = Glm.transpose(rotMat);
-
-		Mat4 transMat = new Mat4(1.0f);
-		transMat.setColumn(3, new Vec4(Vec3.negate(cameraPt), 1.0f));
-
-		return rotMat.mul(transMat);
-	}
-
-
-	private Vec3 resolveCamPosition() {
-		float phi = Framework.degToRad(sphereCamRelPos.x);
-		float theta = Framework.degToRad(sphereCamRelPos.y + 90.0f);
-
-		float sinTheta = (float) Math.sin(theta);
-		float cosTheta = (float) Math.cos(theta);
-		float cosPhi = (float) Math.cos(phi);
-		float sinPhi = (float) Math.sin(phi);
-
-		Vec3 dirToCamera = new Vec3(sinTheta * cosPhi, cosTheta, sinTheta * sinPhi);
-
-		return (dirToCamera.scale(sphereCamRelPos.z)).add(camTarget);
-	}
-
-
-
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	private final float frustumScale = calcFrustumScale(20.0f);
-
-
-	private float calcFrustumScale(float fovDeg) {
-		final float degToRad = 3.14159f * 2.0f / 360.0f;
-		float fovRad = fovDeg * degToRad;
-
-		return (float) (1.0f / Math.tan(fovRad / 2.0f));
-	}
+        return rotMat.mul( transMat );
+    }
 }

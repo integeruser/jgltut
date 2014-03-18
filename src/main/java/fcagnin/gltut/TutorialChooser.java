@@ -61,9 +61,6 @@ import java.awt.*;
  * @author integeruser
  */
 public class TutorialChooser extends JPanel implements TreeSelectionListener {
-    private JTree tree;
-
-
     public static void main(String[] args) {
         JFrame frame = new JFrame( "Click on a tutorial to run it" );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -330,6 +327,11 @@ public class TutorialChooser extends JPanel implements TreeSelectionListener {
     }
 
 
+    ////////////////////////////////
+    private JTree tree;
+
+
+    ////////////////////////////////
     private void createNodes(DefaultMutableTreeNode top) {
         DefaultMutableTreeNode part1TreeNode = new DefaultMutableTreeNode( "I. The Basics" );
 

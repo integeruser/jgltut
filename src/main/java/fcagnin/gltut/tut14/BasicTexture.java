@@ -1,38 +1,33 @@
 package fcagnin.gltut.tut14;
 
+import fcagnin.gltut.LWJGLWindow;
+import fcagnin.gltut.framework.Framework;
+import fcagnin.gltut.framework.Mesh;
+import fcagnin.gltut.framework.MousePole;
+import fcagnin.gltut.framework.Timer;
+import fcagnin.jglsdk.BufferableData;
+import fcagnin.jglsdk.glm.*;
+import fcagnin.jglsdk.glutil.MatrixStack;
+import fcagnin.jglsdk.glutil.MousePoles.*;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
-import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.*;
-import static org.lwjgl.opengl.GL32.*;
+import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 import static org.lwjgl.opengl.GL33.*;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
-import fcagnin.gltut.LWJGLWindow;
-import fcagnin.jglsdk.BufferableData;
-import fcagnin.jglsdk.glm.Glm;
-import fcagnin.jglsdk.glm.Mat3;
-import fcagnin.jglsdk.glm.Mat4;
-import fcagnin.jglsdk.glm.Quaternion;
-import fcagnin.jglsdk.glm.Vec3;
-import fcagnin.jglsdk.glm.Vec4;
-import fcagnin.jglsdk.glutil.MatrixStack;
-import fcagnin.jglsdk.glutil.MousePoles.*;
-import fcagnin.gltut.framework.Framework;
-import fcagnin.gltut.framework.Mesh;
-import fcagnin.gltut.framework.MousePole;
-import fcagnin.gltut.framework.Timer;
 
 
 /**
@@ -60,587 +55,546 @@ import fcagnin.gltut.framework.Timer;
  * @author integeruser
  */
 public class BasicTexture extends LWJGLWindow {
+    public static void main(String[] args) {
+        Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut14/data/";
 
-	public static void main(String[] args) {
-		Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/gltut/tut14/data/";
+        new BasicTexture().start();
+    }
 
-		new BasicTexture().start();
-	}
 
+    @Override
+    protected void init() {
+        initializePrograms();
 
+        try {
+            objectMesh = new Mesh( "Infinity.xml" );
+            cubeMesh = new Mesh( "UnitCube.xml" );
+        } catch ( Exception exception ) {
+            exception.printStackTrace();
+            System.exit( -1 );
+        }
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	@Override
-	protected void init() {
-		initializePrograms();
-
-		try {
-			objectMesh 	= new Mesh("Infinity.xml");
-			cubeMesh 	= new Mesh("UnitCube.xml");
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			System.exit(-1);
-		}
-
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		glFrontFace(GL_CW);
-
-		final float depthZNear = 0.0f;
-		final float depthZFar = 1.0f;
-
-		glEnable(GL_DEPTH_TEST);
-		glDepthMask(true);
-		glDepthFunc(GL_LEQUAL);
-		glDepthRange(depthZNear, depthZFar);
-		glEnable(GL_DEPTH_CLAMP);
-
-		// Setup our Uniform Buffers
-		MaterialBlock matBlock = new MaterialBlock();
-		matBlock.diffuseColor = new Vec4(1.0f, 0.673f, 0.043f, 1.0f);
-		matBlock.specularColor = new Vec4(1.0f, 0.673f, 0.043f, 1.0f).scale(0.4f);
-		matBlock.specularShininess = specularShininess;
-
-		materialUniformBuffer = glGenBuffers();
-		glBindBuffer(GL_UNIFORM_BUFFER, materialUniformBuffer);
-		glBufferData(GL_UNIFORM_BUFFER, matBlock.fillAndFlipBuffer(BufferUtils.createFloatBuffer(12)), GL_STATIC_DRAW);
-
-		lightUniformBuffer = glGenBuffers();
-		glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
-		glBufferData(GL_UNIFORM_BUFFER, LightBlock.SIZE, GL_DYNAMIC_DRAW);
-
-		projectionUniformBuffer = glGenBuffers();
-		glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-		glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW);
-
-		// Bind the static buffers.
-		glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer,
-				0, LightBlock.SIZE);
-
-		glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-				0, ProjectionBlock.SIZE);
-
-		glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-				0, MaterialBlock.SIZE);
-
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-		createGaussianTextures();
-	}
-
-
-	@Override
-	protected void update() {
-		while (Mouse.next()) {
-			int eventButton = Mouse.getEventButton();
-
-			if (eventButton != -1) {
-				boolean pressed = Mouse.getEventButtonState();
-				MousePole.forwardMouseButton(viewPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
-				MousePole.forwardMouseButton(objtPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
-			} else {
-				// Mouse moving or mouse scrolling
-				int dWheel = Mouse.getDWheel();
-
-				if (dWheel != 0) {
-					MousePole.forwardMouseWheel(viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
-					MousePole.forwardMouseWheel(objtPole, dWheel, dWheel, Mouse.getX(), Mouse.getY());
-				}
-
-				if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)) {
-					MousePole.forwardMouseMotion(viewPole, Mouse.getX(), Mouse.getY());
-					MousePole.forwardMouseMotion(objtPole, Mouse.getX(), Mouse.getY());
-				}
-			}
-		}
+        glEnable( GL_CULL_FACE );
+        glCullFace( GL_BACK );
+        glFrontFace( GL_CW );
 
+        final float depthZNear = 0.0f;
+        final float depthZFar = 1.0f;
 
-		while (Keyboard.next()) {
-			if (Keyboard.getEventKeyState()) {
-				switch (Keyboard.getEventKey()) {
-				case Keyboard.KEY_P:
-					lightTimer.togglePause();
-					break;
-
-				case Keyboard.KEY_MINUS:
-					lightTimer.rewind(0.5f);
-					break;
+        glEnable( GL_DEPTH_TEST );
+        glDepthMask( true );
+        glDepthFunc( GL_LEQUAL );
+        glDepthRange( depthZNear, depthZFar );
+        glEnable( GL_DEPTH_CLAMP );
 
-				case Keyboard.KEY_EQUALS:
-					lightTimer.fastForward(0.5f);
-					break;
+        // Setup our Uniform Buffers
+        MaterialBlock matBlock = new MaterialBlock();
+        matBlock.diffuseColor = new Vec4( 1.0f, 0.673f, 0.043f, 1.0f );
+        matBlock.specularColor = new Vec4( 1.0f, 0.673f, 0.043f, 1.0f ).scale( 0.4f );
+        matBlock.specularShininess = specularShininess;
 
-				case Keyboard.KEY_T:
-					drawCameraPos = !drawCameraPos;
-					break;
+        materialUniformBuffer = glGenBuffers();
+        glBindBuffer( GL_UNIFORM_BUFFER, materialUniformBuffer );
+        glBufferData( GL_UNIFORM_BUFFER, matBlock.fillAndFlipBuffer( BufferUtils.createFloatBuffer( 12 ) ), GL_STATIC_DRAW );
 
-				case Keyboard.KEY_G:
-					drawLights = !drawLights;
-					break;
+        lightUniformBuffer = glGenBuffers();
+        glBindBuffer( GL_UNIFORM_BUFFER, lightUniformBuffer );
+        glBufferData( GL_UNIFORM_BUFFER, LightBlock.SIZE, GL_DYNAMIC_DRAW );
 
-				case Keyboard.KEY_SPACE:
-					useTexture = !useTexture;
-					if (useTexture) {
-						System.out.printf("Texture\n");
-					} else {
-						System.out.printf("Shader\n");
-					}
-					break;
+        projectionUniformBuffer = glGenBuffers();
+        glBindBuffer( GL_UNIFORM_BUFFER, projectionUniformBuffer );
+        glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
-				case Keyboard.KEY_ESCAPE:
-					leaveMainLoop();
-					break;
-				}
+        // Bind the static buffers.
+        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer,
+                0, LightBlock.SIZE );
 
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
+                0, ProjectionBlock.SIZE );
 
-				if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
-					int number = Keyboard.getEventKey() - Keyboard.KEY_1;
-					if (number < NUM_GAUSS_TEXTURES) {
-						System.out.printf("Angle Resolution: %d\n", calcCosAngResolution(number));
-						currTexture = number;
-					}
-				}
-			}
-		}
-	}
+        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
+                0, MaterialBlock.SIZE );
 
+        glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
-	@Override
-	protected void display() {
-		lightTimer.update(getElapsedTime());
+        createGaussianTextures();
+    }
 
-		glClearColor(0.75f, 0.75f, 1.0f, 1.0f);
-		glClearDepth(1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    @Override
+    protected void display() {
+        lightTimer.update( getElapsedTime() );
 
-		MatrixStack modelMatrix = new MatrixStack();
-		modelMatrix.setMatrix(viewPole.calcMatrix());
-		final Mat4 worldToCamMat = modelMatrix.top();
+        glClearColor( 0.75f, 0.75f, 1.0f, 1.0f );
+        glClearDepth( 1.0f );
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-		LightBlock lightData = new LightBlock();
-		lightData.ambientIntensity = new Vec4(0.2f, 0.2f, 0.2f, 1.0f);
-		lightData.lightAttenuation = lightAttenuation;
+        MatrixStack modelMatrix = new MatrixStack();
+        modelMatrix.setMatrix( viewPole.calcMatrix() );
+        final Mat4 worldToCamMat = modelMatrix.top();
 
-		Vec3 globalLightDirection = new Vec3(0.707f, 0.707f, 0.0f);
+        LightBlock lightData = new LightBlock();
+        lightData.ambientIntensity = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
+        lightData.lightAttenuation = lightAttenuation;
 
-		lightData.lights[0] = new PerLight();
-		lightData.lights[0].cameraSpaceLightPos = Mat4.mul(worldToCamMat, new Vec4(globalLightDirection, 0.0f));
-		lightData.lights[0].lightIntensity = new Vec4(0.6f, 0.6f, 0.6f, 1.0f);
+        Vec3 globalLightDirection = new Vec3( 0.707f, 0.707f, 0.0f );
 
-		lightData.lights[1] = new PerLight();
-		lightData.lights[1].cameraSpaceLightPos = Mat4.mul(worldToCamMat, calcLightPosition());
-		lightData.lights[1].lightIntensity = new Vec4(0.4f, 0.4f, 0.4f, 1.0f);
+        lightData.lights[0] = new PerLight();
+        lightData.lights[0].cameraSpaceLightPos = Mat4.mul( worldToCamMat, new Vec4( globalLightDirection, 0.0f ) );
+        lightData.lights[0].lightIntensity = new Vec4( 0.6f, 0.6f, 0.6f, 1.0f );
 
-		glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillAndFlipBuffer(lightBlockBuffer));
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        lightData.lights[1] = new PerLight();
+        lightData.lights[1].cameraSpaceLightPos = Mat4.mul( worldToCamMat, calcLightPosition() );
+        lightData.lights[1].lightIntensity = new Vec4( 0.4f, 0.4f, 0.4f, 1.0f );
 
-		{
-			glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-					0, MaterialBlock.SIZE);
+        glBindBuffer( GL_UNIFORM_BUFFER, lightUniformBuffer );
+        glBufferSubData( GL_UNIFORM_BUFFER, 0, lightData.fillAndFlipBuffer( lightBlockBuffer ) );
+        glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
-			modelMatrix.push();
+        {
+            glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
+                    0, MaterialBlock.SIZE );
 
-			modelMatrix.applyMatrix(objtPole.calcMatrix());
-			modelMatrix.scale(2.0f);
+            modelMatrix.push();
 
-			Mat3 normMatrix = new Mat3(modelMatrix.top());
-			normMatrix = Glm.transpose(Glm.inverse(normMatrix));
+            modelMatrix.applyMatrix( objtPole.calcMatrix() );
+            modelMatrix.scale( 2.0f );
 
-			ProgramData prog = useTexture ? litTextureProg : litShaderProg;
+            Mat3 normMatrix = new Mat3( modelMatrix.top() );
+            normMatrix = Glm.transpose( Glm.inverse( normMatrix ) );
 
-			glUseProgram(prog.theProgram);
-			glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
-			glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+            ProgramData prog = useTexture ? litTextureProg : litShaderProg;
 
-			glActiveTexture(GL_TEXTURE0 + gaussTexUnit);
-			glBindTexture(GL_TEXTURE_1D, gaussTextures[currTexture]);
-			glBindSampler(gaussTexUnit, gaussSampler);
+            glUseProgram( prog.theProgram );
+            glUniformMatrix4( prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix3( prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
 
-			objectMesh.render("lit");
+            glActiveTexture( GL_TEXTURE0 + gaussTexUnit );
+            glBindTexture( GL_TEXTURE_1D, gaussTextures[currTexture] );
+            glBindSampler( gaussTexUnit, gaussSampler );
 
-			glBindSampler(gaussTexUnit, 0);
-			glBindTexture(GL_TEXTURE_1D, 0);
+            objectMesh.render( "lit" );
 
-			glUseProgram(0);
-			glBindBufferBase(GL_UNIFORM_BUFFER, materialBlockIndex, 0);
+            glBindSampler( gaussTexUnit, 0 );
+            glBindTexture( GL_TEXTURE_1D, 0 );
 
-			modelMatrix.pop();
-		}
+            glUseProgram( 0 );
+            glBindBufferBase( GL_UNIFORM_BUFFER, materialBlockIndex, 0 );
 
-		if (drawLights) {
-			modelMatrix.push();
+            modelMatrix.pop();
+        }
 
-			modelMatrix.translate(new Vec3(calcLightPosition()));
-			modelMatrix.scale(0.25f);
+        if ( drawLights ) {
+            modelMatrix.push();
 
-			glUseProgram(unlit.theProgram);
-			glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            modelMatrix.translate( new Vec3( calcLightPosition() ) );
+            modelMatrix.scale( 0.25f );
 
-			Vec4 lightColor = new Vec4(1.0f);
-			glUniform4(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
-			cubeMesh.render("flat");
+            glUseProgram( unlit.theProgram );
+            glUniformMatrix4( unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
-			modelMatrix.pop();
+            Vec4 lightColor = new Vec4( 1.0f );
+            glUniform4( unlit.objectColorUnif, lightColor.fillAndFlipBuffer( vec4Buffer ) );
+            cubeMesh.render( "flat" );
 
-			modelMatrix.translate(globalLightDirection.scale(100.0f));
-			modelMatrix.scale(5.0f);
+            modelMatrix.pop();
 
-			glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
-			cubeMesh.render("flat");
+            modelMatrix.translate( globalLightDirection.scale( 100.0f ) );
+            modelMatrix.scale( 5.0f );
+
+            glUniformMatrix4( unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            cubeMesh.render( "flat" );
 
-			glUseProgram(0);
-		}
+            glUseProgram( 0 );
+        }
+
+        if ( drawCameraPos ) {
+            modelMatrix.push();
 
-		if (drawCameraPos) {
-			modelMatrix.push();
+            modelMatrix.setIdentity();
+            modelMatrix.translate( new Vec3( 0.0f, 0.0f, -viewPole.getView().radius ) );
+            modelMatrix.scale( 0.25f );
+
+            glDisable( GL_DEPTH_TEST );
+            glDepthMask( false );
+            glUseProgram( unlit.theProgram );
+            glUniformMatrix4( unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniform4f( unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f );
+            cubeMesh.render( "flat" );
+            glDepthMask( true );
+            glEnable( GL_DEPTH_TEST );
+            glUniform4f( unlit.objectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f );
+            cubeMesh.render( "flat" );
+
+            modelMatrix.pop();
+        }
+    }
+
+    @Override
+    protected void reshape(int width, int height) {
+        MatrixStack persMatrix = new MatrixStack();
+        persMatrix.perspective( 45.0f, (width / (float) height), zNear, zFar );
+
+        ProjectionBlock projData = new ProjectionBlock();
+        projData.cameraToClipMatrix = persMatrix.top();
+
+        glBindBuffer( GL_UNIFORM_BUFFER, projectionUniformBuffer );
+        glBufferSubData( GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer( mat4Buffer ) );
+        glBindBuffer( GL_UNIFORM_BUFFER, 0 );
+
+        glViewport( 0, 0, width, height );
+    }
 
-			modelMatrix.setIdentity();
-			modelMatrix.translate(new Vec3(0.0f, 0.0f, - viewPole.getView().radius));
-			modelMatrix.scale(0.25f);
+    @Override
+    protected void update() {
+        while ( Mouse.next() ) {
+            int eventButton = Mouse.getEventButton();
 
-			glDisable(GL_DEPTH_TEST);
-			glDepthMask(false);
-			glUseProgram(unlit.theProgram);
-			glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
-			glUniform4f(unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
-			cubeMesh.render("flat");
-			glDepthMask(true);
-			glEnable(GL_DEPTH_TEST);
-			glUniform4f(unlit.objectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-			cubeMesh.render("flat");
+            if ( eventButton != -1 ) {
+                boolean pressed = Mouse.getEventButtonState();
+                MousePole.forwardMouseButton( viewPole, eventButton, pressed, Mouse.getX(), Mouse.getY() );
+                MousePole.forwardMouseButton( objtPole, eventButton, pressed, Mouse.getX(), Mouse.getY() );
+            } else {
+                // Mouse moving or mouse scrolling
+                int dWheel = Mouse.getDWheel();
 
-			modelMatrix.pop();
-		}
-	}
+                if ( dWheel != 0 ) {
+                    MousePole.forwardMouseWheel( viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY() );
+                    MousePole.forwardMouseWheel( objtPole, dWheel, dWheel, Mouse.getX(), Mouse.getY() );
+                }
 
+                if ( Mouse.isButtonDown( 0 ) || Mouse.isButtonDown( 1 ) || Mouse.isButtonDown( 2 ) ) {
+                    MousePole.forwardMouseMotion( viewPole, Mouse.getX(), Mouse.getY() );
+                    MousePole.forwardMouseMotion( objtPole, Mouse.getX(), Mouse.getY() );
+                }
+            }
+        }
+
 
-	@Override
-	protected void reshape(int width, int height) {
-		MatrixStack persMatrix = new MatrixStack();
-		persMatrix.perspective(45.0f, (width / (float) height), zNear, zFar);
+        while ( Keyboard.next() ) {
+            if ( Keyboard.getEventKeyState() ) {
+                switch ( Keyboard.getEventKey() ) {
+                    case Keyboard.KEY_P:
+                        lightTimer.togglePause();
+                        break;
+
+                    case Keyboard.KEY_MINUS:
+                        lightTimer.rewind( 0.5f );
+                        break;
+
+                    case Keyboard.KEY_EQUALS:
+                        lightTimer.fastForward( 0.5f );
+                        break;
+
+                    case Keyboard.KEY_T:
+                        drawCameraPos = !drawCameraPos;
+                        break;
+
+                    case Keyboard.KEY_G:
+                        drawLights = !drawLights;
+                        break;
+
+                    case Keyboard.KEY_SPACE:
+                        useTexture = !useTexture;
+                        if ( useTexture ) {
+                            System.out.printf( "Texture\n" );
+                        } else {
+                            System.out.printf( "Shader\n" );
+                        }
+                        break;
 
-		ProjectionBlock projData = new ProjectionBlock();
-		projData.cameraToClipMatrix = persMatrix.top();
+                    case Keyboard.KEY_ESCAPE:
+                        leaveMainLoop();
+                        break;
+                }
 
-		glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(mat4Buffer));
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		glViewport(0, 0, width, height);
-	}
+                if ( Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9 ) {
+                    int number = Keyboard.getEventKey() - Keyboard.KEY_1;
+                    if ( number < NUM_GAUSS_TEXTURES ) {
+                        System.out.printf( "Angle Resolution: %d\n", calcCosAngResolution( number ) );
+                        currTexture = number;
+                    }
+                }
+            }
+        }
+    }
+
 
+    ////////////////////////////////
+    private float zNear = 1.0f;
+    private float zFar = 1000.0f;
 
+    private ProgramData litShaderProg;
+    private ProgramData litTextureProg;
+    private UnlitProgData unlit;
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private class ProgramData {
+        int theProgram;
+
+        int modelToCameraMatrixUnif;
+        int normalModelToCameraMatrixUnif;
+    }
+
+    private class UnlitProgData {
+        int theProgram;
 
-	private float zNear = 1.0f;
-	private float zFar = 1000.0f;
+        int objectColorUnif;
+        int modelToCameraMatrixUnif;
+    }
 
-	private FloatBuffer vec4Buffer 			= BufferUtils.createFloatBuffer(Vec4.SIZE);
-	private FloatBuffer mat3Buffer 			= BufferUtils.createFloatBuffer(Mat3.SIZE);
-	private FloatBuffer mat4Buffer 			= BufferUtils.createFloatBuffer(Mat4.SIZE);
-	private FloatBuffer lightBlockBuffer 	= BufferUtils.createFloatBuffer(LightBlock.SIZE);
 
+    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer( Vec4.SIZE );
+    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer( Mat3.SIZE );
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
+    private FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer( LightBlock.SIZE );
+
+
+    private void initializePrograms() {
+        litShaderProg = loadStandardProgram( "PN.vert", "ShaderGaussian.frag" );
+        litTextureProg = loadStandardProgram( "PN.vert", "TextureGaussian.frag" );
+        unlit = loadUnlitProgram( "Unlit.vert", "Unlit.frag" );
+    }
+
+    private ProgramData loadStandardProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+        ArrayList<Integer> shaderList = new ArrayList<>();
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+
+        ProgramData data = new ProgramData();
+        data.theProgram = Framework.createProgram( shaderList );
+        data.modelToCameraMatrixUnif = glGetUniformLocation( data.theProgram, "modelToCameraMatrix" );
+        data.normalModelToCameraMatrixUnif = glGetUniformLocation( data.theProgram, "normalModelToCameraMatrix" );
+
+        int materialBlock = glGetUniformBlockIndex( data.theProgram, "Material" );
+        int lightBlock = glGetUniformBlockIndex( data.theProgram, "Light" );
+        int projectionBlock = glGetUniformBlockIndex( data.theProgram, "Projection" );
+
+        glUniformBlockBinding( data.theProgram, materialBlock, materialBlockIndex );
+        glUniformBlockBinding( data.theProgram, lightBlock, lightBlockIndex );
+        glUniformBlockBinding( data.theProgram, projectionBlock, projectionBlockIndex );
+
+        int gaussianTextureUnif = glGetUniformLocation( data.theProgram, "gaussianTexture" );
+        glUseProgram( data.theProgram );
+        glUniform1i( gaussianTextureUnif, gaussTexUnit );
+        glUseProgram( 0 );
 
-	private void initializePrograms() {
-		litShaderProg = loadStandardProgram("PN.vert", 	"ShaderGaussian.frag");
-		litTextureProg = loadStandardProgram("PN.vert", 	"TextureGaussian.frag");
-		unlit = loadUnlitProgram("Unlit.vert", "Unlit.frag");
-	}
+        return data;
+    }
 
+    private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+        ArrayList<Integer> shaderList = new ArrayList<>();
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
 
+        UnlitProgData data = new UnlitProgData();
+        data.theProgram = Framework.createProgram( shaderList );
+        data.modelToCameraMatrixUnif = glGetUniformLocation( data.theProgram, "modelToCameraMatrix" );
+        data.objectColorUnif = glGetUniformLocation( data.theProgram, "objectColor" );
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        int projectionBlock = glGetUniformBlockIndex( data.theProgram, "Projection" );
+        glUniformBlockBinding( data.theProgram, projectionBlock, projectionBlockIndex );
 
-	private ProgramData litShaderProg;
-	private ProgramData litTextureProg;
-	private UnlitProgData unlit;
+        return data;
+    }
 
 
-	private class ProgramData {
-		int theProgram;
+    ////////////////////////////////
+    private final int NUM_GAUSS_TEXTURES = 4;
+    private final int gaussTexUnit = 0;
+    private final float halfLightDistance = 25.0f;
+    private final float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
 
-		int modelToCameraMatrixUnif;
-		int normalModelToCameraMatrixUnif;
-	}
+    private Mesh objectMesh;
+    private Mesh cubeMesh;
 
-	private class UnlitProgData {
-		int theProgram;
+    private Timer lightTimer = new Timer( Timer.Type.LOOP, 6.0f );
 
-		int objectColorUnif;
-		int modelToCameraMatrixUnif;
-	}
+    private boolean drawLights = true;
+    private boolean drawCameraPos;
+    private boolean useTexture;
+    private int[] gaussTextures = new int[NUM_GAUSS_TEXTURES];
+    private int gaussSampler;
+    private int currTexture;
+    private float specularShininess = 0.2f;
+    private float lightHeight = 1.0f;
+    private float lightRadius = 3.0f;
 
 
-	private ProgramData loadStandardProgram(String vertexShaderFilename, String fragmentShaderFilename) {
-		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	vertexShaderFilename));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	fragmentShaderFilename));
+    private void createGaussianTextures() {
+        for ( int textureIndex = 0; textureIndex < NUM_GAUSS_TEXTURES; textureIndex++ ) {
+            int cosAngleResolution = calcCosAngResolution( textureIndex );
+            gaussTextures[textureIndex] = createGaussianTexture( cosAngleResolution );
+        }
 
-		ProgramData data = new ProgramData();
-		data.theProgram = Framework.createProgram(shaderList);
-		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
-		data.normalModelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "normalModelToCameraMatrix");
+        gaussSampler = glGenSamplers();
+        glSamplerParameteri( gaussSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+        glSamplerParameteri( gaussSampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+        glSamplerParameteri( gaussSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    }
 
-		int materialBlock = glGetUniformBlockIndex(data.theProgram, "Material");
-		int lightBlock = glGetUniformBlockIndex(data.theProgram, "Light");
-		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
+    private int createGaussianTexture(int cosAngleResolution) {
+        byte[] textureData = new byte[cosAngleResolution];
 
-		glUniformBlockBinding(data.theProgram, materialBlock, materialBlockIndex);
-		glUniformBlockBinding(data.theProgram, lightBlock, lightBlockIndex);
-		glUniformBlockBinding(data.theProgram, projectionBlock, projectionBlockIndex);
+        buildGaussianData( textureData, cosAngleResolution );
 
-		int gaussianTextureUnif = glGetUniformLocation(data.theProgram, "gaussianTexture");
-		glUseProgram(data.theProgram);
-		glUniform1i(gaussianTextureUnif, gaussTexUnit);
-		glUseProgram(0);
+        ByteBuffer textureDataBuffer = BufferUtils.createByteBuffer( textureData.length );
+        textureDataBuffer.put( textureData );
+        textureDataBuffer.flip();
 
-		return data;
-	}
+        int gaussTexture = glGenTextures();
+        glBindTexture( GL_TEXTURE_1D, gaussTexture );
+        glTexImage1D( GL_TEXTURE_1D, 0, GL_R8, cosAngleResolution, 0,
+                GL11.GL_RED, GL_UNSIGNED_BYTE, textureDataBuffer );
+        glTexParameteri( GL_TEXTURE_1D, GL_TEXTURE_BASE_LEVEL, 0 );
+        glTexParameteri( GL_TEXTURE_1D, GL_TEXTURE_MAX_LEVEL, 0 );
+        glBindTexture( GL_TEXTURE_1D, 0 );
 
-	private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
-		ArrayList<Integer> shaderList = new ArrayList<>();
-		shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, 	vertexShaderFilename));
-		shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER,	fragmentShaderFilename));
+        return gaussTexture;
+    }
 
-		UnlitProgData data = new UnlitProgData();
-		data.theProgram = Framework.createProgram(shaderList);
-		data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
-		data.objectColorUnif = glGetUniformLocation(data.theProgram, "objectColor");
+    private void buildGaussianData(byte[] textureData, int cosAngleResolution) {
+        for ( int cosAngIndex = 0; cosAngIndex < cosAngleResolution; cosAngIndex++ ) {
+            float cosAng = cosAngIndex / (float) (cosAngleResolution - 1);
+            float angle = (float) Math.acos( cosAng );
+            float exponent = angle / specularShininess;
+            exponent = -(exponent * exponent);
+            float gaussianTerm = (float) Math.exp( exponent );
 
-		int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
-		glUniformBlockBinding(data.theProgram, projectionBlock, projectionBlockIndex);
+            textureData[cosAngIndex] = (byte) (gaussianTerm * 255.0f);
+        }
+    }
 
-		return data;
-	}
+    private int calcCosAngResolution(int level) {
+        final int cosAngleStart = 64;
 
+        return cosAngleStart * (int) (Math.pow( 2.0f, level ));
+    }
 
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private Vec4 calcLightPosition() {
+        final float scale = 3.14159f * 2.0f;
 
-	private final int NUM_GAUSS_TEXTURES = 4;
-	private final int gaussTexUnit = 0;
-	private final float halfLightDistance = 25.0f;
-	private final float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
+        float timeThroughLoop = lightTimer.getAlpha();
 
-	private Mesh objectMesh;
-	private Mesh cubeMesh;
+        Vec4 lightPos = new Vec4( 0.0f, lightHeight, 0.0f, 1.0f );
 
-	private Timer lightTimer = new Timer(Timer.Type.LOOP, 6.0f);
+        lightPos.x = (float) (Math.cos( timeThroughLoop * scale ) * lightRadius);
+        lightPos.z = (float) (Math.sin( timeThroughLoop * scale ) * lightRadius);
 
-	private boolean drawLights = true;
-	private boolean drawCameraPos;
-	private boolean useTexture;
-	private int[] gaussTextures = new int[NUM_GAUSS_TEXTURES];
-	private int gaussSampler;
-	private int currTexture;
-	private float specularShininess = 0.2f;
-	private float lightHeight = 1.0f;
-	private float lightRadius = 3.0f;
+        return lightPos;
+    }
 
 
-	////////////////////////////////
-	// View / Object setup.
-	private ObjectData initialObjectData = new ObjectData(
-			new Vec3(0.0f, 0.5f, 0.0f),
-			new Quaternion(1.0f, 0.0f, 0.0f, 0.0f));
+    ////////////////////////////////
+    // View / Object setup.
+    private ObjectData initialObjectData = new ObjectData(
+            new Vec3( 0.0f, 0.5f, 0.0f ),
+            new Quaternion( 1.0f, 0.0f, 0.0f, 0.0f )
+    );
 
 
-	private ViewData initialViewData = new ViewData(
-			new Vec3(initialObjectData.position),
-			new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
-			10.0f,
-			0.0f);
+    private ViewData initialViewData = new ViewData(
+            new Vec3( initialObjectData.position ),
+            new Quaternion( 0.92387953f, 0.3826834f, 0.0f, 0.0f ),
+            10.0f,
+            0.0f
+    );
 
-	private ViewScale g_viewScale = new ViewScale(
-			1.5f, 70.0f,
-			1.5f, 0.5f,
-			0.0f, 0.0f,											// No camera movement.
-			90.0f / 250.0f
-	);
+    private ViewScale g_viewScale = new ViewScale(
+            1.5f, 70.0f,
+            1.5f, 0.5f,
+            0.0f, 0.0f,     // No camera movement.
+            90.0f / 250.0f
+    );
 
 
-	private ViewPole viewPole 	= new ViewPole(initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN);
-	private ObjectPole objtPole = new ObjectPole(initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, viewPole);
+    private ViewPole viewPole = new ViewPole( initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN );
+    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, viewPole );
 
 
+    ////////////////////////////////
+    private final int projectionBlockIndex = 2;
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private int projectionUniformBuffer;
 
-	private void createGaussianTextures() {
-		for (int textureIndex = 0; textureIndex < NUM_GAUSS_TEXTURES; textureIndex++) {
-			int cosAngleResolution = calcCosAngResolution(textureIndex);
-			gaussTextures[textureIndex] = createGaussianTexture(cosAngleResolution);
-		}
+    private class ProjectionBlock extends BufferableData<FloatBuffer> {
+        Mat4 cameraToClipMatrix;
 
-		gaussSampler = glGenSamplers();
-		glSamplerParameteri(gaussSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glSamplerParameteri(gaussSampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glSamplerParameteri(gaussSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	}
+        static final int SIZE = Mat4.SIZE;
 
-	private int createGaussianTexture(int cosAngleResolution) {
-		byte[] textureData = new byte[cosAngleResolution];
+        @Override
+        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+            return cameraToClipMatrix.fillBuffer( buffer );
+        }
+    }
 
-		buildGaussianData(textureData, cosAngleResolution);
 
-		ByteBuffer textureDataBuffer = BufferUtils.createByteBuffer(textureData.length);
-		textureDataBuffer.put(textureData);
-		textureDataBuffer.flip();
+    ////////////////////////////////
+    private static final int NUMBER_OF_LIGHTS = 2;
 
-		int gaussTexture = glGenTextures();
-		glBindTexture(GL_TEXTURE_1D, gaussTexture);
-		glTexImage1D(GL_TEXTURE_1D, 0, GL_R8, cosAngleResolution, 0,
-				GL11.GL_RED, GL_UNSIGNED_BYTE, textureDataBuffer);
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_BASE_LEVEL, 0);
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAX_LEVEL, 0);
-		glBindTexture(GL_TEXTURE_1D, 0);
+    private final int lightBlockIndex = 1;
 
-		return gaussTexture;
-	}
+    private int lightUniformBuffer;
 
+    class PerLight extends BufferableData<FloatBuffer> {
+        Vec4 cameraSpaceLightPos;
+        Vec4 lightIntensity;
 
-	private void buildGaussianData(byte[] textureData, int cosAngleResolution) {
-		for (int cosAngIndex = 0; cosAngIndex < cosAngleResolution; cosAngIndex++) {
-			float cosAng = cosAngIndex / (float) (cosAngleResolution - 1);
-			float angle = (float) Math.acos(cosAng);
-			float exponent = angle / specularShininess;
-			exponent = - (exponent * exponent);
-			float gaussianTerm = (float) Math.exp(exponent);
+        static final int SIZE = Vec4.SIZE + Vec4.SIZE;
 
-			textureData[cosAngIndex] = (byte) (gaussianTerm * 255.0f);
-		}
-	}
+        @Override
+        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+            cameraSpaceLightPos.fillBuffer( buffer );
+            lightIntensity.fillBuffer( buffer );
 
+            return buffer;
+        }
+    }
 
-	private int calcCosAngResolution(int level) {
-		final int cosAngleStart = 64;
+    class LightBlock extends BufferableData<FloatBuffer> {
+        Vec4 ambientIntensity;
+        float lightAttenuation;
+        float padding[] = new float[3];
+        PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-		return cosAngleStart * (int) (Math.pow(2.0f, level));
-	}
+        static final int SIZE = Vec4.SIZE + ((1 + 3) * FLOAT_SIZE) + PerLight.SIZE * NUMBER_OF_LIGHTS;
 
+        @Override
+        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+            ambientIntensity.fillBuffer( buffer );
+            buffer.put( lightAttenuation );
+            buffer.put( padding );
 
+            for ( PerLight light : lights ) {
+                light.fillBuffer( buffer );
+            }
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+            return buffer;
+        }
+    }
 
-	private final int projectionBlockIndex = 2;
 
-	private int projectionUniformBuffer;
+    ////////////////////////////////
+    private final int materialBlockIndex = 0;
 
+    private int materialUniformBuffer;
 
-	private class ProjectionBlock extends BufferableData<FloatBuffer> {
-		Mat4 cameraToClipMatrix;
+    private class MaterialBlock extends BufferableData<FloatBuffer> {
+        Vec4 diffuseColor;
+        Vec4 specularColor;
+        float specularShininess;
+        float padding[] = new float[3];
 
-		static final int SIZE = Mat4.SIZE;
+        static final int SIZE = Vec4.SIZE + Vec4.SIZE + ((1 + 3) * FLOAT_SIZE);
 
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			return cameraToClipMatrix.fillBuffer(buffer);
-		}
-	}
+        @Override
+        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+            diffuseColor.fillBuffer( buffer );
+            specularColor.fillBuffer( buffer );
+            buffer.put( specularShininess );
+            buffer.put( padding );
 
-
-
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	private static final int NUMBER_OF_LIGHTS = 2;
-
-	private final int lightBlockIndex = 1;
-
-	private int lightUniformBuffer;
-
-
-	class PerLight extends BufferableData<FloatBuffer> {
-		Vec4 cameraSpaceLightPos;
-		Vec4 lightIntensity;
-
-		static final int SIZE = Vec4.SIZE + Vec4.SIZE;
-
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			cameraSpaceLightPos.fillBuffer(buffer);
-			lightIntensity.fillBuffer(buffer);
-
-			return buffer;
-		}
-	}
-
-
-	class LightBlock extends BufferableData<FloatBuffer> {
-		Vec4 ambientIntensity;
-		float lightAttenuation;
-		float padding[] = new float[3];
-		PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
-
-		static final int SIZE = Vec4.SIZE + ((1 + 3) * FLOAT_SIZE) + PerLight.SIZE * NUMBER_OF_LIGHTS;
-
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			ambientIntensity.fillBuffer(buffer);
-			buffer.put(lightAttenuation);
-			buffer.put(padding);
-
-			for (PerLight light : lights) {
-				light.fillBuffer(buffer);
-			}
-
-			return buffer;
-		}
-	}
-
-
-	private Vec4 calcLightPosition() {
-		final float scale = 3.14159f * 2.0f;
-
-		float timeThroughLoop = lightTimer.getAlpha();
-
-		Vec4 lightPos = new Vec4(0.0f, lightHeight, 0.0f, 1.0f);
-
-		lightPos.x = (float) (Math.cos(timeThroughLoop * scale) * lightRadius);
-		lightPos.z = (float) (Math.sin(timeThroughLoop * scale) * lightRadius);
-
-		return lightPos;
-	}
-
-
-
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	private final int materialBlockIndex = 0;
-
-	private int materialUniformBuffer;
-
-
-	private class MaterialBlock extends BufferableData<FloatBuffer> {
-		Vec4 diffuseColor;
-		Vec4 specularColor;
-		float specularShininess;
-		float padding[] = new float[3];
-
-		static final int SIZE = Vec4.SIZE + Vec4.SIZE + ((1 + 3) * FLOAT_SIZE);
-
-		@Override
-		public FloatBuffer fillBuffer(FloatBuffer buffer) {
-			diffuseColor.fillBuffer(buffer);
-			specularColor.fillBuffer(buffer);
-			buffer.put(specularShininess);
-			buffer.put(padding);
-
-			return buffer;
-		}
-	}
+            return buffer;
+        }
+    }
 }

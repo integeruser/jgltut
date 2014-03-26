@@ -6,6 +6,7 @@ import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -42,8 +43,8 @@ public class CpuPositionOffset extends LWJGLWindow {
 
     @Override
     protected void display() {
-        fXOffset = 0.0f;
-        fYOffset = 0.0f;
+        xOffset = 0.0f;
+        yOffset = 0.0f;
         computePositionOffsets();
         adjustVertexData();
 
@@ -53,7 +54,6 @@ public class CpuPositionOffset extends LWJGLWindow {
         glUseProgram( theProgram );
 
         glBindBuffer( GL_ARRAY_BUFFER, positionBufferObject );
-
         glEnableVertexAttribArray( 0 );
         glVertexAttribPointer( 0, 4, GL_FLOAT, false, 0, 0 );
 
@@ -78,7 +78,7 @@ public class CpuPositionOffset extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final float vertexPositions[] = {
+    private final float[] vertexPositions = {
             0.25f, 0.25f, 0.0f, 1.0f,
             0.25f, -0.25f, 0.0f, 1.0f,
             -0.25f, -0.25f, 0.0f, 1.0f
@@ -102,7 +102,7 @@ public class CpuPositionOffset extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private float fXOffset, fYOffset;
+    private float xOffset, yOffset;
 
 
     private void computePositionOffsets() {
@@ -113,17 +113,15 @@ public class CpuPositionOffset extends LWJGLWindow {
 
         float currTimeThroughLoop = elapsedTime % loopDuration;
 
-        fXOffset = (float) (Math.cos( currTimeThroughLoop * scale ) * 0.5f);
-        fYOffset = (float) (Math.sin( currTimeThroughLoop * scale ) * 0.5f);
+        xOffset = (float) (Math.cos( currTimeThroughLoop * scale ) * 0.5f);
+        yOffset = (float) (Math.sin( currTimeThroughLoop * scale ) * 0.5f);
     }
 
     private void adjustVertexData() {
-        float newData[] = new float[vertexPositions.length];
-        System.arraycopy( vertexPositions, 0, newData, 0, vertexPositions.length );
-
-        for ( int iVertex = 0; iVertex < vertexPositions.length; iVertex += 4 ) {
-            newData[iVertex] += fXOffset;
-            newData[iVertex + 1] += fYOffset;
+        float newData[] = Arrays.copyOf( vertexPositions, vertexPositions.length );
+        for ( int vertex = 0; vertex < vertexPositions.length; vertex += 4 ) {
+            newData[vertex] += xOffset;
+            newData[vertex + 1] += yOffset;
         }
 
         FloatBuffer newDataBuffer = BufferUtils.createFloatBuffer( newData.length );

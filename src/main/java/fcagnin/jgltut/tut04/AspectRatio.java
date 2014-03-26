@@ -53,7 +53,7 @@ public class AspectRatio extends LWJGLWindow {
 
         glUniform2f( offsetUniform, 1.5f, 0.5f );
 
-        int colorData = (vertexData.length * FLOAT_SIZE) / 2;
+        int colorData = (FLOAT_SIZE * vertexData.length) / 2;
         glBindBuffer( GL_ARRAY_BUFFER, vertexBufferObject );
         glEnableVertexAttribArray( 0 );
         glEnableVertexAttribArray( 1 );
@@ -111,8 +111,8 @@ public class AspectRatio extends LWJGLWindow {
         perspectiveMatrix[0] = frustumScale;
         perspectiveMatrix[5] = frustumScale;
         perspectiveMatrix[10] = (zFar + zNear) / (zNear - zFar);
-        perspectiveMatrix[11] = -1.0f;
         perspectiveMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
+        perspectiveMatrix[11] = -1.0f;
 
         FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer( perspectiveMatrix.length );
         perspectiveMatrixBuffer.put( perspectiveMatrix );
@@ -125,7 +125,7 @@ public class AspectRatio extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final float vertexData[] = {
+    private final float[] vertexData = {
             0.25f, 0.25f, -1.25f, 1.0f,
             0.25f, -0.25f, -1.25f, 1.0f,
             -0.25f, 0.25f, -1.25f, 1.0f,

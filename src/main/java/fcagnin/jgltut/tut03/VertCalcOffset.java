@@ -76,6 +76,7 @@ public class VertCalcOffset extends LWJGLWindow {
         elapsedTimeUniform = glGetUniformLocation( theProgram, "time" );
 
         int loopDurationUnf = glGetUniformLocation( theProgram, "loopDuration" );
+
         glUseProgram( theProgram );
         glUniform1f( loopDurationUnf, 5.0f );
         glUseProgram( 0 );
@@ -83,7 +84,7 @@ public class VertCalcOffset extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final float vertexPositions[] = {
+    private final float[] vertexPositions = {
             0.25f, 0.25f, 0.0f, 1.0f,
             0.25f, -0.25f, 0.0f, 1.0f,
             -0.25f, -0.25f, 0.0f, 1.0f

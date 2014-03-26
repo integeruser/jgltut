@@ -64,7 +64,7 @@ public class OverlapNoDepth extends LWJGLWindow {
 
     @Override
     protected void reshape(int width, int height) {
-        perspectiveMatrix[0] = frustumScale / (width / (float) height);
+        perspectiveMatrix[0] = frustumScale * (height / (float) width);
         perspectiveMatrix[5] = frustumScale;
 
         FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer( perspectiveMatrix.length );
@@ -97,7 +97,6 @@ public class OverlapNoDepth extends LWJGLWindow {
         theProgram = Framework.createProgram( shaderList );
 
         offsetUniform = glGetUniformLocation( theProgram, "offset" );
-
         perspectiveMatrixUnif = glGetUniformLocation( theProgram, "perspectiveMatrix" );
 
         float zNear = 1.0f;
@@ -107,8 +106,8 @@ public class OverlapNoDepth extends LWJGLWindow {
         perspectiveMatrix[0] = frustumScale;
         perspectiveMatrix[5] = frustumScale;
         perspectiveMatrix[10] = (zFar + zNear) / (zNear - zFar);
-        perspectiveMatrix[11] = -1.0f;
         perspectiveMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
+        perspectiveMatrix[11] = -1.0f;
 
         FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer( perspectiveMatrix.length );
         perspectiveMatrixBuffer.put( perspectiveMatrix );
@@ -181,49 +180,49 @@ public class OverlapNoDepth extends LWJGLWindow {
             BOTTOM_EXTENT, LEFT_EXTENT, REAR_EXTENT,
 
             // Object 1 colors
-            0.75f, 0.75f, 1.0f, 1.0f,                                                    // GREEN
+            0.75f, 0.75f, 1.0f, 1.0f,   // GREEN_COLOR
             0.75f, 0.75f, 1.0f, 1.0f,
             0.75f, 0.75f, 1.0f, 1.0f,
             0.75f, 0.75f, 1.0f, 1.0f,
 
-            0.0f, 0.5f, 0.0f, 1.0f,                                                    // BLUE
+            0.0f, 0.5f, 0.0f, 1.0f,     // BLUE_COLOR
             0.0f, 0.5f, 0.0f, 1.0f,
             0.0f, 0.5f, 0.0f, 1.0f,
             0.0f, 0.5f, 0.0f, 1.0f,
 
-            1.0f, 0.0f, 0.0f, 1.0f,                                                    // RED
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
             1.0f, 0.0f, 0.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 1.0f,
 
-            0.8f, 0.8f, 0.8f, 1.0f,                                                    // GREY
+            0.8f, 0.8f, 0.8f, 1.0f,     // GREY_COLOR
             0.8f, 0.8f, 0.8f, 1.0f,
             0.8f, 0.8f, 0.8f, 1.0f,
 
-            0.5f, 0.5f, 0.0f, 1.0f,                                                    // BROWN
+            0.5f, 0.5f, 0.0f, 1.0f,     // BROWN_COLOR
             0.5f, 0.5f, 0.0f, 1.0f,
             0.5f, 0.5f, 0.0f, 1.0f,
             0.5f, 0.5f, 0.0f, 1.0f,
 
             // Object 2 colors
-            1.0f, 0.0f, 0.0f, 1.0f,                                                        // RED
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
             1.0f, 0.0f, 0.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 1.0f,
 
-            0.5f, 0.5f, 0.0f, 1.0f,                                                    // BROWN
+            0.5f, 0.5f, 0.0f, 1.0f,     // BROWN_COLOR
             0.5f, 0.5f, 0.0f, 1.0f,
             0.5f, 0.5f, 0.0f, 1.0f,
             0.5f, 0.5f, 0.0f, 1.0f,
 
-            0.0f, 0.5f, 0.0f, 1.0f,                                                        // BLUE
+            0.0f, 0.5f, 0.0f, 1.0f,     // BLUE_COLOR
             0.0f, 0.5f, 0.0f, 1.0f,
             0.0f, 0.5f, 0.0f, 1.0f,
 
-            0.75f, 0.75f, 1.0f, 1.0f,                                                    // GREEN
+            0.75f, 0.75f, 1.0f, 1.0f,   // GREEN_COLOR
             0.75f, 0.75f, 1.0f, 1.0f,
             0.75f, 0.75f, 1.0f, 1.0f,
 
-            0.8f, 0.8f, 0.8f, 1.0f,                                                    // GREY
+            0.8f, 0.8f, 0.8f, 1.0f,     // GREY_COLOR
             0.8f, 0.8f, 0.8f, 1.0f,
             0.8f, 0.8f, 0.8f, 1.0f,
             0.8f, 0.8f, 0.8f, 1.0f
@@ -246,7 +245,8 @@ public class OverlapNoDepth extends LWJGLWindow {
     private int vertexBufferObject;
     private int indexBufferObject;
 
-    private int vaoObject1, vaoObject2;
+    private int vaoObject1;
+    private int vaoObject2;
 
 
     private void initializeVertexBuffer() {

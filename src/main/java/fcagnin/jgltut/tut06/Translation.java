@@ -105,7 +105,6 @@ public class Translation extends LWJGLWindow {
     private int cameraToClipMatrixUnif;
 
     private Mat4 cameraToClipMatrix = new Mat4( 0.0f );
-
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
 
     private final float frustumScale = calcFrustumScale( 45.0f );
@@ -127,8 +126,8 @@ public class Translation extends LWJGLWindow {
         cameraToClipMatrix.set( 0, 0, frustumScale );
         cameraToClipMatrix.set( 1, 1, frustumScale );
         cameraToClipMatrix.set( 2, 2, (zFar + zNear) / (zNear - zFar) );
-        cameraToClipMatrix.set( 2, 3, -1.0f );
         cameraToClipMatrix.set( 3, 2, (2 * zFar * zNear) / (zNear - zFar) );
+        cameraToClipMatrix.set( 2, 3, -1.0f );
 
         glUseProgram( theProgram );
         glUniformMatrix4( cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer( mat4Buffer ) );
@@ -138,9 +137,8 @@ public class Translation extends LWJGLWindow {
 
     private float calcFrustumScale(float fovDeg) {
         final float degToRad = 3.14159f * 2.0f / 360.0f;
-        float fFovRad = fovDeg * degToRad;
-
-        return 1.0f / (float) (Math.tan( fFovRad / 2.0f ));
+        float fovRad = fovDeg * degToRad;
+        return 1.0f / (float) (Math.tan( fovRad / 2.0f ));
     }
 
 
@@ -158,15 +156,15 @@ public class Translation extends LWJGLWindow {
             +1.0f, -1.0f, +1.0f,
             -1.0f, +1.0f, +1.0f,
 
-            0.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, 0.5f, 0.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 1.0f,     // GREEN_COLOR
+            0.0f, 0.0f, 1.0f, 1.0f,     // BLUE_COLOR
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
+            0.5f, 0.5f, 0.0f, 1.0f,     // BROWN_COLOR
 
-            0.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, 0.5f, 0.0f, 1.0f
+            0.0f, 1.0f, 0.0f, 1.0f,     // GREEN_COLOR
+            0.0f, 0.0f, 1.0f, 1.0f,     // BLUE_COLOR
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
+            0.5f, 0.5f, 0.0f, 1.0f      // BROWN_COLOR
     };
 
     private final short indexData[] = {
@@ -227,7 +225,6 @@ public class Translation extends LWJGLWindow {
     }
 
     private class StationaryOffset extends Instance {
-
         @Override
         Vec3 calcOffset(float elapsedTime) {
             return new Vec3( 0.0f, 0.0f, -20.0f );
@@ -235,7 +232,6 @@ public class Translation extends LWJGLWindow {
     }
 
     private class OvalOffset extends Instance {
-
         @Override
         Vec3 calcOffset(float elapsedTime) {
             final float loopDuration = 3.0f;
@@ -246,12 +242,12 @@ public class Translation extends LWJGLWindow {
             return new Vec3(
                     (float) (Math.cos( currTimeThroughLoop * scale ) * 4.f),
                     (float) (Math.sin( currTimeThroughLoop * scale ) * 6.f),
-                    -20.0f );
+                    -20.0f
+            );
         }
     }
 
     private class BottomCircleOffset extends Instance {
-
         @Override
         Vec3 calcOffset(float elapsedTime) {
             final float loopDuration = 12.0f;
@@ -262,7 +258,8 @@ public class Translation extends LWJGLWindow {
             return new Vec3(
                     (float) (Math.cos( currTimeThroughLoop * scale ) * 5.f),
                     -3.5f,
-                    (float) (Math.sin( currTimeThroughLoop * scale ) * 5.f - 20.f) );
+                    (float) (Math.sin( currTimeThroughLoop * scale ) * 5.f - 20.f)
+            );
         }
     }
 }

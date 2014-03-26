@@ -96,7 +96,6 @@ public class WorldWithUBO extends LWJGLWindow {
         // Render the ground plane.
         {
             modelMatrix.push();
-
             modelMatrix.scale( 100.0f, 1.0f, 100.0f );
 
             glUseProgram( uniformColor.theProgram );
@@ -108,13 +107,12 @@ public class WorldWithUBO extends LWJGLWindow {
             modelMatrix.pop();
         }
 
-        // Draw the trees
+        // Draw the trees.
         drawForest( modelMatrix );
 
         // Draw the building.
         {
             modelMatrix.push();
-
             modelMatrix.translate( 20.0f, 0.0f, -10.0f );
 
             drawParthenon( modelMatrix );
@@ -126,7 +124,6 @@ public class WorldWithUBO extends LWJGLWindow {
             glDisable( GL_DEPTH_TEST );
 
             modelMatrix.push();
-
             modelMatrix.translate( camTarget );
             modelMatrix.scale( 1.0f, 1.0f, 1.0f );
 
@@ -202,43 +199,43 @@ public class WorldWithUBO extends LWJGLWindow {
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_I ) ) {
             if ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) {
-                sphereCamRelPos.y = (float) (sphereCamRelPos.y - 1.125f * lastFrameDuration);
+                sphereCamRelPos.y = sphereCamRelPos.y - 1.125f * lastFrameDuration;
             } else {
-                sphereCamRelPos.y = (float) (sphereCamRelPos.y - 11.25f * lastFrameDuration);
+                sphereCamRelPos.y = sphereCamRelPos.y - 11.25f * lastFrameDuration;
             }
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_K ) ) {
             if ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) {
-                sphereCamRelPos.y = (float) (sphereCamRelPos.y + 1.125f * lastFrameDuration);
+                sphereCamRelPos.y = sphereCamRelPos.y + 1.125f * lastFrameDuration;
             } else {
-                sphereCamRelPos.y = (float) (sphereCamRelPos.y + 11.25f * lastFrameDuration);
+                sphereCamRelPos.y = sphereCamRelPos.y + 11.25f * lastFrameDuration;
             }
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_J ) ) {
             if ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) {
-                sphereCamRelPos.x = (float) (sphereCamRelPos.x - 1.125f * lastFrameDuration);
+                sphereCamRelPos.x = sphereCamRelPos.x - 1.125f * lastFrameDuration;
             } else {
-                sphereCamRelPos.x = (float) (sphereCamRelPos.x - 11.25f * lastFrameDuration);
+                sphereCamRelPos.x = sphereCamRelPos.x - 11.25f * lastFrameDuration;
             }
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_L ) ) {
             if ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) {
-                sphereCamRelPos.x = (float) (sphereCamRelPos.x + 1.125f * lastFrameDuration);
+                sphereCamRelPos.x = sphereCamRelPos.x + 1.125f * lastFrameDuration;
             } else {
-                sphereCamRelPos.x = (float) (sphereCamRelPos.x + 11.25f * lastFrameDuration);
+                sphereCamRelPos.x = sphereCamRelPos.x + 11.25f * lastFrameDuration;
             }
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_O ) ) {
             if ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) {
-                sphereCamRelPos.z = (float) (sphereCamRelPos.z - 0.5f * lastFrameDuration);
+                sphereCamRelPos.z = sphereCamRelPos.z - 0.5f * lastFrameDuration;
             } else {
-                sphereCamRelPos.z = (float) (sphereCamRelPos.z - 5.0f * lastFrameDuration);
+                sphereCamRelPos.z = sphereCamRelPos.z - 5.0f * lastFrameDuration;
             }
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_U ) ) {
             if ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) {
-                sphereCamRelPos.z = (float) (sphereCamRelPos.z + 0.5f * lastFrameDuration);
+                sphereCamRelPos.z = sphereCamRelPos.z + 0.5f * lastFrameDuration;
             } else {
-                sphereCamRelPos.z = (float) (sphereCamRelPos.z + 5.0f * lastFrameDuration);
+                sphereCamRelPos.z = sphereCamRelPos.z + 5.0f * lastFrameDuration;
             }
         }
 
@@ -285,7 +282,6 @@ public class WorldWithUBO extends LWJGLWindow {
 
     private final int globalMatricesBindingIndex = 0;
 
-
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
 
 
@@ -298,14 +294,13 @@ public class WorldWithUBO extends LWJGLWindow {
         glBindBuffer( GL_UNIFORM_BUFFER, globalMatricesUBO );
         glBufferData( GL_UNIFORM_BUFFER, Mat4.SIZE * 2, GL_STREAM_DRAW );
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
-        glBindBufferRange( GL_UNIFORM_BUFFER, globalMatricesBindingIndex, globalMatricesUBO,
-                0, Mat4.SIZE * 2 );
+        glBindBufferRange( GL_UNIFORM_BUFFER, globalMatricesBindingIndex, globalMatricesUBO,                0, Mat4.SIZE * 2 );
     }
 
-    private ProgramData loadProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private ProgramData loadProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         ProgramData data = new ProgramData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -343,7 +338,6 @@ public class WorldWithUBO extends LWJGLWindow {
         float sinPhi = (float) Math.sin( phi );
 
         Vec3 dirToCamera = new Vec3( sinTheta * cosPhi, cosTheta, sinTheta * sinPhi );
-
         return (dirToCamera.scale( sphereCamRelPos.z )).add( camTarget );
     }
 
@@ -494,20 +488,19 @@ public class WorldWithUBO extends LWJGLWindow {
     private void drawForest(MatrixStack modelMatrix) {
         for ( TreeData currTree : forest ) {
             modelMatrix.push();
-
             modelMatrix.translate( currTree.xPos, 0.0f, currTree.zPos );
+
             drawTree( modelMatrix, currTree.trunkHeight, currTree.coneHeight );
 
             modelMatrix.pop();
         }
     }
 
-    // Trees are 3x3 in X/Z, and fTrunkHeight + fConeHeight in the Y.
+    // Trees are 3x3 in X/Z, and trunkHeight + coneHeight in the Y.
     private void drawTree(MatrixStack modelMatrix, float trunkHeight, float coneHeight) {
         // Draw trunk.
         {
             modelMatrix.push();
-
             modelMatrix.scale( 1.0f, trunkHeight, 1.0f );
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
@@ -520,10 +513,9 @@ public class WorldWithUBO extends LWJGLWindow {
             modelMatrix.pop();
         }
 
-        // Draw the treetop
+        // Draw the treetop.
         {
             modelMatrix.push();
-
             modelMatrix.translate( 0.0f, trunkHeight, 0.0f );
             modelMatrix.scale( 3.0f, coneHeight, 3.0f );
 
@@ -542,12 +534,11 @@ public class WorldWithUBO extends LWJGLWindow {
     private final float columnBaseHeight = 0.25f;
 
 
-    // Columns are 1x1 in the X/Z, and fHieght units in the Y.
+    // Columns are 1x1 in the X/Z, and height units in the Y.
     private void drawColumn(MatrixStack modelMatrix, float height) {
         // Draw the bottom of the column.
         {
             modelMatrix.push();
-
             modelMatrix.scale( 1.0f, columnBaseHeight, 1.0f );
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
@@ -563,7 +554,6 @@ public class WorldWithUBO extends LWJGLWindow {
         // Draw the top of the column.
         {
             modelMatrix.push();
-
             modelMatrix.translate( 0.0f, height - columnBaseHeight, 0.0f );
             modelMatrix.scale( 1.0f, columnBaseHeight, 1.0f );
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
@@ -580,7 +570,6 @@ public class WorldWithUBO extends LWJGLWindow {
         // Draw the main column.
         {
             modelMatrix.push();
-
             modelMatrix.translate( 0.0f, columnBaseHeight, 0.0f );
             modelMatrix.scale( 0.8f, height - (columnBaseHeight * 2.0f), 0.8f );
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
@@ -603,17 +592,11 @@ public class WorldWithUBO extends LWJGLWindow {
     private final float parthenonBaseHeight = 1.0f;
     private final float parthenonTopHeight = 2.0f;
 
-    private final float frontZVal = (parthenonLength / 2.0f) - 1.0f;
-    private final float rightXVal = (parthenonWidth / 2.0f) - 1.0f;
-    private final int max1 = (int) (parthenonWidth / 2.0f);
-    private final int max2 = (int) ((parthenonLength - 2.0f) / 2.0f);
-
 
     private void drawParthenon(MatrixStack modelMatrix) {
         // Draw base.
         {
             modelMatrix.push();
-
             modelMatrix.scale( parthenonWidth, parthenonBaseHeight, parthenonLength );
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
@@ -629,7 +612,6 @@ public class WorldWithUBO extends LWJGLWindow {
         // Draw top.
         {
             modelMatrix.push();
-
             modelMatrix.translate( 0.0f, parthenonColumnHeight + parthenonBaseHeight, 0.0f );
             modelMatrix.scale( parthenonWidth, parthenonTopHeight, parthenonLength );
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
@@ -644,11 +626,12 @@ public class WorldWithUBO extends LWJGLWindow {
         }
 
         // Draw columns.
-        for ( int iColumnNum = 0; iColumnNum < max1; iColumnNum++ ) {
+        final float frontZVal = (parthenonLength / 2.0f) - 1.0f;
+        final float rightXVal = (parthenonWidth / 2.0f) - 1.0f;
+        for ( int columnNum = 0; columnNum < (int) (parthenonWidth / 2.0f); columnNum++ ) {
             {
                 modelMatrix.push();
-
-                modelMatrix.translate( (2.0f * iColumnNum) - (parthenonWidth / 2.0f) + 1.0f, parthenonBaseHeight, frontZVal );
+                modelMatrix.translate( (2.0f * columnNum) - (parthenonWidth / 2.0f) + 1.0f, parthenonBaseHeight, frontZVal );
 
                 drawColumn( modelMatrix, parthenonColumnHeight );
 
@@ -656,8 +639,7 @@ public class WorldWithUBO extends LWJGLWindow {
             }
             {
                 modelMatrix.push();
-
-                modelMatrix.translate( (2.0f * iColumnNum) - (parthenonWidth / 2.0f) + 1.0f, parthenonBaseHeight, -frontZVal );
+                modelMatrix.translate( (2.0f * columnNum) - (parthenonWidth / 2.0f) + 1.0f, parthenonBaseHeight, -frontZVal );
 
                 drawColumn( modelMatrix, parthenonColumnHeight );
 
@@ -666,11 +648,10 @@ public class WorldWithUBO extends LWJGLWindow {
         }
 
         // Don't draw the first or last columns, since they've been drawn already.
-        for ( int iColumnNum = 1; iColumnNum < max2; iColumnNum++ ) {
+        for ( int columnNum = 1; columnNum < (int) ((parthenonLength - 2.0f) / 2.0f); columnNum++ ) {
             {
                 modelMatrix.push();
-
-                modelMatrix.translate( rightXVal, parthenonBaseHeight, (2.0f * iColumnNum) - (parthenonLength / 2.0f) + 1.0f );
+                modelMatrix.translate( rightXVal, parthenonBaseHeight, (2.0f * columnNum) - (parthenonLength / 2.0f) + 1.0f );
 
                 drawColumn( modelMatrix, parthenonColumnHeight );
 
@@ -678,8 +659,7 @@ public class WorldWithUBO extends LWJGLWindow {
             }
             {
                 modelMatrix.push();
-
-                modelMatrix.translate( -rightXVal, parthenonBaseHeight, (2.0f * iColumnNum) - (parthenonLength / 2.0f) + 1.0f );
+                modelMatrix.translate( -rightXVal, parthenonBaseHeight, (2.0f * columnNum) - (parthenonLength / 2.0f) + 1.0f );
 
                 drawColumn( modelMatrix, parthenonColumnHeight );
 
@@ -690,7 +670,6 @@ public class WorldWithUBO extends LWJGLWindow {
         // Draw interior.
         {
             modelMatrix.push();
-
             modelMatrix.translate( 0.0f, 1.0f, 0.0f );
             modelMatrix.scale( parthenonWidth - 6.0f, parthenonColumnHeight, parthenonLength - 6.0f );
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
@@ -706,7 +685,6 @@ public class WorldWithUBO extends LWJGLWindow {
         // Draw headpiece.
         {
             modelMatrix.push();
-
             modelMatrix.translate( 0.0f, parthenonColumnHeight + parthenonBaseHeight + (parthenonTopHeight / 2.0f),
                     parthenonLength / 2.0f );
             modelMatrix.rotateX( -135.0f );

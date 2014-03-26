@@ -86,7 +86,7 @@ public class FragChangeColor extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final float vertexPositions[] = {
+    private final float[] vertexPositions = {
             0.25f, 0.25f, 0.0f, 1.0f,
             0.25f, -0.25f, 0.0f, 1.0f,
             -0.25f, -0.25f, 0.0f, 1.0f

@@ -88,7 +88,7 @@ public class Scale extends LWJGLWindow {
 
     @Override
     protected void reshape(int width, int height) {
-        cameraToClipMatrix.set( 0, 0, frustumScale / (width / (float) height) );
+        cameraToClipMatrix.set( 0, 0, frustumScale * (height / (float) width) );
         cameraToClipMatrix.set( 1, 1, frustumScale );
 
         glUseProgram( theProgram );
@@ -101,11 +101,11 @@ public class Scale extends LWJGLWindow {
 
     ////////////////////////////////
     private int theProgram;
+
     private int modelToCameraMatrixUnif;
     private int cameraToClipMatrixUnif;
 
     private Mat4 cameraToClipMatrix = new Mat4( 0.0f );
-
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
 
     private final float frustumScale = calcFrustumScale( 45.0f );
@@ -139,7 +139,6 @@ public class Scale extends LWJGLWindow {
     private float calcFrustumScale(float fovDeg) {
         final float degToRad = 3.14159f * 2.0f / 360.0f;
         float fovRad = fovDeg * degToRad;
-
         return 1.0f / (float) (Math.tan( fovRad / 2.0f ));
     }
 
@@ -158,15 +157,15 @@ public class Scale extends LWJGLWindow {
             +1.0f, -1.0f, +1.0f,
             -1.0f, +1.0f, +1.0f,
 
-            0.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, 0.5f, 0.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 1.0f,     // GREEN_COLOR
+            0.0f, 0.0f, 1.0f, 1.0f,     // BLUE_COLOR
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
+            0.5f, 0.5f, 0.0f, 1.0f,     // BROWN_COLOR
 
-            0.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, 0.5f, 0.0f, 1.0f
+            0.0f, 1.0f, 0.0f, 1.0f,     // GREEN_COLOR
+            0.0f, 0.0f, 1.0f, 1.0f,     // BLUE_COLOR
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
+            0.5f, 0.5f, 0.0f, 1.0f      // BROWN_COLOR
     };
 
     private final short indexData[] = {
@@ -218,8 +217,11 @@ public class Scale extends LWJGLWindow {
     };
 
     private abstract class Instance {
-        Vec3 offset;
+        private Vec3 offset;
 
+        Instance(Vec3 offset) {
+            this.offset = offset;
+        }
 
         abstract Vec3 calcScale(float elapsedTime);
 
@@ -231,15 +233,13 @@ public class Scale extends LWJGLWindow {
             theMat.set( 1, 1, theScale.y );
             theMat.set( 2, 2, theScale.z );
             theMat.setColumn( 3, new Vec4( offset, 1.0f ) );
-
             return theMat;
         }
     }
 
     private class NullScale extends Instance {
-
-        NullScale(Vec3 vec) {
-            offset = new Vec3( vec );
+        NullScale(Vec3 offset) {
+            super( offset );
         }
 
         @Override
@@ -249,9 +249,8 @@ public class Scale extends LWJGLWindow {
     }
 
     private class StaticUniformScale extends Instance {
-
-        StaticUniformScale(Vec3 vec) {
-            offset = new Vec3( vec );
+        StaticUniformScale(Vec3 offset) {
+            super( offset );
         }
 
         @Override
@@ -261,9 +260,8 @@ public class Scale extends LWJGLWindow {
     }
 
     private class StaticNonUniformScale extends Instance {
-
-        StaticNonUniformScale(Vec3 vec) {
-            offset = new Vec3( vec );
+        StaticNonUniformScale(Vec3 offset) {
+            super( offset );
         }
 
         @Override
@@ -273,44 +271,38 @@ public class Scale extends LWJGLWindow {
     }
 
     private class DynamicUniformScale extends Instance {
-        final float loopDuration = 3.0f;
-
-
-        DynamicUniformScale(Vec3 vec) {
-            offset = new Vec3( vec );
+        DynamicUniformScale(Vec3 offset) {
+            super( offset );
         }
 
         @Override
         Vec3 calcScale(float elapsedTime) {
+            final float loopDuration = 3.0f;
             return new Vec3( Glm.mix( 1.0f, 4.0f, calcLerpFactor( elapsedTime, loopDuration ) ) );
         }
     }
 
     private class DynamicNonUniformScale extends Instance {
-        final float xLoopDuration = 3.0f;
-        final float zLoopDuration = 5.0f;
-
-
-        DynamicNonUniformScale(Vec3 vec) {
-            offset = new Vec3( vec );
+        DynamicNonUniformScale(Vec3 offset) {
+            super( offset );
         }
 
         @Override
         Vec3 calcScale(float elapsedTime) {
+            final float xLoopDuration = 3.0f;
+            final float zLoopDuration = 5.0f;
             return new Vec3(
                     Glm.mix( 1.0f, 0.5f, calcLerpFactor( elapsedTime, xLoopDuration ) ),
                     1.0f,
-                    Glm.mix( 1.0f, 10.0f, calcLerpFactor( elapsedTime, zLoopDuration ) ) );
+                    Glm.mix( 1.0f, 10.0f, calcLerpFactor( elapsedTime, zLoopDuration ) )
+            );
         }
     }
 
 
     private float calcLerpFactor(float elapsedTime, float loopDuration) {
         float value = (elapsedTime % loopDuration) / loopDuration;
-        if ( value > 0.5f ) {
-            value = 1.0f - value;
-        }
-
+        if ( value > 0.5f ) { value = 1.0f - value; }
         return value * 2.0f;
     }
 }

@@ -77,7 +77,7 @@ public class BaseVertexOverlap extends LWJGLWindow {
 
     @Override
     protected void reshape(int width, int height) {
-        perspectiveMatrix[0] = frustumScale / (width / (float) height);
+        perspectiveMatrix[0] = frustumScale * (height / (float) width);
         perspectiveMatrix[5] = frustumScale;
 
         FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer( perspectiveMatrix.length );
@@ -110,7 +110,6 @@ public class BaseVertexOverlap extends LWJGLWindow {
         theProgram = Framework.createProgram( shaderList );
 
         offsetUniform = glGetUniformLocation( theProgram, "offset" );
-
         perspectiveMatrixUnif = glGetUniformLocation( theProgram, "perspectiveMatrix" );
 
         float zNear = 1.0f;
@@ -120,8 +119,8 @@ public class BaseVertexOverlap extends LWJGLWindow {
         perspectiveMatrix[0] = frustumScale;
         perspectiveMatrix[5] = frustumScale;
         perspectiveMatrix[10] = (zFar + zNear) / (zNear - zFar);
-        perspectiveMatrix[11] = -1.0f;
         perspectiveMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
+        perspectiveMatrix[11] = -1.0f;
 
         FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer( perspectiveMatrix.length );
         perspectiveMatrixBuffer.put( perspectiveMatrix );
@@ -169,6 +168,9 @@ public class BaseVertexOverlap extends LWJGLWindow {
             RIGHT_EXTENT, TOP_EXTENT, REAR_EXTENT,
             RIGHT_EXTENT, BOTTOM_EXTENT, REAR_EXTENT,
 
+            //  0, 2, 1,
+            //  3, 2, 0,
+
             // Object 2 positions
             TOP_EXTENT, RIGHT_EXTENT, REAR_EXTENT,
             MIDDLE_EXTENT, RIGHT_EXTENT, FRONT_EXTENT,
@@ -194,49 +196,49 @@ public class BaseVertexOverlap extends LWJGLWindow {
             BOTTOM_EXTENT, LEFT_EXTENT, REAR_EXTENT,
 
             // Object 1 colors
-            0.75f, 0.75f, 1.0f, 1.0f,                                                    // GREEN
+            0.75f, 0.75f, 1.0f, 1.0f,   // GREEN_COLOR
             0.75f, 0.75f, 1.0f, 1.0f,
             0.75f, 0.75f, 1.0f, 1.0f,
             0.75f, 0.75f, 1.0f, 1.0f,
 
-            0.0f, 0.5f, 0.0f, 1.0f,                                                    // BLUE
+            0.0f, 0.5f, 0.0f, 1.0f,     // BLUE_COLOR
             0.0f, 0.5f, 0.0f, 1.0f,
             0.0f, 0.5f, 0.0f, 1.0f,
             0.0f, 0.5f, 0.0f, 1.0f,
 
-            1.0f, 0.0f, 0.0f, 1.0f,                                                    // RED
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
             1.0f, 0.0f, 0.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 1.0f,
 
-            0.8f, 0.8f, 0.8f, 1.0f,                                                    // GREY
+            0.8f, 0.8f, 0.8f, 1.0f,     // GREY_COLOR
             0.8f, 0.8f, 0.8f, 1.0f,
             0.8f, 0.8f, 0.8f, 1.0f,
 
-            0.5f, 0.5f, 0.0f, 1.0f,                                                    // BROWN
+            0.5f, 0.5f, 0.0f, 1.0f,     // BROWN_COLOR
             0.5f, 0.5f, 0.0f, 1.0f,
             0.5f, 0.5f, 0.0f, 1.0f,
             0.5f, 0.5f, 0.0f, 1.0f,
 
             // Object 2 colors
-            1.0f, 0.0f, 0.0f, 1.0f,                                                        // RED
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
             1.0f, 0.0f, 0.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 1.0f,
 
-            0.5f, 0.5f, 0.0f, 1.0f,                                                    // BROWN
+            0.5f, 0.5f, 0.0f, 1.0f,     // BROWN_COLOR
             0.5f, 0.5f, 0.0f, 1.0f,
             0.5f, 0.5f, 0.0f, 1.0f,
             0.5f, 0.5f, 0.0f, 1.0f,
 
-            0.0f, 0.5f, 0.0f, 1.0f,                                                        // BLUE
+            0.0f, 0.5f, 0.0f, 1.0f,     // BLUE_COLOR
             0.0f, 0.5f, 0.0f, 1.0f,
             0.0f, 0.5f, 0.0f, 1.0f,
 
-            0.75f, 0.75f, 1.0f, 1.0f,                                                    // GREEN
+            0.75f, 0.75f, 1.0f, 1.0f,   // GREEN_COLOR
             0.75f, 0.75f, 1.0f, 1.0f,
             0.75f, 0.75f, 1.0f, 1.0f,
 
-            0.8f, 0.8f, 0.8f, 1.0f,                                                    // GREY
+            0.8f, 0.8f, 0.8f, 1.0f,     // GREY_COLOR
             0.8f, 0.8f, 0.8f, 1.0f,
             0.8f, 0.8f, 0.8f, 1.0f,
             0.8f, 0.8f, 0.8f, 1.0f

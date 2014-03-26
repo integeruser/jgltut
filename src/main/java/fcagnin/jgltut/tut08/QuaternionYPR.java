@@ -72,8 +72,10 @@ public class QuaternionYPR extends LWJGLWindow {
         currMatrix.applyMatrix( Glm.matCast( orientation ) );
 
         glUseProgram( theProgram );
+
         currMatrix.scale( 3.0f, 3.0f, 3.0f );
         currMatrix.rotateX( -90.0f );
+
         // Set the base color for this object.
         glUniform4f( baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f );
         glUniformMatrix4( modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
@@ -85,7 +87,7 @@ public class QuaternionYPR extends LWJGLWindow {
 
     @Override
     protected void reshape(int width, int height) {
-        cameraToClipMatrix.set( 0, 0, frustumScale / (width / (float) height) );
+        cameraToClipMatrix.set( 0, 0, frustumScale * (height / (float) width) );
         cameraToClipMatrix.set( 1, 1, frustumScale );
 
         glUseProgram( theProgram );
@@ -97,6 +99,7 @@ public class QuaternionYPR extends LWJGLWindow {
 
     @Override
     protected void update() {
+        final float SMALL_ANGLE_INCREMENT = 9.0f;
         float lastFrameDuration = getLastFrameDuration() * 10 / 1000.0f;
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_W ) ) {
@@ -143,7 +146,6 @@ public class QuaternionYPR extends LWJGLWindow {
     private int baseColorUnif;
 
     private Mat4 cameraToClipMatrix = new Mat4( 0.0f );
-
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
 
     private final float frustumScale = calcFrustumScale( 20.0f );
@@ -175,27 +177,25 @@ public class QuaternionYPR extends LWJGLWindow {
     }
 
 
-    private float calcFrustumScale(float fFovDeg) {
+    private float calcFrustumScale(float fovDeg) {
         final float degToRad = 3.14159f * 2.0f / 360.0f;
-        float fovRad = fFovDeg * degToRad;
-
+        float fovRad = fovDeg * degToRad;
         return (float) (1.0f / Math.tan( fovRad / 2.0f ));
     }
 
 
     ////////////////////////////////
-    private final float SMALL_ANGLE_INCREMENT = 9.0f;
-
     private Mesh ship;
+
     private Quaternion orientation = new Quaternion( 1.0f, 0.0f, 0.0f, 0.0f );
 
     private boolean rightMultiply = true;
 
 
-    private void offsetOrientation(Vec3 _axis, float angDeg) {
+    private void offsetOrientation(Vec3 axis, float angDeg) {
         float angRad = Framework.degToRad( angDeg );
 
-        Vec3 axis = Glm.normalize( _axis );
+        axis = Glm.normalize( axis );
         axis = Vec3.scale( axis, (float) Math.sin( angRad / 2.0f ) );
 
         float scalar = (float) Math.cos( angRad / 2.0f );

@@ -77,7 +77,6 @@ public class CameraRelative extends LWJGLWindow {
 
         {
             currMatrix.push();
-
             currMatrix.scale( 100.0f, 1.0f, 100.0f );
 
             glUniform4f( baseColorUnif, 0.2f, 0.5f, 0.2f, 1.0f );
@@ -90,7 +89,6 @@ public class CameraRelative extends LWJGLWindow {
 
         {
             currMatrix.push();
-
             currMatrix.translate( camTarget );
             currMatrix.applyMatrix( Glm.matCast( orientation ) );
             currMatrix.rotateX( -90.0f );
@@ -109,7 +107,7 @@ public class CameraRelative extends LWJGLWindow {
 
     @Override
     protected void reshape(int width, int height) {
-        cameraToClipMatrix.set( 0, 0, frustumScale / (width / (float) height) );
+        cameraToClipMatrix.set( 0, 0, frustumScale * (height / (float) width) );
         cameraToClipMatrix.set( 1, 1, frustumScale );
 
         glUseProgram( theProgram );
@@ -121,6 +119,7 @@ public class CameraRelative extends LWJGLWindow {
 
     @Override
     protected void update() {
+        final float SMALL_ANGLE_INCREMENT = 9.0f;
         float lastFrameDuration = getLastFrameDuration() * 10 / 1000.0f;
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_W ) ) {
@@ -175,13 +174,9 @@ public class CameraRelative extends LWJGLWindow {
             if ( Keyboard.getEventKeyState() ) {
                 switch ( Keyboard.getEventKey() ) {
                     case Keyboard.KEY_SPACE:
-                        int ordinal = iOffset.ordinal();
-                        ordinal += 1;
-                        ordinal = ordinal % OffsetRelative.NUM_RELATIVES.ordinal();
-
-                        iOffset = OffsetRelative.values()[ordinal];
-
-                        switch ( iOffset ) {
+                        int ordinal = (offsetRelative.ordinal() + 1) % OffsetRelative.NUM_RELATIVES.ordinal();
+                        offsetRelative = OffsetRelative.values()[ordinal];
+                        switch ( offsetRelative ) {
                             case MODEL_RELATIVE:
                                 System.out.printf( "Model Relative\n" );
                                 break;
@@ -192,9 +187,6 @@ public class CameraRelative extends LWJGLWindow {
 
                             case CAMERA_RELATIVE:
                                 System.out.printf( "Camera Relative\n" );
-                                break;
-
-                            default:
                                 break;
                         }
 
@@ -220,7 +212,6 @@ public class CameraRelative extends LWJGLWindow {
     private int baseColorUnif;
 
     private Mat4 cameraToClipMatrix = new Mat4( 0.0f );
-
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
 
     private final float frustumScale = calcFrustumScale( 20.0f );
@@ -255,20 +246,17 @@ public class CameraRelative extends LWJGLWindow {
     private float calcFrustumScale(float fovDeg) {
         final float degToRad = 3.14159f * 2.0f / 360.0f;
         float fovRad = fovDeg * degToRad;
-
         return (float) (1.0f / Math.tan( fovRad / 2.0f ));
     }
 
 
     ////////////////////////////////
-    private final float SMALL_ANGLE_INCREMENT = 9.0f;
-
     private Mesh ship;
     private Mesh plane;
 
     private Vec3 camTarget = new Vec3( 0.0f, 10.0f, 0.0f );
     private Quaternion orientation = new Quaternion( 1.0f, 0.0f, 0.0f, 0.0f );
-    private OffsetRelative iOffset = OffsetRelative.MODEL_RELATIVE;
+    private OffsetRelative offsetRelative = OffsetRelative.MODEL_RELATIVE;
 
     // In spherical coordinates.
     private Vec3 sphereCamRelPos = new Vec3( 90.0f, 0.0f, 66.0f );
@@ -282,17 +270,17 @@ public class CameraRelative extends LWJGLWindow {
     }
 
 
-    private void offsetOrientation(Vec3 _axis, float angDeg) {
-        float fAngRad = Framework.degToRad( angDeg );
+    private void offsetOrientation(Vec3 axis, float angDeg) {
+        float angRad = Framework.degToRad( angDeg );
 
-        Vec3 axis = Glm.normalize( _axis );
-        axis.scale( (float) Math.sin( fAngRad / 2.0f ) );
+        axis = Glm.normalize( axis );
+        axis.scale( (float) Math.sin( angRad / 2.0f ) );
 
-        float scalar = (float) Math.cos( fAngRad / 2.0f );
+        float scalar = (float) Math.cos( angRad / 2.0f );
 
         Quaternion offset = new Quaternion( scalar, axis.x, axis.y, axis.z );
 
-        switch ( iOffset ) {
+        switch ( offsetRelative ) {
             case MODEL_RELATIVE:
                 orientation = Quaternion.mul( orientation, offset );
                 break;
@@ -311,9 +299,6 @@ public class CameraRelative extends LWJGLWindow {
                 final Quaternion worldQuat = invViewQuat.mul( offset.mul( viewQuat ) );
                 orientation = Quaternion.mul( worldQuat, orientation );
                 break;
-
-            default:
-                break;
         }
 
         orientation = Glm.normalize( orientation );
@@ -329,7 +314,6 @@ public class CameraRelative extends LWJGLWindow {
         float sinPhi = (float) Math.sin( phi );
 
         Vec3 dirToCamera = new Vec3( sinTheta * cosPhi, cosTheta, sinTheta * sinPhi );
-
         return (dirToCamera.scale( sphereCamRelPos.z )).add( camTarget );
     }
 

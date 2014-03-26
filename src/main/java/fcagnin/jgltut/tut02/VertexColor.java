@@ -48,7 +48,6 @@ public class VertexColor extends LWJGLWindow {
         glUseProgram( theProgram );
 
         glBindBuffer( GL_ARRAY_BUFFER, vertexBufferObject );
-
         glEnableVertexAttribArray( 0 );
         glEnableVertexAttribArray( 1 );
         glVertexAttribPointer( 0, 4, GL_FLOAT, false, 0, 0 );
@@ -76,7 +75,7 @@ public class VertexColor extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final float vertexData[] = {
+    private final float[] vertexData = {
             0.0f, 0.5f, 0.0f, 1.0f,
             0.5f, -0.366f, 0.0f, 1.0f,
             -0.5f, -0.366f, 0.0f, 1.0f,

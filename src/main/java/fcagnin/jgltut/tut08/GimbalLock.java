@@ -44,7 +44,7 @@ public class GimbalLock extends LWJGLWindow {
 
         try {
             for ( int gimbalIndex = 0; gimbalIndex < 3; gimbalIndex++ ) {
-                gimbals[gimbalIndex] = new Mesh( strGimbalNames[gimbalIndex] );
+                gimbals[gimbalIndex] = new Mesh( gimbalNames[gimbalIndex] );
             }
 
             object = new Mesh( "Ship.xml" );
@@ -71,16 +71,18 @@ public class GimbalLock extends LWJGLWindow {
 
         MatrixStack currMatrix = new MatrixStack();
         currMatrix.translate( 0.0f, 0.0f, -200.0f );
-        currMatrix.rotateX( angles.angleX );
+        currMatrix.rotateX( gimbalAngles.angleX );
         drawGimbal( currMatrix, GimbalAxis.X_AXIS, new Vec4( 0.4f, 0.4f, 1.0f, 1.0f ) );
-        currMatrix.rotateY( angles.angleY );
+        currMatrix.rotateY( gimbalAngles.angleY );
         drawGimbal( currMatrix, GimbalAxis.Y_AXIS, new Vec4( 0.0f, 1.0f, 0.0f, 1.0f ) );
-        currMatrix.rotateZ( angles.angleZ );
+        currMatrix.rotateZ( gimbalAngles.angleZ );
         drawGimbal( currMatrix, GimbalAxis.Z_AXIS, new Vec4( 1.0f, 0.3f, 0.3f, 1.0f ) );
 
         glUseProgram( theProgram );
+
         currMatrix.scale( 3.0f, 3.0f, 3.0f );
         currMatrix.rotateX( -90.0f );
+
         // Set the base color for this object.
         glUniform4f( baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f );
         glUniformMatrix4( modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
@@ -92,7 +94,7 @@ public class GimbalLock extends LWJGLWindow {
 
     @Override
     protected void reshape(int width, int height) {
-        cameraToClipMatrix.set( 0, 0, frustumScale / (width / (float) height) );
+        cameraToClipMatrix.set( 0, 0, frustumScale * (height / (float) width) );
         cameraToClipMatrix.set( 1, 1, frustumScale );
 
         glUseProgram( theProgram );
@@ -104,24 +106,25 @@ public class GimbalLock extends LWJGLWindow {
 
     @Override
     protected void update() {
+        final float SMALL_ANGLE_INCREMENT = 9.0f;
         float lastFrameDuration = getLastFrameDuration() * 10 / 1000.0f;
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_W ) ) {
-            angles.angleX += SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            gimbalAngles.angleX += SMALL_ANGLE_INCREMENT * lastFrameDuration;
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_S ) ) {
-            angles.angleX -= SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            gimbalAngles.angleX -= SMALL_ANGLE_INCREMENT * lastFrameDuration;
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_A ) ) {
-            angles.angleY += SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            gimbalAngles.angleY += SMALL_ANGLE_INCREMENT * lastFrameDuration;
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_D ) ) {
-            angles.angleY -= SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            gimbalAngles.angleY -= SMALL_ANGLE_INCREMENT * lastFrameDuration;
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_Q ) ) {
-            angles.angleZ += SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            gimbalAngles.angleZ += SMALL_ANGLE_INCREMENT * lastFrameDuration;
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_E ) ) {
-            angles.angleZ -= SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            gimbalAngles.angleZ -= SMALL_ANGLE_INCREMENT * lastFrameDuration;
         }
 
 
@@ -149,7 +152,6 @@ public class GimbalLock extends LWJGLWindow {
     private int baseColorUnif;
 
     private Mat4 cameraToClipMatrix = new Mat4( 0.0f );
-
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
 
     private final float frustumScale = calcFrustumScale( 20.0f );
@@ -181,27 +183,23 @@ public class GimbalLock extends LWJGLWindow {
     }
 
 
-    private float calcFrustumScale(float fFovDeg) {
+    private float calcFrustumScale(float fovDeg) {
         final float degToRad = 3.14159f * 2.0f / 360.0f;
-        float fovRad = fFovDeg * degToRad;
-
+        float fovRad = fovDeg * degToRad;
         return (float) (1.0f / Math.tan( fovRad / 2.0f ));
     }
 
 
     ////////////////////////////////
-    private final float SMALL_ANGLE_INCREMENT = 9.0f;
+    private Mesh object;
 
-    private final String strGimbalNames[] = {
+    private Mesh gimbals[] = new Mesh[3];
+    private final String gimbalNames[] = {
             "LargeGimbal.xml",
             "MediumGimbal.xml",
             "SmallGimbal.xml"
     };
-
-    private GimbalAngles angles = new GimbalAngles();
-
-    private Mesh gimbals[] = new Mesh[3];
-    private Mesh object;
+    private GimbalAngles gimbalAngles = new GimbalAngles();
 
     private boolean drawGimbals = true;
 
@@ -219,21 +217,17 @@ public class GimbalLock extends LWJGLWindow {
 
 
     private void drawGimbal(MatrixStack currMatrix, GimbalAxis axis, Vec4 baseColor) {
-        if ( !drawGimbals ) {
-            return;
-        }
+        if ( !drawGimbals ) { return; }
 
         currMatrix.push();
 
         switch ( axis ) {
             case X_AXIS:
                 break;
-
             case Y_AXIS:
                 currMatrix.rotateZ( 90.0f );
                 currMatrix.rotateX( 90.0f );
                 break;
-
             case Z_AXIS:
                 currMatrix.rotateY( 90.0f );
                 currMatrix.rotateX( 90.0f );
@@ -241,6 +235,7 @@ public class GimbalLock extends LWJGLWindow {
         }
 
         glUseProgram( theProgram );
+
         // Set the base color for this object.
         glUniform4f( baseColorUnif, baseColor.x, baseColor.y, baseColor.z, baseColor.w );
         glUniformMatrix4( modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer( mat4Buffer ) );

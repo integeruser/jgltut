@@ -73,9 +73,11 @@ public class Interpolation extends LWJGLWindow {
         currMatrix.applyMatrix( Glm.matCast( orient.getOrient() ) );
 
         glUseProgram( theProgram );
+
         currMatrix.scale( 3.0f, 3.0f, 3.0f );
         currMatrix.rotateX( -90.0f );
-        //Set the base color for this object.
+
+        // Set the base color for this object.
         glUniform4f( baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f );
         glUniformMatrix4( modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
@@ -86,7 +88,7 @@ public class Interpolation extends LWJGLWindow {
 
     @Override
     protected void reshape(int width, int height) {
-        cameraToClipMatrix.set( 0, 0, frustumScale / (width / (float) height) );
+        cameraToClipMatrix.set( 0, 0, frustumScale * (height / (float) width) );
         cameraToClipMatrix.set( 1, 1, frustumScale );
 
         glUseProgram( theProgram );
@@ -100,19 +102,22 @@ public class Interpolation extends LWJGLWindow {
     protected void update() {
         while ( Keyboard.next() ) {
             if ( Keyboard.getEventKeyState() ) {
-                if ( Keyboard.isKeyDown( Keyboard.KEY_ESCAPE ) ) {
-                    leaveMainLoop();
-                } else if ( Keyboard.getEventKey() == Keyboard.KEY_SPACE ) {
-                    boolean slerp = orient.toggleSlerp();
-                    System.out.printf( slerp ? "Slerp\n" : "Lerp\n" );
-
-                } else {
-                    for ( int iOrient = 0; iOrient < orientKeys.length; iOrient++ ) {
-                        if ( Keyboard.getEventKey() == orientKeys[iOrient] ) {
-                            applyOrientation( iOrient );
-                            break;
-                        }
+                for ( int orientIndex = 0; orientIndex < orientKeys.length; orientIndex++ ) {
+                    if ( Keyboard.getEventKey() == orientKeys[orientIndex] ) {
+                        applyOrientation( orientIndex );
+                        break;
                     }
+                }
+
+                switch ( Keyboard.getEventKey() ) {
+                    case Keyboard.KEY_SPACE:
+                        boolean slerp = orient.toggleSlerp();
+                        System.out.printf( slerp ? "Slerp\n" : "Lerp\n" );
+                        break;
+
+                    case Keyboard.KEY_ESCAPE:
+                        leaveMainLoop();
+                        break;
                 }
             }
         }
@@ -127,7 +132,6 @@ public class Interpolation extends LWJGLWindow {
     private int baseColorUnif;
 
     private Mat4 cameraToClipMatrix = new Mat4( 0.0f );
-
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
 
     private final float frustumScale = calcFrustumScale( 20.0f );
@@ -162,7 +166,6 @@ public class Interpolation extends LWJGLWindow {
     private float calcFrustumScale(float fovDeg) {
         final float degToRad = 3.14159f * 2.0f / 360.0f;
         float fovRad = fovDeg * degToRad;
-
         return (float) (1.0f / Math.tan( fovRad / 2.0f ));
     }
 
@@ -195,53 +198,74 @@ public class Interpolation extends LWJGLWindow {
     private Orientation orient = new Orientation();
 
     private class Orientation {
-        private boolean animating;
-        private boolean slerp;
-        private int currOrientIndex;
+        boolean isAnimating;
+        boolean slerp;
+        int currOrientIndex;
 
-        private Animation anim = new Animation();
+        Animation anim = new Animation();
+
+        class Animation {
+            int finalOrientIndex;
+            Timer currTimer;
+
+
+            boolean updateTime() {
+                return currTimer.update( getElapsedTime() );
+            }
+
+            void startAnimation(int destinationIndex, float duration) {
+                finalOrientIndex = destinationIndex;
+                currTimer = new Timer( Timer.Type.SINGLE, duration );
+            }
+
+
+            Quaternion getOrient(Quaternion initial, boolean slerp) {
+                if ( slerp ) {
+                    return slerp( initial, orients[finalOrientIndex], currTimer.getAlpha() );
+                } else {
+                    return lerp( initial, orients[finalOrientIndex], currTimer.getAlpha() );
+                }
+            }
+
+            int getFinalIndex() {
+                return finalOrientIndex;
+            }
+        }
 
 
         void updateTime() {
-            if ( animating ) {
-                boolean finished = anim.updateTime();
-
-                if ( finished ) {
-                    animating = false;
+            if ( isAnimating ) {
+                boolean isFinished = anim.updateTime();
+                if ( isFinished ) {
+                    isAnimating = false;
                     currOrientIndex = anim.getFinalIndex();
                 }
             }
         }
 
-
         void animateToOrient(int destinationIndex) {
-            if ( currOrientIndex == destinationIndex ) {
-                return;
-            }
+            if ( currOrientIndex == destinationIndex ) { return; }
 
             anim.startAnimation( destinationIndex, 1.0f );
-            animating = true;
+            isAnimating = true;
         }
 
 
         boolean toggleSlerp() {
             slerp = !slerp;
-
             return slerp;
         }
 
-
-        boolean isAnimating() {
-            return animating;
-        }
-
-
         Quaternion getOrient() {
-            if ( animating ) {
+            if ( isAnimating ) {
                 return anim.getOrient( orients[currOrientIndex], slerp );
             } else {
                 return orients[currOrientIndex];
             }
+        }
+
+        boolean isAnimating() {
+            return isAnimating;
         }
     }
 
@@ -249,37 +273,6 @@ public class Interpolation extends LWJGLWindow {
     private void applyOrientation(int orientationIndex) {
         if ( !orient.isAnimating() ) {
             orient.animateToOrient( orientationIndex );
-        }
-    }
-
-
-    ////////////////////////////////
-    private class Animation {
-        int finalOrientIndex;
-        Timer currTimer;
-
-
-        boolean updateTime() {
-            return currTimer.update( getElapsedTime() );
-        }
-
-
-        void startAnimation(int destinationIndex, float duration) {
-            finalOrientIndex = destinationIndex;
-            currTimer = new Timer( Timer.Type.SINGLE, duration );
-        }
-
-
-        Quaternion getOrient(Quaternion initial, boolean slerp) {
-            if ( slerp ) {
-                return slerp( initial, orients[finalOrientIndex], currTimer.getAlpha() );
-            } else {
-                return lerp( initial, orients[finalOrientIndex], currTimer.getAlpha() );
-            }
-        }
-
-        int getFinalIndex() {
-            return finalOrientIndex;
         }
     }
 
@@ -310,18 +303,15 @@ public class Interpolation extends LWJGLWindow {
         System.out.printf( "alpha: %f, (%f, %f, %f, %f)\n", alpha, interp.w, interp.x, interp.y, interp.z );
 
         interp = Glm.normalize( interp );
-
         return new Quaternion( interp.w, interp.x, interp.y, interp.z );
     }
 
     private Vec4 vectorize(Quaternion theQuat) {
         Vec4 vec = new Vec4();
-
         vec.x = theQuat.x;
         vec.y = theQuat.y;
         vec.z = theQuat.z;
         vec.w = theQuat.w;
-
         return vec;
     }
 }

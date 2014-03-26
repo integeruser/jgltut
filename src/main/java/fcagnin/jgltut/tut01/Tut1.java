@@ -59,28 +59,26 @@ public class Tut1 extends LWJGLWindow {
     ////////////////////////////////
     private int theProgram;
 
-    private final String strVertexShader =
-            "#version 330 \n" +
-                    "\n" +
+    private final String vertexShader =
+            "#version 330\n" +
                     "layout(location = 0) in vec4 position;\n" +
                     "void main()\n" +
                     "{\n" +
-                    "    gl_Position = position;\n" +
-                    "}";
-    private final String strFragmentShader =
+                    "   gl_Position = position;\n" +
+                    "}\n";
+    private final String fragmentShader =
             "#version 330\n" +
-                    "\n" +
                     "out vec4 outputColor;\n" +
                     "void main()\n" +
                     "{\n" +
                     "   outputColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n" +
-                    "}";
+                    "}\n";
 
 
     private void initializeProgram() {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( createShader( GL_VERTEX_SHADER, strVertexShader ) );
-        shaderList.add( createShader( GL_FRAGMENT_SHADER, strFragmentShader ) );
+        shaderList.add( createShader( GL_VERTEX_SHADER, vertexShader ) );
+        shaderList.add( createShader( GL_FRAGMENT_SHADER, fragmentShader ) );
 
         theProgram = createProgram( shaderList );
 
@@ -101,22 +99,20 @@ public class Tut1 extends LWJGLWindow {
 
             String infoLog = glGetShaderInfoLog( shader, infoLogLength );
 
-            String strShaderType = null;
+            String shaderTypeStr = null;
             switch ( shaderType ) {
                 case GL_VERTEX_SHADER:
-                    strShaderType = "vertex";
+                    shaderTypeStr = "vertex";
                     break;
-
                 case GL_GEOMETRY_SHADER:
-                    strShaderType = "geometry";
+                    shaderTypeStr = "geometry";
                     break;
-
                 case GL_FRAGMENT_SHADER:
-                    strShaderType = "fragment";
+                    shaderTypeStr = "fragment";
                     break;
             }
 
-            System.err.printf( "Compile failure in %s shader:\n%s\n", strShaderType, infoLog );
+            System.err.printf( "Compile failure in %s shader:\n%s\n", shaderTypeStr, infoLog );
         }
 
         return shader;
@@ -135,8 +131,8 @@ public class Tut1 extends LWJGLWindow {
         if ( status == GL_FALSE ) {
             int infoLogLength = glGetProgrami( program, GL_INFO_LOG_LENGTH );
 
-            String strInfoLog = glGetProgramInfoLog( program, infoLogLength );
-            System.err.printf( "Linker failure: %s\n", strInfoLog );
+            String infoLog = glGetProgramInfoLog( program, infoLogLength );
+            System.err.printf( "Linker failure: %s\n", infoLog );
         }
 
         for ( Integer shader : shaderList ) {
@@ -148,7 +144,7 @@ public class Tut1 extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final float vertexPositions[] = {
+    private final float[] vertexPositions = {
             0.75f, 0.75f, 0.0f, 1.0f,
             0.75f, -0.75f, 0.0f, 1.0f,
             -0.75f, -0.75f, 0.0f, 1.0f

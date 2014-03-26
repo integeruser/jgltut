@@ -53,7 +53,7 @@ public class MatrixPerspective extends LWJGLWindow {
 
         glUniform2f( offsetUniform, 0.5f, 0.5f );
 
-        int colorData = (vertexData.length * FLOAT_SIZE) / 2;
+        int colorData = (FLOAT_SIZE * vertexData.length) / 2;
         glBindBuffer( GL_ARRAY_BUFFER, vertexBufferObject );
         glEnableVertexAttribArray( 0 );
         glEnableVertexAttribArray( 1 );
@@ -107,7 +107,7 @@ public class MatrixPerspective extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final float vertexData[] = {
+    private final float[] vertexData = {
             0.25f, 0.25f, -1.25f, 1.0f,
             0.25f, -0.25f, -1.25f, 1.0f,
             -0.25f, 0.25f, -1.25f, 1.0f,

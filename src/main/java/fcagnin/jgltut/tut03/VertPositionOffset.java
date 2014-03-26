@@ -42,8 +42,8 @@ public class VertPositionOffset extends LWJGLWindow {
 
     @Override
     protected void display() {
-        fXOffset = 0.0f;
-        fYOffset = 0.0f;
+        xOffset = 0.0f;
+        yOffset = 0.0f;
         computePositionOffsets();
 
         glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -51,7 +51,7 @@ public class VertPositionOffset extends LWJGLWindow {
 
         glUseProgram( theProgram );
 
-        glUniform2f( offsetLocation, fXOffset, fYOffset );
+        glUniform2f( offsetLocation, xOffset, yOffset );
 
         glBindBuffer( GL_ARRAY_BUFFER, positionBufferObject );
         glEnableVertexAttribArray( 0 );
@@ -82,7 +82,7 @@ public class VertPositionOffset extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final float vertexPositions[] = {
+    private final float[] vertexPositions = {
             0.25f, 0.25f, 0.0f, 1.0f,
             0.25f, -0.25f, 0.0f, 1.0f,
             -0.25f, -0.25f, 0.0f, 1.0f
@@ -106,7 +106,7 @@ public class VertPositionOffset extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private float fXOffset, fYOffset;
+    private float xOffset, yOffset;
 
 
     private void computePositionOffsets() {
@@ -117,7 +117,7 @@ public class VertPositionOffset extends LWJGLWindow {
 
         float currTimeThroughLoop = elapsedTime % loopDuration;
 
-        fXOffset = (float) (Math.cos( currTimeThroughLoop * scale ) * 0.5f);
-        fYOffset = (float) (Math.sin( currTimeThroughLoop * scale ) * 0.5f);
+        xOffset = (float) (Math.cos( currTimeThroughLoop * scale ) * 0.5f);
+        yOffset = (float) (Math.sin( currTimeThroughLoop * scale ) * 0.5f);
     }
 }

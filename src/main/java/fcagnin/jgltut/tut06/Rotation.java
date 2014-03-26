@@ -103,7 +103,6 @@ public class Rotation extends LWJGLWindow {
     private int cameraToClipMatrixUnif;
 
     private Mat4 cameraToClipMatrix = new Mat4( 0.0f );
-
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
 
     private final float frustumScale = calcFrustumScale( 45.0f );
@@ -137,7 +136,6 @@ public class Rotation extends LWJGLWindow {
     private float calcFrustumScale(float fovDeg) {
         final float degToRad = 3.14159f * 2.0f / 360.0f;
         float fovRad = fovDeg * degToRad;
-
         return 1.0f / (float) (Math.tan( fovRad / 2.0f ));
     }
 
@@ -156,15 +154,15 @@ public class Rotation extends LWJGLWindow {
             +1.0f, -1.0f, +1.0f,
             -1.0f, +1.0f, +1.0f,
 
-            0.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, 0.5f, 0.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 1.0f,     // GREEN_COLOR
+            0.0f, 0.0f, 1.0f, 1.0f,     // BLUE_COLOR
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
+            0.5f, 0.5f, 0.0f, 1.0f,     // BROWN_COLOR
 
-            0.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, 0.5f, 0.0f, 1.0f
+            0.0f, 1.0f, 0.0f, 1.0f,     // GREEN_COLOR
+            0.0f, 0.0f, 1.0f, 1.0f,     // BLUE_COLOR
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
+            0.5f, 0.5f, 0.0f, 1.0f      // BROWN_COLOR
     };
 
     private final short indexData[] = {
@@ -216,8 +214,11 @@ public class Rotation extends LWJGLWindow {
     };
 
     private abstract class Instance {
-        Vec3 offset;
+        private Vec3 offset;
 
+        Instance(Vec3 offset) {
+            this.offset = offset;
+        }
 
         abstract Mat3 calcRotation(float elapsedTime);
 
@@ -226,15 +227,13 @@ public class Rotation extends LWJGLWindow {
 
             Mat4 theMat = new Mat4( rotMatrix );
             theMat.setColumn( 3, new Vec4( offset, 1.0f ) );
-
             return theMat;
         }
     }
 
     private class NullRotation extends Instance {
-
-        NullRotation(Vec3 vec) {
-            offset = new Vec3( vec );
+        NullRotation(Vec3 offset) {
+            super( offset );
         }
 
         @Override
@@ -244,9 +243,8 @@ public class Rotation extends LWJGLWindow {
     }
 
     private class RotateX extends Instance {
-
-        RotateX(Vec3 vec) {
-            offset = new Vec3( vec );
+        RotateX(Vec3 offset) {
+            super( offset );
         }
 
         @Override
@@ -265,9 +263,8 @@ public class Rotation extends LWJGLWindow {
     }
 
     private class RotateY extends Instance {
-
-        RotateY(Vec3 vec) {
-            offset = new Vec3( vec );
+        RotateY(Vec3 offset) {
+            super( offset );
         }
 
         @Override
@@ -286,9 +283,8 @@ public class Rotation extends LWJGLWindow {
     }
 
     private class RotateZ extends Instance {
-
-        RotateZ(Vec3 vec) {
-            offset = new Vec3( vec );
+        RotateZ(Vec3 offset) {
+            super( offset );
         }
 
         @Override
@@ -307,9 +303,8 @@ public class Rotation extends LWJGLWindow {
     }
 
     private class RotateAxis extends Instance {
-
-        RotateAxis(Vec3 vec) {
-            offset = new Vec3( vec );
+        RotateAxis(Vec3 offset) {
+            super( offset );
         }
 
         @Override
@@ -342,7 +337,6 @@ public class Rotation extends LWJGLWindow {
     private float computeAngleRad(float elapsedTime, float loopDuration) {
         final float scale = 3.14159f * 2.0f / loopDuration;
         float currTimeThroughLoop = elapsedTime % loopDuration;
-
         return currTimeThroughLoop * scale;
     }
 }

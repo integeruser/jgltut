@@ -148,7 +148,6 @@ public class Hierarchy extends LWJGLWindow {
     private int cameraToClipMatrixUnif;
 
     private Mat4 cameraToClipMatrix = new Mat4( 0.0f );
-
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
 
     private final float frustumScale = calcFrustumScale( 45.0f );
@@ -185,7 +184,6 @@ public class Hierarchy extends LWJGLWindow {
     private float calcFrustumScale(float fovDeg) {
         final float degToRad = 3.14159f * 2.0f / 360.0f;
         float fovRad = fovDeg * degToRad;
-
         return 1.0f / (float) (Math.tan( fovRad / 2.0f ));
     }
 
@@ -231,35 +229,35 @@ public class Hierarchy extends LWJGLWindow {
             -1.0f, +1.0f, -1.0f,
 
 
-            0.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 1.0f, 0.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 1.0f,     // GREEN_COLOR
+            0.0f, 1.0f, 0.0f, 1.0f,     // GREEN_COLOR
+            0.0f, 1.0f, 0.0f, 1.0f,     // GREEN_COLOR
+            0.0f, 1.0f, 0.0f, 1.0f,     // GREEN_COLOR
 
-            0.0f, 0.0f, 1.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 1.0f,     // BLUE_COLOR
+            0.0f, 0.0f, 1.0f, 1.0f,     // BLUE_COLOR
+            0.0f, 0.0f, 1.0f, 1.0f,     // BLUE_COLOR
+            0.0f, 0.0f, 1.0f, 1.0f,     // BLUE_COLOR
 
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
+            1.0f, 0.0f, 0.0f, 1.0f,     // RED_COLOR
 
-            1.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 0.0f, 1.0f,     // YELLOW_COLOR
+            1.0f, 1.0f, 0.0f, 1.0f,     // YELLOW_COLOR
+            1.0f, 1.0f, 0.0f, 1.0f,     // YELLOW_COLOR
+            1.0f, 1.0f, 0.0f, 1.0f,     // YELLOW_COLOR
 
-            0.0f, 1.0f, 1.0f, 1.0f,
-            0.0f, 1.0f, 1.0f, 1.0f,
-            0.0f, 1.0f, 1.0f, 1.0f,
-            0.0f, 1.0f, 1.0f, 1.0f,
+            0.0f, 1.0f, 1.0f, 1.0f,     // CYAN_COLOR
+            0.0f, 1.0f, 1.0f, 1.0f,     // CYAN_COLOR
+            0.0f, 1.0f, 1.0f, 1.0f,     // CYAN_COLOR
+            0.0f, 1.0f, 1.0f, 1.0f,     // CYAN_COLOR
 
-            1.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 1.0f, 1.0f
+            1.0f, 0.0f, 1.0f, 1.0f,     // MAGENTA_COLOR
+            1.0f, 0.0f, 1.0f, 1.0f,     // MAGENTA_COLOR
+            1.0f, 0.0f, 1.0f, 1.0f,     // MAGENTA_COLOR
+            1.0f, 0.0f, 1.0f, 1.0f      // MAGENTA_COLOR
     };
 
     private final short indexData[] = {
@@ -307,7 +305,6 @@ public class Hierarchy extends LWJGLWindow {
         glBufferData( GL_ELEMENT_ARRAY_BUFFER, indexDataBuffer, GL_STATIC_DRAW );
         glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 
-
         vao = glGenVertexArrays();
         glBindVertexArray( vao );
 
@@ -325,55 +322,55 @@ public class Hierarchy extends LWJGLWindow {
 
     ////////////////////////////////
     private class MatrixStack {
-        private Stack<Mat4> matrixStack;
-        private Mat4 currentMatrix;
+        Stack<Mat4> matrices;
+        Mat4 currMat;
 
 
         MatrixStack() {
-            matrixStack = new Stack<>();
-            currentMatrix = new Mat4( 1.0f );
+            matrices = new Stack<>();
+            currMat = new Mat4( 1.0f );
         }
 
 
         Mat4 top() {
-            return currentMatrix;
+            return currMat;
         }
 
         void push() {
-            matrixStack.push( new Mat4( currentMatrix ) );
+            matrices.push( new Mat4( currMat ) );
         }
 
         void pop() {
-            currentMatrix = matrixStack.pop();
+            currMat = matrices.pop();
         }
 
 
-        void rotateX(float fAngDeg) {
-            currentMatrix.mul( new Mat4( Hierarchy.rotateX( fAngDeg ) ) );
+        void rotateX(float angDeg) {
+            currMat.mul( new Mat4( Hierarchy.this.rotateX( angDeg ) ) );
         }
 
-        void rotateY(float fAngDeg) {
-            currentMatrix.mul( new Mat4( Hierarchy.rotateY( fAngDeg ) ) );
+        void rotateY(float angDeg) {
+            currMat.mul( new Mat4( Hierarchy.this.rotateY( angDeg ) ) );
         }
 
-        void rotateZ(float fAngDeg) {
-            currentMatrix.mul( new Mat4( Hierarchy.rotateZ( fAngDeg ) ) );
+        void rotateZ(float angDeg) {
+            currMat.mul( new Mat4( Hierarchy.this.rotateZ( angDeg ) ) );
         }
 
         void scale(Vec3 scaleVec) {
             Mat4 scaleMat = new Mat4( 1.0f );
-            scaleMat.set( 0, scaleVec.x );
-            scaleMat.set( 5, scaleVec.y );
-            scaleMat.set( 10, scaleVec.z );
+            scaleMat.set( 0, 0, scaleVec.x );
+            scaleMat.set( 1, 1, scaleVec.y );
+            scaleMat.set( 2, 2, scaleVec.z );
 
-            currentMatrix.mul( scaleMat );
+            currMat.mul( scaleMat );
         }
 
         void translate(Vec3 offsetVec) {
             Mat4 translateMat = new Mat4( 1.0f );
             translateMat.setColumn( 3, new Vec4( offsetVec, 1.0f ) );
 
-            currentMatrix.mul( translateMat );
+            currMat.mul( translateMat );
         }
     }
 
@@ -382,36 +379,65 @@ public class Hierarchy extends LWJGLWindow {
     private final float STANDARD_ANGLE_INCREMENT = 11.25f;
     private final float SMALL_ANGLE_INCREMENT = 9.0f;
 
-    private Hierarchy_ armature = new Hierarchy_();
+    private Armature armature = new Armature();
 
-    private class Hierarchy_ {
-        private Vec3 posBase = new Vec3( 3.0f, -5.0f, -40.0f );
-        private float angBase = -45.0f;
+    private class Armature {
+        Vec3 posBase;
+        float angBase;
 
-        private Vec3 posBaseLeft = new Vec3( 2.0f, 0.0f, 0.0f );
-        private Vec3 posBaseRight = new Vec3( -2.0f, 0.0f, 0.0f );
-        private float scaleBaseZ = 3.0f;
+        Vec3 posBaseLeft, posBaseRight;
+        float scaleBaseZ;
 
-        private float angUpperArm = -70.75f;
-        private float sizeUpperArm = 9.0f;
+        float angUpperArm;
+        float sizeUpperArm;
 
-        private Vec3 posLowerArm = new Vec3( 0.0f, 0.0f, 8.0f );
-        private float angLowerArm = 60.25f;
-        private float lenLowerArm = 5.0f;
-        private float widthLowerArm = 1.5f;
+        Vec3 posLowerArm;
+        float angLowerArm;
+        float lenLowerArm;
+        float widthLowerArm;
 
-        private Vec3 posWrist = new Vec3( 0.0f, 0.0f, 5.0f );
-        private float angWristRoll = 0.0f;
-        private float angWristPitch = 67.5f;
-        private float lenWrist = 2.0f;
-        private float widthWrist = 2.0f;
+        Vec3 posWrist;
+        float angWristRoll;
+        float angWristPitch;
+        float lenWrist;
+        float widthWrist;
 
-        private Vec3 posLeftFinger = new Vec3( 1.0f, 0.0f, 1.0f );
-        private Vec3 posRightFinger = new Vec3( -1.0f, 0.0f, 1.0f );
-        private float angFingerOpen = 45.0f;
-        private float lenFinger = 2.0f;
-        private float widthFinger = 0.5f;
-        private float angLowerFinger = 45.0f;
+        Vec3 posLeftFinger, posRightFinger;
+        float angFingerOpen;
+        float lenFinger;
+        float widthFinger;
+        float angLowerFinger;
+
+
+        Armature() {
+            posBase = new Vec3( 3.0f, -5.0f, -40.0f );
+            angBase = -45.0f;
+
+            posBaseLeft = new Vec3( 2.0f, 0.0f, 0.0f );
+            posBaseRight = new Vec3( -2.0f, 0.0f, 0.0f );
+            scaleBaseZ = 3.0f;
+
+            angUpperArm = -70.75f;
+            sizeUpperArm = 9.0f;
+
+            posLowerArm = new Vec3( 0.0f, 0.0f, 8.0f );
+            angLowerArm = 60.25f;
+            lenLowerArm = 5.0f;
+            widthLowerArm = 1.5f;
+
+            posWrist = new Vec3( 0.0f, 0.0f, 5.0f );
+            angWristRoll = 0.0f;
+            angWristPitch = 67.5f;
+            lenWrist = 2.0f;
+            widthWrist = 2.0f;
+
+            posLeftFinger = new Vec3( 1.0f, 0.0f, 1.0f );
+            posRightFinger = new Vec3( -1.0f, 0.0f, 1.0f );
+            angFingerOpen = 45.0f;
+            lenFinger = 2.0f;
+            widthFinger = 0.5f;
+            angLowerFinger = 45.0f;
+        }
 
 
         void draw() {
@@ -426,26 +452,20 @@ public class Hierarchy extends LWJGLWindow {
             // Draw left base.
             {
                 modelToCameraStack.push();
-
                 modelToCameraStack.translate( posBaseLeft );
                 modelToCameraStack.scale( new Vec3( 1.0f, 1.0f, scaleBaseZ ) );
-
                 glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
                 glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
-
                 modelToCameraStack.pop();
             }
 
             // Draw right base.
             {
                 modelToCameraStack.push();
-
                 modelToCameraStack.translate( posBaseRight );
                 modelToCameraStack.scale( new Vec3( 1.0f, 1.0f, scaleBaseZ ) );
-
                 glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
                 glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
-
                 modelToCameraStack.pop();
             }
 
@@ -456,20 +476,16 @@ public class Hierarchy extends LWJGLWindow {
             glUseProgram( 0 );
         }
 
-
-        private void drawUpperArm(MatrixStack modelToCameraStack) {
+        void drawUpperArm(MatrixStack modelToCameraStack) {
             modelToCameraStack.push();
             modelToCameraStack.rotateX( angUpperArm );
 
             {
                 modelToCameraStack.push();
-
                 modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, (sizeUpperArm / 2.0f) - 1.0f ) );
                 modelToCameraStack.scale( new Vec3( 1.0f, 1.0f, sizeUpperArm / 2.0f ) );
-
                 glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
                 glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
-
                 modelToCameraStack.pop();
             }
 
@@ -478,89 +494,65 @@ public class Hierarchy extends LWJGLWindow {
             modelToCameraStack.pop();
         }
 
-        private void drawLowerArm(MatrixStack modelToCameraStack) {
+        void drawLowerArm(MatrixStack modelToCameraStack) {
             modelToCameraStack.push();
-
             modelToCameraStack.translate( posLowerArm );
             modelToCameraStack.rotateX( angLowerArm );
 
-            {
-                modelToCameraStack.push();
-
-                modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenLowerArm / 2.0f ) );
-                modelToCameraStack.scale( new Vec3( widthLowerArm / 2.0f, widthLowerArm / 2.0f, lenLowerArm / 2.0f ) );
-
-                glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
-                glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
-
-                modelToCameraStack.pop();
-            }
+            modelToCameraStack.push();
+            modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenLowerArm / 2.0f ) );
+            modelToCameraStack.scale( new Vec3( widthLowerArm / 2.0f, widthLowerArm / 2.0f, lenLowerArm / 2.0f ) );
+            glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+            glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
+            modelToCameraStack.pop();
 
             drawWrist( modelToCameraStack );
 
             modelToCameraStack.pop();
         }
 
-        private void drawWrist(MatrixStack modelToCameraStack) {
+        void drawWrist(MatrixStack modelToCameraStack) {
             modelToCameraStack.push();
-
             modelToCameraStack.translate( posWrist );
             modelToCameraStack.rotateZ( angWristRoll );
             modelToCameraStack.rotateX( angWristPitch );
 
-            {
-                modelToCameraStack.push();
-
-                modelToCameraStack.scale( new Vec3( widthWrist / 2.0f, widthWrist / 2.0f, lenWrist / 2.0f ) );
-
-                glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
-                glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
-
-                modelToCameraStack.pop();
-            }
+            modelToCameraStack.push();
+            modelToCameraStack.scale( new Vec3( widthWrist / 2.0f, widthWrist / 2.0f, lenWrist / 2.0f ) );
+            glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+            glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
+            modelToCameraStack.pop();
 
             drawFingers( modelToCameraStack );
 
             modelToCameraStack.pop();
         }
 
-        private void drawFingers(MatrixStack modelToCameraStack) {
+        void drawFingers(MatrixStack modelToCameraStack) {
             // Draw left finger
             modelToCameraStack.push();
-
             modelToCameraStack.translate( posLeftFinger );
             modelToCameraStack.rotateY( angFingerOpen );
 
-            {
-                modelToCameraStack.push();
-
-                modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger / 2.0f ) );
-                modelToCameraStack.scale( new Vec3( widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f ) );
-
-                glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
-                glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
-
-                modelToCameraStack.pop();
-            }
+            modelToCameraStack.push();
+            modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger / 2.0f ) );
+            modelToCameraStack.scale( new Vec3( widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f ) );
+            glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+            glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
+            modelToCameraStack.pop();
 
             {
                 // Draw left lower finger
                 modelToCameraStack.push();
-
                 modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger ) );
                 modelToCameraStack.rotateY( -angLowerFinger );
 
-                {
-                    modelToCameraStack.push();
-
-                    modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger / 2.0f ) );
-                    modelToCameraStack.scale( new Vec3( widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f ) );
-
-                    glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
-                    glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
-
-                    modelToCameraStack.pop();
-                }
+                modelToCameraStack.push();
+                modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger / 2.0f ) );
+                modelToCameraStack.scale( new Vec3( widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f ) );
+                glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+                glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
+                modelToCameraStack.pop();
 
                 modelToCameraStack.pop();
             }
@@ -568,89 +560,69 @@ public class Hierarchy extends LWJGLWindow {
             modelToCameraStack.pop();
 
             // Draw right finger
+            modelToCameraStack.push();
+            modelToCameraStack.translate( posRightFinger );
+            modelToCameraStack.rotateY( -angFingerOpen );
+
+            modelToCameraStack.push();
+            modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger / 2.0f ) );
+            modelToCameraStack.scale( new Vec3( widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f ) );
+            glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+            glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
+            modelToCameraStack.pop();
+
             {
+                // Draw right lower finger
                 modelToCameraStack.push();
+                modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger ) );
+                modelToCameraStack.rotateY( angLowerFinger );
 
-                modelToCameraStack.translate( posRightFinger );
-                modelToCameraStack.rotateY( -angFingerOpen );
-
-                {
-                    modelToCameraStack.push();
-
-                    modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger / 2.0f ) );
-                    modelToCameraStack.scale( new Vec3( widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f ) );
-
-                    glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
-                    glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
-
-                    modelToCameraStack.pop();
-                }
-
-                {
-                    // Draw right lower finger
-                    modelToCameraStack.push();
-
-                    modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger ) );
-                    modelToCameraStack.rotateY( angLowerFinger );
-
-                    {
-                        modelToCameraStack.push();
-
-                        modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger / 2.0f ) );
-                        modelToCameraStack.scale( new Vec3( widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f ) );
-
-                        glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
-                        glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
-
-                        modelToCameraStack.pop();
-                    }
-
-                    modelToCameraStack.pop();
-                }
+                modelToCameraStack.push();
+                modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger / 2.0f ) );
+                modelToCameraStack.scale( new Vec3( widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f ) );
+                glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+                glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
+                modelToCameraStack.pop();
 
                 modelToCameraStack.pop();
             }
+
+            modelToCameraStack.pop();
         }
 
 
         void adjBase(boolean increment) {
             float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
-
             angBase += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angBase = angBase % 360.0f;
         }
 
         void adjUpperArm(boolean increment) {
             float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
-
             angUpperArm += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angUpperArm = clamp( angUpperArm, -90.0f, 0.0f );
         }
 
         void adjLowerArm(boolean increment) {
             float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
-
             angLowerArm += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angLowerArm = clamp( angLowerArm, 0.0f, 146.25f );
         }
 
         void adjWristPitch(boolean increment) {
             float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
-
             angWristPitch += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angWristPitch = clamp( angWristPitch, 0.0f, 90.0f );
         }
 
         void adjWristRoll(boolean increment) {
             float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
-
             angWristRoll += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angWristRoll = angWristRoll % 360.0f;
         }
 
         void adjFingerOpen(boolean increment) {
             float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
-
             angFingerOpen += increment ? SMALL_ANGLE_INCREMENT * lastFrameDuration : -SMALL_ANGLE_INCREMENT * lastFrameDuration;
             angFingerOpen = clamp( angFingerOpen, 9.0f, 90.0f );
         }
@@ -668,7 +640,7 @@ public class Hierarchy extends LWJGLWindow {
     }
 
 
-    private static Mat3 rotateX(float angDeg) {
+    private Mat3 rotateX(float angDeg) {
         float angRad = degToRad( angDeg );
         float cos = (float) Math.cos( angRad );
         float sin = (float) Math.sin( angRad );
@@ -678,11 +650,10 @@ public class Hierarchy extends LWJGLWindow {
         theMat.set( 2, 1, -sin );
         theMat.set( 1, 2, sin );
         theMat.set( 2, 2, cos );
-
         return theMat;
     }
 
-    private static Mat3 rotateY(float angDeg) {
+    private Mat3 rotateY(float angDeg) {
         float angRad = degToRad( angDeg );
         float cos = (float) Math.cos( angRad );
         float sin = (float) Math.sin( angRad );
@@ -692,11 +663,10 @@ public class Hierarchy extends LWJGLWindow {
         theMat.set( 2, 0, sin );
         theMat.set( 0, 2, -sin );
         theMat.set( 2, 2, cos );
-
         return theMat;
     }
 
-    private static Mat3 rotateZ(float angDeg) {
+    private Mat3 rotateZ(float angDeg) {
         float angRad = degToRad( angDeg );
         float cos = (float) Math.cos( angRad );
         float sin = (float) Math.sin( angRad );
@@ -706,26 +676,18 @@ public class Hierarchy extends LWJGLWindow {
         theMat.set( 1, 0, -sin );
         theMat.set( 0, 1, sin );
         theMat.set( 1, 1, cos );
-
         return theMat;
     }
 
-    private static float degToRad(float angDeg) {
+    private float degToRad(float angDeg) {
         final float degToRad = 3.14159f * 2.0f / 360.0f;
-
         return angDeg * degToRad;
     }
 
 
     private float clamp(float value, float minValue, float maxValue) {
-        if ( value < minValue ) {
-            return minValue;
-        }
-
-        if ( value > maxValue ) {
-            return maxValue;
-        }
-
+        if ( value < minValue ) { return minValue; }
+        if ( value > maxValue ) { return maxValue; }
         return value;
     }
 }

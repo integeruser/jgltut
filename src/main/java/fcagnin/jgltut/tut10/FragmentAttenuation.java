@@ -93,12 +93,10 @@ public class FragmentAttenuation extends LWJGLWindow {
         glBufferData( GL_UNIFORM_BUFFER, UnProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-                0, ProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, g_unprojectionBlockIndex, g_unprojectionUniformBuffer,
-                0, UnProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, g_unprojectionBlockIndex, g_unprojectionUniformBuffer, 0, UnProjectionBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
     }
@@ -167,19 +165,15 @@ public class FragmentAttenuation extends LWJGLWindow {
 
                 if ( drawColoredCyl ) {
                     glUseProgram( fragVertexDiffuseColor.theProgram );
-                    glUniformMatrix4( fragVertexDiffuseColor.modelToCameraMatrixUnif, false,
-                            modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                    glUniformMatrix4( fragVertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
-                    glUniformMatrix3( fragVertexDiffuseColor.normalModelToCameraMatrixUnif, false,
-                            normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                    glUniformMatrix3( fragVertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                     cylinderMesh.render( "lit-color" );
                 } else {
                     glUseProgram( fragWhiteDiffuseColor.theProgram );
-                    glUniformMatrix4( fragWhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(
-                            mat4Buffer ) );
+                    glUniformMatrix4( fragWhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
-                    glUniformMatrix3( fragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false,
-                            normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                    glUniformMatrix3( fragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                     cylinderMesh.render( "lit" );
                 }
                 glUseProgram( 0 );
@@ -288,10 +282,6 @@ public class FragmentAttenuation extends LWJGLWindow {
             lightRadius = 0.2f;
         }
 
-        if ( lightAttenuation < 0.1f ) {
-            lightAttenuation = 0.1f;
-        }
-
 
         while ( Keyboard.next() ) {
             if ( Keyboard.getEventKeyState() ) {
@@ -334,7 +324,6 @@ public class FragmentAttenuation extends LWJGLWindow {
 
                     case Keyboard.KEY_H:
                         useRSquare = !useRSquare;
-
                         if ( useRSquare ) {
                             System.out.printf( "Inverse Squared Attenuation\n" );
                         } else {
@@ -347,6 +336,10 @@ public class FragmentAttenuation extends LWJGLWindow {
                         break;
                 }
             }
+        }
+
+        if ( lightAttenuation < 0.1f ) {
+            lightAttenuation = 0.1f;
         }
     }
 
@@ -392,10 +385,10 @@ public class FragmentAttenuation extends LWJGLWindow {
         unlit = loadUnlitProgram( "PosTransform.vert", "UniformColor.frag" );
     }
 
-    private ProgramData loadLitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private ProgramData loadLitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         ProgramData data = new ProgramData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -417,10 +410,10 @@ public class FragmentAttenuation extends LWJGLWindow {
         return data;
     }
 
-    private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private UnlitProgData loadUnlitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         UnlitProgData data = new UnlitProgData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -439,15 +432,15 @@ public class FragmentAttenuation extends LWJGLWindow {
     private Mesh planeMesh;
     private Mesh cubeMesh;
 
+    private float lightHeight = 1.5f;
+    private float lightRadius = 1.0f;
+    private float lightAttenuation = 1.0f;
     private Timer lightTimer = new Timer( Timer.Type.LOOP, 5.0f );
 
     private boolean drawColoredCyl;
     private boolean drawLight;
     private boolean scaleCyl;
     private boolean useRSquare;
-    private float lightHeight = 1.5f;
-    private float lightRadius = 1.0f;
-    private float lightAttenuation = 1.0f;
 
 
     private Vec4 calcLightPosition() {
@@ -519,7 +512,7 @@ public class FragmentAttenuation extends LWJGLWindow {
                 buffer.putFloat( f );
             }
 
-            // The shader uses an int vector.
+            // The shader uses an int vector
             buffer.putInt( (int) windowSize.x );
             buffer.putInt( (int) windowSize.y );
 

@@ -91,8 +91,7 @@ public class PhongLighting extends LWJGLWindow {
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-                0, ProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
     }
@@ -111,43 +110,45 @@ public class PhongLighting extends LWJGLWindow {
         final Vec4 worldLightPos = calcLightPosition();
         final Vec4 lightPosCameraSpace = Mat4.mul( modelMatrix.top(), worldLightPos );
 
-        ProgramData pWhiteProg = null;
-        ProgramData pColorProg = null;
+        ProgramData whiteProg = null;
+        ProgramData colorProg = null;
 
         switch ( lightModel ) {
             case PURE_DIFFUSE:
-                pWhiteProg = whiteNoPhong;
-                pColorProg = colorNoPhong;
+                whiteProg = whiteNoPhong;
+                colorProg = colorNoPhong;
                 break;
 
             case DIFFUSE_AND_SPECULAR:
-                pWhiteProg = whitePhong;
-                pColorProg = colorPhong;
+                whiteProg = whitePhong;
+                colorProg = colorPhong;
                 break;
 
             case SPECULAR_ONLY:
-                pWhiteProg = whitePhongOnly;
-                pColorProg = colorPhongOnly;
+                whiteProg = whitePhongOnly;
+                colorProg = colorPhongOnly;
                 break;
+
             default:
                 break;
         }
 
-        glUseProgram( pWhiteProg.theProgram );
-        glUniform4f( pWhiteProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f );
-        glUniform4f( pWhiteProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f );
-        glUniform3( pWhiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer( vec4Buffer ) );
-        glUniform1f( pWhiteProg.lightAttenuationUnif, lightAttenuation );
-        glUniform1f( pWhiteProg.shininessFactorUnif, shininessFactor );
-        glUniform4( pWhiteProg.baseDiffuseColorUnif, drawDark ? darkColor.fillAndFlipBuffer( vec4Buffer ) : lightColor.fillAndFlipBuffer(
+        glUseProgram( whiteProg.theProgram );
+        glUniform4f( whiteProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f );
+        glUniform4f( whiteProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f );
+        glUniform3( whiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer( vec4Buffer ) );
+        float lightAttenuation = 1.2f;
+        glUniform1f( whiteProg.lightAttenuationUnif, lightAttenuation );
+        glUniform1f( whiteProg.shininessFactorUnif, shininessFactor );
+        glUniform4( whiteProg.baseDiffuseColorUnif, drawDark ? darkColor.fillAndFlipBuffer( vec4Buffer ) : lightColor.fillAndFlipBuffer(
                 vec4Buffer ) );
 
-        glUseProgram( pColorProg.theProgram );
-        glUniform4f( pColorProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f );
-        glUniform4f( pColorProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f );
-        glUniform3( pColorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer( vec4Buffer ) );
-        glUniform1f( pColorProg.lightAttenuationUnif, lightAttenuation );
-        glUniform1f( pColorProg.shininessFactorUnif, shininessFactor );
+        glUseProgram( colorProg.theProgram );
+        glUniform4f( colorProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f );
+        glUniform4f( colorProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f );
+        glUniform3( colorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer( vec4Buffer ) );
+        glUniform1f( colorProg.lightAttenuationUnif, lightAttenuation );
+        glUniform1f( colorProg.shininessFactorUnif, shininessFactor );
         glUseProgram( 0 );
 
         {
@@ -160,10 +161,10 @@ public class PhongLighting extends LWJGLWindow {
                 Mat3 normMatrix = new Mat3( modelMatrix.top() );
                 normMatrix = Glm.transpose( Glm.inverse( normMatrix ) );
 
-                glUseProgram( pWhiteProg.theProgram );
-                glUniformMatrix4( pWhiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUseProgram( whiteProg.theProgram );
+                glUniformMatrix4( whiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
-                glUniformMatrix3( pWhiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                glUniformMatrix3( whiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                 planeMesh.render();
                 glUseProgram( 0 );
 
@@ -183,7 +184,7 @@ public class PhongLighting extends LWJGLWindow {
                 Mat3 normMatrix = new Mat3( modelMatrix.top() );
                 normMatrix = Glm.transpose( Glm.inverse( normMatrix ) );
 
-                ProgramData pProg = drawColoredCyl ? pColorProg : pWhiteProg;
+                ProgramData pProg = drawColoredCyl ? colorProg : whiteProg;
                 glUseProgram( pProg.theProgram );
                 glUniformMatrix4( pProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
@@ -294,10 +295,6 @@ public class PhongLighting extends LWJGLWindow {
             lightRadius = 0.2f;
         }
 
-        if ( shininessFactor <= 0.0f ) {
-            shininessFactor = 0.0001f;
-        }
-
 
         while ( Keyboard.next() ) {
             if ( Keyboard.getEventKeyState() ) {
@@ -374,6 +371,10 @@ public class PhongLighting extends LWJGLWindow {
                 }
             }
         }
+
+        if ( shininessFactor <= 0.0f ) {
+            shininessFactor = 0.0001f;
+        }
     }
 
 
@@ -383,13 +384,10 @@ public class PhongLighting extends LWJGLWindow {
 
     private ProgramData whiteNoPhong;
     private ProgramData colorNoPhong;
-
     private ProgramData whitePhong;
     private ProgramData colorPhong;
-
     private ProgramData whitePhongOnly;
     private ProgramData colorPhongOnly;
-
     private UnlitProgData unlit;
 
     private class ProgramData {
@@ -423,20 +421,17 @@ public class PhongLighting extends LWJGLWindow {
     private void initializePrograms() {
         whiteNoPhong = loadLitProgram( "PN.vert", "NoPhong.frag" );
         colorNoPhong = loadLitProgram( "PCN.vert", "NoPhong.frag" );
-
         whitePhong = loadLitProgram( "PN.vert", "PhongLighting.frag" );
         colorPhong = loadLitProgram( "PCN.vert", "PhongLighting.frag" );
-
         whitePhongOnly = loadLitProgram( "PN.vert", "PhongOnly.frag" );
         colorPhongOnly = loadLitProgram( "PCN.vert", "PhongOnly.frag" );
-
         unlit = loadUnlitProgram( "PosTransform.vert", "UniformColor.frag" );
     }
 
-    private ProgramData loadLitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private ProgramData loadLitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         ProgramData data = new ProgramData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -456,10 +451,10 @@ public class PhongLighting extends LWJGLWindow {
         return data;
     }
 
-    private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private UnlitProgData loadUnlitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         UnlitProgData data = new UnlitProgData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -474,29 +469,28 @@ public class PhongLighting extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final String[] lightModelNames = {
-            "Diffuse only.",
-            "Specular + diffuse.",
-            "Specular only."
-    };
-
-    private final Vec4 darkColor = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
-    private final Vec4 lightColor = new Vec4( 1.0f );
-    private final float lightAttenuation = 1.2f;
-
     private Mesh cylinderMesh;
     private Mesh planeMesh;
     private Mesh cubeMesh;
 
+    private float lightHeight = 1.5f;
+    private float lightRadius = 1.0f;
     private Timer lightTimer = new Timer( Timer.Type.LOOP, 5.0f );
+    private float shininessFactor = 4.0f;
 
     private boolean drawColoredCyl;
     private boolean drawLightSource;
     private boolean scaleCyl;
     private boolean drawDark;
-    private float lightHeight = 1.5f;
-    private float lightRadius = 1.0f;
-    private float shininessFactor = 4.0f;
+
+    private final Vec4 darkColor = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
+    private final Vec4 lightColor = new Vec4( 1.0f );
+
+    private final String[] lightModelNames = {
+            "Diffuse only.",
+            "Specular + diffuse.",
+            "Specular only."
+    };
 
 
     private Vec4 calcLightPosition() {

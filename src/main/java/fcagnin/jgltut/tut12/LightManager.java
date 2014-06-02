@@ -33,7 +33,7 @@ class LightManager {
         lightIntensity = new ArrayList<>();
         lightTimers = new ArrayList<>();
 
-        extraTimers = new HashMap<String, Timer>();
+        extraTimers = new HashMap<>();
 
         lightPos.add( new ConstVelLinearInterpolatorVec3() );
         lightPos.add( new ConstVelLinearInterpolatorVec3() );
@@ -115,9 +115,6 @@ class LightManager {
 
 
     ////////////////////////////////
-    private static final int NUMBER_OF_LIGHTS = 4;
-    private static final int NUMBER_OF_POINT_LIGHTS = NUMBER_OF_LIGHTS - 1;
-
     private final float halfLightDistance = 70.0f;
     private final float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
 
@@ -135,7 +132,83 @@ class LightManager {
     private HashMap<String, Timer> extraTimers;
 
 
+    static class SunlightValue {
+        float normTime;
+        Vec4 ambient;
+        Vec4 sunlightIntensity;
+        Vec4 backgroundColor;
+
+        SunlightValue(float normTime, Vec4 ambient, Vec4 sunlightIntensity, Vec4 backgroundColor) {
+            this.normTime = normTime;
+            this.ambient = ambient;
+            this.sunlightIntensity = sunlightIntensity;
+            this.backgroundColor = backgroundColor;
+        }
+    }
+
+    static class SunlightValueHDR {
+        float normTime;
+        Vec4 ambient;
+        Vec4 sunlightIntensity;
+        Vec4 backgroundColor;
+        float maxIntensity;
+
+        SunlightValueHDR(float normTime, Vec4 ambient, Vec4 sunlightIntensity, Vec4 backgroundColor, float maxIntensity) {
+            this.normTime = normTime;
+            this.ambient = ambient;
+            this.sunlightIntensity = sunlightIntensity;
+            this.backgroundColor = backgroundColor;
+            this.maxIntensity = maxIntensity;
+        }
+    }
+
+
     ////////////////////////////////
+    Vec4 getSunlightDirection() {
+        float angle = 2.0f * 3.14159f * sunTimer.getAlpha();
+        Vec4 sunDirection = new Vec4( 0.0f );
+        sunDirection.x = (float) Math.sin( angle );
+        sunDirection.y = (float) Math.cos( angle );
+
+        // Keep the sun from being perfectly centered overhead.
+        sunDirection = Mat4.mul( Glm.rotate( new Mat4( 1.0f ), 5.0f, new Vec3( 0.0f, 1.0f, 0.0f ) ), sunDirection );
+
+        return sunDirection;
+    }
+
+    Vec4 getSunlightIntensity() {
+        return sunlightInterpolator.interpolate( sunTimer.getAlpha() );
+    }
+
+
+    int getNumberOfPointLights() {
+        return lightPos.size();
+    }
+
+
+    Vec3 getWorldLightPosition(int lightIndex) {
+        return lightPos.get( lightIndex ).interpolate( lightTimers.get( lightIndex ).getAlpha() );
+    }
+
+
+    void setPointLightIntensity(int lightIndex, Vec4 intensity) {
+        lightIntensity.set( lightIndex, intensity );
+    }
+
+    Vec4 getPointLightIntensity(int lightIndex) {
+        return lightIntensity.get( lightIndex );
+    }
+
+
+    Vec4 getBackgroundColor() {
+        return backgroundInterpolator.interpolate( sunTimer.getAlpha() );
+    }
+
+
+    ////////////////////////////////
+    private static final int NUMBER_OF_LIGHTS = 4;
+    private static final int NUMBER_OF_POINT_LIGHTS = NUMBER_OF_LIGHTS - 1;
+
     class PerLight extends BufferableData<FloatBuffer> {
         Vec4 cameraSpaceLightPos;
         Vec4 lightIntensity;
@@ -150,7 +223,6 @@ class LightManager {
             return buffer;
         }
     }
-
 
     class LightBlock extends BufferableData<FloatBuffer> {
         Vec4 ambientIntensity;
@@ -225,44 +297,61 @@ class LightManager {
     }
 
 
-    static class SunlightValue {
-        float normTime;
-        Vec4 ambient;
-        Vec4 sunlightIntensity;
-        Vec4 backgroundColor;
+    LightBlock getLightInformation(Mat4 worldToCameraMat) {
+        LightBlock lightData = new LightBlock();
 
-        SunlightValue(float normTime, Vec4 ambient, Vec4 sunlightIntensity, Vec4 backgroundColor) {
-            this.normTime = normTime;
-            this.ambient = ambient;
-            this.sunlightIntensity = sunlightIntensity;
-            this.backgroundColor = backgroundColor;
+        lightData.ambientIntensity = ambientInterpolator.interpolate( sunTimer.getAlpha() );
+        lightData.lightAttenuation = lightAttenuation;
+
+        lightData.lights[0] = new PerLight();
+        lightData.lights[0].cameraSpaceLightPos = Mat4.mul( worldToCameraMat, getSunlightDirection() );
+        lightData.lights[0].lightIntensity = sunlightInterpolator.interpolate( sunTimer.getAlpha() );
+
+        for ( int light = 0; light < NUMBER_OF_POINT_LIGHTS; light++ ) {
+            Vec4 worldLightPos = new Vec4( lightPos.get( light ).interpolate( lightTimers.get( light ).getAlpha() ), 1.0f );
+            Vec4 lightPosCameraSpace = Mat4.mul( worldToCameraMat, worldLightPos );
+
+            lightData.lights[light + 1] = new PerLight();
+            lightData.lights[light + 1].cameraSpaceLightPos = lightPosCameraSpace;
+            lightData.lights[light + 1].lightIntensity = new Vec4( lightIntensity.get( light ) );
         }
+
+        return lightData;
     }
 
-    static class SunlightValueHDR {
-        float normTime;
-        Vec4 ambient;
-        Vec4 sunlightIntensity;
-        Vec4 backgroundColor;
-        float maxIntensity;
+    LightBlockHDR getLightInformationHDR(Mat4 worldToCameraMat) {
+        LightBlockHDR lightData = new LightBlockHDR();
 
-        SunlightValueHDR(float normTime, Vec4 ambient, Vec4 sunlightIntensity,
-                         Vec4 backgroundColor, float maxIntensity) {
-            this.normTime = normTime;
-            this.ambient = ambient;
-            this.sunlightIntensity = sunlightIntensity;
-            this.backgroundColor = backgroundColor;
-            this.maxIntensity = maxIntensity;
+        lightData.ambientIntensity = ambientInterpolator.interpolate( sunTimer.getAlpha() );
+        lightData.lightAttenuation = lightAttenuation;
+        lightData.maxIntensity = maxIntensityInterpolator.interpolate( sunTimer.getAlpha() );
+
+        lightData.lights[0] = new PerLight();
+        lightData.lights[0].cameraSpaceLightPos = Mat4.mul( worldToCameraMat, getSunlightDirection() );
+        lightData.lights[0].lightIntensity = sunlightInterpolator.interpolate( sunTimer.getAlpha() );
+
+        for ( int light = 0; light < NUMBER_OF_POINT_LIGHTS; light++ ) {
+            Vec4 worldLightPos = new Vec4( lightPos.get( light ).interpolate( lightTimers.get( light ).getAlpha() ), 1.0f );
+            Vec4 lightPosCameraSpace = Mat4.mul( worldToCameraMat, worldLightPos );
+
+            lightData.lights[light + 1] = new PerLight();
+            lightData.lights[light + 1].cameraSpaceLightPos = lightPosCameraSpace;
+            lightData.lights[light + 1].lightIntensity = new Vec4( lightIntensity.get( light ) );
         }
+
+        return lightData;
     }
 
+    LightBlockGamma getLightInformationGamma(Mat4 worldToCameraMat) {
+        LightBlockHDR lightDataHdr = getLightInformationHDR( worldToCameraMat );
+        LightBlockGamma lightData = new LightBlockGamma();
 
-    enum TimerTypes {
-        SUN,
-        LIGHTS,
-        ALL,
+        lightData.ambientIntensity = lightDataHdr.ambientIntensity;
+        lightData.lightAttenuation = lightDataHdr.lightAttenuation;
+        lightData.maxIntensity = lightDataHdr.maxIntensity;
+        lightData.lights = lightDataHdr.lights;
 
-        NUM_TIMER_TYPES
+        return lightData;
     }
 
 
@@ -415,6 +504,15 @@ class LightManager {
 
 
     ////////////////////////////////
+    enum TimerTypes {
+        SUN,
+        LIGHTS,
+        ALL,
+
+        NUM_TIMER_TYPES
+    }
+
+
     void createTimer(String timerName, Timer.Type timerType, float duration) {
         extraTimers.put( timerName, new Timer( timerType, duration ) );
     }
@@ -503,105 +601,5 @@ class LightManager {
 
     float getSunTime() {
         return sunTimer.getAlpha();
-    }
-
-
-    ////////////////////////////////
-    LightBlock getLightInformation(Mat4 worldToCameraMat) {
-        LightBlock lightData = new LightBlock();
-
-        lightData.ambientIntensity = ambientInterpolator.interpolate( sunTimer.getAlpha() );
-        lightData.lightAttenuation = lightAttenuation;
-
-        lightData.lights[0] = new PerLight();
-        lightData.lights[0].cameraSpaceLightPos = Mat4.mul( worldToCameraMat, getSunlightDirection() );
-        lightData.lights[0].lightIntensity = sunlightInterpolator.interpolate( sunTimer.getAlpha() );
-
-        for ( int light = 0; light < NUMBER_OF_POINT_LIGHTS; light++ ) {
-            Vec4 worldLightPos = new Vec4( lightPos.get( light ).interpolate( lightTimers.get( light ).getAlpha() ), 1.0f );
-            Vec4 lightPosCameraSpace = Mat4.mul( worldToCameraMat, worldLightPos );
-
-            lightData.lights[light + 1] = new PerLight();
-            lightData.lights[light + 1].cameraSpaceLightPos = lightPosCameraSpace;
-            lightData.lights[light + 1].lightIntensity = new Vec4( lightIntensity.get( light ) );
-        }
-
-        return lightData;
-    }
-
-    LightBlockHDR getLightInformationHDR(Mat4 worldToCameraMat) {
-        LightBlockHDR lightData = new LightBlockHDR();
-
-        lightData.ambientIntensity = ambientInterpolator.interpolate( sunTimer.getAlpha() );
-        lightData.lightAttenuation = lightAttenuation;
-        lightData.maxIntensity = maxIntensityInterpolator.interpolate( sunTimer.getAlpha() );
-
-        lightData.lights[0] = new PerLight();
-        lightData.lights[0].cameraSpaceLightPos = Mat4.mul( worldToCameraMat, getSunlightDirection() );
-        lightData.lights[0].lightIntensity = sunlightInterpolator.interpolate( sunTimer.getAlpha() );
-
-        for ( int light = 0; light < NUMBER_OF_POINT_LIGHTS; light++ ) {
-            Vec4 worldLightPos = new Vec4( lightPos.get( light ).interpolate( lightTimers.get( light ).getAlpha() ), 1.0f );
-            Vec4 lightPosCameraSpace = Mat4.mul( worldToCameraMat, worldLightPos );
-
-            lightData.lights[light + 1] = new PerLight();
-            lightData.lights[light + 1].cameraSpaceLightPos = lightPosCameraSpace;
-            lightData.lights[light + 1].lightIntensity = new Vec4( lightIntensity.get( light ) );
-        }
-
-        return lightData;
-    }
-
-    LightBlockGamma getLightInformationGamma(Mat4 worldToCameraMat) {
-        LightBlockHDR lightDataHdr = getLightInformationHDR( worldToCameraMat );
-        LightBlockGamma lightData = new LightBlockGamma();
-
-        lightData.ambientIntensity = lightDataHdr.ambientIntensity;
-        lightData.lightAttenuation = lightDataHdr.lightAttenuation;
-        lightData.maxIntensity = lightDataHdr.maxIntensity;
-        lightData.lights = lightDataHdr.lights;
-
-        return lightData;
-    }
-
-
-    Vec4 getSunlightDirection() {
-        float angle = 2.0f * 3.14159f * sunTimer.getAlpha();
-        Vec4 sunDirection = new Vec4( 0.0f );
-        sunDirection.x = (float) Math.sin( angle );
-        sunDirection.y = (float) Math.cos( angle );
-
-        // Keep the sun from being perfectly centered overhead.
-        sunDirection = Mat4.mul( Glm.rotate( new Mat4( 1.0f ), 5.0f, new Vec3( 0.0f, 1.0f, 0.0f ) ), sunDirection );
-
-        return sunDirection;
-    }
-
-    Vec4 getSunlightIntensity() {
-        return sunlightInterpolator.interpolate( sunTimer.getAlpha() );
-    }
-
-
-    int getNumberOfPointLights() {
-        return lightPos.size();
-    }
-
-
-    Vec3 getWorldLightPosition(int lightIndex) {
-        return lightPos.get( lightIndex ).interpolate( lightTimers.get( lightIndex ).getAlpha() );
-    }
-
-
-    void setPointLightIntensity(int lightIndex, Vec4 intensity) {
-        lightIntensity.set( lightIndex, intensity );
-    }
-
-    Vec4 getPointLightIntensity(int lightIndex) {
-        return lightIntensity.get( lightIndex );
-    }
-
-
-    Vec4 getBackgroundColor() {
-        return backgroundInterpolator.interpolate( sunTimer.getAlpha() );
     }
 }

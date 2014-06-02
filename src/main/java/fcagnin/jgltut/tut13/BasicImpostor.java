@@ -97,11 +97,9 @@ public class BasicImpostor extends LWJGLWindow {
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer,
-                0, LightBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.SIZE );
 
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-                0, ProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
@@ -126,6 +124,7 @@ public class BasicImpostor extends LWJGLWindow {
 
         LightBlock lightData = new LightBlock();
         lightData.ambientIntensity = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
+        float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
         lightData.lightAttenuation = lightAttenuation;
 
         lightData.lights[0] = new PerLight();
@@ -162,8 +161,8 @@ public class BasicImpostor extends LWJGLWindow {
                 MaterialNames.DULL_GREY, drawImposter[1] );
         drawSphereOrbit( modelMatrix, new Vec3( -10.0f, 1.0f, 0.0f ), new Vec3( 0.0f, 1.0f, 0.0f ), 10.0f, sphereTimer.getAlpha(), 1.0f,
                 MaterialNames.BLACK_SHINY, drawImposter[2] );
-        drawSphereOrbit( modelMatrix, new Vec3( 10.0f, 1.0f, 0.0f ), new Vec3( 0.0f, 1.0f, 0.0f ), 10.0f, sphereTimer.getAlpha() * 2.0f,
-                1.0f, MaterialNames.GOLD_METAL, drawImposter[3] );
+        drawSphereOrbit( modelMatrix, new Vec3( 10.0f, 1.0f, 0.0f ), new Vec3( 0.0f, 1.0f, 0.0f ), 10.0f, sphereTimer.getAlpha() * 2.0f, 1.0f,
+                MaterialNames.GOLD_METAL, drawImposter[3] );
 
         if ( drawLights ) {
             modelMatrix.push();
@@ -333,13 +332,12 @@ public class BasicImpostor extends LWJGLWindow {
 
     private ProgramMeshData litMeshProg;
     private ProgramImposData[] litImpProgs = new ProgramImposData[Impostors.NUM_IMPOSTORS.ordinal()];
-    private UnlitProgData unlit;
-
-    private String[] impShaderFilenames = new String[]{
+    private String[] impShaderFileNames = new String[]{
             "BasicImpostor.vert", "BasicImpostor.frag",
             "PerspImpostor.vert", "PerspImpostor.frag",
             "DepthImpostor.vert", "DepthImpostor.frag"
     };
+    private UnlitProgData unlit;
 
     private class ProgramMeshData {
         int theProgram;
@@ -374,16 +372,16 @@ public class BasicImpostor extends LWJGLWindow {
 
         for ( int progIndex = 0; progIndex < Impostors.NUM_IMPOSTORS.ordinal(); progIndex++ ) {
             litImpProgs[progIndex] = new ProgramImposData();
-            litImpProgs[progIndex] = loadLitImposProgram( impShaderFilenames[progIndex * 2], impShaderFilenames[progIndex * 2 + 1] );
+            litImpProgs[progIndex] = loadLitImposProgram( impShaderFileNames[progIndex * 2], impShaderFileNames[progIndex * 2 + 1] );
         }
 
         unlit = loadUnlitProgram( "Unlit.vert", "Unlit.frag" );
     }
 
-    private ProgramMeshData loadLitMeshProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private ProgramMeshData loadLitMeshProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         ProgramMeshData data = new ProgramMeshData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -402,10 +400,10 @@ public class BasicImpostor extends LWJGLWindow {
         return data;
     }
 
-    private ProgramImposData loadLitImposProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private ProgramImposData loadLitImposProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         ProgramImposData data = new ProgramImposData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -423,10 +421,10 @@ public class BasicImpostor extends LWJGLWindow {
         return data;
     }
 
-    private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private UnlitProgData loadUnlitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         UnlitProgData data = new UnlitProgData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -441,25 +439,26 @@ public class BasicImpostor extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final float halfLightDistance = 25.0f;
-    private final float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
-
     private Mesh planeMesh;
     private Mesh sphereMesh;
     private Mesh cubeMesh;
 
+    private int imposterVAO;
+
+    private final float halfLightDistance = 25.0f;
+
     private Timer sphereTimer = new Timer( Timer.Type.LOOP, 6.0f );
 
     private boolean[] drawImposter = {false, false, false, false};
-    private boolean drawLights = true;
     private boolean drawCameraPos;
-    private float lightHeight = 20.0f;
+    private boolean drawLights = true;
 
 
     private Vec4 calcLightPosition() {
         final float scale = 3.14159f * 2.0f;
         float timeThroughLoop = sphereTimer.getAlpha();
 
+        float lightHeight = 20.0f;
         Vec4 lightPos = new Vec4( 0.0f, lightHeight, 0.0f, 1.0f );
 
         lightPos.x = (float) (Math.cos( timeThroughLoop * scale ) * 20.0f);
@@ -490,25 +489,6 @@ public class BasicImpostor extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final int projectionBlockIndex = 2;
-
-    private int projectionUniformBuffer;
-
-    private class ProjectionBlock extends BufferableData<FloatBuffer> {
-        Mat4 cameraToClipMatrix;
-
-        static final int SIZE = Mat4.SIZE;
-
-        @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            return cameraToClipMatrix.fillBuffer( buffer );
-        }
-    }
-
-
-    ////////////////////////////////
-    private int imposterVAO;
-
     private Impostors currImpostor = Impostors.BASIC;
 
     private enum Impostors {
@@ -521,8 +501,8 @@ public class BasicImpostor extends LWJGLWindow {
 
 
     private void drawSphere(MatrixStack modelMatrix, Vec3 position, float radius, MaterialNames material, boolean drawImposter) {
-        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                material.ordinal() * materialBlockOffset, MaterialBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, material.ordinal() * materialBlockOffset,
+                MaterialBlock.SIZE );
 
         if ( drawImposter ) {
             Vec4 cameraSpherePos = Mat4.mul( modelMatrix.top(), new Vec4( position, 1.0f ) );
@@ -542,7 +522,7 @@ public class BasicImpostor extends LWJGLWindow {
             modelMatrix.push();
 
             modelMatrix.translate( position );
-            modelMatrix.scale( radius * 2.0f );                    // The unit sphere has a radius 0.5f
+            modelMatrix.scale( radius * 2.0f );     // The unit sphere has a radius 0.5f.
 
             Mat3 normMatrix = new Mat3( modelMatrix.top() );
             normMatrix = Glm.transpose( Glm.inverse( normMatrix ) );
@@ -580,6 +560,23 @@ public class BasicImpostor extends LWJGLWindow {
         drawSphere( modelMatrix, new Vec3( 0.0f ), sphereRadius, material, drawImposter );
 
         modelMatrix.pop();
+    }
+
+
+    ////////////////////////////////
+    private final int projectionBlockIndex = 2;
+
+    private int projectionUniformBuffer;
+
+    private class ProjectionBlock extends BufferableData<FloatBuffer> {
+        Mat4 cameraToClipMatrix;
+
+        static final int SIZE = Mat4.SIZE;
+
+        @Override
+        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+            return cameraToClipMatrix.fillBuffer( buffer );
+        }
     }
 
 

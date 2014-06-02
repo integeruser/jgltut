@@ -363,12 +363,12 @@ public class MaterialTexture extends LWJGLWindow {
     }
 
     private class ShaderPairs {
-        String vertShaderFilename;
-        String fragShaderFilename;
+        String vertShaderFileName;
+        String fragShaderFileName;
 
         ShaderPairs(String vertShader, String fragShader) {
-            this.vertShaderFilename = vertShader;
-            this.fragShaderFilename = fragShader;
+            this.vertShaderFileName = vertShader;
+            this.fragShaderFileName = fragShader;
         }
     }
 
@@ -381,17 +381,17 @@ public class MaterialTexture extends LWJGLWindow {
 
     private void initializePrograms() {
         for ( int progIndex = 0; progIndex < ShaderMode.NUM_SHADER_MODES.ordinal(); progIndex++ ) {
-            programs[progIndex] = loadStandardProgram( shaderPairs[progIndex].vertShaderFilename,
-                    shaderPairs[progIndex].fragShaderFilename );
+            programs[progIndex] = loadStandardProgram( shaderPairs[progIndex].vertShaderFileName,
+                    shaderPairs[progIndex].fragShaderFileName );
         }
 
         unlit = loadUnlitProgram( "Unlit.vert", "Unlit.frag" );
     }
 
-    private ProgramData loadStandardProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private ProgramData loadStandardProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         ProgramData data = new ProgramData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -416,10 +416,10 @@ public class MaterialTexture extends LWJGLWindow {
         return data;
     }
 
-    private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private UnlitProgData loadUnlitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         UnlitProgData data = new UnlitProgData();
         data.theProgram = Framework.createProgram( shaderList );

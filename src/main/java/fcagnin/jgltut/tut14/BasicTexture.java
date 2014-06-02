@@ -355,10 +355,10 @@ public class BasicTexture extends LWJGLWindow {
         unlit = loadUnlitProgram( "Unlit.vert", "Unlit.frag" );
     }
 
-    private ProgramData loadStandardProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private ProgramData loadStandardProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         ProgramData data = new ProgramData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -381,10 +381,10 @@ public class BasicTexture extends LWJGLWindow {
         return data;
     }
 
-    private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private UnlitProgData loadUnlitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         UnlitProgData data = new UnlitProgData();
         data.theProgram = Framework.createProgram( shaderList );

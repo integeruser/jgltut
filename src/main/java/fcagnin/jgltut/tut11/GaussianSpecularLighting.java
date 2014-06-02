@@ -90,8 +90,7 @@ public class GaussianSpecularLighting extends LWJGLWindow {
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-                0, ProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
     }
@@ -117,6 +116,7 @@ public class GaussianSpecularLighting extends LWJGLWindow {
         glUniform4f( whiteProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f );
         glUniform4f( whiteProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f );
         glUniform3( whiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer( vec4Buffer ) );
+        float lightAttenuation = 1.2f;
         glUniform1f( whiteProg.lightAttenuationUnif, lightAttenuation );
         glUniform1f( whiteProg.shininessFactorUnif, matParams.getSpecularValue() );
         glUniform4( whiteProg.baseDiffuseColorUnif, drawDark ? darkColor.fillAndFlipBuffer( vec4Buffer ) : lightColor.fillAndFlipBuffer(
@@ -352,7 +352,7 @@ public class GaussianSpecularLighting extends LWJGLWindow {
     private float zFar = 1000.0f;
 
     private ProgramPairs[] programs = new ProgramPairs[LightingModel.MAX_LIGHTING_MODEL.ordinal()];
-    private ShaderPairs[] shaderFilenames = new ShaderPairs[]{
+    private ShaderPairs[] shaderFileNames = new ShaderPairs[]{
             new ShaderPairs( "PN.vert", "PCN.vert", "PhongLighting.frag" ),
             new ShaderPairs( "PN.vert", "PCN.vert", "PhongOnly.frag" ),
             new ShaderPairs( "PN.vert", "PCN.vert", "BlinnLighting.frag" ),
@@ -390,14 +390,14 @@ public class GaussianSpecularLighting extends LWJGLWindow {
     }
 
     private class ShaderPairs {
-        String whiteVertShaderFilename;
-        String colorVertShaderFilename;
-        String fragmentShaderFilename;
+        String whiteVertShaderFileName;
+        String colorVertShaderFileName;
+        String fragmentShaderFileName;
 
-        ShaderPairs(String whiteVertShaderFilename, String colorVertShaderFilename, String fragmentShaderFilename) {
-            this.whiteVertShaderFilename = whiteVertShaderFilename;
-            this.colorVertShaderFilename = colorVertShaderFilename;
-            this.fragmentShaderFilename = fragmentShaderFilename;
+        ShaderPairs(String whiteVertShaderFileName, String colorVertShaderFileName, String fragmentShaderFileName) {
+            this.whiteVertShaderFileName = whiteVertShaderFileName;
+            this.colorVertShaderFileName = colorVertShaderFileName;
+            this.fragmentShaderFileName = fragmentShaderFileName;
         }
     }
 
@@ -410,19 +410,19 @@ public class GaussianSpecularLighting extends LWJGLWindow {
     private void initializePrograms() {
         for ( int progIndex = 0; progIndex < LightingModel.MAX_LIGHTING_MODEL.ordinal(); progIndex++ ) {
             programs[progIndex] = new ProgramPairs();
-            programs[progIndex].whiteProg = loadLitProgram( shaderFilenames[progIndex].whiteVertShaderFilename,
-                    shaderFilenames[progIndex].fragmentShaderFilename );
-            programs[progIndex].colorProg = loadLitProgram( shaderFilenames[progIndex].colorVertShaderFilename,
-                    shaderFilenames[progIndex].fragmentShaderFilename );
+            programs[progIndex].whiteProg = loadLitProgram( shaderFileNames[progIndex].whiteVertShaderFileName,
+                    shaderFileNames[progIndex].fragmentShaderFileName );
+            programs[progIndex].colorProg = loadLitProgram( shaderFileNames[progIndex].colorVertShaderFileName,
+                    shaderFileNames[progIndex].fragmentShaderFileName );
         }
 
         unlit = loadUnlitProgram( "PosTransform.vert", "UniformColor.frag" );
     }
 
-    private ProgramData loadLitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private ProgramData loadLitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         ProgramData data = new ProgramData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -442,10 +442,10 @@ public class GaussianSpecularLighting extends LWJGLWindow {
         return data;
     }
 
-    private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private UnlitProgData loadUnlitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         UnlitProgData data = new UnlitProgData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -460,6 +460,22 @@ public class GaussianSpecularLighting extends LWJGLWindow {
 
 
     ////////////////////////////////
+    private Mesh cylinderMesh;
+    private Mesh planeMesh;
+    private Mesh cubeMesh;
+
+    private float lightHeight = 1.5f;
+    private float lightRadius = 1.0f;
+    private Timer lightTimer = new Timer( Timer.Type.LOOP, 5.0f );
+
+    private boolean drawColoredCyl;
+    private boolean drawLightSource;
+    private boolean scaleCyl;
+    private boolean drawDark;
+
+    private final Vec4 darkColor = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
+    private final Vec4 lightColor = new Vec4( 1.0f );
+
     private final String[] lightModelNames = {
             "Phong Specular.",
             "Phong Only.",
@@ -468,23 +484,6 @@ public class GaussianSpecularLighting extends LWJGLWindow {
             "Gaussian Specular.",
             "Gaussian Only."
     };
-
-    private final Vec4 darkColor = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
-    private final Vec4 lightColor = new Vec4( 1.0f );
-    private final float lightAttenuation = 1.2f;
-
-    private Mesh cylinderMesh;
-    private Mesh planeMesh;
-    private Mesh cubeMesh;
-
-    private Timer lightTimer = new Timer( Timer.Type.LOOP, 5.0f );
-
-    private boolean drawColoredCyl;
-    private boolean drawLightSource;
-    private boolean scaleCyl;
-    private boolean drawDark;
-    private float lightHeight = 1.5f;
-    private float lightRadius = 1.0f;
 
 
     private Vec4 calcLightPosition() {
@@ -562,81 +561,85 @@ public class GaussianSpecularLighting extends LWJGLWindow {
     private MaterialParams matParams = new MaterialParams();
 
     private class MaterialParams {
-        private float phongExponent;
-        private float blinnExponent;
-        private float daussianRoughness;
+        float phongExponent;
+        float blinnExponent;
+        float gaussianRoughness;
 
 
         MaterialParams() {
             phongExponent = 4.0f;
             blinnExponent = 4.0f;
-            daussianRoughness = 0.5f;
+            gaussianRoughness = 0.5f;
         }
 
 
         void increment(boolean isLarge) {
-            if ( isGaussianLightModel() ) {
-                if ( isLarge ) {
-                    daussianRoughness += 0.1f;
-                } else {
-                    daussianRoughness += 0.01f;
-                }
-            } else {
-                switch ( lightModel ) {
-                    case PHONG_SPECULAR:
-                    case PHONG_ONLY:
-                        if ( isLarge ) {
-                            phongExponent += 0.5f;
-                        } else {
-                            phongExponent += 0.1f;
-                        }
-                        break;
+            switch ( lightModel ) {
+                case PHONG_SPECULAR:
+                case PHONG_ONLY:
+                    if ( isLarge ) {
+                        phongExponent += 0.5f;
+                    } else {
+                        phongExponent += 0.1f;
+                    }
+                    break;
 
-                    case BLINN_SPECULAR:
-                    case BLINN_ONLY:
-                        if ( isLarge ) {
-                            blinnExponent += 0.5f;
-                        } else {
-                            blinnExponent += 0.1f;
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                case BLINN_SPECULAR:
+                case BLINN_ONLY:
+                    if ( isLarge ) {
+                        blinnExponent += 0.5f;
+                    } else {
+                        blinnExponent += 0.1f;
+                    }
+                    break;
+
+                case GAUSSIAN_SPECULAR:
+                case GAUSSIAN_ONLY:
+                    if ( isLarge ) {
+                        gaussianRoughness += 0.1f;
+                    } else {
+                        gaussianRoughness += 0.01f;
+                    }
+                    break;
+
+                default:
+                    break;
             }
 
             clampParam();
         }
 
         void decrement(boolean isLarge) {
-            if ( isGaussianLightModel() ) {
-                if ( isLarge ) {
-                    daussianRoughness -= 0.1f;
-                } else {
-                    daussianRoughness -= 0.01f;
-                }
-            } else {
-                switch ( lightModel ) {
-                    case PHONG_SPECULAR:
-                    case PHONG_ONLY:
-                        if ( isLarge ) {
-                            phongExponent += 0.5f;
-                        } else {
-                            phongExponent += 0.1f;
-                        }
-                        break;
+            switch ( lightModel ) {
+                case PHONG_SPECULAR:
+                case PHONG_ONLY:
+                    if ( isLarge ) {
+                        phongExponent += 0.5f;
+                    } else {
+                        phongExponent += 0.1f;
+                    }
+                    break;
 
-                    case BLINN_SPECULAR:
-                    case BLINN_ONLY:
-                        if ( isLarge ) {
-                            blinnExponent += 0.5f;
-                        } else {
-                            blinnExponent += 0.1f;
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                case BLINN_SPECULAR:
+                case BLINN_ONLY:
+                    if ( isLarge ) {
+                        blinnExponent += 0.5f;
+                    } else {
+                        blinnExponent += 0.1f;
+                    }
+                    break;
+
+                case GAUSSIAN_SPECULAR:
+                case GAUSSIAN_ONLY:
+                    if ( isLarge ) {
+                        gaussianRoughness -= 0.1f;
+                    } else {
+                        gaussianRoughness -= 0.01f;
+                    }
+                    break;
+
+                default:
+                    break;
             }
 
             clampParam();
@@ -655,17 +658,16 @@ public class GaussianSpecularLighting extends LWJGLWindow {
 
                 case GAUSSIAN_SPECULAR:
                 case GAUSSIAN_ONLY:
-                    return daussianRoughness;
-                default:
-                    break;
-            }
+                    return gaussianRoughness;
 
-            float stopComplaint = 0.0f;
-            return stopComplaint;
+                default:
+                    float stopComplaint = 0.0f;
+                    return stopComplaint;
+            }
         }
 
 
-        private void clampParam() {
+        void clampParam() {
             switch ( lightModel ) {
                 case PHONG_SPECULAR:
                 case PHONG_ONLY:
@@ -683,17 +685,13 @@ public class GaussianSpecularLighting extends LWJGLWindow {
 
                 case GAUSSIAN_SPECULAR:
                 case GAUSSIAN_ONLY:
-                    daussianRoughness = Math.max( 0.0001f, daussianRoughness );
-                    daussianRoughness = Math.min( 1.0f, daussianRoughness );
+                    gaussianRoughness = Math.max( 0.0001f, gaussianRoughness );
+                    gaussianRoughness = Math.min( 1.0f, gaussianRoughness );
                     break;
+
                 default:
                     break;
             }
         }
-    }
-
-
-    private boolean isGaussianLightModel() {
-        return (lightModel == LightingModel.GAUSSIAN_ONLY || lightModel == LightingModel.GAUSSIAN_SPECULAR);
     }
 }

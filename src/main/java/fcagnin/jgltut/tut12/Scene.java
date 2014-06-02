@@ -23,7 +23,7 @@ import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
  *
  * @author integeruser
  */
-public abstract class Scene {
+abstract class Scene {
     Scene() {
         terrainMesh = new Mesh( "Ground.xml" );
         cubeMesh = new Mesh( "UnitCube.xml" );
@@ -37,6 +37,7 @@ public abstract class Scene {
         sizeMaterialBlock = MaterialBlock.SIZE;
         sizeMaterialBlock += uniformBufferAlignSize - (sizeMaterialBlock % uniformBufferAlignSize);
 
+        int MATERIAL_COUNT = 6;
         int sizeMaterialUniformBuffer = sizeMaterialBlock * MATERIAL_COUNT;
 
         ArrayList<MaterialBlock> materials = new ArrayList<>( MATERIAL_COUNT );
@@ -47,7 +48,7 @@ public abstract class Scene {
 
         for ( MaterialBlock materialBlock : materials ) {
             materialBlock.fillBuffer( materialsBuffer );
-            materialsBuffer.put( padding );                        // The buffer size must be sizeMaterialUniformBuffer
+            materialsBuffer.put( padding );     // The buffer size must be sizeMaterialUniformBuffer
         }
 
         materialsBuffer.flip();
@@ -74,30 +75,6 @@ public abstract class Scene {
 
 
     ////////////////////////////////
-    static class ProgramData {
-        int theProgram;
-
-        int modelToCameraMatrixUnif;
-        int normalModelToCameraMatrixUnif;
-    }
-
-
-    abstract ProgramData getProgram(LightingProgramTypes type);
-
-
-    ////////////////////////////////
-    enum LightingProgramTypes {
-        VERT_COLOR_DIFFUSE_SPECULAR,
-        VERT_COLOR_DIFFUSE,
-
-        MTL_COLOR_DIFFUSE_SPECULAR,
-        MTL_COLOR_DIFFUSE,
-
-        MAX_LIGHTING_PROGRAM_TYPES
-    }
-
-
-    ////////////////////////////////
     void draw(MatrixStack modelMatrix, int materialBlockIndex, float alphaTetra) {
         // Render the ground plane.
         {
@@ -105,8 +82,7 @@ public abstract class Scene {
 
             modelMatrix.rotateX( -90.0f );
 
-            drawObject( terrainMesh, getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE ),
-                    materialBlockIndex, 0, modelMatrix );
+            drawObject( terrainMesh, getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE ), materialBlockIndex, 0, modelMatrix );
 
             modelMatrix.pop();
         }
@@ -121,8 +97,8 @@ public abstract class Scene {
             modelMatrix.translate( 0.0f, (float) Math.sqrt( 2.0f ), 0.0f );
             modelMatrix.rotate( new Vec3( -0.707f, 0.0f, -0.707f ), 54.735f );
 
-            drawObject( tetraMesh, "lit-color", getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR ),
-                    materialBlockIndex, 1, modelMatrix );
+            drawObject( tetraMesh, "lit-color", getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR ), materialBlockIndex, 1,
+                    modelMatrix );
 
             modelMatrix.pop();
         }
@@ -136,8 +112,7 @@ public abstract class Scene {
             modelMatrix.scale( 4.0f, 9.0f, 1.0f );
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
-            drawObject( cubeMesh, "lit", getProgram( LightingProgramTypes.MTL_COLOR_DIFFUSE_SPECULAR ),
-                    materialBlockIndex, 2, modelMatrix );
+            drawObject( cubeMesh, "lit", getProgram( LightingProgramTypes.MTL_COLOR_DIFFUSE_SPECULAR ), materialBlockIndex, 2, modelMatrix );
 
             modelMatrix.pop();
         }
@@ -151,8 +126,8 @@ public abstract class Scene {
             modelMatrix.rotateY( -10.0f );
             modelMatrix.scale( 20.0f, 20.0f, 20.0f );
 
-            drawObject( cubeMesh, "lit-color", getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR ),
-                    materialBlockIndex, 3, modelMatrix );
+            drawObject( cubeMesh, "lit-color", getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR ), materialBlockIndex, 3,
+                    modelMatrix );
 
             modelMatrix.pop();
         }
@@ -165,8 +140,8 @@ public abstract class Scene {
             modelMatrix.scale( 15.0f, 55.0f, 15.0f );
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
-            drawObject( cylMesh, "lit-color", getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR ),
-                    materialBlockIndex, 4, modelMatrix );
+            drawObject( cylMesh, "lit-color", getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR ), materialBlockIndex, 4,
+                    modelMatrix );
 
             modelMatrix.pop();
         }
@@ -178,8 +153,7 @@ public abstract class Scene {
             modelMatrix.translate( -83.0f, 14.0f, -77.0f );
             modelMatrix.scale( 20.0f, 20.0f, 20.0f );
 
-            drawObject( sphereMesh, "lit", getProgram( LightingProgramTypes.MTL_COLOR_DIFFUSE_SPECULAR ),
-                    materialBlockIndex, 5, modelMatrix );
+            drawObject( sphereMesh, "lit", getProgram( LightingProgramTypes.MTL_COLOR_DIFFUSE_SPECULAR ), materialBlockIndex, 5, modelMatrix );
 
             modelMatrix.pop();
         }
@@ -187,8 +161,7 @@ public abstract class Scene {
 
 
     void drawObject(Mesh mesh, ProgramData progData, int materialBlockIndex, int materialIndex, MatrixStack modelMatrix) {
-        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                materialIndex * sizeMaterialBlock, MaterialBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, materialIndex * sizeMaterialBlock, MaterialBlock.SIZE );
 
         Mat3 normMatrix = new Mat3( modelMatrix.top() );
         normMatrix = Glm.transpose( Glm.inverse( normMatrix ) );
@@ -204,8 +177,7 @@ public abstract class Scene {
     }
 
     void drawObject(Mesh mesh, String meshName, ProgramData progData, int materialBlockIndex, int materialIndex, MatrixStack modelMatrix) {
-        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                materialIndex * sizeMaterialBlock, MaterialBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, materialIndex * sizeMaterialBlock, MaterialBlock.SIZE );
 
         Mat3 normMatrix = new Mat3( modelMatrix.top() );
         normMatrix = Glm.transpose( Glm.inverse( normMatrix ) );
@@ -231,7 +203,28 @@ public abstract class Scene {
 
 
     ////////////////////////////////
-    private final int MATERIAL_COUNT = 6;
+    static class ProgramData {
+        int theProgram;
+
+        int modelToCameraMatrixUnif;
+        int normalModelToCameraMatrixUnif;
+    }
+
+
+    abstract ProgramData getProgram(LightingProgramTypes lightingProgramType);
+
+
+    ////////////////////////////////
+    enum LightingProgramTypes {
+        VERT_COLOR_DIFFUSE_SPECULAR,
+        VERT_COLOR_DIFFUSE,
+
+        MTL_COLOR_DIFFUSE_SPECULAR,
+        MTL_COLOR_DIFFUSE,
+
+        MAX_LIGHTING_PROGRAM_TYPES
+    }
+
 
     private class MaterialBlock extends BufferableData<FloatBuffer> {
         Vec4 diffuseColor;

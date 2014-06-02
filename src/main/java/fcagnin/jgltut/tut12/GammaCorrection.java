@@ -76,10 +76,9 @@ public class GammaCorrection extends LWJGLWindow {
 
         try {
             scene = new Scene() {
-
                 @Override
-                ProgramData getProgram(LightingProgramTypes eType) {
-                    return programs[eType.ordinal()];
+                ProgramData getProgram(LightingProgramTypes lightingProgramType) {
+                    return programs[lightingProgramType.ordinal()];
                 }
             };
         } catch ( Exception exception ) {
@@ -114,11 +113,9 @@ public class GammaCorrection extends LWJGLWindow {
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer,
-                0, LightBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.SIZE );
 
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-                0, ProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
     }
@@ -176,7 +173,7 @@ public class GammaCorrection extends LWJGLWindow {
             }
 
             // Render the lights
-            if ( drawLights ) {
+            {
                 for ( int light = 0; light < lights.getNumberOfPointLights(); light++ ) {
                     modelMatrix.push();
 
@@ -366,15 +363,16 @@ public class GammaCorrection extends LWJGLWindow {
 
 
     ////////////////////////////////
+    private float zNear = 1.0f;
+    private float zFar = 1000.0f;
+
     private final int materialBlockIndex = 0;
     private final int lightBlockIndex = 1;
 
     private int lightUniformBuffer;
-    private float zNear = 1.0f;
-    private float zFar = 1000.0f;
 
     private ProgramData[] programs = new ProgramData[LightingProgramTypes.MAX_LIGHTING_PROGRAM_TYPES.ordinal()];
-    private Shaders[] shaderFilenames = new Shaders[]{
+    private Shaders[] shaderFileNames = new Shaders[]{
             new Shaders( "PCN.vert", "DiffuseSpecularGamma.frag" ),
             new Shaders( "PCN.vert", "DiffuseOnlyGamma.frag" ),
 
@@ -384,12 +382,12 @@ public class GammaCorrection extends LWJGLWindow {
     private UnlitProgData unlit;
 
     private class Shaders {
-        String vertexShaderFilename;
-        String fragmentShaderFilename;
+        String vertexShaderFileName;
+        String fragmentShaderFileName;
 
-        Shaders(String vertexShaderFilename, String fragmentShaderFilename) {
-            this.vertexShaderFilename = vertexShaderFilename;
-            this.fragmentShaderFilename = fragmentShaderFilename;
+        Shaders(String vertexShaderFileName, String fragmentShaderFileName) {
+            this.vertexShaderFileName = vertexShaderFileName;
+            this.fragmentShaderFileName = fragmentShaderFileName;
         }
     }
 
@@ -409,17 +407,17 @@ public class GammaCorrection extends LWJGLWindow {
     private void initializePrograms() {
         for ( int progIndex = 0; progIndex < LightingProgramTypes.MAX_LIGHTING_PROGRAM_TYPES.ordinal(); progIndex++ ) {
             programs[progIndex] = new ProgramData();
-            programs[progIndex] = loadLitProgram( shaderFilenames[progIndex].vertexShaderFilename,
-                    shaderFilenames[progIndex].fragmentShaderFilename );
+            programs[progIndex] = loadLitProgram( shaderFileNames[progIndex].vertexShaderFileName,
+                    shaderFileNames[progIndex].fragmentShaderFileName );
         }
 
         unlit = loadUnlitProgram( "PosTransform.vert", "UniformColor.frag" );
     }
 
-    private ProgramData loadLitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private ProgramData loadLitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         ProgramData data = new ProgramData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -431,7 +429,7 @@ public class GammaCorrection extends LWJGLWindow {
         int lightBlock = glGetUniformBlockIndex( data.theProgram, "Light" );
         int projectionBlock = glGetUniformBlockIndex( data.theProgram, "Projection" );
 
-        if ( materialBlock != GL_INVALID_INDEX ) {                                    // Can be optimized out.
+        if ( materialBlock != GL_INVALID_INDEX ) {      // Can be optimized out.
             glUniformBlockBinding( data.theProgram, materialBlock, materialBlockIndex );
         }
         glUniformBlockBinding( data.theProgram, lightBlock, lightBlockIndex );
@@ -440,10 +438,10 @@ public class GammaCorrection extends LWJGLWindow {
         return data;
     }
 
-    private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private UnlitProgData loadUnlitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         UnlitProgData data = new UnlitProgData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -458,16 +456,16 @@ public class GammaCorrection extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final Vec4 skyDaylightColor = new Vec4( 0.65f, 0.65f, 1.0f, 1.0f );
-
     private Scene scene;
+
     private LightManager lights = new LightManager();
+    private final Vec4 skyDaylightColor = new Vec4( 0.65f, 0.65f, 1.0f, 1.0f );
 
     private TimerTypes timerMode = TimerTypes.ALL;
 
-    private boolean drawLights = true;
     private boolean drawCameraPos;
     private boolean isGammaCorrect;
+
     private float gammaValue = 2.2f;
 
 
@@ -528,7 +526,6 @@ public class GammaCorrection extends LWJGLWindow {
         inputCorrected.y = (float) Math.pow( input.y, 1.0f / gamma );
         inputCorrected.z = (float) Math.pow( input.z, 1.0f / gamma );
         inputCorrected.w = input.w;
-
         return inputCorrected;
     }
 

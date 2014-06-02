@@ -82,8 +82,7 @@ public class VertexPointLighting extends LWJGLWindow {
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-                0, ProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
     }
@@ -141,8 +140,7 @@ public class VertexPointLighting extends LWJGLWindow {
 
                 if ( drawColoredCyl ) {
                     glUseProgram( vertexDiffuseColor.theProgram );
-                    glUniformMatrix4( vertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer
-                    ) );
+                    glUniformMatrix4( vertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
                     Mat3 normMatrix = new Mat3( modelMatrix.top() );
                     glUniformMatrix3( vertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                     cylinderMesh.render( "lit-color" );
@@ -316,10 +314,10 @@ public class VertexPointLighting extends LWJGLWindow {
         unlit = loadUnlitProgram( "PosTransform.vert", "UniformColor.frag" );
     }
 
-    private ProgramData loadLitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private ProgramData loadLitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         ProgramData data = new ProgramData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -335,10 +333,10 @@ public class VertexPointLighting extends LWJGLWindow {
         return data;
     }
 
-    private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private UnlitProgData loadUnlitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         UnlitProgData data = new UnlitProgData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -357,12 +355,12 @@ public class VertexPointLighting extends LWJGLWindow {
     private Mesh planeMesh;
     private Mesh cubeMesh;
 
+    private float lightHeight = 1.5f;
+    private float lightRadius = 1.0f;
     private Timer lightTimer = new Timer( Timer.Type.LOOP, 5.0f );
 
     private boolean drawColoredCyl;
     private boolean drawLight;
-    private float lightHeight = 1.5f;
-    private float lightRadius = 1.0f;
 
 
     private Vec4 calcLightPosition() {

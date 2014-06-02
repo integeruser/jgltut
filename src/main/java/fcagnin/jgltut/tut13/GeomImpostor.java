@@ -93,11 +93,9 @@ public class GeomImpostor extends LWJGLWindow {
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer,
-                0, LightBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.SIZE );
 
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-                0, ProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
@@ -134,6 +132,7 @@ public class GeomImpostor extends LWJGLWindow {
 
         LightBlock lightData = new LightBlock();
         lightData.ambientIntensity = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
+        float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
         lightData.lightAttenuation = lightAttenuation;
 
         lightData.lights[0] = new PerLight();
@@ -172,20 +171,17 @@ public class GeomImpostor extends LWJGLWindow {
             posSizeArray[0].sphereRadius = 4.0f;
 
             posSizeArray[1] = new VertexData();
-            posSizeArray[1].cameraPosition = getSphereOrbitPos( modelMatrix,
-                    new Vec3( 0.0f, 10.0f, 0.0f ), new Vec3( 0.6f, 0.8f, 0.0f ), 20.0f,
-                    sphereTimer.getAlpha() );
+            posSizeArray[1].cameraPosition = getSphereOrbitPos( modelMatrix, new Vec3( 0.0f, 10.0f, 0.0f ), new Vec3( 0.6f, 0.8f, 0.0f ),
+                    20.0f, sphereTimer.getAlpha() );
             posSizeArray[1].sphereRadius = 2.0f;
 
             posSizeArray[2] = new VertexData();
-            posSizeArray[2].cameraPosition = getSphereOrbitPos( modelMatrix,
-                    new Vec3( -10.0f, 1.0f, 0.0f ), new Vec3( 0.0f, 1.0f, 0.0f ),
+            posSizeArray[2].cameraPosition = getSphereOrbitPos( modelMatrix, new Vec3( -10.0f, 1.0f, 0.0f ), new Vec3( 0.0f, 1.0f, 0.0f ),
                     10.0f, sphereTimer.getAlpha() );
             posSizeArray[2].sphereRadius = 1.0f;
 
             posSizeArray[3] = new VertexData();
-            posSizeArray[3].cameraPosition = getSphereOrbitPos( modelMatrix,
-                    new Vec3( 10.0f, 1.0f, 0.0f ), new Vec3( 0.0f, 1.0f, 0.0f ),
+            posSizeArray[3].cameraPosition = getSphereOrbitPos( modelMatrix, new Vec3( 10.0f, 1.0f, 0.0f ), new Vec3( 0.0f, 1.0f, 0.0f ),
                     10.0f, sphereTimer.getAlpha() * 2.0f );
             posSizeArray[3].sphereRadius = 1.0f;
 
@@ -207,8 +203,7 @@ public class GeomImpostor extends LWJGLWindow {
         }
 
         {
-            glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialArrayUniformBuffer,
-                    0, MaterialEntry.SIZE * NUMBER_OF_SPHERES );
+            glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialArrayUniformBuffer, 0, MaterialEntry.SIZE * NUMBER_OF_SPHERES );
 
             glUseProgram( litImpProg.theProgram );
             glBindVertexArray( imposterVAO );
@@ -392,10 +387,10 @@ public class GeomImpostor extends LWJGLWindow {
         unlit = loadUnlitProgram( "Unlit.vert", "Unlit.frag" );
     }
 
-    private ProgramMeshData loadLitMeshProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private ProgramMeshData loadLitMeshProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         ProgramMeshData data = new ProgramMeshData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -414,12 +409,11 @@ public class GeomImpostor extends LWJGLWindow {
         return data;
     }
 
-    private ProgramImposData loadLitImposProgram(String vertexShaderFilename, String geometryShaderFilename,
-                                                 String fragmentShaderFilename) {
+    private ProgramImposData loadLitImposProgram(String vertexShaderFileName, String geometryShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_GEOMETRY_SHADER, geometryShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_GEOMETRY_SHADER, geometryShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         ProgramImposData data = new ProgramImposData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -435,10 +429,10 @@ public class GeomImpostor extends LWJGLWindow {
         return data;
     }
 
-    private UnlitProgData loadUnlitProgram(String vertexShaderFilename, String fragmentShaderFilename) {
+    private UnlitProgData loadUnlitProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFilename ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFilename ) );
+        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
+        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
 
         UnlitProgData data = new UnlitProgData();
         data.theProgram = Framework.createProgram( shaderList );
@@ -453,18 +447,19 @@ public class GeomImpostor extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final int NUMBER_OF_SPHERES = 4;
-    private final float halfLightDistance = 25.0f;
-    private final float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
-
     private Mesh planeMesh;
     private Mesh cubeMesh;
 
+    private int imposterVAO;
+    private int imposterVBO;
+
+    private final int NUMBER_OF_SPHERES = 4;
+    private final float halfLightDistance = 25.0f;
+
     private Timer sphereTimer = new Timer( Timer.Type.LOOP, 6.0f );
 
-    private boolean drawLights = true;
     private boolean drawCameraPos;
-    private float lightHeight = 20.0f;
+    private boolean drawLights = true;
 
 
     private Vec4 calcLightPosition() {
@@ -472,6 +467,7 @@ public class GeomImpostor extends LWJGLWindow {
 
         float timeThroughLoop = sphereTimer.getAlpha();
 
+        float lightHeight = 20.0f;
         Vec4 lightPos = new Vec4( 0.0f, lightHeight, 0.0f, 1.0f );
 
         lightPos.x = (float) (Math.cos( timeThroughLoop * scale ) * 20.0f);
@@ -522,6 +518,23 @@ public class GeomImpostor extends LWJGLWindow {
 
 
     private ViewPole viewPole = new ViewPole( initialViewData, viewScale, MouseButtons.MB_LEFT_BTN );
+
+
+    ////////////////////////////////
+    private class VertexData extends BufferableData<FloatBuffer> {
+        Vec3 cameraPosition;
+        float sphereRadius;
+
+        static final int SIZE = Vec3.SIZE + (1 * FLOAT_SIZE);
+
+        @Override
+        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+            cameraPosition.fillBuffer( buffer );
+            buffer.put( sphereRadius );
+
+            return buffer;
+        }
+    }
 
 
     ////////////////////////////////
@@ -587,9 +600,6 @@ public class GeomImpostor extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private int imposterVAO;
-    private int imposterVBO;
-
     private final int materialBlockIndex = 0;
 
     private int materialArrayUniformBuffer;
@@ -671,22 +681,5 @@ public class GeomImpostor extends LWJGLWindow {
         }
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
-    }
-
-
-    ////////////////////////////////
-    private class VertexData extends BufferableData<FloatBuffer> {
-        Vec3 cameraPosition;
-        float sphereRadius;
-
-        static final int SIZE = Vec3.SIZE + (1 * FLOAT_SIZE);
-
-        @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            cameraPosition.fillBuffer( buffer );
-            buffer.put( sphereRadius );
-
-            return buffer;
-        }
     }
 }

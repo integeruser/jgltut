@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 
 /**
- * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  *
  * @author integeruser
  */

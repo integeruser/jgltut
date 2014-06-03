@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
 
 
 /**
- * Visit https://github.com/integeruser/gltut-lwjgl for project info, updates and license terms. info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  * <p/>
  * Part II. Positioning
  * Chapter 5. Objects in Depth

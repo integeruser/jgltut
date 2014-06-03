@@ -75,7 +75,7 @@ public class TutorialChooser extends JPanel implements TreeSelectionListener {
 
 
     private TutorialChooser() {
-        DefaultMutableTreeNode top = new DefaultMutableTreeNode( "gltut" );
+        DefaultMutableTreeNode top = new DefaultMutableTreeNode( "jgltut" );
         createNodes( top );
 
         tree = new JTree( top );

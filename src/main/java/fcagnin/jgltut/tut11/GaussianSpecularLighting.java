@@ -33,19 +33,22 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * <p/>
  * I,J,K,L  - control the light's position. Holding SHIFT with these keys will move in smaller increments.
  * SPACE    - toggle between drawing the uncolored cylinder and the colored one.
- * U,O      - control the specular value. They raise and low the specular exponent. Using SHIFT in combination with them will raise/lower
- * the exponent by smaller amounts.
+ * U,O      - control the specular value. They raise and low the specular exponent. Using SHIFT in combination with
+ * them will raise/lower the exponent by smaller amounts.
  * Y        - toggle the drawing of the light source.
  * T        - toggle between the scaled and unscaled cylinder.
  * B        - toggle the light's rotation on/off.
  * G        - toggle between a diffuse color of (1, 1, 1) and a darker diffuse color of (0.2, 0.2, 0.2).
- * H        - switch between Blinn, Phong and Gaussian specular. Pressing SHIFT+H will switch between diffuse+specular and specular only.
+ * H        - switch between Blinn, Phong and Gaussian specular. Pressing SHIFT+H will switch between diffuse+specular
+ * and specular only.
  * <p/>
  * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
  * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
  * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera
+ * view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current
+ * camera view.
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  *
@@ -119,8 +122,8 @@ public class GaussianSpecularLighting extends LWJGLWindow {
         float lightAttenuation = 1.2f;
         glUniform1f( whiteProg.lightAttenuationUnif, lightAttenuation );
         glUniform1f( whiteProg.shininessFactorUnif, matParams.getSpecularValue() );
-        glUniform4( whiteProg.baseDiffuseColorUnif, drawDark ? darkColor.fillAndFlipBuffer( vec4Buffer ) : lightColor.fillAndFlipBuffer(
-                vec4Buffer ) );
+        glUniform4( whiteProg.baseDiffuseColorUnif,
+                drawDark ? darkColor.fillAndFlipBuffer( vec4Buffer ) : lightColor.fillAndFlipBuffer( vec4Buffer ) );
 
         glUseProgram( colorProg.theProgram );
         glUniform4f( colorProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f );
@@ -141,9 +144,11 @@ public class GaussianSpecularLighting extends LWJGLWindow {
                 normMatrix = Glm.transpose( Glm.inverse( normMatrix ) );
 
                 glUseProgram( whiteProg.theProgram );
-                glUniformMatrix4( whiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( whiteProg.modelToCameraMatrixUnif, false,
+                        modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
-                glUniformMatrix3( whiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                glUniformMatrix3( whiteProg.normalModelToCameraMatrixUnif, false,
+                        normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                 planeMesh.render();
                 glUseProgram( 0 );
 
@@ -165,9 +170,11 @@ public class GaussianSpecularLighting extends LWJGLWindow {
 
                 ProgramData prog = drawColoredCyl ? colorProg : whiteProg;
                 glUseProgram( prog.theProgram );
-                glUniformMatrix4( prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( prog.modelToCameraMatrixUnif, false,
+                        modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
-                glUniformMatrix3( prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                glUniformMatrix3( prog.normalModelToCameraMatrixUnif, false,
+                        normMatrix.fillAndFlipBuffer( mat3Buffer ) );
 
                 if ( drawColoredCyl ) {
                     cylinderMesh.render( "lit-color" );
@@ -188,7 +195,8 @@ public class GaussianSpecularLighting extends LWJGLWindow {
                 modelMatrix.scale( 0.1f, 0.1f, 0.1f );
 
                 glUseProgram( unlit.theProgram );
-                glUniformMatrix4( unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( unlit.modelToCameraMatrixUnif, false,
+                        modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
                 glUniform4f( unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f );
                 cubeMesh.render( "flat" );
 
@@ -522,7 +530,8 @@ public class GaussianSpecularLighting extends LWJGLWindow {
 
 
     private ViewPole viewPole = new ViewPole( initialViewData, viewScale, MouseButtons.MB_LEFT_BTN );
-    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, viewPole );
+    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN,
+            viewPole );
 
 
     ////////////////////////////////

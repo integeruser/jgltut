@@ -42,10 +42,10 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * Chapter 12. Dynamic Range
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2012.html
  * <p/>
- * W,A,S,D  - move the cameras forward/backwards and left/right, relative to the camera's current orientation. Holding SHIFT with these
- * keys will move in smaller increments.
- * Q,E      - raise and lower the camera, relative to its current orientation. Holding SHIFT with these keys will move in smaller
- * increments.
+ * W,A,S,D  - move the cameras forward/backwards and left/right, relative to the camera's current orientation. Holding
+ * SHIFT with these keys will move in smaller increments.
+ * Q,E      - raise and lower the camera, relative to its current orientation. Holding SHIFT with these keys will move
+ * in smaller increments.
  * P        - toggle pausing.
  * -,=      - rewind/jump forward time by one second (of real-time).
  * T        - toggle viewing of the current target point.
@@ -163,7 +163,8 @@ public class GammaCorrection extends LWJGLWindow {
                 modelMatrix.scale( 30.0f, 30.0f, 30.0f );
 
                 glUseProgram( unlit.theProgram );
-                glUniformMatrix4( unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( unlit.modelToCameraMatrixUnif, false,
+                        modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
                 Vec4 lightColor = lights.getSunlightIntensity();
                 glUniform4( unlit.objectColorUnif, lightColor.fillAndFlipBuffer( vec4Buffer ) );
@@ -180,7 +181,8 @@ public class GammaCorrection extends LWJGLWindow {
                     modelMatrix.translate( lights.getWorldLightPosition( light ) );
 
                     glUseProgram( unlit.theProgram );
-                    glUniformMatrix4( unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                    glUniformMatrix4( unlit.modelToCameraMatrixUnif, false,
+                            modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
                     Vec4 lightColor = lights.getPointLightIntensity( light );
                     glUniform4( unlit.objectColorUnif, lightColor.fillAndFlipBuffer( vec4Buffer ) );
@@ -199,7 +201,8 @@ public class GammaCorrection extends LWJGLWindow {
                 glDisable( GL_DEPTH_TEST );
                 glDepthMask( false );
                 glUseProgram( unlit.theProgram );
-                glUniformMatrix4( unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( unlit.modelToCameraMatrixUnif, false,
+                        modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
                 glUniform4f( unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f );
                 scene.getCubeMesh().render( "flat" );
                 glDepthMask( true );
@@ -255,27 +258,27 @@ public class GammaCorrection extends LWJGLWindow {
         float lastFrameDuration = getLastFrameDuration() * 20 / 1000.0f;
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_W ) ) {
-            viewPole.charPress( Keyboard.KEY_W, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_W, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_S ) ) {
-            viewPole.charPress( Keyboard.KEY_S, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_S, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_D ) ) {
-            viewPole.charPress( Keyboard.KEY_D, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_D, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_A ) ) {
-            viewPole.charPress( Keyboard.KEY_A, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_A, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_E ) ) {
-            viewPole.charPress( Keyboard.KEY_E, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_E, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_Q ) ) {
-            viewPole.charPress( Keyboard.KEY_Q, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_Q, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
 
@@ -471,20 +474,48 @@ public class GammaCorrection extends LWJGLWindow {
 
     private void setupHDRLighting() {
         SunlightValueHDR values[] = {
-                new SunlightValueHDR( 0.0f / 24.0f, new Vec4( 0.6f, 0.6f, 0.6f, 1.0f ), new Vec4( 1.8f, 1.8f, 1.8f, 1.0f ),
-                        new Vec4( skyDaylightColor ), 3.0f ),
-                new SunlightValueHDR( 4.5f / 24.0f, new Vec4( 0.6f, 0.6f, 0.6f, 1.0f ), new Vec4( 1.8f, 1.8f, 1.8f, 1.0f ),
-                        new Vec4( skyDaylightColor ), 3.0f ),
-                new SunlightValueHDR( 6.5f / 24.0f, new Vec4( 0.225f, 0.075f, 0.075f, 1.0f ), new Vec4( 0.45f, 0.15f, 0.15f, 1.0f ),
-                        new Vec4( 0.5f, 0.1f, 0.1f, 1.0f ), 1.5f ),
-                new SunlightValueHDR( 8.0f / 24.0f, new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ), new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
-                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ), 1.0f ),
-                new SunlightValueHDR( 18.0f / 24.0f, new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ), new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
-                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ), 1.0f ),
-                new SunlightValueHDR( 19.5f / 24.0f, new Vec4( 0.225f, 0.075f, 0.075f, 1.0f ), new Vec4( 0.45f, 0.15f, 0.15f, 1.0f ),
-                        new Vec4( 0.5f, 0.1f, 0.1f, 1.0f ), 1.5f ),
-                new SunlightValueHDR( 20.5f / 24.0f, new Vec4( 0.6f, 0.6f, 0.6f, 1.0f ), new Vec4( 1.8f, 1.8f, 1.8f, 1.0f ),
-                        new Vec4( skyDaylightColor ), 3.0f ),
+                new SunlightValueHDR(
+                        0.0f / 24.0f,
+                        new Vec4( 0.6f, 0.6f, 0.6f, 1.0f ),
+                        new Vec4( 1.8f, 1.8f, 1.8f, 1.0f ),
+                        new Vec4( skyDaylightColor ),
+                        3.0f ),
+                new SunlightValueHDR(
+                        4.5f / 24.0f,
+                        new Vec4( 0.6f, 0.6f, 0.6f, 1.0f ),
+                        new Vec4( 1.8f, 1.8f, 1.8f, 1.0f ),
+                        new Vec4( skyDaylightColor ),
+                        3.0f ),
+                new SunlightValueHDR(
+                        6.5f / 24.0f,
+                        new Vec4( 0.225f, 0.075f, 0.075f, 1.0f ),
+                        new Vec4( 0.45f, 0.15f, 0.15f, 1.0f ),
+                        new Vec4( 0.5f, 0.1f, 0.1f, 1.0f ),
+                        1.5f ),
+                new SunlightValueHDR(
+                        8.0f / 24.0f,
+                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
+                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
+                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
+                        1.0f ),
+                new SunlightValueHDR(
+                        18.0f / 24.0f,
+                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
+                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
+                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
+                        1.0f ),
+                new SunlightValueHDR(
+                        19.5f / 24.0f,
+                        new Vec4( 0.225f, 0.075f, 0.075f, 1.0f ),
+                        new Vec4( 0.45f, 0.15f, 0.15f, 1.0f ),
+                        new Vec4( 0.5f, 0.1f, 0.1f, 1.0f ),
+                        1.5f ),
+                new SunlightValueHDR(
+                        20.5f / 24.0f,
+                        new Vec4( 0.6f, 0.6f, 0.6f, 1.0f ),
+                        new Vec4( 1.8f, 1.8f, 1.8f, 1.0f ),
+                        new Vec4( skyDaylightColor ),
+                        3.0f ),
         };
 
         lights.setSunlightValues( values, 7 );
@@ -499,17 +530,48 @@ public class GammaCorrection extends LWJGLWindow {
         Vec4 brightAmbient = new Vec4( 0.4f, 0.4f, 0.4f, 1.0f );
 
         SunlightValueHDR values[] = {
-                new SunlightValueHDR( 0.0f / 24.0f, brightAmbient, sunlight, new Vec4( 0.65f, 0.65f, 1.0f, 1.0f ), 10.0f ),
-                new SunlightValueHDR( 4.5f / 24.0f, brightAmbient, sunlight, new Vec4( skyDaylightColor ), 10.0f ),
-                new SunlightValueHDR( 6.5f / 24.0f, new Vec4( 0.01f, 0.025f, 0.025f, 1.0f ), new Vec4( 2.5f, 0.2f, 0.2f, 1.0f ),
-                        new Vec4( 0.5f, 0.1f, 0.1f, 1.0f ), 5.0f ),
-                new SunlightValueHDR( 8.0f / 24.0f, new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ), new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
-                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ), 3.0f ),
-                new SunlightValueHDR( 18.0f / 24.0f, new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ), new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
-                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ), 3.0f ),
-                new SunlightValueHDR( 19.5f / 24.0f, new Vec4( 0.01f, 0.025f, 0.025f, 1.0f ), new Vec4( 2.5f, 0.2f, 0.2f, 1.0f ),
-                        new Vec4( 0.5f, 0.1f, 0.1f, 1.0f ), 5.0f ),
-                new SunlightValueHDR( 20.5f / 24.0f, brightAmbient, sunlight, new Vec4( skyDaylightColor ), 10.0f )
+                new SunlightValueHDR(
+                        0.0f / 24.0f,
+                        brightAmbient,
+                        sunlight,
+                        new Vec4( 0.65f, 0.65f, 1.0f, 1.0f ),
+                        10.0f ),
+                new SunlightValueHDR(
+                        4.5f / 24.0f,
+                        brightAmbient,
+                        sunlight,
+                        new Vec4( skyDaylightColor ),
+                        10.0f ),
+                new SunlightValueHDR(
+                        6.5f / 24.0f,
+                        new Vec4( 0.01f, 0.025f, 0.025f, 1.0f ),
+                        new Vec4( 2.5f, 0.2f, 0.2f, 1.0f ),
+                        new Vec4( 0.5f, 0.1f, 0.1f, 1.0f ),
+                        5.0f ),
+                new SunlightValueHDR(
+                        8.0f / 24.0f,
+                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
+                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
+                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
+                        3.0f ),
+                new SunlightValueHDR(
+                        18.0f / 24.0f,
+                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
+                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
+                        new Vec4( 0.0f, 0.0f, 0.0f, 1.0f ),
+                        3.0f ),
+                new SunlightValueHDR(
+                        19.5f / 24.0f,
+                        new Vec4( 0.01f, 0.025f, 0.025f, 1.0f ),
+                        new Vec4( 2.5f, 0.2f, 0.2f, 1.0f ),
+                        new Vec4( 0.5f, 0.1f, 0.1f, 1.0f ),
+                        5.0f ),
+                new SunlightValueHDR(
+                        20.5f / 24.0f,
+                        brightAmbient,
+                        sunlight,
+                        new Vec4( skyDaylightColor ),
+                        10.0f )
         };
 
         lights.setSunlightValues( values, 7 );

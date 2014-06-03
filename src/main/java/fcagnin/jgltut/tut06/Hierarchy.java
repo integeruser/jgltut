@@ -454,7 +454,8 @@ public class Hierarchy extends LWJGLWindow {
                 modelToCameraStack.push();
                 modelToCameraStack.translate( posBaseLeft );
                 modelToCameraStack.scale( new Vec3( 1.0f, 1.0f, scaleBaseZ ) );
-                glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( modelToCameraMatrixUnif, false,
+                        modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
                 glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
                 modelToCameraStack.pop();
             }
@@ -464,7 +465,8 @@ public class Hierarchy extends LWJGLWindow {
                 modelToCameraStack.push();
                 modelToCameraStack.translate( posBaseRight );
                 modelToCameraStack.scale( new Vec3( 1.0f, 1.0f, scaleBaseZ ) );
-                glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( modelToCameraMatrixUnif, false,
+                        modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
                 glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
                 modelToCameraStack.pop();
             }
@@ -484,7 +486,8 @@ public class Hierarchy extends LWJGLWindow {
                 modelToCameraStack.push();
                 modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, (sizeUpperArm / 2.0f) - 1.0f ) );
                 modelToCameraStack.scale( new Vec3( 1.0f, 1.0f, sizeUpperArm / 2.0f ) );
-                glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( modelToCameraMatrixUnif, false,
+                        modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
                 glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
                 modelToCameraStack.pop();
             }
@@ -502,7 +505,8 @@ public class Hierarchy extends LWJGLWindow {
             modelToCameraStack.push();
             modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenLowerArm / 2.0f ) );
             modelToCameraStack.scale( new Vec3( widthLowerArm / 2.0f, widthLowerArm / 2.0f, lenLowerArm / 2.0f ) );
-            glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( modelToCameraMatrixUnif, false,
+                    modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
             glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
             modelToCameraStack.pop();
 
@@ -519,7 +523,8 @@ public class Hierarchy extends LWJGLWindow {
 
             modelToCameraStack.push();
             modelToCameraStack.scale( new Vec3( widthWrist / 2.0f, widthWrist / 2.0f, lenWrist / 2.0f ) );
-            glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( modelToCameraMatrixUnif, false,
+                    modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
             glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
             modelToCameraStack.pop();
 
@@ -537,7 +542,8 @@ public class Hierarchy extends LWJGLWindow {
             modelToCameraStack.push();
             modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger / 2.0f ) );
             modelToCameraStack.scale( new Vec3( widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f ) );
-            glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( modelToCameraMatrixUnif, false,
+                    modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
             glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
             modelToCameraStack.pop();
 
@@ -550,7 +556,8 @@ public class Hierarchy extends LWJGLWindow {
                 modelToCameraStack.push();
                 modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger / 2.0f ) );
                 modelToCameraStack.scale( new Vec3( widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f ) );
-                glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( modelToCameraMatrixUnif, false,
+                        modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
                 glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
                 modelToCameraStack.pop();
 
@@ -567,7 +574,8 @@ public class Hierarchy extends LWJGLWindow {
             modelToCameraStack.push();
             modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger / 2.0f ) );
             modelToCameraStack.scale( new Vec3( widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f ) );
-            glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( modelToCameraMatrixUnif, false,
+                    modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
             glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
             modelToCameraStack.pop();
 
@@ -580,7 +588,8 @@ public class Hierarchy extends LWJGLWindow {
                 modelToCameraStack.push();
                 modelToCameraStack.translate( new Vec3( 0.0f, 0.0f, lenFinger / 2.0f ) );
                 modelToCameraStack.scale( new Vec3( widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f ) );
-                glUniformMatrix4( modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( modelToCameraMatrixUnif, false,
+                        modelToCameraStack.top().fillAndFlipBuffer( mat4Buffer ) );
                 glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
                 modelToCameraStack.pop();
 
@@ -593,37 +602,49 @@ public class Hierarchy extends LWJGLWindow {
 
         void adjBase(boolean increment) {
             float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
-            angBase += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+            angBase += increment ?
+                    STANDARD_ANGLE_INCREMENT * lastFrameDuration :
+                    -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angBase = angBase % 360.0f;
         }
 
         void adjUpperArm(boolean increment) {
             float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
-            angUpperArm += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+            angUpperArm += increment ?
+                    STANDARD_ANGLE_INCREMENT * lastFrameDuration :
+                    -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angUpperArm = clamp( angUpperArm, -90.0f, 0.0f );
         }
 
         void adjLowerArm(boolean increment) {
             float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
-            angLowerArm += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+            angLowerArm += increment ?
+                    STANDARD_ANGLE_INCREMENT * lastFrameDuration :
+                    -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angLowerArm = clamp( angLowerArm, 0.0f, 146.25f );
         }
 
         void adjWristPitch(boolean increment) {
             float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
-            angWristPitch += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+            angWristPitch += increment ?
+                    STANDARD_ANGLE_INCREMENT * lastFrameDuration :
+                    -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angWristPitch = clamp( angWristPitch, 0.0f, 90.0f );
         }
 
         void adjWristRoll(boolean increment) {
             float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
-            angWristRoll += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+            angWristRoll += increment ?
+                    STANDARD_ANGLE_INCREMENT * lastFrameDuration :
+                    -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angWristRoll = angWristRoll % 360.0f;
         }
 
         void adjFingerOpen(boolean increment) {
             float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
-            angFingerOpen += increment ? SMALL_ANGLE_INCREMENT * lastFrameDuration : -SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            angFingerOpen += increment ?
+                    SMALL_ANGLE_INCREMENT * lastFrameDuration :
+                    -SMALL_ANGLE_INCREMENT * lastFrameDuration;
             angFingerOpen = clamp( angFingerOpen, 9.0f, 90.0f );
         }
 

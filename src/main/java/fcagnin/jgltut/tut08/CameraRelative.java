@@ -22,14 +22,15 @@ import static org.lwjgl.opengl.GL20.*;
  * Chapter 8. Getting Oriented
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2008.html
  * <p/>
- * SPACE    - toggles between three transforms: model-relative (yaw/pitch/roll-style), world-relative, and camera-relative.
+ * SPACE    - toggles between three transforms: model-relative (yaw/pitch/roll-style), world-relative, and
+ * camera-relative.
  * W,S      - control the outer gimbal.
  * A,D      - control the middle gimbal.
  * Q,E      - control the inner gimbal.
- * I,K      - move the camera up and down, relative to a center point. Holding SHIFT with these keys will move the camera in smaller
- * increments.
- * J,L      - move the camera left and right around the center point. Holding SHIFT with these keys will move the camera in smaller
- * increments.
+ * I,K      - move the camera up and down, relative to a center point. Holding SHIFT with these keys will move the
+ * camera in smaller increments.
+ * J,L      - move the camera left and right around the center point. Holding SHIFT with these keys will move the
+ * camera in smaller increments.
  *
  * @author integeruser
  */

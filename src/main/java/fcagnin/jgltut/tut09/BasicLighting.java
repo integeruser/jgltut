@@ -35,8 +35,10 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
  * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
  * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera
+ * view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current
+ * camera view.
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  *
@@ -107,9 +109,11 @@ public class BasicLighting extends LWJGLWindow {
                 modelMatrix.push();
 
                 glUseProgram( whiteDiffuseColor.theProgram );
-                glUniformMatrix4( whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( whiteDiffuseColor.modelToCameraMatrixUnif, false,
+                        modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
                 Mat3 normMatrix = new Mat3( modelMatrix.top() );
-                glUniformMatrix3( whiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                glUniformMatrix3( whiteDiffuseColor.normalModelToCameraMatrixUnif, false,
+                        normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                 glUniform4f( whiteDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f );
                 planeMesh.render();
                 glUseProgram( 0 );
@@ -125,16 +129,20 @@ public class BasicLighting extends LWJGLWindow {
 
                 if ( drawColoredCyl ) {
                     glUseProgram( vertexDiffuseColor.theProgram );
-                    glUniformMatrix4( vertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                    glUniformMatrix4( vertexDiffuseColor.modelToCameraMatrixUnif, false,
+                            modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
                     Mat3 normMatrix = new Mat3( modelMatrix.top() );
-                    glUniformMatrix3( vertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                    glUniformMatrix3( vertexDiffuseColor.normalModelToCameraMatrixUnif, false,
+                            normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                     glUniform4f( vertexDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f );
                     cylinderMesh.render( "lit-color" );
                 } else {
                     glUseProgram( whiteDiffuseColor.theProgram );
-                    glUniformMatrix4( whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                    glUniformMatrix4( whiteDiffuseColor.modelToCameraMatrixUnif, false,
+                            modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
                     Mat3 normMatrix = new Mat3( modelMatrix.top() );
-                    glUniformMatrix3( whiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                    glUniformMatrix3( whiteDiffuseColor.normalModelToCameraMatrixUnif, false,
+                            normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                     glUniform4f( whiteDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f );
                     cylinderMesh.render( "lit" );
                 }
@@ -285,7 +293,8 @@ public class BasicLighting extends LWJGLWindow {
 
 
     private ViewPole viewPole = new ViewPole( initialViewData, viewScale, MouseButtons.MB_LEFT_BTN );
-    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, viewPole );
+    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN,
+            viewPole );
 
 
     ////////////////////////////////

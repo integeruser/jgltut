@@ -36,8 +36,10 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
  * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
  * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera
+ * view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current
+ * camera view.
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  *
@@ -125,9 +127,11 @@ public class AmbientLighting extends LWJGLWindow {
                 modelMatrix.push();
 
                 glUseProgram( whiteDiffuse.theProgram );
-                glUniformMatrix4( whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( whiteDiffuse.modelToCameraMatrixUnif, false,
+                        modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
                 Mat3 normMatrix = new Mat3( modelMatrix.top() );
-                glUniformMatrix3( whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                glUniformMatrix3( whiteDiffuse.normalModelToCameraMatrixUnif, false,
+                        normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                 planeMesh.render();
                 glUseProgram( 0 );
 
@@ -142,15 +146,19 @@ public class AmbientLighting extends LWJGLWindow {
 
                 if ( drawColoredCyl ) {
                     glUseProgram( vertexDiffuse.theProgram );
-                    glUniformMatrix4( vertexDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                    glUniformMatrix4( vertexDiffuse.modelToCameraMatrixUnif, false,
+                            modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
                     Mat3 normMatrix = new Mat3( modelMatrix.top() );
-                    glUniformMatrix3( vertexDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                    glUniformMatrix3( vertexDiffuse.normalModelToCameraMatrixUnif, false,
+                            normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                     cylinderMesh.render( "lit-color" );
                 } else {
                     glUseProgram( whiteDiffuse.theProgram );
-                    glUniformMatrix4( whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                    glUniformMatrix4( whiteDiffuse.modelToCameraMatrixUnif, false,
+                            modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
                     Mat3 normMatrix = new Mat3( modelMatrix.top() );
-                    glUniformMatrix3( whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                    glUniformMatrix3( whiteDiffuse.normalModelToCameraMatrixUnif, false,
+                            normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                     cylinderMesh.render( "lit" );
                 }
                 glUseProgram( 0 );
@@ -316,7 +324,8 @@ public class AmbientLighting extends LWJGLWindow {
 
 
     private ViewPole viewPole = new ViewPole( initialViewData, viewScale, MouseButtons.MB_LEFT_BTN );
-    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, viewPole );
+    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN,
+            viewPole );
 
 
     ////////////////////////////////

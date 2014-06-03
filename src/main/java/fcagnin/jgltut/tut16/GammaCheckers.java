@@ -108,11 +108,8 @@ public class GammaCheckers extends LWJGLWindow {
         float hOffset = (float) (Math.cos( cyclicAngle ) * 0.25f);
         float vOffset = (float) (Math.sin( cyclicAngle ) * 0.25f);
 
-        final Mat4 worldToCamMat = Glm.lookAt(
-                new Vec3( hOffset, 1.0f, -64.0f ),
-                new Vec3( hOffset, -5.0f + vOffset, -44.0f ),
-                new Vec3( 0.0f, 1.0f, 0.0f )
-        );
+        final Mat4 worldToCamMat = Glm.lookAt( new Vec3( hOffset, 1.0f, -64.0f ),
+                new Vec3( hOffset, -5.0f + vOffset, -44.0f ), new Vec3( 0.0f, 1.0f, 0.0f ) );
 
         MatrixStack modelMatrix = new MatrixStack();
         modelMatrix.applyMatrix( worldToCamMat );
@@ -283,8 +280,8 @@ public class GammaCheckers extends LWJGLWindow {
                 SingleImage image = imageSet.getImage( mipmapLevel, 0, 0 );
                 Dimensions imageDimensions = image.getDimensions();
 
-                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0, GL_BGRA,
-                        GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData() );
+                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0,
+                        GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData() );
             }
 
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
@@ -301,8 +298,8 @@ public class GammaCheckers extends LWJGLWindow {
                 SingleImage image = imageSet.getImage( mipmapLevel, 0, 0 );
                 Dimensions imageDimensions = image.getDimensions();
 
-                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0, GL_BGRA,
-                        GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData() );
+                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0,
+                        GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData() );
             }
 
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );

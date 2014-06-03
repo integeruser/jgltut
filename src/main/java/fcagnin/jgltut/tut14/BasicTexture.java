@@ -46,8 +46,10 @@ import static org.lwjgl.opengl.GL33.*;
  * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
  * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
  * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera
+ * view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current
+ * camera view.
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  *
@@ -94,7 +96,8 @@ public class BasicTexture extends LWJGLWindow {
 
         materialUniformBuffer = glGenBuffers();
         glBindBuffer( GL_UNIFORM_BUFFER, materialUniformBuffer );
-        glBufferData( GL_UNIFORM_BUFFER, matBlock.fillAndFlipBuffer( BufferUtils.createFloatBuffer( 12 ) ), GL_STATIC_DRAW );
+        glBufferData( GL_UNIFORM_BUFFER, matBlock.fillAndFlipBuffer( BufferUtils.createFloatBuffer( 12 ) ),
+                GL_STATIC_DRAW );
 
         lightUniformBuffer = glGenBuffers();
         glBindBuffer( GL_UNIFORM_BUFFER, lightUniformBuffer );
@@ -506,7 +509,8 @@ public class BasicTexture extends LWJGLWindow {
 
 
     private ViewPole viewPole = new ViewPole( initialViewData, viewScale, MouseButtons.MB_LEFT_BTN );
-    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, viewPole );
+    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN,
+            viewPole );
 
 
     ////////////////////////////////

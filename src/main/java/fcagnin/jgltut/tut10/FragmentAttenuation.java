@@ -43,8 +43,10 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
  * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
  * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera
+ * view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current
+ * camera view.
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  *
@@ -96,7 +98,8 @@ public class FragmentAttenuation extends LWJGLWindow {
         glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, g_unprojectionBlockIndex, g_unprojectionUniformBuffer, 0, UnProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, g_unprojectionBlockIndex, g_unprojectionUniformBuffer, 0,
+                UnProjectionBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
     }
@@ -118,14 +121,16 @@ public class FragmentAttenuation extends LWJGLWindow {
         glUseProgram( fragWhiteDiffuseColor.theProgram );
         glUniform4f( fragWhiteDiffuseColor.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f );
         glUniform4f( fragWhiteDiffuseColor.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f );
-        glUniform3( fragWhiteDiffuseColor.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer( vec4Buffer ) );
+        glUniform3( fragWhiteDiffuseColor.cameraSpaceLightPosUnif,
+                lightPosCameraSpace.fillAndFlipBuffer( vec4Buffer ) );
         glUniform1f( fragWhiteDiffuseColor.lightAttenuationUnif, lightAttenuation );
         glUniform1i( fragWhiteDiffuseColor.useRSquareUnif, useRSquare ? 1 : 0 );
 
         glUseProgram( fragVertexDiffuseColor.theProgram );
         glUniform4f( fragVertexDiffuseColor.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f );
         glUniform4f( fragVertexDiffuseColor.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f );
-        glUniform3( fragVertexDiffuseColor.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer( vec4Buffer ) );
+        glUniform3( fragVertexDiffuseColor.cameraSpaceLightPosUnif,
+                lightPosCameraSpace.fillAndFlipBuffer( vec4Buffer ) );
         glUniform1f( fragVertexDiffuseColor.lightAttenuationUnif, lightAttenuation );
         glUniform1i( fragVertexDiffuseColor.useRSquareUnif, useRSquare ? 1 : 0 );
         glUseProgram( 0 );
@@ -141,9 +146,11 @@ public class FragmentAttenuation extends LWJGLWindow {
                 normMatrix = Glm.transpose( Glm.inverse( normMatrix ) );
 
                 glUseProgram( fragWhiteDiffuseColor.theProgram );
-                glUniformMatrix4( fragWhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( fragWhiteDiffuseColor.modelToCameraMatrixUnif, false,
+                        modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
-                glUniformMatrix3( fragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                glUniformMatrix3( fragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false,
+                        normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                 planeMesh.render();
                 glUseProgram( 0 );
 
@@ -165,15 +172,19 @@ public class FragmentAttenuation extends LWJGLWindow {
 
                 if ( drawColoredCyl ) {
                     glUseProgram( fragVertexDiffuseColor.theProgram );
-                    glUniformMatrix4( fragVertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                    glUniformMatrix4( fragVertexDiffuseColor.modelToCameraMatrixUnif, false,
+                            modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
-                    glUniformMatrix3( fragVertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                    glUniformMatrix3( fragVertexDiffuseColor.normalModelToCameraMatrixUnif, false,
+                            normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                     cylinderMesh.render( "lit-color" );
                 } else {
                     glUseProgram( fragWhiteDiffuseColor.theProgram );
-                    glUniformMatrix4( fragWhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                    glUniformMatrix4( fragWhiteDiffuseColor.modelToCameraMatrixUnif, false,
+                            modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
-                    glUniformMatrix3( fragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+                    glUniformMatrix3( fragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false,
+                            normMatrix.fillAndFlipBuffer( mat3Buffer ) );
                     cylinderMesh.render( "lit" );
                 }
                 glUseProgram( 0 );
@@ -189,7 +200,8 @@ public class FragmentAttenuation extends LWJGLWindow {
                 modelMatrix.scale( 0.1f, 0.1f, 0.1f );
 
                 glUseProgram( unlit.theProgram );
-                glUniformMatrix4( unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( unlit.modelToCameraMatrixUnif, false,
+                        modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
                 glUniform4f( unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f );
                 cubeMesh.render( "flat" );
 
@@ -215,7 +227,8 @@ public class FragmentAttenuation extends LWJGLWindow {
         glBindBuffer( GL_UNIFORM_BUFFER, projectionUniformBuffer );
         glBufferSubData( GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer( mat4Buffer ) );
         glBindBuffer( GL_UNIFORM_BUFFER, g_unprojectionUniformBuffer );
-        glBufferSubData( GL_UNIFORM_BUFFER, 0, unprojData.fillAndFlipBuffer( BufferUtils.createByteBuffer( 18 * FLOAT_SIZE ) ) );
+        glBufferSubData( GL_UNIFORM_BUFFER, 0,
+                unprojData.fillAndFlipBuffer( BufferUtils.createByteBuffer( 18 * FLOAT_SIZE ) ) );
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
         glViewport( 0, 0, width, height );
@@ -479,7 +492,8 @@ public class FragmentAttenuation extends LWJGLWindow {
 
 
     private ViewPole viewPole = new ViewPole( initialViewData, viewScale, MouseButtons.MB_LEFT_BTN );
-    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, viewPole );
+    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN,
+            viewPole );
 
 
     ////////////////////////////////

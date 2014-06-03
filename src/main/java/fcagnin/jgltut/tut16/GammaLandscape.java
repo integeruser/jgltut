@@ -52,10 +52,10 @@ import static org.lwjgl.opengl.GL33.*;
  * Chapter 16. Gamma and Textures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2016.html
  * <p/>
- * W,A,S,D  - move the cameras forward/backwards and left/right, relative to the camera's current orientation. Holding SHIFT with these
- * keys will move in smaller increments.
- * Q,E      - raise and lower the camera, relative to its current orientation. Holding SHIFT with these keys will move in smaller
- * increments.
+ * W,A,S,D  - move the cameras forward/backwards and left/right, relative to the camera's current orientation. Holding
+ * SHIFT with these keys will move in smaller increments.
+ * Q,E      - raise and lower the camera, relative to its current orientation. Holding SHIFT with these keys will move
+ * in smaller increments.
  * SPACE    - toggle non-shader-based gamma correction.
  * -,=      - rewind/jump forward time by 0.5 second (of real-time).
  * T        - toggle viewing the look-at point.
@@ -151,7 +151,8 @@ public class GammaLandscape extends LWJGLWindow {
         modelMatrix.rotateX( -90.0f );
 
         glUseProgram( progStandard.theProgram );
-        glUniformMatrix4( progStandard.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+        glUniformMatrix4( progStandard.modelToCameraMatrixUnif, false,
+                modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
         glUniform1i( progStandard.numberOfLightsUnif, lightEnv.getNumLights() );
 
         glActiveTexture( GL_TEXTURE0 + colorTexUnit );
@@ -176,7 +177,8 @@ public class GammaLandscape extends LWJGLWindow {
             modelMatrix.scale( 30.0f, 30.0f, 30.0f );
 
             glUseProgram( progUnlit.theProgram );
-            glUniformMatrix4( progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( progUnlit.modelToCameraMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
             Vec4 lightColor = lightEnv.getSunlightScaledIntensity();
             glUniform4( progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer( vec4Buffer ) );
@@ -192,7 +194,8 @@ public class GammaLandscape extends LWJGLWindow {
             modelMatrix.translate( lightEnv.getPointLightWorldPos( light ) );
 
             glUseProgram( progUnlit.theProgram );
-            glUniformMatrix4( progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( progUnlit.modelToCameraMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
             Vec4 lightColor = lightEnv.getPointLightScaledIntensity( light );
             glUniform4( progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer( vec4Buffer ) );
@@ -211,7 +214,8 @@ public class GammaLandscape extends LWJGLWindow {
             glDisable( GL_DEPTH_TEST );
             glDepthMask( false );
             glUseProgram( progUnlit.theProgram );
-            glUniformMatrix4( progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( progUnlit.modelToCameraMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             glUniform4f( progUnlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f );
             sphere.render( "flat" );
             glDepthMask( true );
@@ -264,27 +268,27 @@ public class GammaLandscape extends LWJGLWindow {
         float lastFrameDuration = getLastFrameDuration() * 20 / 1000.0f;
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_W ) ) {
-            viewPole.charPress( Keyboard.KEY_W, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_W, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_S ) ) {
-            viewPole.charPress( Keyboard.KEY_S, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_S, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_D ) ) {
-            viewPole.charPress( Keyboard.KEY_D, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_D, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_A ) ) {
-            viewPole.charPress( Keyboard.KEY_A, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_A, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_E ) ) {
-            viewPole.charPress( Keyboard.KEY_E, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_E, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_Q ) ) {
-            viewPole.charPress( Keyboard.KEY_Q, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_Q, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
 
@@ -435,8 +439,8 @@ public class GammaLandscape extends LWJGLWindow {
                 SingleImage image = imageSet.getImage( mipmapLevel, 0, 0 );
                 Dimensions imageDimensions = image.getDimensions();
 
-                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_SRGB8_ALPHA8, imageDimensions.width, imageDimensions.height, 0, xfer.format,
-                        xfer.type, image.getImageData() );
+                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_SRGB8_ALPHA8, imageDimensions.width,
+                        imageDimensions.height, 0, xfer.format, xfer.type, image.getImageData() );
             }
 
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );

@@ -153,7 +153,8 @@ class LightManager {
         Vec4 backgroundColor;
         float maxIntensity;
 
-        SunlightValueHDR(float normTime, Vec4 ambient, Vec4 sunlightIntensity, Vec4 backgroundColor, float maxIntensity) {
+        SunlightValueHDR(float normTime, Vec4 ambient, Vec4 sunlightIntensity, Vec4 backgroundColor,
+                         float maxIntensity) {
             this.normTime = normTime;
             this.ambient = ambient;
             this.sunlightIntensity = sunlightIntensity;
@@ -278,7 +279,8 @@ class LightManager {
         float padding;
         PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-        static final int SIZE = Vec4.SIZE + ((1 + 1 + 1 + 1) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * NUMBER_OF_LIGHTS;
+        static final int SIZE = Vec4.SIZE + ((1 + 1 + 1 + 1) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE *
+                NUMBER_OF_LIGHTS;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -308,7 +310,8 @@ class LightManager {
         lightData.lights[0].lightIntensity = sunlightInterpolator.interpolate( sunTimer.getAlpha() );
 
         for ( int light = 0; light < NUMBER_OF_POINT_LIGHTS; light++ ) {
-            Vec4 worldLightPos = new Vec4( lightPos.get( light ).interpolate( lightTimers.get( light ).getAlpha() ), 1.0f );
+            Vec4 worldLightPos = new Vec4( lightPos.get( light ).interpolate( lightTimers.get( light ).getAlpha() ),
+                    1.0f );
             Vec4 lightPosCameraSpace = Mat4.mul( worldToCameraMat, worldLightPos );
 
             lightData.lights[light + 1] = new PerLight();
@@ -331,7 +334,8 @@ class LightManager {
         lightData.lights[0].lightIntensity = sunlightInterpolator.interpolate( sunTimer.getAlpha() );
 
         for ( int light = 0; light < NUMBER_OF_POINT_LIGHTS; light++ ) {
-            Vec4 worldLightPos = new Vec4( lightPos.get( light ).interpolate( lightTimers.get( light ).getAlpha() ), 1.0f );
+            Vec4 worldLightPos = new Vec4( lightPos.get( light ).interpolate( lightTimers.get( light ).getAlpha() ),
+                    1.0f );
             Vec4 lightPosCameraSpace = Mat4.mul( worldToCameraMat, worldLightPos );
 
             lightData.lights[light + 1] = new PerLight();

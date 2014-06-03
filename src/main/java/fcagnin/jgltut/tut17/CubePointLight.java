@@ -41,8 +41,10 @@ import static org.lwjgl.opengl.GL33.*;
  * Chapter 17. Spotlight on Textures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2017.html
  * <p/>
- * W,A,S,D  - move the camera forward/backwards and left/right, relative to the camera's current orientation. Holding SHIFT with these
- * keys will move in smaller increments.
+ * W,A,S,D  - move the camera forward/backwards and left/right, relative to the camera's current orientation. Holding
+ * SHIFT with these keys will move in smaller increments.
+ * Q,E      - raise and lower the camera, relative to its current orientation. Holding SHIFT with these keys will move
+ * in smaller increments.
  * SPACE    - reset the projected flashlight direction.
  * T        - toggle viewing of the current target point.
  * G        - toggle all of the regular lighting on and off.
@@ -52,10 +54,10 @@ import static org.lwjgl.opengl.GL33.*;
  * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
  * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
  * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING         - rotate the orientation of the light horizontally and vertically,
- * relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the orientation of the light horizontally or vertically only,
- * relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING         - rotate the orientation of the light horizontally and vertically, relative to
+ * the current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the orientation of the light horizontally or vertically only, relative
+ * to the current camera view.
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the orientation of the light.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  *
@@ -127,10 +129,11 @@ public class CubePointLight extends LWJGLWindow {
 
         buildLights( cameraMatrix );
 
-        nodes.get( 0 ).nodeSetOrient( Glm.rotate( new Quaternion( 1.0f ), 360.0f * timer.getAlpha(), new Vec3( 0.0f, 1.0f, 0.0f ) ) );
+        nodes.get( 0 ).nodeSetOrient( Glm.rotate( new Quaternion( 1.0f ), 360.0f * timer.getAlpha(),
+                new Vec3( 0.0f, 1.0f, 0.0f ) ) );
 
-        nodes.get( 3 ).nodeSetOrient( Quaternion.mul( spinBarOrient, Glm.rotate( new Quaternion( 1.0f ), 360.0f * timer.getAlpha(),
-                new Vec3( 0.0f, 0.0f, 1.0f ) ) ) );
+        nodes.get( 3 ).nodeSetOrient( Quaternion.mul( spinBarOrient, Glm.rotate( new Quaternion( 1.0f ),
+                360.0f * timer.getAlpha(), new Vec3( 0.0f, 0.0f, 1.0f ) ) ) );
 
         {
             MatrixStack persMatrix = new MatrixStack();
@@ -172,7 +175,8 @@ public class CubePointLight extends LWJGLWindow {
             modelMatrix.scale( 15.0f );
 
             glUseProgram( coloredProg );
-            glUniformMatrix4( coloredModelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( coloredModelToCameraMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             axesMesh.render();
 
             modelMatrix.pop();
@@ -240,27 +244,27 @@ public class CubePointLight extends LWJGLWindow {
         float lastFrameDuration = getLastFrameDuration() * 10 / 1000.0f;
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_W ) ) {
-            viewPole.charPress( Keyboard.KEY_W, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_W, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_S ) ) {
-            viewPole.charPress( Keyboard.KEY_S, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_S, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_D ) ) {
-            viewPole.charPress( Keyboard.KEY_D, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_D, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_A ) ) {
-            viewPole.charPress( Keyboard.KEY_A, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_A, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_E ) ) {
-            viewPole.charPress( Keyboard.KEY_E, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_E, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_Q ) ) {
-            viewPole.charPress( Keyboard.KEY_Q, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_Q, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
 
@@ -439,9 +443,8 @@ public class CubePointLight extends LWJGLWindow {
                 for ( int face = 0; face < 6; ++face ) {
                     SingleImage singleImage = imageSet.getImage( 0, 0, face );
 
-                    glCompressedTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
-                            0, imageFormat, imageDimensions.width, imageDimensions.height,
-                            0, singleImage.getImageData() );
+                    glCompressedTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, 0, imageFormat,
+                            imageDimensions.width, imageDimensions.height, 0, singleImage.getImageData() );
                 }
 
                 glBindTexture( GL_TEXTURE_CUBE_MAP, 0 );
@@ -548,7 +551,8 @@ public class CubePointLight extends LWJGLWindow {
 
         lightData.lights[0] = new PerLight();
         lightData.lights[0].lightIntensity = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
-        lightData.lights[0].cameraSpaceLightPos = Mat4.mul( camMatrix, Glm.normalize( new Vec4( -0.2f, 0.5f, 0.5f, 0.0f ) ) );
+        lightData.lights[0].cameraSpaceLightPos = Mat4.mul( camMatrix,
+                Glm.normalize( new Vec4( -0.2f, 0.5f, 0.5f, 0.0f ) ) );
 
         lightData.lights[1] = new PerLight();
         lightData.lights[1].lightIntensity = new Vec4( 3.5f, 6.5f, 3.0f, 1.0f ).scale( 0.5f );

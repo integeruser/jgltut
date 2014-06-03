@@ -109,11 +109,8 @@ public class ManyImages extends LWJGLWindow {
 
         MatrixStack modelMatrix = new MatrixStack();
 
-        final Mat4 worldToCamMat = Glm.lookAt(
-                new Vec3( hOffset, 1.0f, -64.0f ),
-                new Vec3( hOffset, -5.0f + vOffset, -44.0f ),
-                new Vec3( 0.0f, 1.0f, 0.0f )
-        );
+        final Mat4 worldToCamMat = Glm.lookAt( new Vec3( hOffset, 1.0f, -64.0f ),
+                new Vec3( hOffset, -5.0f + vOffset, -44.0f ), new Vec3( 0.0f, 1.0f, 0.0f ) );
 
         modelMatrix.applyMatrix( worldToCamMat );
 
@@ -279,7 +276,8 @@ public class ManyImages extends LWJGLWindow {
             ArrayList<Byte> texture = new ArrayList<>();
 
             final int currColor = mipmapLevel * 3;
-            fillWithColor( texture, mipmapColors[currColor], mipmapColors[currColor + 1], mipmapColors[currColor + 2], width, height );
+            fillWithColor( texture, mipmapColors[currColor], mipmapColors[currColor + 1],
+                    mipmapColors[currColor + 2], width, height );
 
             ByteBuffer textureBuffer = BufferUtils.createByteBuffer( texture.size() );
             for ( Byte b : texture ) {
@@ -287,8 +285,8 @@ public class ManyImages extends LWJGLWindow {
             }
             textureBuffer.flip();
 
-            glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_RGB8, width, height, 0,
-                    GL_RGB, GL_UNSIGNED_BYTE, textureBuffer );
+            glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
+                    textureBuffer );
         }
 
         glPixelStorei( GL_UNPACK_ALIGNMENT, oldAlign );
@@ -321,8 +319,8 @@ public class ManyImages extends LWJGLWindow {
                 SingleImage image = imageSet.getImage( mipmapLevel, 0, 0 );
                 Dimensions imageDimensions = image.getDimensions();
 
-                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_RGB8, imageDimensions.width, imageDimensions.height, 0, GL_BGRA,
-                        GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData() );
+                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_RGB8, imageDimensions.width, imageDimensions.height, 0,
+                        GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData() );
             }
 
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );

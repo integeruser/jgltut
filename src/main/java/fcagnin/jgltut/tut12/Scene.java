@@ -82,7 +82,8 @@ abstract class Scene {
 
             modelMatrix.rotateX( -90.0f );
 
-            drawObject( terrainMesh, getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE ), materialBlockIndex, 0, modelMatrix );
+            drawObject( terrainMesh, getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE ), materialBlockIndex, 0,
+                    modelMatrix );
 
             modelMatrix.pop();
         }
@@ -97,8 +98,8 @@ abstract class Scene {
             modelMatrix.translate( 0.0f, (float) Math.sqrt( 2.0f ), 0.0f );
             modelMatrix.rotate( new Vec3( -0.707f, 0.0f, -0.707f ), 54.735f );
 
-            drawObject( tetraMesh, "lit-color", getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR ), materialBlockIndex, 1,
-                    modelMatrix );
+            drawObject( tetraMesh, "lit-color", getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR ),
+                    materialBlockIndex, 1, modelMatrix );
 
             modelMatrix.pop();
         }
@@ -112,7 +113,8 @@ abstract class Scene {
             modelMatrix.scale( 4.0f, 9.0f, 1.0f );
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
-            drawObject( cubeMesh, "lit", getProgram( LightingProgramTypes.MTL_COLOR_DIFFUSE_SPECULAR ), materialBlockIndex, 2, modelMatrix );
+            drawObject( cubeMesh, "lit", getProgram( LightingProgramTypes.MTL_COLOR_DIFFUSE_SPECULAR ),
+                    materialBlockIndex, 2, modelMatrix );
 
             modelMatrix.pop();
         }
@@ -126,8 +128,8 @@ abstract class Scene {
             modelMatrix.rotateY( -10.0f );
             modelMatrix.scale( 20.0f, 20.0f, 20.0f );
 
-            drawObject( cubeMesh, "lit-color", getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR ), materialBlockIndex, 3,
-                    modelMatrix );
+            drawObject( cubeMesh, "lit-color", getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR ),
+                    materialBlockIndex, 3, modelMatrix );
 
             modelMatrix.pop();
         }
@@ -140,8 +142,8 @@ abstract class Scene {
             modelMatrix.scale( 15.0f, 55.0f, 15.0f );
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
-            drawObject( cylMesh, "lit-color", getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR ), materialBlockIndex, 4,
-                    modelMatrix );
+            drawObject( cylMesh, "lit-color", getProgram( LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR ),
+                    materialBlockIndex, 4, modelMatrix );
 
             modelMatrix.pop();
         }
@@ -153,15 +155,18 @@ abstract class Scene {
             modelMatrix.translate( -83.0f, 14.0f, -77.0f );
             modelMatrix.scale( 20.0f, 20.0f, 20.0f );
 
-            drawObject( sphereMesh, "lit", getProgram( LightingProgramTypes.MTL_COLOR_DIFFUSE_SPECULAR ), materialBlockIndex, 5, modelMatrix );
+            drawObject( sphereMesh, "lit", getProgram( LightingProgramTypes.MTL_COLOR_DIFFUSE_SPECULAR ),
+                    materialBlockIndex, 5, modelMatrix );
 
             modelMatrix.pop();
         }
     }
 
 
-    void drawObject(Mesh mesh, ProgramData progData, int materialBlockIndex, int materialIndex, MatrixStack modelMatrix) {
-        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, materialIndex * sizeMaterialBlock, MaterialBlock.SIZE );
+    void drawObject(Mesh mesh, ProgramData progData, int materialBlockIndex, int materialIndex,
+                    MatrixStack modelMatrix) {
+        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
+                materialIndex * sizeMaterialBlock, MaterialBlock.SIZE );
 
         Mat3 normMatrix = new Mat3( modelMatrix.top() );
         normMatrix = Glm.transpose( Glm.inverse( normMatrix ) );
@@ -176,8 +181,10 @@ abstract class Scene {
         glBindBufferBase( GL_UNIFORM_BUFFER, materialBlockIndex, 0 );
     }
 
-    void drawObject(Mesh mesh, String meshName, ProgramData progData, int materialBlockIndex, int materialIndex, MatrixStack modelMatrix) {
-        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, materialIndex * sizeMaterialBlock, MaterialBlock.SIZE );
+    void drawObject(Mesh mesh, String meshName, ProgramData progData, int materialBlockIndex, int materialIndex,
+                    MatrixStack modelMatrix) {
+        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
+                materialIndex * sizeMaterialBlock, MaterialBlock.SIZE );
 
         Mat3 normMatrix = new Mat3( modelMatrix.top() );
         normMatrix = Glm.transpose( Glm.inverse( normMatrix ) );

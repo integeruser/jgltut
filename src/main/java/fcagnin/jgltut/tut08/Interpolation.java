@@ -292,7 +292,8 @@ public class Interpolation extends LWJGLWindow {
         Quaternion v2 = Quaternion.add( v1, Quaternion.negate( Quaternion.scale( v0, dot ) ) );
         v2 = Glm.normalize( v2 );
 
-        return Quaternion.add( Quaternion.scale( v0, (float) Math.cos( theta ) ), Quaternion.scale( v2, (float) Math.sin( theta ) ) );
+        return Quaternion.add( Quaternion.scale( v0, (float) Math.cos( theta ) ),
+                Quaternion.scale( v2, (float) Math.sin( theta ) ) );
     }
 
     private Quaternion lerp(Quaternion v0, Quaternion v1, float alpha) {

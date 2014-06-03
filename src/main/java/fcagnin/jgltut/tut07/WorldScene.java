@@ -33,7 +33,8 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * Rotate camera horizontally around target            L               J
  * Rotate camera vertically around target              I               K
  * Move camera towards/away from target                U               O
- * In addition, if you hold down the SHIFT key while pressing any of the last six keys, then the affected control will be much slower.
+ * In addition, if you hold down the SHIFT key while pressing any of the last six keys, then the affected control will
+ * be much slower.
  * <p/>
  * SPACE    - toggle the appearance of an object indicating the position of the camera point.
  *
@@ -86,11 +87,14 @@ public class WorldScene extends LWJGLWindow {
             camMatrix.setMatrix( calcLookAtMatrix( camPos, camTarget, new Vec3( 0.0f, 1.0f, 0.0f ) ) );
 
             glUseProgram( uniformColor.theProgram );
-            glUniformMatrix4( uniformColor.worldToCameraMatrixUnif, false, camMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( uniformColor.worldToCameraMatrixUnif, false,
+                    camMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             glUseProgram( objectColor.theProgram );
-            glUniformMatrix4( objectColor.worldToCameraMatrixUnif, false, camMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( objectColor.worldToCameraMatrixUnif, false,
+                    camMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             glUseProgram( uniformColorTint.theProgram );
-            glUniformMatrix4( uniformColorTint.worldToCameraMatrixUnif, false, camMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( uniformColorTint.worldToCameraMatrixUnif, false,
+                    camMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             glUseProgram( 0 );
 
             MatrixStack modelMatrix = new MatrixStack();
@@ -101,7 +105,8 @@ public class WorldScene extends LWJGLWindow {
                 modelMatrix.scale( 100.0f, 1.0f, 100.0f );
 
                 glUseProgram( uniformColor.theProgram );
-                glUniformMatrix4( uniformColor.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( uniformColor.modelToWorldMatrixUnif, false,
+                        modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
                 glUniform4f( uniformColor.baseColorUnif, 0.302f, 0.416f, 0.0589f, 1.0f );
                 planeMesh.render();
                 glUseProgram( 0 );
@@ -133,8 +138,10 @@ public class WorldScene extends LWJGLWindow {
                 Mat4 identity = new Mat4( 1.0f );
 
                 glUseProgram( objectColor.theProgram );
-                glUniformMatrix4( objectColor.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
-                glUniformMatrix4( objectColor.worldToCameraMatrixUnif, false, identity.fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( objectColor.modelToWorldMatrixUnif, false,
+                        modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+                glUniformMatrix4( objectColor.worldToCameraMatrixUnif, false,
+                        identity.fillAndFlipBuffer( mat4Buffer ) );
                 cubeColorMesh.render();
                 glUseProgram( 0 );
 
@@ -151,11 +158,14 @@ public class WorldScene extends LWJGLWindow {
         persMatrix.perspective( 45.0f, (width / (float) height), zNear, zFar );
 
         glUseProgram( uniformColor.theProgram );
-        glUniformMatrix4( uniformColor.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+        glUniformMatrix4( uniformColor.cameraToClipMatrixUnif, false,
+                persMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
         glUseProgram( objectColor.theProgram );
-        glUniformMatrix4( objectColor.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+        glUniformMatrix4( objectColor.cameraToClipMatrixUnif, false,
+                persMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
         glUseProgram( uniformColorTint.theProgram );
-        glUniformMatrix4( uniformColorTint.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+        glUniformMatrix4( uniformColorTint.cameraToClipMatrixUnif, false,
+                persMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
         glUseProgram( 0 );
 
         glViewport( 0, 0, width, height );
@@ -257,7 +267,8 @@ public class WorldScene extends LWJGLWindow {
                     case Keyboard.KEY_SPACE:
                         drawLookatPoint = !drawLookatPoint;
                         System.out.printf( "Target: %f, %f, %f\n", camTarget.x, camTarget.y, camTarget.z );
-                        System.out.printf( "Position: %f, %f, %f\n", sphereCamRelPos.x, sphereCamRelPos.y, sphereCamRelPos.z );
+                        System.out.printf( "Position: %f, %f, %f\n", sphereCamRelPos.x, sphereCamRelPos.y,
+                                sphereCamRelPos.z );
                         break;
 
                     case Keyboard.KEY_ESCAPE:
@@ -505,7 +516,8 @@ public class WorldScene extends LWJGLWindow {
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
             glUseProgram( uniformColorTint.theProgram );
-            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             glUniform4f( uniformColorTint.baseColorUnif, 0.694f, 0.4f, 0.106f, 1.0f );
             cylinderMesh.render();
             glUseProgram( 0 );
@@ -520,7 +532,8 @@ public class WorldScene extends LWJGLWindow {
             modelMatrix.scale( 3.0f, coneHeight, 3.0f );
 
             glUseProgram( uniformColorTint.theProgram );
-            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             glUniform4f( uniformColorTint.baseColorUnif, 0.0f, 1.0f, 0.0f, 1.0f );
             coneMesh.render();
             glUseProgram( 0 );
@@ -543,7 +556,8 @@ public class WorldScene extends LWJGLWindow {
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
             glUseProgram( uniformColorTint.theProgram );
-            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             glUniform4f( uniformColorTint.baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f );
             cubeTintMesh.render();
             glUseProgram( 0 );
@@ -559,7 +573,8 @@ public class WorldScene extends LWJGLWindow {
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
             glUseProgram( uniformColorTint.theProgram );
-            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             glUniform4f( uniformColorTint.baseColorUnif, 0.9f, 0.9f, 0.9f, 0.9f );
             cubeTintMesh.render();
             glUseProgram( 0 );
@@ -575,7 +590,8 @@ public class WorldScene extends LWJGLWindow {
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
             glUseProgram( uniformColorTint.theProgram );
-            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             glUniform4f( uniformColorTint.baseColorUnif, 0.9f, 0.9f, 0.9f, 0.9f );
             cylinderMesh.render();
             glUseProgram( 0 );
@@ -601,7 +617,8 @@ public class WorldScene extends LWJGLWindow {
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
             glUseProgram( uniformColorTint.theProgram );
-            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             glUniform4f( uniformColorTint.baseColorUnif, 0.9f, 0.9f, 0.9f, 0.9f );
             cubeTintMesh.render();
             glUseProgram( 0 );
@@ -617,7 +634,8 @@ public class WorldScene extends LWJGLWindow {
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
             glUseProgram( uniformColorTint.theProgram );
-            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( uniformColorTint.modelToWorldMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             glUniform4f( uniformColorTint.baseColorUnif, 0.9f, 0.9f, 0.9f, 0.9f );
             cubeTintMesh.render();
             glUseProgram( 0 );
@@ -631,7 +649,8 @@ public class WorldScene extends LWJGLWindow {
         for ( int columnNum = 0; columnNum < (int) (parthenonWidth / 2.0f); columnNum++ ) {
             {
                 modelMatrix.push();
-                modelMatrix.translate( (2.0f * columnNum) - (parthenonWidth / 2.0f) + 1.0f, parthenonBaseHeight, frontZVal );
+                modelMatrix.translate( (2.0f * columnNum) - (parthenonWidth / 2.0f) + 1.0f, parthenonBaseHeight,
+                        frontZVal );
 
                 drawColumn( modelMatrix, parthenonColumnHeight );
 
@@ -639,7 +658,8 @@ public class WorldScene extends LWJGLWindow {
             }
             {
                 modelMatrix.push();
-                modelMatrix.translate( (2.0f * columnNum) - (parthenonWidth / 2.0f) + 1.0f, parthenonBaseHeight, -frontZVal );
+                modelMatrix.translate( (2.0f * columnNum) - (parthenonWidth / 2.0f) + 1.0f, parthenonBaseHeight,
+                        -frontZVal );
 
                 drawColumn( modelMatrix, parthenonColumnHeight );
 
@@ -651,7 +671,8 @@ public class WorldScene extends LWJGLWindow {
         for ( int columnNum = 1; columnNum < (int) ((parthenonLength - 2.0f) / 2.0f); columnNum++ ) {
             {
                 modelMatrix.push();
-                modelMatrix.translate( rightXVal, parthenonBaseHeight, (2.0f * columnNum) - (parthenonLength / 2.0f) + 1.0f );
+                modelMatrix.translate( rightXVal, parthenonBaseHeight,
+                        (2.0f * columnNum) - (parthenonLength / 2.0f) + 1.0f );
 
                 drawColumn( modelMatrix, parthenonColumnHeight );
 
@@ -659,7 +680,8 @@ public class WorldScene extends LWJGLWindow {
             }
             {
                 modelMatrix.push();
-                modelMatrix.translate( -rightXVal, parthenonBaseHeight, (2.0f * columnNum) - (parthenonLength / 2.0f) + 1.0f );
+                modelMatrix.translate( -rightXVal, parthenonBaseHeight,
+                        (2.0f * columnNum) - (parthenonLength / 2.0f) + 1.0f );
 
                 drawColumn( modelMatrix, parthenonColumnHeight );
 
@@ -675,7 +697,8 @@ public class WorldScene extends LWJGLWindow {
             modelMatrix.translate( 0.0f, 0.5f, 0.0f );
 
             glUseProgram( objectColor.theProgram );
-            glUniformMatrix4( objectColor.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( objectColor.modelToWorldMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             cubeColorMesh.render();
             glUseProgram( 0 );
 
@@ -691,7 +714,8 @@ public class WorldScene extends LWJGLWindow {
             modelMatrix.rotateY( 45.0f );
 
             glUseProgram( objectColor.theProgram );
-            glUniformMatrix4( objectColor.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( objectColor.modelToWorldMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             cubeColorMesh.render();
             glUseProgram( 0 );
 

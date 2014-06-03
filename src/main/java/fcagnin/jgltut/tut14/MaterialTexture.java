@@ -42,16 +42,18 @@ import static org.lwjgl.opengl.GL33.*;
  * T        - toggle viewing the look-at point.
  * G        - toggle the drawing of the light source.
  * Y        - switch between the infinity symbol and a flat plane.
- * SPACE    - switch between one of three rendering modes: fixed shininess with a Gaussian lookup-table,
- * a texture-based shininess with a Gaussian lookup-table, and a texture-based shininess with a shader-computed Gaussian term.
+ * SPACE    - switch between one of three rendering modes: fixed shininess with a Gaussian lookup-table, a texture-based
+ * shininess with a Gaussian lookup-table, and a texture-based shininess with a shader-computed Gaussian term.
  * 1,2,3,4  - switch to progressively larger textures.
  * 8,9      - switch to the gold material/a material with a dark diffuse color and bright specular color.
  * <p/>
  * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
  * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
  * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING         - rotate the object horizontally and vertically, relative to the current camera
+ * view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the object horizontally or vertically only, relative to the current
+ * camera view.
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  *
@@ -150,7 +152,8 @@ public class MaterialTexture extends LWJGLWindow {
         {
             Mesh pMesh = useInfinity ? objectMesh : planeMesh;
 
-            glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, currMaterial * materialOffset, MaterialBlock.SIZE );
+            glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
+                    currMaterial * materialOffset, MaterialBlock.SIZE );
 
             modelMatrix.push();
 
@@ -378,7 +381,8 @@ public class MaterialTexture extends LWJGLWindow {
 
     private void initializePrograms() {
         for ( int progIndex = 0; progIndex < ShaderMode.NUM_SHADER_MODES.ordinal(); progIndex++ ) {
-            programs[progIndex] = loadStandardProgram( shaderPairs[progIndex].vertShaderFileName, shaderPairs[progIndex].fragShaderFileName );
+            programs[progIndex] = loadStandardProgram( shaderPairs[progIndex].vertShaderFileName,
+                    shaderPairs[progIndex].fragShaderFileName );
         }
 
         unlit = loadUnlitProgram( "Unlit.vert", "Unlit.frag" );
@@ -493,7 +497,8 @@ public class MaterialTexture extends LWJGLWindow {
 
         int gaussTexture = glGenTextures();
         glBindTexture( GL_TEXTURE_2D, gaussTexture );
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_R8, cosAngleResolution, shininessResolution, 0, GL_RED, GL_UNSIGNED_BYTE, textureDataBuffer );
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_R8, cosAngleResolution, shininessResolution, 0, GL_RED, GL_UNSIGNED_BYTE,
+                textureDataBuffer );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0 );
         glBindTexture( GL_TEXTURE_2D, 0 );
@@ -536,7 +541,8 @@ public class MaterialTexture extends LWJGLWindow {
 
             shineTexture = glGenTextures();
             glBindTexture( GL_TEXTURE_2D, shineTexture );
-            glTexImage2D( GL_TEXTURE_2D, 0, GL_R8, dims.width, dims.height, 0, GL_RED, GL_UNSIGNED_BYTE, image.getImageData() );
+            glTexImage2D( GL_TEXTURE_2D, 0, GL_R8, dims.width, dims.height, 0, GL_RED, GL_UNSIGNED_BYTE,
+                    image.getImageData() );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0 );
             glBindTexture( GL_TEXTURE_2D, 0 );
@@ -587,7 +593,8 @@ public class MaterialTexture extends LWJGLWindow {
 
 
     private ViewPole viewPole = new ViewPole( initialViewData, viewScale, MouseButtons.MB_LEFT_BTN );
-    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, viewPole );
+    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN,
+            viewPole );
 
 
     ////////////////////////////////

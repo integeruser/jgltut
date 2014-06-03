@@ -78,7 +78,7 @@ public class DepthClamping extends LWJGLWindow {
         glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
 
         glUniform3f( offsetUniform, 0.0f, 0.0f, -1.0f );
-        glDrawElementsBaseVertex( GL_TRIANGLES, indexData.length,                GL_UNSIGNED_SHORT, 0, numberOfVertices / 2 );
+        glDrawElementsBaseVertex( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0, numberOfVertices / 2 );
 
         glBindVertexArray( 0 );
         glUseProgram( 0 );

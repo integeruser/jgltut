@@ -352,7 +352,9 @@ public class TutorialChooser extends JPanel implements TreeSelectionListener {
         String[] tutorialFiles4 = {"OrthoCube", "ShaderPerspective", "MatrixPerspective", "AspectRatio"};
         addTutorials( part2TreeNode, "Tut 04 Objects at Rest", tutorialFiles4 );
 
-        String[] tutorialFiles5 = {"OverlapNoDepth", "BaseVertexOverlap", "DepthBuffer", "VertexClipping", "DepthClamping"};
+        String[] tutorialFiles5 = {"OverlapNoDepth", "BaseVertexOverlap", "DepthBuffer", "VertexClipping",
+                "DepthClamping"
+        };
         addTutorials( part2TreeNode, "Tut 05 Objects in Depth", tutorialFiles5 );
 
         String[] tutorialFiles6 = {"Translation", "Scale", "Rotation", "Hierarchy"};

@@ -32,10 +32,10 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * Chapter 13. Lies and Impostors
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2013.html
  * <p/>
- * W,A,S,D  - move the cameras forward/backwards and left/right, relative to the camera's current orientation. Holding SHIFT with these
- * keys will move in smaller increments.
- * Q,E      - raise and lower the camera, relative to its current orientation. Holding SHIFT with these keys will move in smaller
- * increments.
+ * W,A,S,D  - move the cameras forward/backwards and left/right, relative to the camera's current orientation. Holding
+ * SHIFT with these keys will move in smaller increments.
+ * Q,E      - raise and lower the camera, relative to its current orientation. Holding SHIFT with these keys will move
+ * in smaller increments.
  * P        - toggle pausing on/off.
  * -,=      - rewind/jump forward time by 0.5 second (of real-time).
  * T        - toggle viewing the look-at point.
@@ -147,8 +147,10 @@ public class BasicImpostor extends LWJGLWindow {
             normMatrix = Glm.transpose( Glm.inverse( normMatrix ) );
 
             glUseProgram( litMeshProg.theProgram );
-            glUniformMatrix4( litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
-            glUniformMatrix3( litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+            glUniformMatrix4( litMeshProg.modelToCameraMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix3( litMeshProg.normalModelToCameraMatrixUnif, false,
+                    normMatrix.fillAndFlipBuffer( mat3Buffer ) );
 
             planeMesh.render();
 
@@ -157,12 +159,12 @@ public class BasicImpostor extends LWJGLWindow {
         }
 
         drawSphere( modelMatrix, new Vec3( 0.0f, 10.0f, 0.0f ), 4.0f, MaterialNames.BLUE_SHINY, drawImposter[0] );
-        drawSphereOrbit( modelMatrix, new Vec3( 0.0f, 10.0f, 0.0f ), new Vec3( 0.6f, 0.8f, 0.0f ), 20.0f, sphereTimer.getAlpha(), 2.0f,
-                MaterialNames.DULL_GREY, drawImposter[1] );
-        drawSphereOrbit( modelMatrix, new Vec3( -10.0f, 1.0f, 0.0f ), new Vec3( 0.0f, 1.0f, 0.0f ), 10.0f, sphereTimer.getAlpha(), 1.0f,
-                MaterialNames.BLACK_SHINY, drawImposter[2] );
-        drawSphereOrbit( modelMatrix, new Vec3( 10.0f, 1.0f, 0.0f ), new Vec3( 0.0f, 1.0f, 0.0f ), 10.0f, sphereTimer.getAlpha() * 2.0f, 1.0f,
-                MaterialNames.GOLD_METAL, drawImposter[3] );
+        drawSphereOrbit( modelMatrix, new Vec3( 0.0f, 10.0f, 0.0f ), new Vec3( 0.6f, 0.8f, 0.0f ), 20.0f,
+                sphereTimer.getAlpha(), 2.0f, MaterialNames.DULL_GREY, drawImposter[1] );
+        drawSphereOrbit( modelMatrix, new Vec3( -10.0f, 1.0f, 0.0f ), new Vec3( 0.0f, 1.0f, 0.0f ), 10.0f,
+                sphereTimer.getAlpha(), 1.0f, MaterialNames.BLACK_SHINY, drawImposter[2] );
+        drawSphereOrbit( modelMatrix, new Vec3( 10.0f, 1.0f, 0.0f ), new Vec3( 0.0f, 1.0f, 0.0f ), 10.0f,
+                sphereTimer.getAlpha() * 2.0f, 1.0f, MaterialNames.GOLD_METAL, drawImposter[3] );
 
         if ( drawLights ) {
             modelMatrix.push();
@@ -242,27 +244,27 @@ public class BasicImpostor extends LWJGLWindow {
         float lastFrameDuration = getLastFrameDuration() * 10 / 1000.f;
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_W ) ) {
-            viewPole.charPress( Keyboard.KEY_W, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_W, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_S ) ) {
-            viewPole.charPress( Keyboard.KEY_S, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_S, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_D ) ) {
-            viewPole.charPress( Keyboard.KEY_D, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_D, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_A ) ) {
-            viewPole.charPress( Keyboard.KEY_A, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_A, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_E ) ) {
-            viewPole.charPress( Keyboard.KEY_E, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_E, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_Q ) ) {
-            viewPole.charPress( Keyboard.KEY_Q, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_Q, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
 
@@ -372,7 +374,8 @@ public class BasicImpostor extends LWJGLWindow {
 
         for ( int progIndex = 0; progIndex < Impostors.NUM_IMPOSTORS.ordinal(); progIndex++ ) {
             litImpProgs[progIndex] = new ProgramImposData();
-            litImpProgs[progIndex] = loadLitImposProgram( impShaderFileNames[progIndex * 2], impShaderFileNames[progIndex * 2 + 1] );
+            litImpProgs[progIndex] = loadLitImposProgram( impShaderFileNames[progIndex * 2],
+                    impShaderFileNames[progIndex * 2 + 1] );
         }
 
         unlit = loadUnlitProgram( "Unlit.vert", "Unlit.frag" );
@@ -500,14 +503,16 @@ public class BasicImpostor extends LWJGLWindow {
     }
 
 
-    private void drawSphere(MatrixStack modelMatrix, Vec3 position, float radius, MaterialNames material, boolean drawImposter) {
-        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, material.ordinal() * materialBlockOffset,
-                MaterialBlock.SIZE );
+    private void drawSphere(MatrixStack modelMatrix, Vec3 position, float radius, MaterialNames material,
+                            boolean drawImposter) {
+        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
+                material.ordinal() * materialBlockOffset, MaterialBlock.SIZE );
 
         if ( drawImposter ) {
             Vec4 cameraSpherePos = Mat4.mul( modelMatrix.top(), new Vec4( position, 1.0f ) );
             glUseProgram( litImpProgs[currImpostor.ordinal()].theProgram );
-            glUniform3( litImpProgs[currImpostor.ordinal()].cameraSpherePosUnif, cameraSpherePos.fillAndFlipBuffer( vec4Buffer ) );
+            glUniform3( litImpProgs[currImpostor.ordinal()].cameraSpherePosUnif,
+                    cameraSpherePos.fillAndFlipBuffer( vec4Buffer ) );
             glUniform1f( litImpProgs[currImpostor.ordinal()].sphereRadiusUnif, radius );
 
             glBindVertexArray( imposterVAO );
@@ -528,8 +533,10 @@ public class BasicImpostor extends LWJGLWindow {
             normMatrix = Glm.transpose( Glm.inverse( normMatrix ) );
 
             glUseProgram( litMeshProg.theProgram );
-            glUniformMatrix4( litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
-            glUniformMatrix3( litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
+            glUniformMatrix4( litMeshProg.modelToCameraMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix3( litMeshProg.normalModelToCameraMatrixUnif, false,
+                    normMatrix.fillAndFlipBuffer( mat3Buffer ) );
 
             sphereMesh.render( "lit" );
 
@@ -542,7 +549,8 @@ public class BasicImpostor extends LWJGLWindow {
     }
 
     private void drawSphereOrbit(MatrixStack modelMatrix, Vec3 orbitCenter, Vec3 orbitAxis,
-                                 float orbitRadius, float orbitAlpha, float sphereRadius, MaterialNames material, boolean drawImposter) {
+                                 float orbitRadius, float orbitAlpha, float sphereRadius, MaterialNames material,
+                                 boolean drawImposter) {
         modelMatrix.push();
 
         modelMatrix.translate( orbitCenter );
@@ -673,7 +681,8 @@ public class BasicImpostor extends LWJGLWindow {
 
 
     private void createMaterials() {
-        UniformBlockArray<MaterialBlock> ubArray = new UniformBlockArray<>( MaterialBlock.SIZE, MaterialNames.NUM_MATERIALS.ordinal() );
+        UniformBlockArray<MaterialBlock> ubArray = new UniformBlockArray<>( MaterialBlock.SIZE,
+                MaterialNames.NUM_MATERIALS.ordinal() );
         materialBlockOffset = ubArray.getArrayOffset();
 
         MaterialBlock matBlock = new MaterialBlock();

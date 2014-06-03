@@ -244,14 +244,14 @@ public class GammaRamp extends LWJGLWindow {
 
             glBindTexture( GL_TEXTURE_2D, textures[0] );
 
-            glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, imageDimensions.width, imageDimensions.height, 0, pxTrans.format, pxTrans.type,
-                    image.getImageData() );
+            glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, imageDimensions.width, imageDimensions.height, 0,
+                    pxTrans.format, pxTrans.type, image.getImageData() );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, imageSet.getMipmapCount() - 1 );
 
             glBindTexture( GL_TEXTURE_2D, textures[1] );
-            glTexImage2D( GL_TEXTURE_2D, 0, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0, pxTrans.format, pxTrans.type,
-                    image.getImageData() );
+            glTexImage2D( GL_TEXTURE_2D, 0, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0,
+                    pxTrans.format, pxTrans.type, image.getImageData() );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, imageSet.getMipmapCount() - 1 );
 

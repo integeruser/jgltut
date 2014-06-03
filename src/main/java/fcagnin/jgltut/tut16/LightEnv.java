@@ -78,7 +78,8 @@ class LightEnv {
                 strVec4 = key.getAttribute( "background" );
                 background.add( new LightData( parseVec4( strVec4 ), keyTime ) );
 
-                maxIntensity.add( new MaxIntensityData( Float.parseFloat( key.getAttribute( "max-intensity" ) ), keyTime ) );
+                maxIntensity.add( new MaxIntensityData( Float.parseFloat( key.getAttribute( "max-intensity" ) ),
+                        keyTime ) );
 
                 countKeys++;
             }
@@ -95,7 +96,9 @@ class LightEnv {
             int countLights = 0;
             while ( (elemLight = (Element) lights.item( countLights )) != null ) {
 
-                if ( lightPos.size() + 1 == MAX_NUMBER_OF_LIGHTS ) { throw new RuntimeException( "Too many lights specified." ); }
+                if ( lightPos.size() + 1 == MAX_NUMBER_OF_LIGHTS ) {
+                    throw new RuntimeException( "Too many lights specified." );
+                }
 
                 float lightTime = Float.parseFloat( elemLight.getAttribute( "time" ) );
                 lightTimers.add( new Timer( Timer.Type.LOOP, lightTime ) );
@@ -113,7 +116,9 @@ class LightEnv {
                     countKeys++;
                 }
 
-                if ( posValues.isEmpty() ) { throw new RuntimeException( "'light' elements must have at least one 'key' element child." ); }
+                if ( posValues.isEmpty() ) {
+                    throw new RuntimeException( "'light' elements must have at least one 'key' element child." );
+                }
 
                 ConstVelLinearInterpolatorVec3 lightInterpolatorVec3 = new ConstVelLinearInterpolatorVec3();
                 lightInterpolatorVec3.setValues( posValues );
@@ -162,7 +167,8 @@ class LightEnv {
         float padding[] = new float[2];
         PerLight lights[] = new PerLight[MAX_NUMBER_OF_LIGHTS];
 
-        static final int SIZE = Vec4.SIZE + ((1 + 1 + 2) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
+        static final int SIZE = Vec4.SIZE + ((1 + 1 + 2) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE *
+                MAX_NUMBER_OF_LIGHTS;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -343,7 +349,9 @@ class LightEnv {
         lightData.lights[0].lightIntensity = sunlightInterpolator.interpolate( sunTimer.getAlpha() );
 
         for ( int lightIndex = 0; lightIndex < lightPos.size(); lightIndex++ ) {
-            Vec4 worldLightPos = new Vec4( lightPos.get( lightIndex ).interpolate( lightTimers.get( lightIndex ).getAlpha() ), 1.0f );
+            Vec4 worldLightPos = new Vec4(
+                    lightPos.get( lightIndex ).interpolate( lightTimers.get( lightIndex ).getAlpha() ),
+                    1.0f );
             Vec4 lightPosCameraSpace = Mat4.mul( worldToCameraMat, worldLightPos );
 
             lightData.lights[lightIndex + 1] = new PerLight();
@@ -368,8 +376,8 @@ class LightEnv {
     }
 
     Vec4 getSunlightScaledIntensity() {
-        return Vec4.scale( sunlightInterpolator.interpolate( sunTimer.getAlpha() ), 1.0f / maxIntensityInterpolator.interpolate( sunTimer
-                .getAlpha() ) );
+        return Vec4.scale( sunlightInterpolator.interpolate( sunTimer.getAlpha() ),
+                1.0f / maxIntensityInterpolator.interpolate( sunTimer.getAlpha() ) );
     }
 
 
@@ -383,7 +391,8 @@ class LightEnv {
 
 
     Vec4 getPointLightScaledIntensity(int pointLightIndex) {
-        return Vec4.scale( lightIntensity.get( pointLightIndex ), 1.0f / maxIntensityInterpolator.interpolate( sunTimer.getAlpha() ) );
+        return Vec4.scale( lightIntensity.get( pointLightIndex ),
+                1.0f / maxIntensityInterpolator.interpolate( sunTimer.getAlpha() ) );
     }
 
     Vec3 getPointLightWorldPos(int pointLightIndex) {

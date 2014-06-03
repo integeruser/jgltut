@@ -42,11 +42,12 @@ import static org.lwjgl.opengl.GL33.*;
  * Chapter 17. Spotlight on Textures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2017.html
  * <p/>
- * W,A,S,D  - move the camera forward/backwards and left/right, relative to the camera's current orientation. Holding SHIFT with these
+ * W,A,S,D  - move the camera forward/backwards and left/right, relative to the camera's current orientation. Holding
+ * SHIFT with these keys will move in smaller increments.
+ * I,J,K,L  - control the projected flashlight's position. Holding SHIFT with these keys will move in smaller
+ * increments.
+ * O,U       raise and lower the projected flashlight, relative to its current orientation. Holding SHIFT with these
  * keys will move in smaller increments.
- * I,J,K,L  - control the projected flashlight's position. Holding SHIFT with these keys will move in smaller increments.
- * O,U       raise and lower the projected flashlight, relative to its current orientation. Holding SHIFT with these keys will move in
- * smaller increments.
  * SPACE    - reset the projected flashlight direction.
  * T        - toggle viewing of the current target point.
  * G        - toggle all of the regular lighting on and off.
@@ -59,9 +60,10 @@ import static org.lwjgl.opengl.GL33.*;
  * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
  * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
  * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
- * RIGHT  CLICKING and DRAGGING         - rotate the projected flashlight horizontally and vertically, relative to the current camera view.
- * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the projected flashlight horizontally or vertically only,
- * relative to the current camera view.
+ * RIGHT  CLICKING and DRAGGING         - rotate the projected flashlight horizontally and vertically, relative to the
+ * current camera view.
+ * RIGHT  CLICKING and DRAGGING + CTRL  - rotate the projected flashlight horizontally or vertically only, relative to
+ * the current camera view.
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the projected flashlight.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  *
@@ -133,10 +135,11 @@ public class ProjectedLight extends LWJGLWindow {
 
         buildLights( cameraMatrix );
 
-        nodes.get( 0 ).nodeSetOrient( Glm.rotate( new Quaternion( 1.0f ), 360.0f * timer.getAlpha(), new Vec3( 0.0f, 1.0f, 0.0f ) ) );
+        nodes.get( 0 ).nodeSetOrient( Glm.rotate( new Quaternion( 1.0f ), 360.0f * timer.getAlpha(),
+                new Vec3( 0.0f, 1.0f, 0.0f ) ) );
 
-        nodes.get( 3 ).nodeSetOrient( Quaternion.mul( spinBarOrient, Glm.rotate( new Quaternion( 1.0f ), 360.0f * timer.getAlpha(),
-                new Vec3( 0.0f, 0.0f, 1.0f ) ) ) );
+        nodes.get( 3 ).nodeSetOrient( Quaternion.mul( spinBarOrient, Glm.rotate( new Quaternion( 1.0f ),
+                360.0f * timer.getAlpha(), new Vec3( 0.0f, 0.0f, 1.0f ) ) ) );
 
         {
             MatrixStack persMatrix = new MatrixStack();
@@ -187,7 +190,8 @@ public class ProjectedLight extends LWJGLWindow {
             modelMatrix.scale( 1.0f, 1.0f, -1.0f );     // Invert the Z-axis so that it points in the right direction.
 
             glUseProgram( coloredProg );
-            glUniformMatrix4( coloredModelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( coloredModelToCameraMatrixUnif, false,
+                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             axesMesh.render();
 
             modelMatrix.pop();
@@ -231,7 +235,6 @@ public class ProjectedLight extends LWJGLWindow {
         while ( Mouse.next() ) {
             int eventButton = Mouse.getEventButton();
 
-
             if ( eventButton != -1 ) {
                 boolean pressed = Mouse.getEventButtonState();
                 MousePole.forwardMouseButton( viewPole, eventButton, pressed, Mouse.getX(), Mouse.getY() );
@@ -255,52 +258,52 @@ public class ProjectedLight extends LWJGLWindow {
         float lastFrameDuration = (float) (getLastFrameDuration() / 100.0);
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_W ) ) {
-            viewPole.charPress( Keyboard.KEY_W, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_W, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_S ) ) {
-            viewPole.charPress( Keyboard.KEY_S, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_S, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_D ) ) {
-            viewPole.charPress( Keyboard.KEY_D, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_D, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_A ) ) {
-            viewPole.charPress( Keyboard.KEY_A, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_A, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_E ) ) {
-            viewPole.charPress( Keyboard.KEY_E, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_E, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_Q ) ) {
-            viewPole.charPress( Keyboard.KEY_Q, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ),
-                    lastFrameDuration );
+            viewPole.charPress( Keyboard.KEY_Q, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_I ) ) {
-            lightViewPole.charPress( Keyboard.KEY_I, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT
-            ), lastFrameDuration );
+            lightViewPole.charPress( Keyboard.KEY_I, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_K ) ) {
-            lightViewPole.charPress( Keyboard.KEY_K, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT
-            ), lastFrameDuration );
+            lightViewPole.charPress( Keyboard.KEY_K, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_L ) ) {
-            lightViewPole.charPress( Keyboard.KEY_L, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT
-            ), lastFrameDuration );
+            lightViewPole.charPress( Keyboard.KEY_L, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_J ) ) {
-            lightViewPole.charPress( Keyboard.KEY_J, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT
-            ), lastFrameDuration );
+            lightViewPole.charPress( Keyboard.KEY_J, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
         if ( Keyboard.isKeyDown( Keyboard.KEY_O ) ) {
-            lightViewPole.charPress( Keyboard.KEY_O, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT
-            ), lastFrameDuration );
+            lightViewPole.charPress( Keyboard.KEY_O, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         } else if ( Keyboard.isKeyDown( Keyboard.KEY_U ) ) {
-            lightViewPole.charPress( Keyboard.KEY_U, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT
-            ), lastFrameDuration );
+            lightViewPole.charPress( Keyboard.KEY_U, Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ||
+                    Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ), lastFrameDuration );
         }
 
 
@@ -615,7 +618,8 @@ public class ProjectedLight extends LWJGLWindow {
 
         lightData.lights[0] = new PerLight();
         lightData.lights[0].lightIntensity = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
-        lightData.lights[0].cameraSpaceLightPos = Mat4.mul( camMatrix, Glm.normalize( new Vec4( -0.2f, 0.5f, 0.5f, 0.0f ) ) );
+        lightData.lights[0].cameraSpaceLightPos = Mat4.mul( camMatrix,
+                Glm.normalize( new Vec4( -0.2f, 0.5f, 0.5f, 0.0f ) ) );
 
         lightData.lights[1] = new PerLight();
         lightData.lights[1].lightIntensity = new Vec4( 3.5f, 6.5f, 3.0f, 1.0f ).scale( 0.5f );

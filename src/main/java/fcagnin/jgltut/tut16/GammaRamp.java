@@ -61,8 +61,7 @@ public class GammaRamp extends LWJGLWindow {
         glBindBuffer( GL_UNIFORM_BUFFER, projectionUniformBuffer );
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-                0, ProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
     }
@@ -222,9 +221,12 @@ public class GammaRamp extends LWJGLWindow {
 
     ////////////////////////////////
     private final int gammaRampTextureUnit = 0;
-    private boolean[] useGammaCorrect = {false, false};
+
     private int[] textures = new int[2];
+
     private int samplerObj;
+
+    private boolean[] useGammaCorrect = {false, false};
 
 
     private void loadTextures() {
@@ -232,8 +234,8 @@ public class GammaRamp extends LWJGLWindow {
         textures[1] = glGenTextures();
 
         try {
-            String filepath = Framework.findFileOrThrow( "gamma_ramp.png" );
-            ImageSet imageSet = StbLoader.loadFromFile( filepath );
+            String filePath = Framework.findFileOrThrow( "gamma_ramp.png" );
+            ImageSet imageSet = StbLoader.loadFromFile( filePath );
 
             SingleImage image = imageSet.getImage( 0, 0, 0 );
             Dimensions imageDimensions = image.getDimensions();
@@ -242,20 +244,21 @@ public class GammaRamp extends LWJGLWindow {
 
             glBindTexture( GL_TEXTURE_2D, textures[0] );
 
-            glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, imageDimensions.width, imageDimensions.height, 0,
-                    pxTrans.format, pxTrans.type, image.getImageData() );
+            glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, imageDimensions.width, imageDimensions.height, 0, pxTrans.format, pxTrans.type,
+                    image.getImageData() );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, imageSet.getMipmapCount() - 1 );
 
             glBindTexture( GL_TEXTURE_2D, textures[1] );
-            glTexImage2D( GL_TEXTURE_2D, 0, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0,
-                    pxTrans.format, pxTrans.type, image.getImageData() );
+            glTexImage2D( GL_TEXTURE_2D, 0, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0, pxTrans.format, pxTrans.type,
+                    image.getImageData() );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, imageSet.getMipmapCount() - 1 );
 
             glBindTexture( GL_TEXTURE_2D, 0 );
         } catch ( Exception e ) {
             e.printStackTrace();
+            System.exit( -1 );
         }
 
         samplerObj = glGenSamplers();

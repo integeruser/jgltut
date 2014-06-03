@@ -12,7 +12,6 @@ import fcagnin.jgltut.framework.Timer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -106,14 +105,11 @@ public class BasicTexture extends LWJGLWindow {
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer,
-                0, LightBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.SIZE );
 
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-                0, ProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
-        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                0, MaterialBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, 0, MaterialBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
@@ -134,6 +130,8 @@ public class BasicTexture extends LWJGLWindow {
 
         LightBlock lightData = new LightBlock();
         lightData.ambientIntensity = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
+        float halfLightDistance = 25.0f;
+        float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
         lightData.lightAttenuation = lightAttenuation;
 
         Vec3 globalLightDirection = new Vec3( 0.707f, 0.707f, 0.0f );
@@ -151,8 +149,7 @@ public class BasicTexture extends LWJGLWindow {
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
         {
-            glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                    0, MaterialBlock.SIZE );
+            glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, 0, MaterialBlock.SIZE );
 
             modelMatrix.push();
 
@@ -399,25 +396,24 @@ public class BasicTexture extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final int NUM_GAUSS_TEXTURES = 4;
-    private final int gaussTexUnit = 0;
-    private final float halfLightDistance = 25.0f;
-    private final float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
-
     private Mesh objectMesh;
     private Mesh cubeMesh;
+
+    private float specularShininess = 0.2f;
+
+    private final int gaussTexUnit = 0;
+
+    private final int NUM_GAUSS_TEXTURES = 4;
+    private int[] gaussTextures = new int[NUM_GAUSS_TEXTURES];
+    private int currTexture;
+
+    private int gaussSampler;
 
     private Timer lightTimer = new Timer( Timer.Type.LOOP, 6.0f );
 
     private boolean drawLights = true;
     private boolean drawCameraPos;
     private boolean useTexture;
-    private int[] gaussTextures = new int[NUM_GAUSS_TEXTURES];
-    private int gaussSampler;
-    private int currTexture;
-    private float specularShininess = 0.2f;
-    private float lightHeight = 1.0f;
-    private float lightRadius = 3.0f;
 
 
     private void createGaussianTextures() {
@@ -443,8 +439,7 @@ public class BasicTexture extends LWJGLWindow {
 
         int gaussTexture = glGenTextures();
         glBindTexture( GL_TEXTURE_1D, gaussTexture );
-        glTexImage1D( GL_TEXTURE_1D, 0, GL_R8, cosAngleResolution, 0,
-                GL11.GL_RED, GL_UNSIGNED_BYTE, textureDataBuffer );
+        glTexImage1D( GL_TEXTURE_1D, 0, GL_R8, cosAngleResolution, 0, GL_RED, GL_UNSIGNED_BYTE, textureDataBuffer );
         glTexParameteri( GL_TEXTURE_1D, GL_TEXTURE_BASE_LEVEL, 0 );
         glTexParameteri( GL_TEXTURE_1D, GL_TEXTURE_MAX_LEVEL, 0 );
         glBindTexture( GL_TEXTURE_1D, 0 );
@@ -476,8 +471,10 @@ public class BasicTexture extends LWJGLWindow {
 
         float timeThroughLoop = lightTimer.getAlpha();
 
+        float lightHeight = 1.0f;
         Vec4 lightPos = new Vec4( 0.0f, lightHeight, 0.0f, 1.0f );
 
+        float lightRadius = 3.0f;
         lightPos.x = (float) (Math.cos( timeThroughLoop * scale ) * lightRadius);
         lightPos.z = (float) (Math.sin( timeThroughLoop * scale ) * lightRadius);
 
@@ -500,7 +497,7 @@ public class BasicTexture extends LWJGLWindow {
             0.0f
     );
 
-    private ViewScale g_viewScale = new ViewScale(
+    private ViewScale viewScale = new ViewScale(
             1.5f, 70.0f,
             1.5f, 0.5f,
             0.0f, 0.0f,     // No camera movement.
@@ -508,7 +505,7 @@ public class BasicTexture extends LWJGLWindow {
     );
 
 
-    private ViewPole viewPole = new ViewPole( initialViewData, g_viewScale, MouseButtons.MB_LEFT_BTN );
+    private ViewPole viewPole = new ViewPole( initialViewData, viewScale, MouseButtons.MB_LEFT_BTN );
     private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, viewPole );
 
 

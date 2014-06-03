@@ -109,15 +109,13 @@ public class GammaLandscape extends LWJGLWindow {
         glBindBuffer( GL_UNIFORM_BUFFER, projectionUniformBuffer );
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-                0, ProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
         lightUniformBuffer = glGenBuffers();
         glBindBuffer( GL_UNIFORM_BUFFER, lightUniformBuffer );
         glBufferData( GL_UNIFORM_BUFFER, LightBlock.SIZE, GL_STREAM_DRAW );
 
-        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer,
-                0, LightBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
@@ -153,8 +151,7 @@ public class GammaLandscape extends LWJGLWindow {
         modelMatrix.rotateX( -90.0f );
 
         glUseProgram( progStandard.theProgram );
-        glUniformMatrix4( progStandard.modelToCameraMatrixUnif, false,
-                modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+        glUniformMatrix4( progStandard.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
         glUniform1i( progStandard.numberOfLightsUnif, lightEnv.getNumLights() );
 
         glActiveTexture( GL_TEXTURE0 + colorTexUnit );
@@ -179,8 +176,7 @@ public class GammaLandscape extends LWJGLWindow {
             modelMatrix.scale( 30.0f, 30.0f, 30.0f );
 
             glUseProgram( progUnlit.theProgram );
-            glUniformMatrix4( progUnlit.modelToCameraMatrixUnif, false,
-                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
             Vec4 lightColor = lightEnv.getSunlightScaledIntensity();
             glUniform4( progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer( vec4Buffer ) );
@@ -196,8 +192,7 @@ public class GammaLandscape extends LWJGLWindow {
             modelMatrix.translate( lightEnv.getPointLightWorldPos( light ) );
 
             glUseProgram( progUnlit.theProgram );
-            glUniformMatrix4( progUnlit.modelToCameraMatrixUnif, false,
-                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
 
             Vec4 lightColor = lightEnv.getPointLightScaledIntensity( light );
             glUniform4( progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer( vec4Buffer ) );
@@ -216,8 +211,7 @@ public class GammaLandscape extends LWJGLWindow {
             glDisable( GL_DEPTH_TEST );
             glDepthMask( false );
             glUseProgram( progUnlit.theProgram );
-            glUniformMatrix4( progUnlit.modelToCameraMatrixUnif, false,
-                    modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
+            glUniformMatrix4( progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
             glUniform4f( progUnlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f );
             sphere.render( "flat" );
             glDepthMask( true );
@@ -408,29 +402,29 @@ public class GammaLandscape extends LWJGLWindow {
 
 
     ////////////////////////////////
+    private Mesh terrain;
+    private Mesh sphere;
+
     private final int lightBlockIndex = 1;
     private final int colorTexUnit = 0;
 
+    private final int NUM_SAMPLERS = 2;
+    private int[] samplers = new int[NUM_SAMPLERS];
+    private int currSampler;
+
     private int lightUniformBuffer;
     private int linearTexture;
-
-    private final int NUM_SAMPLERS = 2;
-
-    private Mesh terrain;
-    private Mesh sphere;
 
     private LightEnv lightEnv;
 
     private boolean useGammaDisplay = true;
     private boolean drawCameraPos;
-    private int[] samplers = new int[NUM_SAMPLERS];
-    private int currSampler;
 
 
     private void loadTextures() {
         try {
-            String filepath = Framework.findFileOrThrow( "terrain_tex.dds" );
-            ImageSet imageSet = DdsLoader.loadFromFile( filepath );
+            String filePath = Framework.findFileOrThrow( "terrain_tex.dds" );
+            ImageSet imageSet = DdsLoader.loadFromFile( filePath );
 
             linearTexture = glGenTextures();
             glBindTexture( GL_TEXTURE_2D, linearTexture );
@@ -441,8 +435,8 @@ public class GammaLandscape extends LWJGLWindow {
                 SingleImage image = imageSet.getImage( mipmapLevel, 0, 0 );
                 Dimensions imageDimensions = image.getDimensions();
 
-                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_SRGB8_ALPHA8, imageDimensions.width, imageDimensions.height, 0,
-                        xfer.format, xfer.type, image.getImageData() );
+                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_SRGB8_ALPHA8, imageDimensions.width, imageDimensions.height, 0, xfer.format,
+                        xfer.type, image.getImageData() );
             }
 
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
@@ -451,6 +445,7 @@ public class GammaLandscape extends LWJGLWindow {
             glBindTexture( GL_TEXTURE_2D, 0 );
         } catch ( Exception e ) {
             e.printStackTrace();
+            System.exit( -1 );
         }
     }
 

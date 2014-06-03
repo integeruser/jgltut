@@ -29,25 +29,24 @@ import java.util.Scanner;
  *
  * @author integeruser, xire-
  */
-public class LightEnv {
+class LightEnv {
     LightEnv(String envFileName) {
-        // crea il parser e ci associa il file di input
         Document doc = null;
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
-            String filepath = Framework.findFileOrThrow( envFileName );
+            String filePath = Framework.findFileOrThrow( envFileName );
 
-            doc = dBuilder.parse( ClassLoader.class.getResourceAsStream( filepath ) );
+            doc = dBuilder.parse( ClassLoader.class.getResourceAsStream( filePath ) );
         } catch ( SAXException | ParserConfigurationException | IOException e ) {
             e.printStackTrace();
             System.exit( -1 );
         }
 
-        Element lightenvElement = doc.getDocumentElement();
+        Element lightEnvElement = doc.getDocumentElement();
 
-        Element sunNode = (Element) lightenvElement.getElementsByTagName( "sun" ).item( 0 );
+        Element sunNode = (Element) lightEnvElement.getElementsByTagName( "sun" ).item( 0 );
         if ( sunNode == null ) {
             throw new RuntimeException( "There must be a 'lightenv' element that has a 'sun' element as a child." );
         }
@@ -67,7 +66,7 @@ public class LightEnv {
             int countKeys = 0;
             while ( (key = (Element) keys.item( countKeys )) != null ) {
                 float keyTime = Float.parseFloat( key.getAttribute( "time" ) );
-                //Convert from hours to normalized time.
+                // Convert from hours to normalized time.
                 keyTime = keyTime / 24.0f;
 
                 String strVec4 = key.getAttribute( "ambient" );
@@ -91,21 +90,21 @@ public class LightEnv {
         maxIntensityInterpolator.setValues( maxIntensity );
 
         {
-            NodeList lights = lightenvElement.getElementsByTagName( "light" );
-            Element elemlight;
+            NodeList lights = lightEnvElement.getElementsByTagName( "light" );
+            Element elemLight;
             int countLights = 0;
-            while ( (elemlight = (Element) lights.item( countLights )) != null ) {
+            while ( (elemLight = (Element) lights.item( countLights )) != null ) {
 
                 if ( lightPos.size() + 1 == MAX_NUMBER_OF_LIGHTS ) { throw new RuntimeException( "Too many lights specified." ); }
 
-                float lightTime = Float.parseFloat( elemlight.getAttribute( "time" ) );
+                float lightTime = Float.parseFloat( elemLight.getAttribute( "time" ) );
                 lightTimers.add( new Timer( Timer.Type.LOOP, lightTime ) );
 
-                String strVec4 = elemlight.getAttribute( "intensity" );
+                String strVec4 = elemLight.getAttribute( "intensity" );
                 lightIntensity.add( parseVec4( strVec4 ) );
 
                 ArrayList<Vec3> posValues = new ArrayList<>();
-                NodeList keys = elemlight.getElementsByTagName( "key" );
+                NodeList keys = elemLight.getElementsByTagName( "key" );
                 Element key;
                 int countKeys = 0;
                 while ( (key = (Element) keys.item( countKeys )) != null ) {
@@ -127,9 +126,6 @@ public class LightEnv {
 
     ////////////////////////////////
     private final static int MAX_NUMBER_OF_LIGHTS = 4;
-
-    private final float halfLightDistance = 70.0f;
-    private final float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
 
     private Timer sunTimer;
 
@@ -188,12 +184,11 @@ public class LightEnv {
 
     ////////////////////////////////
     class TimedLinearInterpolatorFloat extends WeightedLinearInterpolatorFloat {
-
-        public void setValues(ArrayList<MaxIntensityData> data) {
+        void setValues(ArrayList<MaxIntensityData> data) {
             setValues( data, true );
         }
 
-        public void setValues(ArrayList<MaxIntensityData> data, boolean isLooping) {
+        void setValues(ArrayList<MaxIntensityData> data, boolean isLooping) {
             values.clear();
 
             for ( MaxIntensityData curr : data ) {
@@ -221,12 +216,11 @@ public class LightEnv {
     }
 
     class TimedLinearInterpolatorVec4 extends WeightedLinearInterpolatorVec4 {
-
-        public void setValues(ArrayList<LightData> data) {
+        void setValues(ArrayList<LightData> data) {
             setValues( data, true );
         }
 
-        public void setValues(ArrayList<LightData> data, boolean isLooping) {
+        void setValues(ArrayList<LightData> data, boolean isLooping) {
             values.clear();
 
             for ( LightData curr : data ) {
@@ -262,14 +256,14 @@ public class LightEnv {
 
 
     class MaxIntensityData extends Pair<Float, Float> {
-        public MaxIntensityData(Float first, Float second) {
+        MaxIntensityData(Float first, Float second) {
             this.first = first;
             this.second = second;
         }
     }
 
     class LightData extends Pair<Vec4, Float> {
-        public LightData(Vec4 first, Float second) {
+        LightData(Vec4 first, Float second) {
             this.first = first;
             this.second = second;
         }
@@ -339,6 +333,8 @@ public class LightEnv {
     LightBlock getLightBlock(Mat4 worldToCameraMat) {
         LightBlock lightData = new LightBlock();
         lightData.ambientIntensity = ambientInterpolator.interpolate( sunTimer.getAlpha() );
+        float halfLightDistance = 70.0f;
+        float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
         lightData.lightAttenuation = lightAttenuation;
         lightData.maxIntensity = maxIntensityInterpolator.interpolate( sunTimer.getAlpha() );
 
@@ -372,8 +368,8 @@ public class LightEnv {
     }
 
     Vec4 getSunlightScaledIntensity() {
-        return Vec4.scale( sunlightInterpolator.interpolate( sunTimer.getAlpha() ),
-                1.0f / maxIntensityInterpolator.interpolate( sunTimer.getAlpha() ) );
+        return Vec4.scale( sunlightInterpolator.interpolate( sunTimer.getAlpha() ), 1.0f / maxIntensityInterpolator.interpolate( sunTimer
+                .getAlpha() ) );
     }
 
 
@@ -386,13 +382,8 @@ public class LightEnv {
     }
 
 
-    Vec4 getPointLightIntensity(int pointLightIndex) {
-        return lightIntensity.get( pointLightIndex );
-    }
-
     Vec4 getPointLightScaledIntensity(int pointLightIndex) {
-        return Vec4.scale( lightIntensity.get( pointLightIndex ),
-                1.0f / maxIntensityInterpolator.interpolate( sunTimer.getAlpha() ) );
+        return Vec4.scale( lightIntensity.get( pointLightIndex ), 1.0f / maxIntensityInterpolator.interpolate( sunTimer.getAlpha() ) );
     }
 
     Vec3 getPointLightWorldPos(int pointLightIndex) {

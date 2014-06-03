@@ -13,7 +13,6 @@ import fcagnin.jgltut.framework.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -104,14 +103,11 @@ public class MaterialTexture extends LWJGLWindow {
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer,
-                0, LightBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.SIZE );
 
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-                0, ProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
-        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                0, MaterialBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, 0, MaterialBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
@@ -133,6 +129,8 @@ public class MaterialTexture extends LWJGLWindow {
 
         LightBlock lightData = new LightBlock();
         lightData.ambientIntensity = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
+        float halfLightDistance = 25.0f;
+        float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
         lightData.lightAttenuation = lightAttenuation;
 
         Vec3 globalLightDirection = new Vec3( 0.707f, 0.707f, 0.0f );
@@ -150,15 +148,14 @@ public class MaterialTexture extends LWJGLWindow {
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
         {
-            Mesh pMesh = g_bUseInfinity ? objectMesh : planeMesh;
+            Mesh pMesh = useInfinity ? objectMesh : planeMesh;
 
-            glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, g_currMaterial * materialOffset,
-                    MaterialBlock.SIZE );
+            glBindBufferRange( GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, currMaterial * materialOffset, MaterialBlock.SIZE );
 
             modelMatrix.push();
 
             modelMatrix.applyMatrix( objtPole.calcMatrix() );
-            modelMatrix.scale( g_bUseInfinity ? 2.0f : 4.0f );
+            modelMatrix.scale( useInfinity ? 2.0f : 4.0f );
 
             Mat3 normMatrix = new Mat3( modelMatrix.top() );
             normMatrix = Glm.transpose( Glm.inverse( normMatrix ) );
@@ -170,12 +167,12 @@ public class MaterialTexture extends LWJGLWindow {
             glUniformMatrix3( prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer( mat3Buffer ) );
 
             glActiveTexture( GL_TEXTURE0 + gaussTexUnit );
-            glBindTexture( GL_TEXTURE_2D, g_gaussTextures[g_currTexture] );
-            glBindSampler( gaussTexUnit, g_textureSampler );
+            glBindTexture( GL_TEXTURE_2D, gaussTextures[currTexture] );
+            glBindSampler( gaussTexUnit, textureSampler );
 
             glActiveTexture( GL_TEXTURE0 + shineTexUnit );
-            glBindTexture( GL_TEXTURE_2D, g_shineTexture );
-            glBindSampler( shineTexUnit, g_textureSampler );
+            glBindTexture( GL_TEXTURE_2D, shineTexture );
+            glBindSampler( shineTexUnit, textureSampler );
 
             if ( shaderMode != ShaderMode.FIXED ) {
                 pMesh.render( "lit-tex" );
@@ -192,7 +189,7 @@ public class MaterialTexture extends LWJGLWindow {
             modelMatrix.pop();
         }
 
-        if ( g_bDrawLights ) {
+        if ( drawLights ) {
             modelMatrix.push();
 
             modelMatrix.translate( new Vec3( calcLightPosition() ) );
@@ -216,7 +213,7 @@ public class MaterialTexture extends LWJGLWindow {
             glUseProgram( 0 );
         }
 
-        if ( g_bDrawCameraPos ) {
+        if ( drawCameraPos ) {
             modelMatrix.push();
 
             modelMatrix.setIdentity();
@@ -295,21 +292,21 @@ public class MaterialTexture extends LWJGLWindow {
                         break;
 
                     case Keyboard.KEY_T:
-                        g_bDrawCameraPos = !g_bDrawCameraPos;
+                        drawCameraPos = !drawCameraPos;
                         break;
 
                     case Keyboard.KEY_G:
-                        g_bDrawLights = !g_bDrawLights;
+                        drawLights = !drawLights;
                         break;
 
                     case Keyboard.KEY_Y:
-                        g_bUseInfinity = !g_bUseInfinity;
+                        useInfinity = !useInfinity;
                         break;
 
                     case Keyboard.KEY_SPACE:
                         int index = (shaderMode.ordinal() + 1) % ShaderMode.NUM_SHADER_MODES.ordinal();
                         shaderMode = ShaderMode.values()[index];
-                        System.out.printf( "%s\n", g_shaderModeNames[shaderMode.ordinal()] );
+                        System.out.printf( "%s\n", shaderModeNames[shaderMode.ordinal()] );
                         break;
 
                     case Keyboard.KEY_ESCAPE:
@@ -322,13 +319,13 @@ public class MaterialTexture extends LWJGLWindow {
                     int number = Keyboard.getEventKey() - Keyboard.KEY_1;
                     if ( number < NUM_GAUSS_TEXTURES ) {
                         System.out.printf( "Angle Resolution: %d\n", calcCosAngResolution( number ) );
-                        g_currTexture = number;
+                        currTexture = number;
                     }
 
                     if ( number >= (9 - NUM_MATERIALS) ) {
                         number = number - (9 - NUM_MATERIALS);
                         System.out.printf( "Material number %d\n", number );
-                        g_currMaterial = number;
+                        currMaterial = number;
                     }
                 }
             }
@@ -341,12 +338,12 @@ public class MaterialTexture extends LWJGLWindow {
     private float zFar = 1000.0f;
 
     private ProgramData[] programs = new ProgramData[ShaderMode.NUM_SHADER_MODES.ordinal()];
-    private UnlitProgData unlit;
     private ShaderPairs[] shaderPairs = new ShaderPairs[]{
             new ShaderPairs( "PN.vert", "FixedShininess.frag" ),
             new ShaderPairs( "PNT.vert", "TextureShininess.frag" ),
             new ShaderPairs( "PNT.vert", "TextureCompute.frag" )
     };
+    private UnlitProgData unlit;
 
     private class ProgramData {
         int theProgram;
@@ -381,8 +378,7 @@ public class MaterialTexture extends LWJGLWindow {
 
     private void initializePrograms() {
         for ( int progIndex = 0; progIndex < ShaderMode.NUM_SHADER_MODES.ordinal(); progIndex++ ) {
-            programs[progIndex] = loadStandardProgram( shaderPairs[progIndex].vertShaderFileName,
-                    shaderPairs[progIndex].fragShaderFileName );
+            programs[progIndex] = loadStandardProgram( shaderPairs[progIndex].vertShaderFileName, shaderPairs[progIndex].fragShaderFileName );
         }
 
         unlit = loadUnlitProgram( "Unlit.vert", "Unlit.frag" );
@@ -434,24 +430,35 @@ public class MaterialTexture extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final int NUM_GAUSS_TEXTURES = 4;
-    private final int NUM_MATERIALS = 2;
+    private Mesh objectMesh;
+    private Mesh cubeMesh;
+    private Mesh planeMesh;
+
     private final int gaussTexUnit = 0;
     private final int shineTexUnit = 1;
-    private final float halfLightDistance = 25.0f;
-    private final float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
 
-    private final String[] g_shaderModeNames = {
+    private final int NUM_GAUSS_TEXTURES = 4;
+    private int gaussTextures[] = new int[NUM_GAUSS_TEXTURES];
+    private int currTexture = NUM_GAUSS_TEXTURES - 1;
+
+    private int textureSampler;
+    private int shineTexture;
+    private int materialOffset;
+    private int currMaterial;
+
+    private final String[] shaderModeNames = {
             "Fixed Shininess with Gaussian Texture",
             "Texture Shininess with Gaussian Texture",
             "Texture Shininess with computed Gaussian"
     };
 
-    private Mesh objectMesh;
-    private Mesh cubeMesh;
-    private Mesh planeMesh;
-
     private Timer lightTimer = new Timer( Timer.Type.LOOP, 6.0f );
+
+    private boolean drawLights = true;
+    private boolean useInfinity = true;
+    private boolean drawCameraPos;
+
+    private ShaderMode shaderMode = ShaderMode.FIXED;
 
     private enum ShaderMode {
         FIXED,
@@ -461,32 +468,18 @@ public class MaterialTexture extends LWJGLWindow {
         NUM_SHADER_MODES
     }
 
-    private ShaderMode shaderMode = ShaderMode.FIXED;
-
-    private boolean g_bDrawLights = true;
-    private boolean g_bUseInfinity = true;
-    private boolean g_bDrawCameraPos;
-    private int g_gaussTextures[] = new int[NUM_GAUSS_TEXTURES];
-    private int materialOffset;
-    private int g_textureSampler;
-    private int g_shineTexture;
-    private int g_currTexture = NUM_GAUSS_TEXTURES - 1;
-    private int g_currMaterial;
-    private float g_lightHeight = 1.0f;
-    private float g_lightRadius = 3.0f;
-
 
     private void createGaussianTextures() {
         for ( int textureIndex = 0; textureIndex < NUM_GAUSS_TEXTURES; textureIndex++ ) {
             int cosAngleResolution = calcCosAngResolution( textureIndex );
-            g_gaussTextures[textureIndex] = createGaussianTexture( cosAngleResolution, 128 );
+            gaussTextures[textureIndex] = createGaussianTexture( cosAngleResolution, 128 );
         }
 
-        g_textureSampler = glGenSamplers();
-        glSamplerParameteri( g_textureSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-        glSamplerParameteri( g_textureSampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-        glSamplerParameteri( g_textureSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-        glSamplerParameteri( g_textureSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+        textureSampler = glGenSamplers();
+        glSamplerParameteri( textureSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+        glSamplerParameteri( textureSampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+        glSamplerParameteri( textureSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+        glSamplerParameteri( textureSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
     }
 
     private int createGaussianTexture(int cosAngleResolution, int shininessResolution) {
@@ -500,8 +493,7 @@ public class MaterialTexture extends LWJGLWindow {
 
         int gaussTexture = glGenTextures();
         glBindTexture( GL_TEXTURE_2D, gaussTexture );
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_R8, cosAngleResolution, shininessResolution,
-                0, GL11.GL_RED, GL_UNSIGNED_BYTE, textureDataBuffer );
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_R8, cosAngleResolution, shininessResolution, 0, GL_RED, GL_UNSIGNED_BYTE, textureDataBuffer );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0 );
         glBindTexture( GL_TEXTURE_2D, 0 );
@@ -536,21 +528,21 @@ public class MaterialTexture extends LWJGLWindow {
 
     private void createShininessTexture() {
         try {
-            String filepath = Framework.findFileOrThrow( "main.dds" );
-            ImageSet imageSet = DdsLoader.loadFromFile( filepath );
+            String filePath = Framework.findFileOrThrow( "main.dds" );
+            ImageSet imageSet = DdsLoader.loadFromFile( filePath );
 
             SingleImage image = imageSet.getImage( 0, 0, 0 );
             Dimensions dims = image.getDimensions();
 
-            g_shineTexture = glGenTextures();
-            glBindTexture( GL_TEXTURE_2D, g_shineTexture );
-            glTexImage2D( GL_TEXTURE_2D, 0, GL_R8, dims.width, dims.height, 0,
-                    GL11.GL_RED, GL_UNSIGNED_BYTE, image.getImageData() );
+            shineTexture = glGenTextures();
+            glBindTexture( GL_TEXTURE_2D, shineTexture );
+            glTexImage2D( GL_TEXTURE_2D, 0, GL_R8, dims.width, dims.height, 0, GL_RED, GL_UNSIGNED_BYTE, image.getImageData() );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0 );
             glBindTexture( GL_TEXTURE_2D, 0 );
         } catch ( Exception e ) {
             e.printStackTrace();
+            System.exit( -1 );
         }
     }
 
@@ -560,10 +552,12 @@ public class MaterialTexture extends LWJGLWindow {
 
         float timeThroughLoop = lightTimer.getAlpha();
 
-        Vec4 ret = new Vec4( 0.0f, g_lightHeight, 0.0f, 1.0f );
+        float lightHeight = 1.0f;
+        Vec4 ret = new Vec4( 0.0f, lightHeight, 0.0f, 1.0f );
 
-        ret.x = (float) (Math.cos( timeThroughLoop * scale ) * g_lightRadius);
-        ret.z = (float) (Math.sin( timeThroughLoop * scale ) * g_lightRadius);
+        float lightRadius = 3.0f;
+        ret.x = (float) (Math.cos( timeThroughLoop * scale ) * lightRadius);
+        ret.z = (float) (Math.sin( timeThroughLoop * scale ) * lightRadius);
 
         return ret;
     }
@@ -659,6 +653,8 @@ public class MaterialTexture extends LWJGLWindow {
 
 
     ////////////////////////////////
+    private final int NUM_MATERIALS = 2;
+
     private final int materialBlockIndex = 0;
 
     private int materialUniformBuffer;

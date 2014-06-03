@@ -15,7 +15,6 @@ import fcagnin.jgltut.framework.Mesh;
 import fcagnin.jgltut.framework.Timer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL12;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -87,8 +86,7 @@ public class ManyImages extends LWJGLWindow {
         glBindBuffer( GL_UNIFORM_BUFFER, projectionUniformBuffer );
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-                0, ProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
@@ -114,7 +112,8 @@ public class ManyImages extends LWJGLWindow {
         final Mat4 worldToCamMat = Glm.lookAt(
                 new Vec3( hOffset, 1.0f, -64.0f ),
                 new Vec3( hOffset, -5.0f + vOffset, -44.0f ),
-                new Vec3( 0.0f, 1.0f, 0.0f ) );
+                new Vec3( 0.0f, 1.0f, 0.0f )
+        );
 
         modelMatrix.applyMatrix( worldToCamMat );
 
@@ -229,8 +228,12 @@ public class ManyImages extends LWJGLWindow {
 
 
     ////////////////////////////////
+    private Mesh plane;
+    private Mesh corridor;
+
     private final int NUM_SAMPLERS = 6;
     private int[] samplers = new int[NUM_SAMPLERS];
+    private int currSampler;
 
     private final int colorTexUnit = 0;
 
@@ -257,14 +260,10 @@ public class ManyImages extends LWJGLWindow {
             "Max anisotropic"
     };
 
-    private Mesh plane;
-    private Mesh corridor;
-
     private Timer camTimer = new Timer( Timer.Type.LOOP, 5.0f );
 
     private boolean useMipmapTexture;
     private boolean drawCorridor;
-    private int currSampler;
 
 
     private void loadMipmapTexture() {
@@ -284,7 +283,7 @@ public class ManyImages extends LWJGLWindow {
 
             ByteBuffer textureBuffer = BufferUtils.createByteBuffer( texture.size() );
             for ( Byte b : texture ) {
-                textureBuffer.put( (byte) b );
+                textureBuffer.put( b );
             }
             textureBuffer.flip();
 
@@ -312,8 +311,8 @@ public class ManyImages extends LWJGLWindow {
 
     private void loadCheckerTexture() {
         try {
-            String filepath = Framework.findFileOrThrow( "checker.dds" );
-            ImageSet imageSet = DdsLoader.loadFromFile( filepath );
+            String filePath = Framework.findFileOrThrow( "checker.dds" );
+            ImageSet imageSet = DdsLoader.loadFromFile( filePath );
 
             checkerTexture = glGenTextures();
             glBindTexture( GL_TEXTURE_2D, checkerTexture );
@@ -322,8 +321,8 @@ public class ManyImages extends LWJGLWindow {
                 SingleImage image = imageSet.getImage( mipmapLevel, 0, 0 );
                 Dimensions imageDimensions = image.getDimensions();
 
-                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_RGB8, imageDimensions.width, imageDimensions.height, 0,
-                        GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData() );
+                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_RGB8, imageDimensions.width, imageDimensions.height, 0, GL_BGRA,
+                        GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData() );
             }
 
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );

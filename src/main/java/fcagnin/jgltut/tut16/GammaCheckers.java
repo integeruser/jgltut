@@ -15,7 +15,6 @@ import fcagnin.jgltut.framework.Mesh;
 import fcagnin.jgltut.framework.Timer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL12;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -89,8 +88,7 @@ public class GammaCheckers extends LWJGLWindow {
         glBindBuffer( GL_UNIFORM_BUFFER, projectionUniformBuffer );
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer,
-                0, ProjectionBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
@@ -113,7 +111,8 @@ public class GammaCheckers extends LWJGLWindow {
         final Mat4 worldToCamMat = Glm.lookAt(
                 new Vec3( hOffset, 1.0f, -64.0f ),
                 new Vec3( hOffset, -5.0f + vOffset, -44.0f ),
-                new Vec3( 0.0f, 1.0f, 0.0f ) );
+                new Vec3( 0.0f, 1.0f, 0.0f )
+        );
 
         MatrixStack modelMatrix = new MatrixStack();
         modelMatrix.applyMatrix( worldToCamMat );
@@ -253,29 +252,29 @@ public class GammaCheckers extends LWJGLWindow {
 
 
     ////////////////////////////////
+    private Mesh plane;
+    private Mesh corridor;
+
     private final int colorTexUnit = 0;
+
+    private final int NUM_SAMPLERS = 2;
+    private int[] samplers = new int[NUM_SAMPLERS];
+    private int currSampler;
 
     private int linearTexture;
     private int gammaTexture;
-
-    private final int NUM_SAMPLERS = 2;
-
-    private Mesh plane;
-    private Mesh corridor;
 
     private Timer camTimer = new Timer( Timer.Type.LOOP, 5.0f );
 
     private boolean drawCorridor;
     private boolean drawGammaTexture;
     private boolean drawGammaProgram;
-    private int[] samplers = new int[NUM_SAMPLERS];
-    private int currSampler;
 
 
     private void loadCheckerTexture() {
         try {
-            String filepath = Framework.findFileOrThrow( "checker_linear.dds" );
-            ImageSet imageSet = DdsLoader.loadFromFile( filepath );
+            String filePath = Framework.findFileOrThrow( "checker_linear.dds" );
+            ImageSet imageSet = DdsLoader.loadFromFile( filePath );
 
             linearTexture = glGenTextures();
             glBindTexture( GL_TEXTURE_2D, linearTexture );
@@ -284,16 +283,16 @@ public class GammaCheckers extends LWJGLWindow {
                 SingleImage image = imageSet.getImage( mipmapLevel, 0, 0 );
                 Dimensions imageDimensions = image.getDimensions();
 
-                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0,
-                        GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData() );
+                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0, GL_BGRA,
+                        GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData() );
             }
 
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, imageSet.getMipmapCount() - 1 );
 
 
-            filepath = Framework.findFileOrThrow( "checker_gamma.dds" );
-            imageSet = DdsLoader.loadFromFile( filepath );
+            filePath = Framework.findFileOrThrow( "checker_gamma.dds" );
+            imageSet = DdsLoader.loadFromFile( filePath );
 
             gammaTexture = glGenTextures();
             glBindTexture( GL_TEXTURE_2D, gammaTexture );
@@ -302,8 +301,8 @@ public class GammaCheckers extends LWJGLWindow {
                 SingleImage image = imageSet.getImage( mipmapLevel, 0, 0 );
                 Dimensions imageDimensions = image.getDimensions();
 
-                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0,
-                        GL12.GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData() );
+                glTexImage2D( GL_TEXTURE_2D, mipmapLevel, GL_SRGB8, imageDimensions.width, imageDimensions.height, 0, GL_BGRA,
+                        GL_UNSIGNED_INT_8_8_8_8_REV, image.getImageData() );
             }
 
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
@@ -312,6 +311,7 @@ public class GammaCheckers extends LWJGLWindow {
             glBindTexture( GL_TEXTURE_2D, 0 );
         } catch ( Exception e ) {
             e.printStackTrace();
+            System.exit( -1 );
         }
     }
 

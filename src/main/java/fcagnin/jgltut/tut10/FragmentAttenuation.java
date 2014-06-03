@@ -213,16 +213,16 @@ public class FragmentAttenuation extends LWJGLWindow {
     }
 
     @Override
-    protected void reshape(int width, int height) {
+    protected void reshape(int w, int h) {
         MatrixStack persMatrix = new MatrixStack();
-        persMatrix.perspective( 45.0f, (width / (float) height), zNear, zFar );
+        persMatrix.perspective( 45.0f, (w / (float) h), zNear, zFar );
 
         ProjectionBlock projData = new ProjectionBlock();
         projData.cameraToClipMatrix = persMatrix.top();
 
         UnProjectionBlock unprojData = new UnProjectionBlock();
         unprojData.clipToCameraMatrix = Glm.inverse( persMatrix.top() );
-        unprojData.windowSize = new Vec2( width, height );
+        unprojData.windowSize = new Vec2( w, h );
 
         glBindBuffer( GL_UNIFORM_BUFFER, projectionUniformBuffer );
         glBufferSubData( GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer( mat4Buffer ) );
@@ -231,7 +231,7 @@ public class FragmentAttenuation extends LWJGLWindow {
                 unprojData.fillAndFlipBuffer( BufferUtils.createByteBuffer( 18 * FLOAT_SIZE ) ) );
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
-        glViewport( 0, 0, width, height );
+        glViewport( 0, 0, w, h );
     }
 
     @Override

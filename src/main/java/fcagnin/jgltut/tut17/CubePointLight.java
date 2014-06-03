@@ -210,9 +210,9 @@ public class CubePointLight extends LWJGLWindow {
     }
 
     @Override
-    protected void reshape(int width, int height) {
-        displayWidth = width;
-        displayHeight = height;
+    protected void reshape(int w, int h) {
+        displayWidth = w;
+        displayHeight = h;
     }
 
     @Override

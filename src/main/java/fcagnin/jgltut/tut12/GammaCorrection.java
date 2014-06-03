@@ -218,9 +218,9 @@ public class GammaCorrection extends LWJGLWindow {
     }
 
     @Override
-    protected void reshape(int width, int height) {
+    protected void reshape(int w, int h) {
         MatrixStack persMatrix = new MatrixStack();
-        persMatrix.perspective( 45.0f, (width / (float) height), zNear, zFar );
+        persMatrix.perspective( 45.0f, (w / (float) h), zNear, zFar );
 
         ProjectionBlock projData = new ProjectionBlock();
         projData.cameraToClipMatrix = persMatrix.top();
@@ -229,7 +229,7 @@ public class GammaCorrection extends LWJGLWindow {
         glBufferSubData( GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillAndFlipBuffer( mat4Buffer ) );
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
-        glViewport( 0, 0, width, height );
+        glViewport( 0, 0, w, h );
     }
 
     @Override

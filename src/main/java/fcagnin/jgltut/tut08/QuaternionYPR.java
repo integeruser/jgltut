@@ -86,15 +86,15 @@ public class QuaternionYPR extends LWJGLWindow {
     }
 
     @Override
-    protected void reshape(int width, int height) {
-        cameraToClipMatrix.set( 0, 0, frustumScale * (height / (float) width) );
+    protected void reshape(int w, int h) {
+        cameraToClipMatrix.set( 0, 0, frustumScale * (h / (float) w) );
         cameraToClipMatrix.set( 1, 1, frustumScale );
 
         glUseProgram( theProgram );
         glUniformMatrix4( cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer( mat4Buffer ) );
         glUseProgram( 0 );
 
-        glViewport( 0, 0, width, height );
+        glViewport( 0, 0, w, h );
     }
 
     @Override

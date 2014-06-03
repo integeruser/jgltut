@@ -153,9 +153,9 @@ public class WorldScene extends LWJGLWindow {
     }
 
     @Override
-    protected void reshape(int width, int height) {
+    protected void reshape(int w, int h) {
         MatrixStack persMatrix = new MatrixStack();
-        persMatrix.perspective( 45.0f, (width / (float) height), zNear, zFar );
+        persMatrix.perspective( 45.0f, (w / (float) h), zNear, zFar );
 
         glUseProgram( uniformColor.theProgram );
         glUniformMatrix4( uniformColor.cameraToClipMatrixUnif, false,
@@ -168,7 +168,7 @@ public class WorldScene extends LWJGLWindow {
                 persMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
         glUseProgram( 0 );
 
-        glViewport( 0, 0, width, height );
+        glViewport( 0, 0, w, h );
     }
 
     @Override

@@ -81,8 +81,8 @@ public class VertexClipping extends LWJGLWindow {
     }
 
     @Override
-    protected void reshape(int width, int height) {
-        perspectiveMatrix[0] = frustumScale * (height / (float) width);
+    protected void reshape(int w, int h) {
+        perspectiveMatrix[0] = frustumScale * (h / (float) w);
         perspectiveMatrix[5] = frustumScale;
 
         FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer( perspectiveMatrix.length );
@@ -93,7 +93,7 @@ public class VertexClipping extends LWJGLWindow {
         glUniformMatrix4( perspectiveMatrixUnif, false, perspectiveMatrixBuffer );
         glUseProgram( 0 );
 
-        glViewport( 0, 0, width, height );
+        glViewport( 0, 0, w, h );
     }
 
 

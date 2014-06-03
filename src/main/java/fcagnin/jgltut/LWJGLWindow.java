@@ -81,8 +81,8 @@ public class LWJGLWindow {
         glClear( GL_COLOR_BUFFER_BIT );
     }
 
-    protected void reshape(int width, int height) {
-        glViewport( 0, 0, width, height );
+    protected void reshape(int w, int h) {
+        glViewport( 0, 0, w, h );
     }
 
     protected void update() {

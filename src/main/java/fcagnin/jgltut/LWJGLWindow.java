@@ -35,6 +35,7 @@ public class LWJGLWindow {
             Display.setTitle( "LWJGLWindow" );
             Display.setDisplayMode( new DisplayMode( width, height ) );
             Display.setResizable( true );
+            Display.setVSyncEnabled( true );
             Display.create();
 
             if ( !GLContext.getCapabilities().OpenGL33 ) {

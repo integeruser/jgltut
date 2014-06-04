@@ -1,11 +1,13 @@
-OpenGL 3.3 tutorials with LWJGL
--------------------------------
-This project is a port of *[Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using LWJGL and it is distributed in the hope that it will be useful. You can find the original c++ source code [here](https://bitbucket.org/alfonse/gltut/wiki/Home).
-The tutorials use many features of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)*, and you can find my port of this sdk [here](https://github.com/integeruser/jglsdk). It contains a simple math library, a DDS texture loader and other useful stuff. I have included in this repository all the files needed to run the tutorials so you don't need to download anything else.
+Learning Modern 3D Graphics Programming with LWJGL
+--------------------------------------------------
+This project is a port of *[Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using LWJGL and it is distributed in the hope that it will be useful (original C++ source code [here](https://bitbucket.org/alfonse/gltut/wiki/Home)). The tutorials can be found in the package `fcagnin.jgltut`.  
+In this project is also included a port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)*, which contains a simple math library, a DDS texture loader and other useful stuff, widely used throughout the tutorials. This stuff is collected in the package `fcagnin.jglsdk`.
 
-To suggest a feature, report a bug (please do it!), or general discussion use the [issue tracker](https://github.com/integeruser/gltut-lwjgl/issues).
+I have included in this repository all the files needed to run the tutorials so you don't need to download anything else (except the LWJGL library).
 
-Happy coding! :smile:
+To suggest a feature, report a bug (please do it!), or general discussion use the [issue tracker](https://github.com/integeruser/jgltut/issues).
+
+Happy coding! :smile:  
 Francesco
 
 Installation

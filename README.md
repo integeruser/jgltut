@@ -39,8 +39,8 @@ I don't have much time to dedicate to this project anymore, but in the next week
 - rework some parts of jglsdk;
 - update the code to work with lwjgl3 (when it will be officially released).
 
-Distribution
-------------
+License
+-------
 This project is licensed under the [Attribution 4.0 International license](http://creativecommons.org/licenses/by/4.0/).
 
 The LWJGL license can be found [here](http://lwjgl.org/license.php).

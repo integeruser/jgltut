@@ -1,5 +1,5 @@
 OpenGL 3.3 tutorials with LWJGL
-=
+-------------------------------
 This project is a port of *[Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using LWJGL and it is distributed in the hope that it will be useful. You can find the original c++ source code [here](https://bitbucket.org/alfonse/gltut/wiki/Home).
 The tutorials use many features of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)*, and you can find my port of this sdk [here](https://github.com/integeruser/jglsdk). It contains a simple math library, a DDS texture loader and other useful stuff. I have included in this repository all the files needed to run the tutorials so you don't need to download anything else.
 
@@ -9,7 +9,7 @@ Happy coding! :smile:
 Francesco
 
 Installation
-=
+------------
 This project uses features of Java 7 and doesn't work with older versions. It is tested with LWJGL 2.8.5 but it should also work properly with more recent releases.
 
 1. Download the sources of this project and import them into your favorite IDE: you may have to set the project language level to 7.0 and mark /src/main/java as a sources root folder;
@@ -17,7 +17,7 @@ This project uses features of Java 7 and doesn't work with older versions. It is
 3. Run fcagnin.jgltut.TutorialChooser and check if everything works properly.
 
 Updates
-=
+-------
 I don't have much time to dedicate to this project anymore, but in the next weeks (months?) i want to:
 
 - do some refactoring / fomatting: convert tabs to spaces, fix some typos, remove a lot of blank lines and other minor stuff;
@@ -25,7 +25,7 @@ I don't have much time to dedicate to this project anymore, but in the next week
 - update the code to work with lwjgl3 (when it will be officially released).
 
 Distribution
-=
+------------
 This project is licensed under the [Attribution 4.0 International license](http://creativecommons.org/licenses/by/4.0/).
 
 The LWJGL license can be found [here](http://lwjgl.org/license.php).

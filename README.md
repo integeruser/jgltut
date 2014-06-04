@@ -36,10 +36,10 @@ The following files are copywritten and distributed under the Creative Commons A
 
 Attributed to Etory, of OpenGameArt.org:
 
-- data/seamless\_rock1_small.dds
+- src/main/java/fcagnin/jgltut/data/seamless\_rock1_small.dds
 
 Attributed to p0ss, of OpenGameArt.org:
 
-- data/concrete649_small.dds
-- data/dsc\_1621_small.dds
-- data/rough645_small.dds
+- src/main/java/fcagnin/jgltut/data/concrete649_small.dds
+- src/main/java/fcagnin/jgltut/data/dsc\_1621_small.dds
+- src/main/java/fcagnin/jgltut/data/rough645_small.dds

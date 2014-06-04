@@ -10,13 +10,26 @@ To suggest a feature, report a bug (please do it!), or general discussion use th
 Happy coding! :smile:  
 Francesco
 
-Installation
-------------
-This project uses features of Java 7 and doesn't work with older versions. It is tested with LWJGL 2.8.5 but it should also work properly with more recent releases.
+Usage
+-----
+To correctly compile the code, you will need (at least):
 
-1. Download the sources of this project and import them into your favorite IDE: you may have to set the project language level to 7.0 and mark /src/main/java as a sources root folder;
-2. [Download and set up LWJGL](http://lwjgl.org/wiki/index.php?title=Downloading_and_Setting_Up_LWJGL): be sure to configure in your IDE both the location of lwjgl.jar and the location of the natives;
-3. Run fcagnin.jgltut.TutorialChooser and check if everything works properly.
+- Java SE Development Kit 7
+- [LWJGL 2.9.1](http://sourceforge.net/projects/java-game-lib/files/Official%20Releases/LWJGL%202.9.1/)
+
+Working with previous versions of these software requires minor fixes to the code.
+
+Common steps to get the code running:
+
+1. Clone this repository :+1:
+2. Using your favorite IDE, create a new Java project and import the source code of the repository just cloned
+3. Configure the project settings in your IDE options:
+    - set the project language level to `7.0 - Diamonds, ARM, multi-catch etc.` (may not be needed)
+    - add the LWJGL jar `lwjgl-2.9.1/jar/lwjgl.jar` to the project libraries
+    - link the appropriate LWJGL natives for your operating system: this really depends on your IDE. The easiest method I have found is to simply copy all the files contained in the LWJGL native folder (e.g. `lwjgl-2.9.1/natives/windows/`) in the root folder of your project.  
+    Another option is to set `-Djava.library.path=path/to/natives` as VM option in the IDE.  
+    Failing to link the natives will result in `Exception in thread "main" java.lang.UnsatisfiedLinkError: no lwjgl in java.library.path`
+4. Run the main method of the first tutorial `fcagnin.jgltut.tut01.Tut1` and check for error messages in the console; if nothing shows up then everything is working properly.
 
 Updates
 -------

@@ -33,6 +33,8 @@ Common steps to get the code running:
 
 Notes
 -----
+I decided to write the code of this project as similar as possible to the original C++ code, despite I would have done some things differently. Variables and functions are almost identical to their C++ counterpart. At first, the code may be difficult to read, but with a bit of practice you will realize that the code layout is organized to find the various sections quickly. I suggest you to start reading each class with all methods and inner classes folded.
+
 If your graphics card does not meet the minimum requirements to run the tutorials, the program will print to console the message `You must have at least OpenGL 3.3 to run this tutorial.`, and then will likely crash raising an exception. The requirements are checked using LWJGL functions, and the program simply reports what the LWJGL library finds.
 
 I am not able to run the tutorials on a MacBook Pro (Retina, Late 2013), as LWJGL reports that the graphics card does not support OpenGL 3.3 (despite it should support OpenGL 4.1); I can't tell if this is a problem of LWJGL or OS X. I tried both in Mavericks and Parallels+Windows. Suggestions are welcome. 

@@ -31,13 +31,17 @@ Common steps to get the code running:
     Failing to link the natives will result in `Exception in thread "main" java.lang.UnsatisfiedLinkError: no lwjgl in java.library.path`
 4. Run the main method of the first tutorial `fcagnin.jgltut.tut01.Tut1` and check for error messages in the console; if nothing shows up then everything is working properly.
 
-Updates
--------
-I don't have much time to dedicate to this project anymore, but in the next weeks (months?) i want to:
+Notes
+-----
+If your graphics card does not meet the minimum requirements to run the tutorials, the program will print to console the message `You must have at least OpenGL 3.3 to run this tutorial.`, and then will likely crash raising an exception. The requirements are checked using LWJGL functions, and the program simply reports what the LWJGL library finds.
 
-- do some refactoring / fomatting: convert tabs to spaces, fix some typos, remove a lot of blank lines and other minor stuff;
-- rework some parts of jglsdk;
-- update the code to work with lwjgl3 (when it will be officially released).
+I am not able to run the tutorials on a MacBook Pro (Retina, Late 2013), as LWJGL reports that the graphics card does not support OpenGL 3.3 (despite it should support OpenGL 4.1); I can't tell if this is a problem of LWJGL or OS X. I tried both in Mavericks and Parallels+Windows. Suggestions are welcome. 
+
+I can't dedicate much time to this project anymore, but in the future I will probably:
+
+- do some refactoring on code I don't like
+- rework some parts of `fcagnin.jglsdk`
+- update the code to work with LWJGL 3 (when it will be officially released)
 
 License
 -------

@@ -579,7 +579,11 @@ public class TextureGenerator {
 
 	private static void throwIfEXT_SRGBNotSupported() {
 		if (!GLContext.getCapabilities().GL_EXT_texture_sRGB) {
-			throw new ImageFormatUnsupportedException("sRGB and S3TC textures not supported.");
+            // temporary "fix" for OS X, needs rework
+            String osName = System.getProperty( "os.name" ).toLowerCase();
+            if ( !osName.startsWith( "mac os x" ) ) {
+                throw new ImageFormatUnsupportedException( "sRGB and S3TC textures not supported." );
+            }
 		}
 	}
 

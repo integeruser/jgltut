@@ -2,9 +2,7 @@ package fcagnin.jgltut;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.*;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -36,7 +34,13 @@ public class LWJGLWindow {
             Display.setDisplayMode( new DisplayMode( width, height ) );
             Display.setResizable( true );
             Display.setVSyncEnabled( true );
-            Display.create();
+
+            String osName = System.getProperty( "os.name" ).toLowerCase();
+            if ( osName.startsWith( "mac os x" ) ) {
+                Display.create( new PixelFormat(), new ContextAttribs( 3, 2 ).withProfileCore( true ) );
+            } else {
+                Display.create();
+            }
 
             printInfo();
         } catch ( LWJGLException e ) {

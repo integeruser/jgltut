@@ -38,9 +38,7 @@ public class LWJGLWindow {
             Display.setVSyncEnabled( true );
             Display.create();
 
-            if ( !GLContext.getCapabilities().OpenGL33 ) {
-                System.err.printf( "You must have at least OpenGL 3.3 to run this tutorial.\n" );
-            }
+            printInfo();
         } catch ( LWJGLException e ) {
             e.printStackTrace();
             System.exit( -1 );
@@ -70,6 +68,19 @@ public class LWJGLWindow {
         }
 
         Display.destroy();
+    }
+
+
+    private void printInfo() {
+        System.out.println();
+        System.out.println( "-----------------------------------------------------------" );
+
+        System.out.format( "%-18s%s\n", "Running:", getClass().getName() );
+        System.out.format( "%-18s%s\n", "OpenGL version:", glGetString( GL_VERSION ) );
+
+        if ( !GLContext.getCapabilities().OpenGL33 ) {
+            System.out.println( "You must have at least OpenGL 3.3 to run this tutorial." );
+        }
     }
 
 

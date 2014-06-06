@@ -1,11 +1,12 @@
 Learning Modern 3D Graphics Programming with LWJGL
 --------------------------------------------------
 This project is a port of *[Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using LWJGL and it is distributed in the hope that it will be useful (original C++ source code [here](https://bitbucket.org/alfonse/gltut/wiki/Home)). The tutorials can be found in the package `fcagnin.jgltut`.  
-In this project is also included a port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)*, which contains a small math library (derived from the [GLM math library](http://glm.g-truc.net/)), a DDS texture loader and other useful stuff, widely used throughout the tutorials. This stuff is collected in the package `fcagnin.jglsdk`.
-
+In this project is also included a port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)*, which contains a small math library (derived from the [GLM math library](http://glm.g-truc.net/)), a DDS texture loader and other useful stuff, widely used throughout the tutorials. This stuff is collected in the package `fcagnin.jglsdk`.  
 I have included in this repository all the files needed to run the tutorials so you don't need to download anything else (except the LWJGL library).
 
-To suggest a feature, report bugs / inconsistencies with the original tutorials, or general discussion use the [issue tracker](https://github.com/integeruser/jgltut/issues).
+To try the tutorials without building the source code, you can download this runnable jar: [Windows](https://integeruser.github.io/jgltut/jgltut-windows.jar) (tested on Windows 8.1), [OS X](https://integeruser.github.io/jgltut/jgltut-macosx.jar) (tested on OS X 10.9.3), [Linux](https://integeruser.github.io/jgltut/jgltut-linux.jar) (not yet tested, but it should work). I built these jars with the version `1.7.0_51` of the JDK, so make sure to have at least this version of Java. Several tutorials print various messages to console: launch the jar from the terminal / command prompt with the command `java -jar jgltut-*version*` to be able to view the output.
+
+To suggest a feature, report bugs / inconsistencies with the original tutorials / jars not working, or general discussion use the [issue tracker](https://github.com/integeruser/jgltut/issues).
 
 Happy coding! :smile:  
 Francesco

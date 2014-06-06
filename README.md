@@ -37,8 +37,6 @@ I decided to write the code of this project as similar as possible to the origin
 
 If your graphics card does not meet the minimum requirements to run the tutorials, the program will print to console the message `You must have at least OpenGL 3.3 to run this tutorial.`, and then will likely crash raising an exception. The requirements are checked using LWJGL functions, and the program simply reports what the LWJGL library finds.
 
-I am not able to run the tutorials on a MacBook Pro (Retina, Late 2013), as LWJGL reports that the graphics card does not support OpenGL 3.3 (despite it should support OpenGL 4.1); I can't tell if this is a problem of LWJGL or OS X. I tried both in Mavericks and Parallels+Windows. Suggestions are welcome. 
-
 I can't dedicate much time to this project anymore, but in the future I will probably:
 
 - do some refactoring on code I don't like

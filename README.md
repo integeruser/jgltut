@@ -29,7 +29,7 @@ Common steps to get the code running:
     - link the appropriate LWJGL natives for your operating system: the easiest method I have found is to simply copy all the files from the LWJGL native folder (e.g. all the files in `lwjgl-2.9.1/natives/windows/`) to the root folder of your project.  
     Alternatively, try setting `-Djava.library.path=path/to/natives` as VM option in the IDE, or search Google for instructions.  
     Failing to link the natives will result in `Exception in thread "main" java.lang.UnsatisfiedLinkError: no lwjgl in java.library.path`
-4. Run the main method of the first tutorial `fcagnin.jgltut.tut01.Tut1` and check for error messages in the console; if nothing shows up then everything is working properly.
+4. Run the `main` method of the first tutorial `fcagnin.jgltut.tut01.Tut1` and check for error messages in the console: it should only display the name of the running tutorial and the OpenGL version supported by your video card.
 
 Notes
 -----
@@ -57,7 +57,7 @@ The only files I have added are `LWJGLWindow.java` (simple class that wraps all 
 Each tutorial has its own `main` method that can be used to run it. Alternatively, you can execute the `main` method of `TutorialChooser.java` and then click on the name of the tutorial you want to run.  
 At first, the code may be difficult to read, but with a bit of practice you will realize that the code layout is organized to find the various sections quickly. I suggest you to start reading each class with all methods and inner classes folded.
 
-If your graphics card does not meet the minimum requirements to run the tutorials, the program will print to console the message `You must have at least OpenGL 3.3 to run this tutorial.`, and then will likely crash raising an exception. The requirements are checked in `LWJGLWindow.java` using `GLContext.getCapabilities().OpenGL33`.
+If your graphics card does not meet the minimum requirements,running a tutorial will print to the console the message `You must have at least OpenGL 3.3 to run this tutorial.`, and the program will likely crash raising an exception. These requirements are checked in `LWJGLWindow.java` when the `Display` is created, using `GLContext.getCapabilities().OpenGL33`.
 
 I can't dedicate much time to this project anymore, but in the future I will probably:
 
@@ -67,7 +67,7 @@ I can't dedicate much time to this project anymore, but in the future I will pro
 
 License
 -------
-This project is licensed under the [Attribution 4.0 International license](http://creativecommons.org/licenses/by/4.0/): you can do what you want with my work, but I kindly ask you to simply provide a link to this repository.
+This project is licensed under the [Attribution 4.0 International license](http://creativecommons.org/licenses/by/4.0/): you can do what you want with my code, but if you want to publish some derived work I kindly ask you to simply provide a link to this repository.
 
 Credits
 -------

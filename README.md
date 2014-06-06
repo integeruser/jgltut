@@ -57,7 +57,7 @@ The only files I have added are `LWJGLWindow.java` (simple class that wraps all 
 Each tutorial has its own `main` method that can be used to run it. Alternatively, you can execute the `main` method of `TutorialChooser.java` and then click on the name of the tutorial you want to run.  
 At first, the code may be difficult to read, but with a bit of practice you will realize that the code layout is organized to find the various sections quickly. I suggest you to start reading each class with all methods and inner classes folded.
 
-If your graphics card does not meet the minimum requirements,running a tutorial will print to the console the message `You must have at least OpenGL 3.3 to run this tutorial.`, and the program will likely crash raising an exception. These requirements are checked in `LWJGLWindow.java` when the `Display` is created, using `GLContext.getCapabilities().OpenGL33`.
+If your graphics card does not meet the minimum requirements, running a tutorial will print to the console the message `You must have at least OpenGL 3.3 to run this tutorial.`, and the program will likely crash raising an exception. These requirements are checked in `LWJGLWindow.java` when the `Display` is created, using `GLContext.getCapabilities().OpenGL33`.
 
 I can't dedicate much time to this project anymore, but in the future I will probably:
 
@@ -71,7 +71,7 @@ This project is licensed under the [Attribution 4.0 International license](http:
 
 Credits
 -------
-The LWJGL license can be found [here](http://lwjgl.org/license.php).
+The LWJGL license can be found [here](http://lwjgl.org/license.php).  
 Licenses of the projects `gltut` and `glsdk` can be found [here](https://bitbucket.org/alfonse/gltut/raw/3ee6f3dd04a7/License.txt) and
 [here](https://bitbucket.org/alfonse/unofficial-opengl-sdk/raw/1893b6e851b9/License.txt).
 

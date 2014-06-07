@@ -31,6 +31,7 @@ Common steps to get the code running:
     Alternatively, try setting `-Djava.library.path=path/to/natives` as VM option in the IDE, or search Google for instructions.  
     Failing to link the natives will result in `Exception in thread "main" java.lang.UnsatisfiedLinkError: no lwjgl in java.library.path`
 4. Run the `main` method of the first tutorial `fcagnin.jgltut.tut01.Tut1` and check for error messages in the console: it should only display the name of the running tutorial and the OpenGL version supported by your video card.
+5. To quit any tutorial, simply press `ESC`.
 
 Notes
 -----

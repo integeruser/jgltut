@@ -209,6 +209,8 @@ public class GaussianSpecularLighting extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
+        float zNear = 1.0f;
+        float zFar = 1000.0f;
         MatrixStack persMatrix = new MatrixStack();
         persMatrix.perspective( 45.0f, (w / (float) h), zNear, zFar );
 
@@ -356,9 +358,6 @@ public class GaussianSpecularLighting extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private float zNear = 1.0f;
-    private float zFar = 1000.0f;
-
     private ProgramPairs[] programs = new ProgramPairs[LightingModel.MAX_LIGHTING_MODEL.ordinal()];
     private ShaderPairs[] shaderFileNames = new ShaderPairs[]{
             new ShaderPairs( "PN.vert", "PCN.vert", "PhongLighting.frag" ),
@@ -562,7 +561,7 @@ public class GaussianSpecularLighting extends LWJGLWindow {
         GAUSSIAN_SPECULAR,
         GAUSSIAN_ONLY,
 
-        MAX_LIGHTING_MODEL;
+        MAX_LIGHTING_MODEL
     }
 
 
@@ -670,8 +669,7 @@ public class GaussianSpecularLighting extends LWJGLWindow {
                     return gaussianRoughness;
 
                 default:
-                    float stopComplaint = 0.0f;
-                    return stopComplaint;
+                    return 0.0f;
             }
         }
 

@@ -134,8 +134,7 @@ public class BasicTexture extends LWJGLWindow {
         LightBlock lightData = new LightBlock();
         lightData.ambientIntensity = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
         float halfLightDistance = 25.0f;
-        float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
-        lightData.lightAttenuation = lightAttenuation;
+        lightData.lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
 
         Vec3 globalLightDirection = new Vec3( 0.707f, 0.707f, 0.0f );
 
@@ -231,6 +230,8 @@ public class BasicTexture extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
+        float zNear = 1.0f;
+        float zFar = 1000.0f;
         MatrixStack persMatrix = new MatrixStack();
         persMatrix.perspective( 45.0f, (w / (float) h), zNear, zFar );
 
@@ -321,9 +322,6 @@ public class BasicTexture extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private float zNear = 1.0f;
-    private float zFar = 1000.0f;
-
     private ProgramData litShaderProg;
     private ProgramData litTextureProg;
     private UnlitProgData unlit;

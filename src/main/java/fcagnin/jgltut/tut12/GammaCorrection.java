@@ -14,7 +14,6 @@ import fcagnin.jgltut.LWJGLWindow;
 import fcagnin.jgltut.framework.Framework;
 import fcagnin.jgltut.framework.MousePole;
 import fcagnin.jgltut.framework.Timer;
-import fcagnin.jgltut.tut12.LightManager.LightBlock;
 import fcagnin.jgltut.tut12.LightManager.LightBlockGamma;
 import fcagnin.jgltut.tut12.LightManager.SunlightValueHDR;
 import fcagnin.jgltut.tut12.LightManager.TimerTypes;
@@ -106,14 +105,14 @@ public class GammaCorrection extends LWJGLWindow {
         // Setup our Uniform Buffers
         lightUniformBuffer = glGenBuffers();
         glBindBuffer( GL_UNIFORM_BUFFER, lightUniformBuffer );
-        glBufferData( GL_UNIFORM_BUFFER, LightBlock.SIZE, GL_DYNAMIC_DRAW );
+        glBufferData( GL_UNIFORM_BUFFER, LightBlockGamma.SIZE, GL_DYNAMIC_DRAW );
 
         projectionUniformBuffer = glGenBuffers();
         glBindBuffer( GL_UNIFORM_BUFFER, projectionUniformBuffer );
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.SIZE );
+        glBindBufferRange( GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlockGamma.SIZE );
 
         glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
@@ -219,6 +218,8 @@ public class GammaCorrection extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
+        float zNear = 1.0f;
+        float zFar = 1000.0f;
         MatrixStack persMatrix = new MatrixStack();
         persMatrix.perspective( 45.0f, (w / (float) h), zNear, zFar );
 
@@ -366,9 +367,6 @@ public class GammaCorrection extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private float zNear = 1.0f;
-    private float zFar = 1000.0f;
-
     private final int materialBlockIndex = 0;
     private final int lightBlockIndex = 1;
 
@@ -404,7 +402,7 @@ public class GammaCorrection extends LWJGLWindow {
 
     private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer( Vec4.SIZE );
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
-    private FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer( LightBlock.SIZE );
+    private FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer( LightBlockGamma.SIZE );
 
 
     private void initializePrograms() {

@@ -36,7 +36,7 @@ public class FragPosition extends LWJGLWindow {
         initializeProgram();
         initializeVertexBuffer();
 
-        vao = glGenVertexArrays();
+        int vao = glGenVertexArrays();
         glBindVertexArray( vao );
     }
 
@@ -79,8 +79,6 @@ public class FragPosition extends LWJGLWindow {
     };
 
     private int vertexBufferObject;
-
-    private int vao;
 
 
     private void initializeVertexBuffer() {

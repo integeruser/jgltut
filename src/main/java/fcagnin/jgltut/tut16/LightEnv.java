@@ -276,11 +276,11 @@ class LightEnv {
     }
 
 
-    static Vec4 getValue(LightData data) {
+    private static Vec4 getValue(LightData data) {
         return data.first;
     }
 
-    static float getTime(LightData data) {
+    private static float getTime(LightData data) {
         return data.second;
     }
 
@@ -289,7 +289,7 @@ class LightEnv {
         return data.first;
     }
 
-    static float getTime(MaxIntensityData data) {
+    private static float getTime(MaxIntensityData data) {
         return data.second;
     }
 
@@ -340,8 +340,7 @@ class LightEnv {
         LightBlock lightData = new LightBlock();
         lightData.ambientIntensity = ambientInterpolator.interpolate( sunTimer.getAlpha() );
         float halfLightDistance = 70.0f;
-        float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
-        lightData.lightAttenuation = lightAttenuation;
+        lightData.lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
         lightData.maxIntensity = maxIntensityInterpolator.interpolate( sunTimer.getAlpha() );
 
         lightData.lights[0] = new PerLight();

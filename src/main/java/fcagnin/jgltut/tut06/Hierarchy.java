@@ -189,8 +189,6 @@ public class Hierarchy extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final int numberOfVertices = 24;
-
     private final float vertexData[] = {
             // Front
             +1.0f, +1.0f, +1.0f,
@@ -280,9 +278,6 @@ public class Hierarchy extends LWJGLWindow {
             22, 23, 20
     };
 
-    private int vertexBufferObject;
-    private int indexBufferObject;
-
     private int vao;
 
 
@@ -291,7 +286,7 @@ public class Hierarchy extends LWJGLWindow {
         vertexDataBuffer.put( vertexData );
         vertexDataBuffer.flip();
 
-        vertexBufferObject = glGenBuffers();
+        int vertexBufferObject = glGenBuffers();
         glBindBuffer( GL_ARRAY_BUFFER, vertexBufferObject );
         glBufferData( GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW );
         glBindBuffer( GL_ARRAY_BUFFER, 0 );
@@ -300,7 +295,7 @@ public class Hierarchy extends LWJGLWindow {
         indexDataBuffer.put( indexData );
         indexDataBuffer.flip();
 
-        indexBufferObject = glGenBuffers();
+        int indexBufferObject = glGenBuffers();
         glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, indexBufferObject );
         glBufferData( GL_ELEMENT_ARRAY_BUFFER, indexDataBuffer, GL_STATIC_DRAW );
         glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
@@ -308,6 +303,7 @@ public class Hierarchy extends LWJGLWindow {
         vao = glGenVertexArrays();
         glBindVertexArray( vao );
 
+        final int numberOfVertices = 24;
         int colorDataOffset = FLOAT_SIZE * 3 * numberOfVertices;
         glBindBuffer( GL_ARRAY_BUFFER, vertexBufferObject );
         glEnableVertexAttribArray( positionAttrib );

@@ -124,8 +124,8 @@ public class BasicImpostor extends LWJGLWindow {
 
         LightBlock lightData = new LightBlock();
         lightData.ambientIntensity = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
-        float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
-        lightData.lightAttenuation = lightAttenuation;
+        float halfLightDistance = 25.0f;
+        lightData.lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
 
         lightData.lights[0] = new PerLight();
         lightData.lights[0].cameraSpaceLightPos = Mat4.mul( worldToCamMat, new Vec4( 0.707f, 0.707f, 0.0f, 0.0f ) );
@@ -205,6 +205,8 @@ public class BasicImpostor extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
+        float zNear = 1.0f;
+        float zFar = 1000.0f;
         MatrixStack persMatrix = new MatrixStack();
         persMatrix.perspective( 45.0f, (w / (float) h), zNear, zFar );
 
@@ -329,9 +331,6 @@ public class BasicImpostor extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private float zNear = 1.0f;
-    private float zFar = 1000.0f;
-
     private ProgramMeshData litMeshProg;
     private ProgramImposData[] litImpProgs = new ProgramImposData[Impostors.NUM_IMPOSTORS.ordinal()];
     private String[] impShaderFileNames = new String[]{
@@ -447,8 +446,6 @@ public class BasicImpostor extends LWJGLWindow {
     private Mesh cubeMesh;
 
     private int imposterVAO;
-
-    private final float halfLightDistance = 25.0f;
 
     private Timer sphereTimer = new Timer( Timer.Type.LOOP, 6.0f );
 
@@ -616,7 +613,7 @@ public class BasicImpostor extends LWJGLWindow {
         float padding[] = new float[3];
         PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-        static final int SIZE = Vec4.SIZE + ((1 + 3) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * NUMBER_OF_LIGHTS;
+        static final int SIZE = Vec4.SIZE + ((1 + 3) * FLOAT_SIZE) + PerLight.SIZE * NUMBER_OF_LIGHTS;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -645,7 +642,7 @@ public class BasicImpostor extends LWJGLWindow {
         float specularShininess;
         float padding[] = new float[3];
 
-        static final int SIZE = Vec4.SIZE + Vec4.SIZE + ((1 + 3) * (Float.SIZE / Byte.SIZE));
+        static final int SIZE = Vec4.SIZE + Vec4.SIZE + ((1 + 3) * FLOAT_SIZE);
 
         @Override
         public ByteBuffer fillBuffer(ByteBuffer buffer) {

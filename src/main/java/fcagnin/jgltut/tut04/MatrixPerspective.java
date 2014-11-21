@@ -36,7 +36,7 @@ public class MatrixPerspective extends LWJGLWindow {
         initializeProgram();
         initializeVertexBuffer();
 
-        vao = glGenVertexArrays();
+        int vao = glGenVertexArrays();
         glBindVertexArray( vao );
 
         glEnable( GL_CULL_FACE );
@@ -207,8 +207,6 @@ public class MatrixPerspective extends LWJGLWindow {
     };
 
     private int vertexBufferObject;
-
-    private int vao;
 
 
     private void initializeVertexBuffer() {

@@ -41,6 +41,7 @@ public class Rotation extends LWJGLWindow {
         vao = glGenVertexArrays();
         glBindVertexArray( vao );
 
+        final int numberOfVertices = 8;
         int colorDataOffset = FLOAT_SIZE * 3 * numberOfVertices;
         glBindBuffer( GL_ARRAY_BUFFER, vertexBufferObject );
         glEnableVertexAttribArray( 0 );
@@ -141,8 +142,6 @@ public class Rotation extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final int numberOfVertices = 8;
-
     private final float vertexData[] = {
             +1.0f, +1.0f, +1.0f,
             -1.0f, -1.0f, +1.0f,

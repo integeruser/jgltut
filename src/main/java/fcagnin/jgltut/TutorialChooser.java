@@ -63,7 +63,7 @@ import java.awt.*;
 public class TutorialChooser extends JPanel implements TreeSelectionListener {
     public static void main(String[] args) {
         JFrame frame = new JFrame( "Click on a tutorial to run it" );
-        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        frame.setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
 
         JPanel tutorialsViewer = new TutorialChooser();
         frame.setContentPane( tutorialsViewer );

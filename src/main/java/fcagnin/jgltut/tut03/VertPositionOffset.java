@@ -36,7 +36,7 @@ public class VertPositionOffset extends LWJGLWindow {
         initializeProgram();
         initializeVertexBuffer();
 
-        vao = glGenVertexArrays();
+        int vao = glGenVertexArrays();
         glBindVertexArray( vao );
     }
 
@@ -89,8 +89,6 @@ public class VertPositionOffset extends LWJGLWindow {
     };
 
     private int positionBufferObject;
-
-    private int vao;
 
 
     private void initializeVertexBuffer() {

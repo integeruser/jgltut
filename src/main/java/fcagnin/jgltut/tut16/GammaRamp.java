@@ -190,13 +190,11 @@ public class GammaRamp extends LWJGLWindow {
             410, 112, (short) 65535, (short) 65535
     };
 
-    private int dataBufferObject;
-
     private int vao;
 
 
     private void initializeVertexData() {
-        dataBufferObject = glGenBuffers();
+        int dataBufferObject = glGenBuffers();
         glBindBuffer( GL_ARRAY_BUFFER, dataBufferObject );
 
         ShortBuffer vertexDataBuffer = BufferUtils.createShortBuffer( vertexData.length );

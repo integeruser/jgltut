@@ -90,15 +90,15 @@ public class FragmentAttenuation extends LWJGLWindow {
         glBindBuffer( GL_UNIFORM_BUFFER, projectionUniformBuffer );
         glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
-        g_unprojectionUniformBuffer = glGenBuffers();
-        glBindBuffer( GL_UNIFORM_BUFFER, g_unprojectionUniformBuffer );
+        unprojectionUniformBuffer = glGenBuffers();
+        glBindBuffer( GL_UNIFORM_BUFFER, unprojectionUniformBuffer );
         glBufferData( GL_UNIFORM_BUFFER, UnProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
 
         // Bind the static buffers.
         glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, g_unprojectionBlockIndex, g_unprojectionUniformBuffer, 0,
+        glBindBufferRange( GL_UNIFORM_BUFFER, unprojectionBlockIndex, unprojectionUniformBuffer, 0,
                 UnProjectionBlock.SIZE );
 
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
@@ -214,6 +214,8 @@ public class FragmentAttenuation extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
+        float zNear = 1.0f;
+        float zFar = 1000.0f;
         MatrixStack persMatrix = new MatrixStack();
         persMatrix.perspective( 45.0f, (w / (float) h), zNear, zFar );
 
@@ -226,7 +228,7 @@ public class FragmentAttenuation extends LWJGLWindow {
 
         glBindBuffer( GL_UNIFORM_BUFFER, projectionUniformBuffer );
         glBufferSubData( GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer( mat4Buffer ) );
-        glBindBuffer( GL_UNIFORM_BUFFER, g_unprojectionUniformBuffer );
+        glBindBuffer( GL_UNIFORM_BUFFER, unprojectionUniformBuffer );
         glBufferSubData( GL_UNIFORM_BUFFER, 0,
                 unprojData.fillAndFlipBuffer( BufferUtils.createByteBuffer( 18 * FLOAT_SIZE ) ) );
         glBindBuffer( GL_UNIFORM_BUFFER, 0 );
@@ -358,9 +360,6 @@ public class FragmentAttenuation extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private float zNear = 1.0f;
-    private float zFar = 1000.0f;
-
     private ProgramData fragWhiteDiffuseColor;
     private ProgramData fragVertexDiffuseColor;
     private UnlitProgData unlit;
@@ -418,7 +417,7 @@ public class FragmentAttenuation extends LWJGLWindow {
         glUniformBlockBinding( data.theProgram, projectionBlock, projectionBlockIndex );
 
         int unprojectionBlock = glGetUniformBlockIndex( data.theProgram, "UnProjection" );
-        glUniformBlockBinding( data.theProgram, unprojectionBlock, g_unprojectionBlockIndex );
+        glUniformBlockBinding( data.theProgram, unprojectionBlock, unprojectionBlockIndex );
 
         return data;
     }
@@ -498,10 +497,10 @@ public class FragmentAttenuation extends LWJGLWindow {
 
     ////////////////////////////////
     private final int projectionBlockIndex = 2;
-    private final int g_unprojectionBlockIndex = 1;
+    private final int unprojectionBlockIndex = 1;
 
     private int projectionUniformBuffer;
-    private int g_unprojectionUniformBuffer;
+    private int unprojectionUniformBuffer;
 
     private class ProjectionBlock extends BufferableData<FloatBuffer> {
         Mat4 cameraToClipMatrix;

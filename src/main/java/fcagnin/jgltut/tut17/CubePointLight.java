@@ -136,6 +136,8 @@ public class CubePointLight extends LWJGLWindow {
                 360.0f * timer.getAlpha(), new Vec3( 0.0f, 0.0f, 1.0f ) ) ) );
 
         {
+            final float zNear = 1.0f;
+            final float zFar = 1000.0f;
             MatrixStack persMatrix = new MatrixStack();
             persMatrix.perspective( 60.0f, displayWidth / (float) displayHeight, zNear, zFar );
 
@@ -289,8 +291,7 @@ public class CubePointLight extends LWJGLWindow {
 
                     case Keyboard.KEY_1:
                     case Keyboard.KEY_2:
-                        int number = Keyboard.getEventKey() - Keyboard.KEY_1;
-                        currTextureIndex = number;
+                        currTextureIndex = Keyboard.getEventKey() - Keyboard.KEY_1;
                         System.out.printf( "%s\n", texDefs[currTextureIndex].name );
                         break;
 
@@ -304,9 +305,6 @@ public class CubePointLight extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final float zNear = 1.0f;
-    private final float zFar = 1000.0f;
-
     private int coloredModelToCameraMatrixUnif;
     private int coloredProg;
 

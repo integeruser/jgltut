@@ -449,11 +449,11 @@ class LightManager {
     }
 
 
-    static Vec4 getValue(LightData data) {
+    private static Vec4 getValue(LightData data) {
         return data.first;
     }
 
-    static float getTime(LightData data) {
+    private static float getTime(LightData data) {
         return data.second;
     }
 
@@ -462,7 +462,7 @@ class LightManager {
         return data.first;
     }
 
-    static float getTime(MaxIntensityData data) {
+    private static float getTime(MaxIntensityData data) {
         return data.second;
     }
 

@@ -36,7 +36,7 @@ public class AspectRatio extends LWJGLWindow {
         initializeProgram();
         initializeVertexBuffer();
 
-        vao = glGenVertexArrays();
+        int vao = glGenVertexArrays();
         glBindVertexArray( vao );
 
         glEnable( GL_CULL_FACE );
@@ -225,8 +225,6 @@ public class AspectRatio extends LWJGLWindow {
     };
 
     private int vertexBufferObject;
-
-    private int vao;
 
 
     private void initializeVertexBuffer() {

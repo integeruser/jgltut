@@ -19,7 +19,7 @@ public class LWJGLWindow {
     private float elapsedTime;
     private float lastFrameDuration;
 
-    private double lastFrameTimestamp, now;
+    private double lastFrameTimestamp;
     private boolean continueMainLoop;
 
 
@@ -57,7 +57,7 @@ public class LWJGLWindow {
         while ( continueMainLoop && !Display.isCloseRequested() ) {
             elapsedTime = (float) ((System.nanoTime() - startTime) / 1000000.0);
 
-            now = System.nanoTime();
+            double now = System.nanoTime();
             lastFrameDuration = (float) ((now - lastFrameTimestamp) / 1000000.0);
             lastFrameTimestamp = now;
 

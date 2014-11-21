@@ -132,8 +132,8 @@ public class GeomImpostor extends LWJGLWindow {
 
         LightBlock lightData = new LightBlock();
         lightData.ambientIntensity = new Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
-        float lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
-        lightData.lightAttenuation = lightAttenuation;
+        float halfLightDistance = 25.0f;
+        lightData.lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
 
         lightData.lights[0] = new PerLight();
         lightData.lights[0].cameraSpaceLightPos = Mat4.mul( worldToCamMat, new Vec4( 0.707f, 0.707f, 0.0f, 0.0f ) );
@@ -258,6 +258,8 @@ public class GeomImpostor extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
+        float zNear = 1.0f;
+        float zFar = 1000.0f;
         MatrixStack persMatrix = new MatrixStack();
         persMatrix.perspective( 45.0f, (w / (float) h), zNear, zFar );
 
@@ -354,9 +356,6 @@ public class GeomImpostor extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private float zNear = 1.0f;
-    private float zFar = 1000.0f;
-
     private ProgramMeshData litMeshProg;
     private ProgramImposData litImpProg;
     private UnlitProgData unlit;
@@ -460,7 +459,6 @@ public class GeomImpostor extends LWJGLWindow {
     private int imposterVBO;
 
     private final int NUMBER_OF_SPHERES = 4;
-    private final float halfLightDistance = 25.0f;
 
     private Timer sphereTimer = new Timer( Timer.Type.LOOP, 6.0f );
 
@@ -667,8 +665,8 @@ public class GeomImpostor extends LWJGLWindow {
             FloatBuffer ubArrayBuffer = BufferUtils.createFloatBuffer( ubArray.size() * MaterialEntry.SIZE /
                     FLOAT_SIZE );
 
-            for ( int i = 0; i < ubArray.size(); i++ ) {
-                ubArray.get( i ).fillBuffer( ubArrayBuffer );
+            for ( MaterialEntry anUbArray : ubArray ) {
+                anUbArray.fillBuffer( ubArrayBuffer );
             }
 
             ubArrayBuffer.flip();

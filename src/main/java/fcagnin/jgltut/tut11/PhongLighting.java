@@ -229,6 +229,8 @@ public class PhongLighting extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
+        float zNear = 1.0f;
+        float zFar = 1000.0f;
         MatrixStack persMatrix = new MatrixStack();
         persMatrix.perspective( 45.0f, (w / (float) h), zNear, zFar );
 
@@ -386,9 +388,6 @@ public class PhongLighting extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private float zNear = 1.0f;
-    private float zFar = 1000.0f;
-
     private ProgramData whiteNoPhong;
     private ProgramData colorNoPhong;
     private ProgramData whitePhong;

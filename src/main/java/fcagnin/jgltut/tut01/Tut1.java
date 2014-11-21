@@ -34,7 +34,7 @@ public class Tut1 extends LWJGLWindow {
         initializeProgram();
         initializeVertexBuffer();
 
-        vao = glGenVertexArrays();
+        int vao = glGenVertexArrays();
         glBindVertexArray( vao );
     }
 
@@ -59,25 +59,24 @@ public class Tut1 extends LWJGLWindow {
     ////////////////////////////////
     private int theProgram;
 
-    private final String vertexShader =
-            "#version 330\n" +
-                    "layout(location = 0) in vec4 position;\n" +
-                    "void main()\n" +
-                    "{\n" +
-                    "   gl_Position = position;\n" +
-                    "}\n";
-    private final String fragmentShader =
-            "#version 330\n" +
-                    "out vec4 outputColor;\n" +
-                    "void main()\n" +
-                    "{\n" +
-                    "   outputColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n" +
-                    "}\n";
-
 
     private void initializeProgram() {
         ArrayList<Integer> shaderList = new ArrayList<>();
+
+        String vertexShader = "#version 330\n" +
+                "layout(location = 0) in vec4 position;\n" +
+                "void main()\n" +
+                "{\n" +
+                "   gl_Position = position;\n" +
+                "}\n";
         shaderList.add( createShader( GL_VERTEX_SHADER, vertexShader ) );
+
+        String fragmentShader = "#version 330\n" +
+                "out vec4 outputColor;\n" +
+                "void main()\n" +
+                "{\n" +
+                "   outputColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n" +
+                "}\n";
         shaderList.add( createShader( GL_FRAGMENT_SHADER, fragmentShader ) );
 
         theProgram = createProgram( shaderList );
@@ -151,8 +150,6 @@ public class Tut1 extends LWJGLWindow {
     };
 
     private int positionBufferObject;
-
-    private int vao;
 
 
     private void initializeVertexBuffer() {

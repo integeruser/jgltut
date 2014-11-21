@@ -36,7 +36,7 @@ public class VertexColor extends LWJGLWindow {
         initializeProgram();
         initializeVertexBuffer();
 
-        vao = glGenVertexArrays();
+        int vao = glGenVertexArrays();
         glBindVertexArray( vao );
     }
 
@@ -85,8 +85,6 @@ public class VertexColor extends LWJGLWindow {
     };
 
     private int vertexBufferObject;
-
-    private int vao;
 
 
     private void initializeVertexBuffer() {

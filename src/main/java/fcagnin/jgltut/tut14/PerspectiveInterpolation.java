@@ -102,9 +102,6 @@ public class PerspectiveInterpolation extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private float zNear = 1.0f;
-    private float zFar = 1000.0f;
-
     private ProgramData smoothInterp;
     private ProgramData linearInterp;
 
@@ -122,6 +119,8 @@ public class PerspectiveInterpolation extends LWJGLWindow {
         smoothInterp = loadProgram( "SmoothVertexColors.vert", "SmoothVertexColors.frag" );
         linearInterp = loadProgram( "NoCorrectVertexColors.vert", "NoCorrectVertexColors.frag" );
 
+        float zNear = 1.0f;
+        float zFar = 1000.0f;
         MatrixStack persMatrix = new MatrixStack();
         persMatrix.perspective( 60.0f, 1.0f, zNear, zFar );
 

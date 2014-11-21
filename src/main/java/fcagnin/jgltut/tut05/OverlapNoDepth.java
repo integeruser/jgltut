@@ -120,8 +120,6 @@ public class OverlapNoDepth extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final int numberOfVertices = 36;
-
     private final float RIGHT_EXTENT = 0.8f;
     private final float LEFT_EXTENT = -RIGHT_EXTENT;
     private final float TOP_EXTENT = 0.20f;
@@ -273,6 +271,7 @@ public class OverlapNoDepth extends LWJGLWindow {
         vaoObject1 = glGenVertexArrays();
         glBindVertexArray( vaoObject1 );
 
+        final int numberOfVertices = 36;
         int colorDataOffset = FLOAT_SIZE * 3 * numberOfVertices;
 
         glBindBuffer( GL_ARRAY_BUFFER, vertexBufferObject );

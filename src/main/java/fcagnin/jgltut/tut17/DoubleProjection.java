@@ -126,6 +126,8 @@ public class DoubleProjection extends LWJGLWindow {
         Vec2 displaySize = new Vec2( displayWidth / 2, displayHeight );
 
         {
+            final float zNear = 1.0f;
+            final float zFar = 1000.0f;
             MatrixStack persMatrix = new MatrixStack();
             persMatrix.perspective( 60.0f, displaySize.x / displaySize.y, zNear, zFar );
 
@@ -163,6 +165,8 @@ public class DoubleProjection extends LWJGLWindow {
         }
 
         {
+            final float zNear = 1.0f;
+            final float zFar = 1000.0f;
             MatrixStack persMatrix = new MatrixStack();
             persMatrix.applyMatrix( new Mat4( new Mat3( persViewPole.calcMatrix() ) ) );
             persMatrix.perspective( 60.0f, displaySize.x / displaySize.y, zNear, zFar );
@@ -271,9 +275,6 @@ public class DoubleProjection extends LWJGLWindow {
 
 
     ////////////////////////////////
-    private final float zNear = 1.0f;
-    private final float zFar = 1000.0f;
-
     private int unlitProg;
     private int unlitModelToCameraMatrixUnif;
     private int unlitObjectColorUnif;

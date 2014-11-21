@@ -36,7 +36,7 @@ public class FragChangeColor extends LWJGLWindow {
         initializeProgram();
         initializeVertexBuffer();
 
-        vao = glGenVertexArrays();
+        int vao = glGenVertexArrays();
         glBindVertexArray( vao );
     }
 
@@ -93,8 +93,6 @@ public class FragChangeColor extends LWJGLWindow {
     };
 
     private int positionBufferObject;
-
-    private int vao;
 
 
     private void initializeVertexBuffer() {

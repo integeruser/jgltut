@@ -17,6 +17,7 @@ import static org.lwjgl.opengl.EXTTextureSnorm.*;
 import static org.lwjgl.opengl.EXTTextureCompressionLATC.*;
 import static org.lwjgl.opengl.NVTextureCompressionVTC.*;
 
+import org.lwjgl.LWJGLUtil;
 import org.lwjgl.opengl.EXTTextureSnorm;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GLContext;
@@ -580,11 +581,10 @@ public class TextureGenerator {
 	private static void throwIfEXT_SRGBNotSupported() {
 		if (!GLContext.getCapabilities().GL_EXT_texture_sRGB) {
             // temporary "fix" for OS X, needs rework
-            String osName = System.getProperty( "os.name" ).toLowerCase();
-            if ( !osName.startsWith( "mac os x" ) ) {
+            if ( LWJGLUtil.getPlatform() != LWJGLUtil.PLATFORM_MACOSX ) {
                 throw new ImageFormatUnsupportedException( "sRGB and S3TC textures not supported." );
             }
-		}
+        }
 	}
 
 	private static void throwIfSharedExpNotSupported() {

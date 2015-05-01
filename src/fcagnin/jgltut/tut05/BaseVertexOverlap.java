@@ -18,7 +18,7 @@ import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- * <p/>
+ * <p>
  * Part II. Positioning
  * Chapter 5. Objects in Depth
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2005.html
@@ -28,7 +28,6 @@ import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
 public class BaseVertexOverlap extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/jgltut/tut05/data/";
-
         new BaseVertexOverlap().start();
     }
 
@@ -39,40 +38,40 @@ public class BaseVertexOverlap extends LWJGLWindow {
         initializeVertexBuffer();
 
         vao = glGenVertexArrays();
-        glBindVertexArray( vao );
+        glBindVertexArray(vao);
 
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
         int colorDataOffset = FLOAT_SIZE * 3 * numberOfVertices;
-        glBindBuffer( GL_ARRAY_BUFFER, vertexBufferObject );
-        glEnableVertexAttribArray( 0 );
-        glEnableVertexAttribArray( 1 );
-        glVertexAttribPointer( 0, 3, GL_FLOAT, false, 0, 0 );
-        glVertexAttribPointer( 1, 4, GL_FLOAT, false, 0, colorDataOffset );
-        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, indexBufferObject );
+        glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, colorDataOffset);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 
-        glBindVertexArray( 0 );
+        glBindVertexArray(0);
 
-        glEnable( GL_CULL_FACE );
-        glCullFace( GL_BACK );
-        glFrontFace( GL_CW );
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CW);
     }
 
     @Override
     protected void display() {
-        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram( theProgram );
+        glUseProgram(theProgram);
 
-        glBindVertexArray( vao );
+        glBindVertexArray(vao);
 
-        glUniform3f( offsetUniform, 0.0f, 0.0f, 0.0f );
-        glDrawElements( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0 );
+        glUniform3f(offsetUniform, 0.0f, 0.0f, 0.0f);
+        glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
 
-        glUniform3f( offsetUniform, 0.0f, 0.0f, -1.0f );
-        glDrawElementsBaseVertex( GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0, numberOfVertices / 2 );
+        glUniform3f(offsetUniform, 0.0f, 0.0f, -1.0f);
+        glDrawElementsBaseVertex(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0, numberOfVertices / 2);
 
-        glBindVertexArray( 0 );
-        glUseProgram( 0 );
+        glBindVertexArray(0);
+        glUseProgram(0);
     }
 
     @Override
@@ -80,17 +79,16 @@ public class BaseVertexOverlap extends LWJGLWindow {
         perspectiveMatrix[0] = frustumScale * (h / (float) w);
         perspectiveMatrix[5] = frustumScale;
 
-        FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer( perspectiveMatrix.length );
-        perspectiveMatrixBuffer.put( perspectiveMatrix );
+        FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer(perspectiveMatrix.length);
+        perspectiveMatrixBuffer.put(perspectiveMatrix);
         perspectiveMatrixBuffer.flip();
 
-        glUseProgram( theProgram );
-        glUniformMatrix4( perspectiveMatrixUnif, false, perspectiveMatrixBuffer );
-        glUseProgram( 0 );
+        glUseProgram(theProgram);
+        glUniformMatrix4(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);
+        glUseProgram(0);
 
-        glViewport( 0, 0, w, h );
+        glViewport(0, 0, w, h);
     }
-
 
     ////////////////////////////////
     private int theProgram;
@@ -104,17 +102,15 @@ public class BaseVertexOverlap extends LWJGLWindow {
 
     private void initializeProgram() {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, "Standard.vert" ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, "Standard.frag" ) );
+        shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, "Standard.vert"));
+        shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "Standard.frag"));
+        theProgram = Framework.createProgram(shaderList);
 
-        theProgram = Framework.createProgram( shaderList );
-
-        offsetUniform = glGetUniformLocation( theProgram, "offset" );
-        perspectiveMatrixUnif = glGetUniformLocation( theProgram, "perspectiveMatrix" );
+        offsetUniform = glGetUniformLocation(theProgram, "offset");
+        perspectiveMatrixUnif = glGetUniformLocation(theProgram, "perspectiveMatrix");
 
         float zNear = 1.0f;
         float zFar = 3.0f;
-
         perspectiveMatrix = new float[16];
         perspectiveMatrix[0] = frustumScale;
         perspectiveMatrix[5] = frustumScale;
@@ -122,15 +118,14 @@ public class BaseVertexOverlap extends LWJGLWindow {
         perspectiveMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
         perspectiveMatrix[11] = -1.0f;
 
-        FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer( perspectiveMatrix.length );
-        perspectiveMatrixBuffer.put( perspectiveMatrix );
+        FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer(perspectiveMatrix.length);
+        perspectiveMatrixBuffer.put(perspectiveMatrix);
         perspectiveMatrixBuffer.flip();
 
-        glUseProgram( theProgram );
-        glUniformMatrix4( perspectiveMatrixUnif, false, perspectiveMatrixBuffer );
-        glUseProgram( 0 );
+        glUseProgram(theProgram);
+        glUniformMatrix4(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);
+        glUseProgram(0);
     }
-
 
     ////////////////////////////////
     private final int numberOfVertices = 36;
@@ -265,22 +260,22 @@ public class BaseVertexOverlap extends LWJGLWindow {
 
 
     private void initializeVertexBuffer() {
-        FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer( vertexData.length );
-        vertexDataBuffer.put( vertexData );
+        FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+        vertexDataBuffer.put(vertexData);
         vertexDataBuffer.flip();
 
         vertexBufferObject = glGenBuffers();
-        glBindBuffer( GL_ARRAY_BUFFER, vertexBufferObject );
-        glBufferData( GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW );
-        glBindBuffer( GL_ARRAY_BUFFER, 0 );
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+        glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        ShortBuffer indexDataBuffer = BufferUtils.createShortBuffer( indexData.length );
-        indexDataBuffer.put( indexData );
+        ShortBuffer indexDataBuffer = BufferUtils.createShortBuffer(indexData.length);
+        indexDataBuffer.put(indexData);
         indexDataBuffer.flip();
 
         indexBufferObject = glGenBuffers();
-        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, indexBufferObject );
-        glBufferData( GL_ELEMENT_ARRAY_BUFFER, indexDataBuffer, GL_STATIC_DRAW );
-        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataBuffer, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 }

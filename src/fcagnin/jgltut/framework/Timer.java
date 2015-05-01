@@ -9,25 +9,18 @@ import fcagnin.jglsdk.glm.Glm;
  * @author integeruser
  */
 public class Timer {
-
     public enum Type {
         LOOP,
-        SINGLE,
-        INFINITE
+        SINGLE
     }
 
-    ;
-
-
+    ////////////////////////////////
     public Timer(Type type, float duration) {
         this.type = type;
         secDuration = duration;
     }
 
-
-
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    ////////////////////////////////
 
     /**
      * Updates the time for the timer. Returns true if the timer has reached the end.
@@ -38,12 +31,12 @@ public class Timer {
     public boolean update(float elapsedTime) {
         float absCurrTime = elapsedTime / 1000.0f;
 
-        if ( !hasUpdated ) {
+        if (!hasUpdated) {
             absPrevTime = absCurrTime;
             hasUpdated = true;
         }
 
-        if ( isPaused ) {
+        if (isPaused) {
             absPrevTime = absCurrTime;
             return false;
         }
@@ -52,7 +45,7 @@ public class Timer {
         secAccumTime += deltaTime;
 
         absPrevTime = absCurrTime;
-        if ( type == Type.SINGLE ) {
+        if (type == Type.SINGLE) {
             return secAccumTime > secDuration;
         }
 
@@ -61,20 +54,12 @@ public class Timer {
 
 
     /**
-     * Resets the timer, as though the user just created the object with the original parameters.
-     */
-    public void reset() {
-        hasUpdated = false;
-        secAccumTime = 0.0f;
-    }
-
-    /**
      * Subtracts secRewind from the current time and continues from there.
      */
     public void rewind(float secRewind) {
         secAccumTime -= secRewind;
 
-        if ( secAccumTime < 0.0f ) {
+        if (secAccumTime < 0.0f) {
             secAccumTime = 0.0f;
         }
     }
@@ -99,7 +84,6 @@ public class Timer {
      */
     public boolean togglePause() {
         isPaused = !isPaused;
-
         return isPaused;
     }
 
@@ -116,60 +100,21 @@ public class Timer {
      * Only used for SINGLE and LOOP timers.
      */
     public float getAlpha() {
-        switch ( type ) {
+        switch (type) {
             case LOOP:
                 return (secAccumTime % secDuration) / secDuration;
 
             case SINGLE:
-                return Glm.clamp( secAccumTime / secDuration, 0.0f, 1.0f );
+                return Glm.clamp(secAccumTime / secDuration, 0.0f, 1.0f);
 
             default:
                 break;
         }
 
-        return -1.0f;                        // Garbage.
+        return -1.0f;  // Garbage.
     }
 
-    /**
-     * Returns a number [0, duration], representing the progress through the timer in
-     * seconds. Only for SINGLE and LOOP timers.
-     */
-    public float getProgression() {
-        switch ( type ) {
-            case LOOP:
-                return secAccumTime % secDuration;
-
-            case SINGLE:
-                return Glm.clamp( secAccumTime, 0.0f, secDuration );
-
-            default:
-                break;
-        }
-
-        return -1.0f;                        // Garbage.
-    }
-
-    /**
-     * Returns the time in seconds since the timer was started, excluding
-     * time for pausing.
-     */
-    public float getTimeSinceStart() {
-        return secAccumTime;
-    }
-
-    /**
-     * Returns the timer's duration that was passed in.
-     */
-    public float getDuration() {
-        return secDuration;
-    }
-
-
-
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    ////////////////////////////////
 
     private Type type;
     private float secDuration;

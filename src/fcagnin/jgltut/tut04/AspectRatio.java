@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- * <p/>
+ * <p>
  * Part II. Positioning
  * Chapter 4. Objects at Rest
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2004.html
@@ -26,7 +26,6 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class AspectRatio extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/jgltut/tut04/data/";
-
         new AspectRatio().start();
     }
 
@@ -37,34 +36,34 @@ public class AspectRatio extends LWJGLWindow {
         initializeVertexBuffer();
 
         int vao = glGenVertexArrays();
-        glBindVertexArray( vao );
+        glBindVertexArray(vao);
 
-        glEnable( GL_CULL_FACE );
-        glCullFace( GL_BACK );
-        glFrontFace( GL_CW );
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CW);
     }
 
     @Override
     protected void display() {
-        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram( theProgram );
+        glUseProgram(theProgram);
 
-        glUniform2f( offsetUniform, 1.5f, 0.5f );
+        glUniform2f(offsetUniform, 1.5f, 0.5f);
 
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
         int colorData = (FLOAT_SIZE * vertexData.length) / 2;
-        glBindBuffer( GL_ARRAY_BUFFER, vertexBufferObject );
-        glEnableVertexAttribArray( 0 );
-        glEnableVertexAttribArray( 1 );
-        glVertexAttribPointer( 0, 4, GL_FLOAT, false, 0, 0 );
-        glVertexAttribPointer( 1, 4, GL_FLOAT, false, 0, colorData );
+        glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, colorData);
 
-        glDrawArrays( GL_TRIANGLES, 0, 36 );
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        glDisableVertexAttribArray( 0 );
-        glDisableVertexAttribArray( 1 );
-        glUseProgram( 0 );
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glUseProgram(0);
     }
 
     @Override
@@ -72,17 +71,16 @@ public class AspectRatio extends LWJGLWindow {
         perspectiveMatrix[0] = frustumScale / (w / (float) h);
         perspectiveMatrix[5] = frustumScale;
 
-        FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer( perspectiveMatrix.length );
-        perspectiveMatrixBuffer.put( perspectiveMatrix );
+        FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer(perspectiveMatrix.length);
+        perspectiveMatrixBuffer.put(perspectiveMatrix);
         perspectiveMatrixBuffer.flip();
 
-        glUseProgram( theProgram );
-        glUniformMatrix4( perspectiveMatrixUnif, false, perspectiveMatrixBuffer );
-        glUseProgram( 0 );
+        glUseProgram(theProgram);
+        glUniformMatrix4(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);
+        glUseProgram(0);
 
-        glViewport( 0, 0, w, h );
+        glViewport(0, 0, w, h);
     }
-
 
     ////////////////////////////////
     private int theProgram;
@@ -96,17 +94,15 @@ public class AspectRatio extends LWJGLWindow {
 
     private void initializeProgram() {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, "MatrixPerspective.vert" ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, "StandardColors.frag" ) );
+        shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, "MatrixPerspective.vert"));
+        shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "StandardColors.frag"));
+        theProgram = Framework.createProgram(shaderList);
 
-        theProgram = Framework.createProgram( shaderList );
-
-        offsetUniform = glGetUniformLocation( theProgram, "offset" );
-        perspectiveMatrixUnif = glGetUniformLocation( theProgram, "perspectiveMatrix" );
+        offsetUniform = glGetUniformLocation(theProgram, "offset");
+        perspectiveMatrixUnif = glGetUniformLocation(theProgram, "perspectiveMatrix");
 
         float zNear = 0.5f;
         float zFar = 3.0f;
-
         perspectiveMatrix = new float[16];
         perspectiveMatrix[0] = frustumScale;
         perspectiveMatrix[5] = frustumScale;
@@ -114,15 +110,14 @@ public class AspectRatio extends LWJGLWindow {
         perspectiveMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
         perspectiveMatrix[11] = -1.0f;
 
-        FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer( perspectiveMatrix.length );
-        perspectiveMatrixBuffer.put( perspectiveMatrix );
+        FloatBuffer perspectiveMatrixBuffer = BufferUtils.createFloatBuffer(perspectiveMatrix.length);
+        perspectiveMatrixBuffer.put(perspectiveMatrix);
         perspectiveMatrixBuffer.flip();
 
-        glUseProgram( theProgram );
-        glUniformMatrix4( perspectiveMatrixUnif, false, perspectiveMatrixBuffer );
-        glUseProgram( 0 );
+        glUseProgram(theProgram);
+        glUniformMatrix4(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);
+        glUseProgram(0);
     }
-
 
     ////////////////////////////////
     private final float[] vertexData = {
@@ -228,13 +223,13 @@ public class AspectRatio extends LWJGLWindow {
 
 
     private void initializeVertexBuffer() {
-        FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer( vertexData.length );
-        vertexDataBuffer.put( vertexData );
+        FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+        vertexDataBuffer.put(vertexData);
         vertexDataBuffer.flip();
 
         vertexBufferObject = glGenBuffers();
-        glBindBuffer( GL_ARRAY_BUFFER, vertexBufferObject );
-        glBufferData( GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW );
-        glBindBuffer( GL_ARRAY_BUFFER, 0 );
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+        glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 }

@@ -23,38 +23,37 @@ public class LWJGLWindow {
     private double lastFrameTimestamp;
     private boolean continueMainLoop;
 
-
     ////////////////////////////////
     public final void start() {
-        start( 500, 500 );
+        start(500, 500);
     }
 
     public final void start(int width, int height) {
         try {
-            Display.setTitle( "LWJGLWindow" );
-            Display.setDisplayMode( new DisplayMode( width, height ) );
-            Display.setResizable( true );
-            Display.setVSyncEnabled( true );
+            Display.setTitle("LWJGLWindow");
+            Display.setDisplayMode(new DisplayMode(width, height));
+            Display.setResizable(true);
+            Display.setVSyncEnabled(true);
 
-            if ( LWJGLUtil.getPlatform() == LWJGLUtil.PLATFORM_MACOSX ) {
-                Display.create( new PixelFormat(), new ContextAttribs( 3, 2 ).withProfileCore( true ) );
+            if (LWJGLUtil.getPlatform() == LWJGLUtil.PLATFORM_MACOSX) {
+                Display.create(new PixelFormat(), new ContextAttribs(3, 2).withProfileCore(true));
             } else {
                 Display.create();
             }
 
             printInfo();
-        } catch ( LWJGLException e ) {
+        } catch (LWJGLException e) {
             e.printStackTrace();
-            System.exit( -1 );
+            System.exit(-1);
         }
 
         long startTime = System.nanoTime();
         continueMainLoop = true;
 
         init();
-        reshape( width, height );
+        reshape(width, height);
 
-        while ( continueMainLoop && !Display.isCloseRequested() ) {
+        while (continueMainLoop && !Display.isCloseRequested()) {
             elapsedTime = (float) ((System.nanoTime() - startTime) / 1000000.0);
 
             double now = System.nanoTime();
@@ -66,8 +65,8 @@ public class LWJGLWindow {
 
             Display.update();
 
-            if ( Display.wasResized() ) {
-                reshape( Display.getWidth(), Display.getHeight() );
+            if (Display.wasResized()) {
+                reshape(Display.getWidth(), Display.getHeight());
             }
         }
 
@@ -77,40 +76,38 @@ public class LWJGLWindow {
 
     private void printInfo() {
         System.out.println();
-        System.out.println( "-----------------------------------------------------------" );
+        System.out.println("-----------------------------------------------------------");
 
-        System.out.format( "%-18s%s\n", "Running:", getClass().getName() );
-        System.out.format( "%-18s%s\n", "OpenGL version:", glGetString( GL_VERSION ) );
+        System.out.format("%-18s%s\n", "Running:", getClass().getName());
+        System.out.format("%-18s%s\n", "OpenGL version:", glGetString(GL_VERSION));
 
-        if ( !GLContext.getCapabilities().OpenGL33 ) {
-            System.out.println( "You must have at least OpenGL 3.3 to run this tutorial." );
+        if (!GLContext.getCapabilities().OpenGL33) {
+            System.out.println("You must have at least OpenGL 3.3 to run this tutorial.");
         }
     }
-
 
     ////////////////////////////////
     protected void init() {
     }
 
     protected void display() {
-        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
     }
 
     protected void reshape(int w, int h) {
-        glViewport( 0, 0, w, h );
+        glViewport(0, 0, w, h);
     }
 
     protected void update() {
-        while ( Keyboard.next() ) {
-            if ( Keyboard.getEventKeyState() ) {
-                if ( Keyboard.getEventKey() == Keyboard.KEY_ESCAPE ) {
+        while (Keyboard.next()) {
+            if (Keyboard.getEventKeyState()) {
+                if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
                     leaveMainLoop();
                 }
             }
         }
     }
-
 
     ////////////////////////////////
     protected final float getElapsedTime() {

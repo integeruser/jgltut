@@ -25,13 +25,13 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- * <p/>
+ * <p>
  * Part III. Illumination
  * Chapter 9. Lights On
  * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2009.html
- * <p/>
+ * <p>
  * SPACE    - toggle between drawing the uncolored cylinder and the colored one.
- * <p/>
+ * <p>
  * LEFT   CLICKING and DRAGGING         - rotate the camera around the target point, both horizontally and vertically.
  * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
  * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
@@ -47,7 +47,6 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 public class BasicLighting extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/jgltut/tut09/data/";
-
         new BasicLighting().start();
     }
 
@@ -57,49 +56,49 @@ public class BasicLighting extends LWJGLWindow {
         initializeProgram();
 
         try {
-            cylinderMesh = new Mesh( "UnitCylinder.xml" );
-            planeMesh = new Mesh( "LargePlane.xml" );
-        } catch ( Exception exception ) {
+            cylinderMesh = new Mesh("UnitCylinder.xml");
+            planeMesh = new Mesh("LargePlane.xml");
+        } catch (Exception exception) {
             exception.printStackTrace();
-            System.exit( -1 );
+            System.exit(-1);
         }
 
-        glEnable( GL_CULL_FACE );
-        glCullFace( GL_BACK );
-        glFrontFace( GL_CW );
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CW);
 
-        glEnable( GL_DEPTH_TEST );
-        glDepthMask( true );
-        glDepthFunc( GL_LEQUAL );
-        glDepthRange( 0.0f, 1.0f );
-        glEnable( GL_DEPTH_CLAMP );
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(true);
+        glDepthFunc(GL_LEQUAL);
+        glDepthRange(0.0f, 1.0f);
+        glEnable(GL_DEPTH_CLAMP);
 
         projectionUniformBuffer = glGenBuffers();
-        glBindBuffer( GL_UNIFORM_BUFFER, projectionUniformBuffer );
-        glBufferData( GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW );
+        glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
+        glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE, GL_DYNAMIC_DRAW);
 
         // Bind the static buffers.
-        glBindBufferRange( GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE );
+        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE);
 
-        glBindBuffer( GL_UNIFORM_BUFFER, 0 );
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
     @Override
     protected void display() {
-        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-        glClearDepth( 1.0f );
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearDepth(1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         MatrixStack modelMatrix = new MatrixStack();
-        modelMatrix.setMatrix( viewPole.calcMatrix() );
+        modelMatrix.setMatrix(viewPole.calcMatrix());
 
-        Vec4 lightDirCameraSpace = Mat4.mul( modelMatrix.top(), lightDirection );
+        Vec4 lightDirCameraSpace = Mat4.mul(modelMatrix.top(), lightDirection);
 
-        glUseProgram( whiteDiffuseColor.theProgram );
-        glUniform3( whiteDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer( vec4Buffer ) );
-        glUseProgram( vertexDiffuseColor.theProgram );
-        glUniform3( vertexDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer( vec4Buffer ) );
-        glUseProgram( 0 );
+        glUseProgram(whiteDiffuseColor.theProgram);
+        glUniform3(whiteDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUseProgram(vertexDiffuseColor.theProgram);
+        glUniform3(vertexDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUseProgram(0);
 
         {
             modelMatrix.push();
@@ -108,15 +107,13 @@ public class BasicLighting extends LWJGLWindow {
             {
                 modelMatrix.push();
 
-                glUseProgram( whiteDiffuseColor.theProgram );
-                glUniformMatrix4( whiteDiffuseColor.modelToCameraMatrixUnif, false,
-                        modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
-                Mat3 normMatrix = new Mat3( modelMatrix.top() );
-                glUniformMatrix3( whiteDiffuseColor.normalModelToCameraMatrixUnif, false,
-                        normMatrix.fillAndFlipBuffer( mat3Buffer ) );
-                glUniform4f( whiteDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f );
+                glUseProgram(whiteDiffuseColor.theProgram);
+                glUniformMatrix4(whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                Mat3 normMatrix = new Mat3(modelMatrix.top());
+                glUniformMatrix3(whiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+                glUniform4f(whiteDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f);
                 planeMesh.render();
-                glUseProgram( 0 );
+                glUseProgram(0);
 
                 modelMatrix.pop();
             }
@@ -125,29 +122,25 @@ public class BasicLighting extends LWJGLWindow {
             {
                 modelMatrix.push();
 
-                modelMatrix.applyMatrix( objtPole.calcMatrix() );
+                modelMatrix.applyMatrix(objtPole.calcMatrix());
 
-                if ( drawColoredCyl ) {
-                    glUseProgram( vertexDiffuseColor.theProgram );
-                    glUniformMatrix4( vertexDiffuseColor.modelToCameraMatrixUnif, false,
-                            modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
-                    Mat3 normMatrix = new Mat3( modelMatrix.top() );
-                    glUniformMatrix3( vertexDiffuseColor.normalModelToCameraMatrixUnif, false,
-                            normMatrix.fillAndFlipBuffer( mat3Buffer ) );
-                    glUniform4f( vertexDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f );
-                    cylinderMesh.render( "lit-color" );
+                if (drawColoredCyl) {
+                    glUseProgram(vertexDiffuseColor.theProgram);
+                    glUniformMatrix4(vertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                    Mat3 normMatrix = new Mat3(modelMatrix.top());
+                    glUniformMatrix3(vertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+                    glUniform4f(vertexDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f);
+                    cylinderMesh.render("lit-color");
                 } else {
-                    glUseProgram( whiteDiffuseColor.theProgram );
-                    glUniformMatrix4( whiteDiffuseColor.modelToCameraMatrixUnif, false,
-                            modelMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
-                    Mat3 normMatrix = new Mat3( modelMatrix.top() );
-                    glUniformMatrix3( whiteDiffuseColor.normalModelToCameraMatrixUnif, false,
-                            normMatrix.fillAndFlipBuffer( mat3Buffer ) );
-                    glUniform4f( whiteDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f );
-                    cylinderMesh.render( "lit" );
+                    glUseProgram(whiteDiffuseColor.theProgram);
+                    glUniformMatrix4(whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                    Mat3 normMatrix = new Mat3(modelMatrix.top());
+                    glUniformMatrix3(whiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+                    glUniform4f(whiteDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f);
+                    cylinderMesh.render("lit");
                 }
 
-                glUseProgram( 0 );
+                glUseProgram(0);
 
                 modelMatrix.pop();
             }
@@ -161,47 +154,45 @@ public class BasicLighting extends LWJGLWindow {
         float zNear = 1.0f;
         float zFar = 1000.0f;
         MatrixStack persMatrix = new MatrixStack();
-        persMatrix.perspective( 45.0f, (w / (float) h), zNear, zFar );
+        persMatrix.perspective(45.0f, (w / (float) h), zNear, zFar);
 
         ProjectionBlock projData = new ProjectionBlock();
         projData.cameraToClipMatrix = persMatrix.top();
 
-        glBindBuffer( GL_UNIFORM_BUFFER, projectionUniformBuffer );
-        glBufferSubData( GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer( mat4Buffer ) );
-        glBindBuffer( GL_UNIFORM_BUFFER, 0 );
+        glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(mat4Buffer));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-        glViewport( 0, 0, w, h );
+        glViewport(0, 0, w, h);
     }
 
     @Override
     protected void update() {
-        while ( Mouse.next() ) {
+        while (Mouse.next()) {
             int eventButton = Mouse.getEventButton();
-
-            if ( eventButton != -1 ) {
+            if (eventButton != -1) {
                 boolean pressed = Mouse.getEventButtonState();
-                MousePole.forwardMouseButton( viewPole, eventButton, pressed, Mouse.getX(), Mouse.getY() );
-                MousePole.forwardMouseButton( objtPole, eventButton, pressed, Mouse.getX(), Mouse.getY() );
+                MousePole.forwardMouseButton(viewPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
+                MousePole.forwardMouseButton(objtPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
             } else {
                 // Mouse moving or mouse scrolling
                 int dWheel = Mouse.getDWheel();
-
-                if ( dWheel != 0 ) {
-                    MousePole.forwardMouseWheel( viewPole, dWheel, dWheel, Mouse.getX(), Mouse.getY() );
-                    MousePole.forwardMouseWheel( objtPole, dWheel, dWheel, Mouse.getX(), Mouse.getY() );
+                if (dWheel != 0) {
+                    MousePole.forwardMouseWheel(viewPole, dWheel, Mouse.getX(), Mouse.getY());
+                    MousePole.forwardMouseWheel(objtPole, dWheel, Mouse.getX(), Mouse.getY());
                 }
 
-                if ( Mouse.isButtonDown( 0 ) || Mouse.isButtonDown( 1 ) || Mouse.isButtonDown( 2 ) ) {
-                    MousePole.forwardMouseMotion( viewPole, Mouse.getX(), Mouse.getY() );
-                    MousePole.forwardMouseMotion( objtPole, Mouse.getX(), Mouse.getY() );
+                if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)) {
+                    MousePole.forwardMouseMotion(viewPole, Mouse.getX(), Mouse.getY());
+                    MousePole.forwardMouseMotion(objtPole, Mouse.getX(), Mouse.getY());
                 }
             }
         }
 
 
-        while ( Keyboard.next() ) {
-            if ( Keyboard.getEventKeyState() ) {
-                switch ( Keyboard.getEventKey() ) {
+        while (Keyboard.next()) {
+            if (Keyboard.getEventKeyState()) {
+                switch (Keyboard.getEventKey()) {
                     case Keyboard.KEY_SPACE:
                         drawColoredCyl = !drawColoredCyl;
                         break;
@@ -213,7 +204,6 @@ public class BasicLighting extends LWJGLWindow {
             }
         }
     }
-
 
     ////////////////////////////////
     private ProgramData whiteDiffuseColor;
@@ -230,49 +220,47 @@ public class BasicLighting extends LWJGLWindow {
     }
 
 
-    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer( Vec4.SIZE );
-    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer( Mat3.SIZE );
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
+    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(Vec4.SIZE);
+    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(Mat3.SIZE);
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
 
 
     private void initializeProgram() {
-        whiteDiffuseColor = loadProgram( "DirVertexLighting_PN.vert", "ColorPassthrough.frag" );
-        vertexDiffuseColor = loadProgram( "DirVertexLighting_PCN.vert", "ColorPassthrough.frag" );
+        whiteDiffuseColor = loadProgram("DirVertexLighting_PN.vert", "ColorPassthrough.frag");
+        vertexDiffuseColor = loadProgram("DirVertexLighting_PCN.vert", "ColorPassthrough.frag");
     }
 
     private ProgramData loadProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
+        shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, vertexShaderFileName));
+        shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, fragmentShaderFileName));
 
         ProgramData data = new ProgramData();
-        data.theProgram = Framework.createProgram( shaderList );
-        data.modelToCameraMatrixUnif = glGetUniformLocation( data.theProgram, "modelToCameraMatrix" );
-        data.normalModelToCameraMatrixUnif = glGetUniformLocation( data.theProgram, "normalModelToCameraMatrix" );
-        data.dirToLightUnif = glGetUniformLocation( data.theProgram, "dirToLight" );
-        data.lightIntensityUnif = glGetUniformLocation( data.theProgram, "lightIntensity" );
+        data.theProgram = Framework.createProgram(shaderList);
+        data.modelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "modelToCameraMatrix");
+        data.normalModelToCameraMatrixUnif = glGetUniformLocation(data.theProgram, "normalModelToCameraMatrix");
+        data.dirToLightUnif = glGetUniformLocation(data.theProgram, "dirToLight");
+        data.lightIntensityUnif = glGetUniformLocation(data.theProgram, "lightIntensity");
 
-        int projectionBlock = glGetUniformBlockIndex( data.theProgram, "Projection" );
-        glUniformBlockBinding( data.theProgram, projectionBlock, projectionBlockIndex );
+        int projectionBlock = glGetUniformBlockIndex(data.theProgram, "Projection");
+        glUniformBlockBinding(data.theProgram, projectionBlock, projectionBlockIndex);
 
         return data;
     }
-
 
     ////////////////////////////////
     private Mesh cylinderMesh;
     private Mesh planeMesh;
 
-    private Vec4 lightDirection = new Vec4( 0.866f, 0.5f, 0.0f, 0.0f );
+    private Vec4 lightDirection = new Vec4(0.866f, 0.5f, 0.0f, 0.0f);
 
     private boolean drawColoredCyl = true;
-
 
     ////////////////////////////////
     // View / Object setup.
     private ViewData initialViewData = new ViewData(
-            new Vec3( 0.0f, 0.5f, 0.0f ),
-            new Quaternion( 0.92387953f, 0.3826834f, 0.0f, 0.0f ),
+            new Vec3(0.0f, 0.5f, 0.0f),
+            new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
             5.0f,
             0.0f
     );
@@ -280,21 +268,19 @@ public class BasicLighting extends LWJGLWindow {
     private ViewScale viewScale = new ViewScale(
             3.0f, 20.0f,
             1.5f, 0.5f,
-            0.0f, 0.0f,     // No camera movement.
+            0.0f, 0.0f,  // No camera movement.
             90.0f / 250.0f
     );
 
 
     private ObjectData initialObjectData = new ObjectData(
-            new Vec3( 0.0f, 0.5f, 0.0f ),
-            new Quaternion( 1.0f, 0.0f, 0.0f, 0.0f )
+            new Vec3(0.0f, 0.5f, 0.0f),
+            new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
     );
 
 
-    private ViewPole viewPole = new ViewPole( initialViewData, viewScale, MouseButtons.MB_LEFT_BTN );
-    private ObjectPole objtPole = new ObjectPole( initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN,
-            viewPole );
-
+    private ViewPole viewPole = new ViewPole(initialViewData, viewScale, MouseButtons.MB_LEFT_BTN);
+    private ObjectPole objtPole = new ObjectPole(initialObjectData, 90.0f / 250.0f, MouseButtons.MB_RIGHT_BTN, viewPole);
 
     ////////////////////////////////
     private final int projectionBlockIndex = 2;
@@ -308,7 +294,7 @@ public class BasicLighting extends LWJGLWindow {
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            return cameraToClipMatrix.fillBuffer( buffer );
+            return cameraToClipMatrix.fillBuffer(buffer);
         }
     }
 }

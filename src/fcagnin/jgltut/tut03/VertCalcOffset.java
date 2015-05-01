@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- * <p/>
+ * <p>
  * Part II. Positioning
  * Chapter 3. OpenGL's Moving Triangle
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2003.html
@@ -26,7 +26,6 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class VertCalcOffset extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/jgltut/tut03/data/";
-
         new VertCalcOffset().start();
     }
 
@@ -37,28 +36,27 @@ public class VertCalcOffset extends LWJGLWindow {
         initializeVertexBuffer();
 
         int vao = glGenVertexArrays();
-        glBindVertexArray( vao );
+        glBindVertexArray(vao);
     }
 
     @Override
     protected void display() {
-        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram( theProgram );
+        glUseProgram(theProgram);
 
-        glUniform1f( elapsedTimeUniform, getElapsedTime() / 1000.0f );
+        glUniform1f(elapsedTimeUniform, getElapsedTime() / 1000.0f);
 
-        glBindBuffer( GL_ARRAY_BUFFER, positionBufferObject );
-        glEnableVertexAttribArray( 0 );
-        glVertexAttribPointer( 0, 4, GL_FLOAT, false, 0, 0 );
+        glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
 
-        glDrawArrays( GL_TRIANGLES, 0, 3 );
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        glDisableVertexAttribArray( 0 );
-        glUseProgram( 0 );
+        glDisableVertexAttribArray(0);
+        glUseProgram(0);
     }
-
 
     ////////////////////////////////
     private int theProgram;
@@ -68,20 +66,17 @@ public class VertCalcOffset extends LWJGLWindow {
 
     private void initializeProgram() {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, "CalcOffset.vert" ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, "Standard.frag" ) );
+        shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, "CalcOffset.vert"));
+        shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "Standard.frag"));
+        theProgram = Framework.createProgram(shaderList);
 
-        theProgram = Framework.createProgram( shaderList );
+        elapsedTimeUniform = glGetUniformLocation(theProgram, "time");
 
-        elapsedTimeUniform = glGetUniformLocation( theProgram, "time" );
-
-        int loopDurationUnf = glGetUniformLocation( theProgram, "loopDuration" );
-
-        glUseProgram( theProgram );
-        glUniform1f( loopDurationUnf, 5.0f );
-        glUseProgram( 0 );
+        glUseProgram(theProgram);
+        int loopDurationUnf = glGetUniformLocation(theProgram, "loopDuration");
+        glUniform1f(loopDurationUnf, 5.0f);
+        glUseProgram(0);
     }
-
 
     ////////////////////////////////
     private final float[] vertexPositions = {
@@ -94,13 +89,13 @@ public class VertCalcOffset extends LWJGLWindow {
 
 
     private void initializeVertexBuffer() {
-        FloatBuffer vertexPositionsBuffer = BufferUtils.createFloatBuffer( vertexPositions.length );
-        vertexPositionsBuffer.put( vertexPositions );
+        FloatBuffer vertexPositionsBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
+        vertexPositionsBuffer.put(vertexPositions);
         vertexPositionsBuffer.flip();
 
         positionBufferObject = glGenBuffers();
-        glBindBuffer( GL_ARRAY_BUFFER, positionBufferObject );
-        glBufferData( GL_ARRAY_BUFFER, vertexPositionsBuffer, GL_STATIC_DRAW );
-        glBindBuffer( GL_ARRAY_BUFFER, 0 );
+        glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
+        glBufferData(GL_ARRAY_BUFFER, vertexPositionsBuffer, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 }

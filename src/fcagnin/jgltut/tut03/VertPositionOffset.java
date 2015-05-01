@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- * <p/>
+ * <p>
  * Part II. Positioning
  * Chapter 3. OpenGL's Moving Triangle
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2003.html
@@ -26,7 +26,6 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class VertPositionOffset extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/jgltut/tut03/data/";
-
         new VertPositionOffset().start();
     }
 
@@ -37,7 +36,7 @@ public class VertPositionOffset extends LWJGLWindow {
         initializeVertexBuffer();
 
         int vao = glGenVertexArrays();
-        glBindVertexArray( vao );
+        glBindVertexArray(vao);
     }
 
     @Override
@@ -46,23 +45,22 @@ public class VertPositionOffset extends LWJGLWindow {
         yOffset = 0.0f;
         computePositionOffsets();
 
-        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram( theProgram );
+        glUseProgram(theProgram);
 
-        glUniform2f( offsetLocation, xOffset, yOffset );
+        glUniform2f(offsetLocation, xOffset, yOffset);
 
-        glBindBuffer( GL_ARRAY_BUFFER, positionBufferObject );
-        glEnableVertexAttribArray( 0 );
-        glVertexAttribPointer( 0, 4, GL_FLOAT, false, 0, 0 );
+        glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
 
-        glDrawArrays( GL_TRIANGLES, 0, 3 );
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        glDisableVertexAttribArray( 0 );
-        glUseProgram( 0 );
+        glDisableVertexAttribArray(0);
+        glUseProgram(0);
     }
-
 
     ////////////////////////////////
     private int theProgram;
@@ -72,14 +70,12 @@ public class VertPositionOffset extends LWJGLWindow {
 
     private void initializeProgram() {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, "PositionOffset.vert" ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, "Standard.frag" ) );
+        shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, "PositionOffset.vert"));
+        shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "Standard.frag"));
+        theProgram = Framework.createProgram(shaderList);
 
-        theProgram = Framework.createProgram( shaderList );
-
-        offsetLocation = glGetUniformLocation( theProgram, "offset" );
+        offsetLocation = glGetUniformLocation(theProgram, "offset");
     }
-
 
     ////////////////////////////////
     private final float[] vertexPositions = {
@@ -92,16 +88,15 @@ public class VertPositionOffset extends LWJGLWindow {
 
 
     private void initializeVertexBuffer() {
-        FloatBuffer vertexPositionsBuffer = BufferUtils.createFloatBuffer( vertexPositions.length );
-        vertexPositionsBuffer.put( vertexPositions );
+        FloatBuffer vertexPositionsBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
+        vertexPositionsBuffer.put(vertexPositions);
         vertexPositionsBuffer.flip();
 
         positionBufferObject = glGenBuffers();
-        glBindBuffer( GL_ARRAY_BUFFER, positionBufferObject );
-        glBufferData( GL_ARRAY_BUFFER, vertexPositionsBuffer, GL_STATIC_DRAW );
-        glBindBuffer( GL_ARRAY_BUFFER, 0 );
+        glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
+        glBufferData(GL_ARRAY_BUFFER, vertexPositionsBuffer, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
-
 
     ////////////////////////////////
     private float xOffset, yOffset;
@@ -110,12 +105,9 @@ public class VertPositionOffset extends LWJGLWindow {
     private void computePositionOffsets() {
         final float loopDuration = 5.0f;
         final float scale = 3.14159f * 2.0f / loopDuration;
-
-        float elapsedTime = getElapsedTime() / 1000.0f;
-
-        float currTimeThroughLoop = elapsedTime % loopDuration;
-
-        xOffset = (float) (Math.cos( currTimeThroughLoop * scale ) * 0.5f);
-        yOffset = (float) (Math.sin( currTimeThroughLoop * scale ) * 0.5f);
+        final float elapsedTime = getElapsedTime() / 1000.0f;
+        final float currTimeThroughLoop = elapsedTime % loopDuration;
+        xOffset = (float) (Math.cos(currTimeThroughLoop * scale) * 0.5f);
+        yOffset = (float) (Math.sin(currTimeThroughLoop * scale) * 0.5f);
     }
 }

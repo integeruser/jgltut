@@ -17,11 +17,11 @@ import static org.lwjgl.opengl.GL20.*;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- * <p/>
+ * <p>
  * Part IV. Texturing
  * Chapter 14. Textures are not Pictures
  * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
- * <p/>
+ * <p>
  * S        - switch meshes.
  * P        - toggle between perspective-correct interpolation/window-space linear interpolation.
  *
@@ -30,7 +30,6 @@ import static org.lwjgl.opengl.GL20.*;
 public class PerspectiveInterpolation extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/jgltut/tut14/data/";
-
         new PerspectiveInterpolation().start();
     }
 
@@ -40,55 +39,55 @@ public class PerspectiveInterpolation extends LWJGLWindow {
         initializePrograms();
 
         try {
-            realHallway = new Mesh( "RealHallway.xml" );
-            fauxHallway = new Mesh( "FauxHallway.xml" );
-        } catch ( Exception exception ) {
+            realHallway = new Mesh("RealHallway.xml");
+            fauxHallway = new Mesh("FauxHallway.xml");
+        } catch (Exception exception) {
             exception.printStackTrace();
-            System.exit( -1 );
+            System.exit(-1);
         }
     }
 
     @Override
     protected void display() {
-        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-        glClearDepth( 1.0f );
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearDepth(1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if ( useSmoothInterpolation ) {
-            glUseProgram( smoothInterp.theProgram );
+        if (useSmoothInterpolation) {
+            glUseProgram(smoothInterp.theProgram);
         } else {
-            glUseProgram( linearInterp.theProgram );
+            glUseProgram(linearInterp.theProgram);
         }
 
-        if ( useFakeHallway ) {
+        if (useFakeHallway) {
             fauxHallway.render();
         } else {
             realHallway.render();
         }
 
-        glUseProgram( 0 );
+        glUseProgram(0);
     }
 
     @Override
     protected void update() {
-        while ( Keyboard.next() ) {
-            if ( Keyboard.getEventKeyState() ) {
-                switch ( Keyboard.getEventKey() ) {
+        while (Keyboard.next()) {
+            if (Keyboard.getEventKeyState()) {
+                switch (Keyboard.getEventKey()) {
                     case Keyboard.KEY_S:
                         useFakeHallway = !useFakeHallway;
-                        if ( useFakeHallway ) {
-                            System.out.printf( "Fake Hallway.\n" );
+                        if (useFakeHallway) {
+                            System.out.printf("Fake Hallway.\n");
                         } else {
-                            System.out.printf( "Real Hallway.\n" );
+                            System.out.printf("Real Hallway.\n");
                         }
                         break;
 
                     case Keyboard.KEY_P:
                         useSmoothInterpolation = !useSmoothInterpolation;
-                        if ( useSmoothInterpolation ) {
-                            System.out.printf( "Perspective correct interpolation.\n" );
+                        if (useSmoothInterpolation) {
+                            System.out.printf("Perspective correct interpolation.\n");
                         } else {
-                            System.out.printf( "Just linear interpolation.\n" );
+                            System.out.printf("Just linear interpolation.\n");
                         }
                         break;
 
@@ -99,7 +98,6 @@ public class PerspectiveInterpolation extends LWJGLWindow {
             }
         }
     }
-
 
     ////////////////////////////////
     private ProgramData smoothInterp;
@@ -112,39 +110,35 @@ public class PerspectiveInterpolation extends LWJGLWindow {
     }
 
 
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer( Mat4.SIZE );
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
 
 
     private void initializePrograms() {
-        smoothInterp = loadProgram( "SmoothVertexColors.vert", "SmoothVertexColors.frag" );
-        linearInterp = loadProgram( "NoCorrectVertexColors.vert", "NoCorrectVertexColors.frag" );
+        smoothInterp = loadProgram("SmoothVertexColors.vert", "SmoothVertexColors.frag");
+        linearInterp = loadProgram("NoCorrectVertexColors.vert", "NoCorrectVertexColors.frag");
 
         float zNear = 1.0f;
         float zFar = 1000.0f;
         MatrixStack persMatrix = new MatrixStack();
-        persMatrix.perspective( 60.0f, 1.0f, zNear, zFar );
+        persMatrix.perspective(60.0f, 1.0f, zNear, zFar);
 
-        glUseProgram( smoothInterp.theProgram );
-        glUniformMatrix4( smoothInterp.cameraToClipMatrixUnif, false,
-                persMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
-        glUseProgram( linearInterp.theProgram );
-        glUniformMatrix4( linearInterp.cameraToClipMatrixUnif, false,
-                persMatrix.top().fillAndFlipBuffer( mat4Buffer ) );
-        glUseProgram( 0 );
+        glUseProgram(smoothInterp.theProgram);
+        glUniformMatrix4(smoothInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUseProgram(linearInterp.theProgram);
+        glUniformMatrix4(linearInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUseProgram(0);
     }
 
     private ProgramData loadProgram(String vertexShaderFileName, String fragmentShaderFileName) {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, vertexShaderFileName ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, fragmentShaderFileName ) );
+        shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, vertexShaderFileName));
+        shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, fragmentShaderFileName));
 
         ProgramData data = new ProgramData();
-        data.theProgram = Framework.createProgram( shaderList );
-        data.cameraToClipMatrixUnif = glGetUniformLocation( data.theProgram, "cameraToClipMatrix" );
-
+        data.theProgram = Framework.createProgram(shaderList);
+        data.cameraToClipMatrixUnif = glGetUniformLocation(data.theProgram, "cameraToClipMatrix");
         return data;
     }
-
 
     ////////////////////////////////
     private Mesh realHallway;

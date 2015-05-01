@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- * <p/>
+ * <p>
  * Part II. Positioning
  * Chapter 4. Objects at Rest
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2004.html
@@ -26,7 +26,6 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class OrthoCube extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/fcagnin/jgltut/tut04/data/";
-
         new OrthoCube().start();
     }
 
@@ -37,36 +36,35 @@ public class OrthoCube extends LWJGLWindow {
         initializeVertexBuffer();
 
         int vao = glGenVertexArrays();
-        glBindVertexArray( vao );
+        glBindVertexArray(vao);
 
-        glEnable( GL_CULL_FACE );
-        glCullFace( GL_BACK );
-        glFrontFace( GL_CW );
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CW);
     }
 
     @Override
     protected void display() {
-        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram( theProgram );
+        glUseProgram(theProgram);
 
-        glUniform2f( offsetUniform, 0.5f, 0.25f );
+        glUniform2f(offsetUniform, 0.5f, 0.25f);
 
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
         int colorData = (FLOAT_SIZE * vertexData.length) / 2;
-        glBindBuffer( GL_ARRAY_BUFFER, vertexBufferObject );
-        glEnableVertexAttribArray( 0 );
-        glEnableVertexAttribArray( 1 );
-        glVertexAttribPointer( 0, 4, GL_FLOAT, false, 0, 0 );
-        glVertexAttribPointer( 1, 4, GL_FLOAT, false, 0, colorData );
+        glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, colorData);
 
-        glDrawArrays( GL_TRIANGLES, 0, 36 );
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        glDisableVertexAttribArray( 0 );
-        glDisableVertexAttribArray( 1 );
-        glUseProgram( 0 );
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glUseProgram(0);
     }
-
 
     ////////////////////////////////
     private int theProgram;
@@ -76,14 +74,12 @@ public class OrthoCube extends LWJGLWindow {
 
     private void initializeProgram() {
         ArrayList<Integer> shaderList = new ArrayList<>();
-        shaderList.add( Framework.loadShader( GL_VERTEX_SHADER, "OrthoWithOffset.vert" ) );
-        shaderList.add( Framework.loadShader( GL_FRAGMENT_SHADER, "StandardColors.frag" ) );
+        shaderList.add(Framework.loadShader(GL_VERTEX_SHADER, "OrthoWithOffset.vert"));
+        shaderList.add(Framework.loadShader(GL_FRAGMENT_SHADER, "StandardColors.frag"));
+        theProgram = Framework.createProgram(shaderList);
 
-        theProgram = Framework.createProgram( shaderList );
-
-        offsetUniform = glGetUniformLocation( theProgram, "offset" );
+        offsetUniform = glGetUniformLocation(theProgram, "offset");
     }
-
 
     ////////////////////////////////
     private final float[] vertexData = {
@@ -189,13 +185,13 @@ public class OrthoCube extends LWJGLWindow {
 
 
     private void initializeVertexBuffer() {
-        FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer( vertexData.length );
-        vertexDataBuffer.put( vertexData );
+        FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+        vertexDataBuffer.put(vertexData);
         vertexDataBuffer.flip();
 
         vertexBufferObject = glGenBuffers();
-        glBindBuffer( GL_ARRAY_BUFFER, vertexBufferObject );
-        glBufferData( GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW );
-        glBindBuffer( GL_ARRAY_BUFFER, 0 );
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+        glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 }

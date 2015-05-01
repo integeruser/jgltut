@@ -24,7 +24,6 @@ import static org.lwjgl.opengl.GL30.*;
  * @author xire
  */
 public class Mesh {
-
     public Mesh(String filename) {
         ArrayList<Attribute> attribs = new ArrayList<>( 16 );
         ArrayList<IndexData> indexData = new ArrayList<>();
@@ -193,9 +192,7 @@ public class Mesh {
     }
 
     public void render() {
-        if ( oVAO == 0 ) {
-            return;
-        }
+        if ( oVAO == 0 ) {return;}
 
         glBindVertexArray( oVAO );
 
@@ -221,21 +218,7 @@ public class Mesh {
         glBindVertexArray( 0 );
     }
 
-    public void deleteObjects() {
-        glDeleteBuffers( oAttribArraysBuffer );
-        glDeleteBuffers( oIndexBuffer );
-        glDeleteVertexArrays( oVAO );
-
-        for ( Integer idVAO : namedVAOs.values() ) {
-            glDeleteVertexArrays( idVAO );
-        }
-    }
-
-
-
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+    ////////////////////////////////
     private int oAttribArraysBuffer = 0;
     private int oIndexBuffer = 0;
     private int oVAO = 0;
@@ -243,23 +226,17 @@ public class Mesh {
     private ArrayList<RenderCmd> primitives = new ArrayList<>();
     private Map<String, Integer> namedVAOs = new HashMap<>();
 
-
-
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+    ////////////////////////////////
     public abstract static class ParseFunc {
         abstract public Buffer parse(String strToParse);
     }
 
     public abstract static class WriteFunc {
-        abstract public void writeToBuffer(int eBuffer, Buffer theData,
-                                           int iOffset);
+        abstract public void writeToBuffer(int eBuffer, Buffer theData, int iOffset);
     }
 
 
     private static class Attribute {
-
         Attribute(Node attributeNode) {
             NamedNodeMap attrs = attributeNode.getAttributes();
 
@@ -357,9 +334,7 @@ public class Mesh {
             }
         }
 
-
-		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        ////////////////////////////////
 
         private int attribIndex = 0xFFFFFFFF;
         private AttribType attribType = null;
@@ -374,9 +349,7 @@ public class Mesh {
     }
 
     private static class AttribType {
-
-        AttribType(boolean normalized, int glType, int numBytes,
-                   ParseFunc parseFunc, WriteFunc writeFunc) {
+        AttribType(boolean normalized, int glType, int numBytes, ParseFunc parseFunc, WriteFunc writeFunc) {
             this.normalized = normalized;
             this.glType = glType;
             this.numBytes = numBytes;
@@ -403,9 +376,7 @@ public class Mesh {
             return attType;
         }
 
-
-		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        ////////////////////////////////
 
         private static final Map<String, AttribType> allAttribType = new HashMap<>();
         private static final Map<String, Integer> allPrimitiveType = new HashMap<>();
@@ -417,7 +388,6 @@ public class Mesh {
         private ParseFunc parseFunc;
         private WriteFunc writeFunc;
 
-        // varie funzioni di parse
         private static ParseFunc parseFloats = new ParseFunc() {
             public Buffer parse(String strToParse) {
                 Scanner scn = new Scanner( strToParse );
@@ -499,7 +469,6 @@ public class Mesh {
             }
         };
 
-        // varie funzioni di write
         private static WriteFunc writeFloats = new WriteFunc() {
             public void writeToBuffer(int eBuffer, Buffer theData, int iOffset) {
                 glBufferSubData( eBuffer, iOffset, (FloatBuffer) theData );
@@ -561,17 +530,13 @@ public class Mesh {
         }
     }
 
-
-
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+    ////////////////////////////////
     private static class RenderCmd {
         private boolean isIndexedCmd;
         private int primType;
         private int start;
         private int elemCount;
-        private int eIndexDataType;        // Only if isIndexedCmd is true.
+        private int eIndexDataType;  // Only if isIndexedCmd is true.
 
 
         RenderCmd(Node cmdNode) {

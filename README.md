@@ -35,37 +35,36 @@ Common steps to get the code running:
 
 Notes
 -----
-I decided to write the code of this project as similar as possible to the original C++ code, despite I would have done some things differently; variables and functions are almost identical to their C++ counterparts. I also decided to keep same the project layout:
+I decided to write the code of this project as similar as possible to the original C++ code, despite I would have done some things differently; hence, variables and functions are almost identical to their counterparts in the original projects. I also decided to keep the same project layout:
 ```
-jgltut
-|--- data
-|--- framework
-|--- tut01
+jgltut/
+|-- data/
+|-- framework/
+|-- tut01/
 |------ Tut1.java
-|--- tut02
-|------ data
+|-- tut02/
+|------ data/
 |------ FragPosition.java
 |------ VertexColor.java
-|--- ...
-|--- tut17
-|------ data
+|-- ...
+|-- tut17/
+|------ data/
 |------ CubePointLight.java
 |------ DoubleProjection.java
 |------ ProjectedLight.java
-|--- LWJGLWindow.java
-|--- TutorialChooser.java
+|-- LWJGLWindow.java
+|-- TutorialChooser.java
 ```
-The only files I have added are `LWJGLWindow.java` (simple class that wraps all the code needed to create and display a LWJGL window) and `TutorialChooser.java` (a handy program used to run the various tutorials).  
-Each tutorial has its own `main` method that can be used to run it. Alternatively, you can execute the `main` method of `TutorialChooser.java` and then click on the name of the tutorial you want to run.  
-At first, the code may be difficult to read, but with a bit of practice you will realize that the code layout is organized to find the various sections quickly. I suggest you to start reading each class with all methods and inner classes folded.
+Each tutorial loads the files it needs from the global `data` folder or from its own `data` folder. The `framework` package contains utility code needed by multiple tutorials. The class `LWJGLWindow.java` is used to create and display a LWJGL window, and `TutorialChooser.java` is a handy program for quickly executing the various tutorials.  
+At first, the code may appear difficult to read, but after a bit of reading you will realize that it is well-grouped into logical sections. I suggest you to start by skimming through the code with methods and inner classes folded.
 
-If your graphics card does not meet the minimum requirements, running a tutorial will print to the console the message `You must have at least OpenGL 3.3 to run this tutorial.`, and the program will likely crash raising an exception. These requirements are checked in `LWJGLWindow.java` when the `Display` is created, using `GLContext.getCapabilities().OpenGL33`.
+If your graphics card does not meet the minimum requirements, running any tutorial will print to the console the message `You must have at least OpenGL 3.3 to run this tutorial.`. The requirements are checked in `LWJGLWindow.java` using the LWJGL function `GLContext.getCapabilities().OpenGL33`.
 
 I can't dedicate much time to this project anymore, but in the future I will probably:
 
-- do some refactoring on code I don't like
-- rework some parts of `jglsdk`
-- update the code to work with LWJGL 3 (when it will be officially released)
+- keep refactoring code I don't like;
+- rework some parts of `jglsdk`;
+- update the code to work with LWJGL 3 (when it will be officially released).
 
 License
 -------

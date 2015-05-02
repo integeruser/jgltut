@@ -1,7 +1,7 @@
 Learning Modern 3D Graphics Programming with LWJGL
 --------------------------------------------------
-This project is a port of *[Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using LWJGL and it is distributed in the hope that it will be useful (original C++ source code [here](https://bitbucket.org/alfonse/gltut/wiki/Home)). The tutorials can be found in the package `fcagnin.jgltut`.  
-In this project is also included a port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)*, which contains a small math library (derived from the [GLM math library](http://glm.g-truc.net/)), a DDS texture loader and other useful stuff, widely used throughout the tutorials. This stuff is collected in the package `fcagnin.jglsdk`.  
+This project is a port of *[Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using LWJGL and it is distributed in the hope that it will be useful (original C++ source code [here](https://bitbucket.org/alfonse/gltut/wiki/Home)). The tutorials can be found in the package `jgltut`.  
+In this project is also included a port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)*, which contains a small math library (derived from the [GLM math library](http://glm.g-truc.net/)), a DDS texture loader and other useful stuff, widely used throughout the tutorials. This stuff is collected in the package `jglsdk`.  
 I have included in this repository all the files needed to run the tutorials so you don't need to download anything else (except the LWJGL library).
 
 To try the tutorials without building the source code, you can download the runnable jars included in the [Releases](https://github.com/integeruser/jgltut/releases) section. Several tutorials print various messages to console: launch the jar from the terminal / command prompt with the command `java -jar jgltut-<version>` to be able to view the output.
@@ -30,7 +30,7 @@ Common steps to get the code running:
     - link the appropriate LWJGL natives for your operating system: the easiest method I have found is to simply copy all the files from the LWJGL native folder (e.g. all the files in `lwjgl-2.9.1/natives/windows/`) to the root folder of your project.  
     Alternatively, try setting `-Djava.library.path=path/to/natives` as VM option in the IDE, or search Google for instructions.  
     Failing to link the natives will result in `Exception in thread "main" java.lang.UnsatisfiedLinkError: no lwjgl in java.library.path`
-4. Run the `main` method of the first tutorial `fcagnin.jgltut.tut01.Tut1` and check for error messages in the console: it should only display the name of the running tutorial and the OpenGL version supported by your video card.
+4. Run the `main` method of the first tutorial `jgltut.tut01.Tut1` and check for error messages in the console: it should only display the name of the running tutorial and the OpenGL version supported by your video card.
 5. To quit any tutorial, simply press `ESC`.
 
 Notes
@@ -64,7 +64,7 @@ If your graphics card does not meet the minimum requirements, running a tutorial
 I can't dedicate much time to this project anymore, but in the future I will probably:
 
 - do some refactoring on code I don't like
-- rework some parts of `fcagnin.jglsdk`
+- rework some parts of `jglsdk`
 - update the code to work with LWJGL 3 (when it will be officially released)
 
 License

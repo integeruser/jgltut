@@ -9,20 +9,20 @@ Happy coding! :smile:
 Francesco
 
 ## Usage
-I have included in this repository all the files needed to run the tutorials, so you don't have to download anything else (except the LWJGL library). To correctly compile the code, you will need (at least):
+I have included in this repository all the files needed to run the tutorials, so you don't have to download anything else (except the LWJGL library). To correctly compile the code, you will need:
 
 - Java SE Development Kit 7
 - LWJGL 2.9.*
 
-Working with previous versions of these software requires minor adjustments to the code.
+Working with different versions of JDK/LWJGL requires minor adjustments to the code.
 
 To get the code running just do the usual steps needed by any LWJGL application:
 
 1. Clone this repository :+1:;
 2. Using your favorite IDE, create a new Java project and import the source code of the repository just cloned;
-3. Configure the project settings in your IDE options (extracted from [lwjgl.org](http://www.lwjgl.org/guide)):
+3. Configure the project settings in your IDE options (as written in [lwjgl.org](http://www.lwjgl.org/guide)):
     - Add the LWJGL JARs to the classpath (usually done by setting up a library dependency for your project and attaching JARs to it);
-    - Set the `-Djava.library.path=path/to/natives` as a JVM launch argument or, alternatively, simply copy all the files from the LWJGL `natives` folder to the root folder of your project. Failing to link the natives will result in `Exception in thread "main" java.lang.UnsatisfiedLinkError: no lwjgl in java.library.path`.
+    - Set `-Djava.library.path=path/to/natives` as a JVM launch argument or, alternatively, simply copy all the files from the LWJGL `natives` folder to the root folder of your project. Failing to link the natives will result in `Exception in thread "main" java.lang.UnsatisfiedLinkError: no lwjgl in java.library.path`.
 
 Run the `main` method of the first tutorial `jgltut.tut01.Tut1` and check the output in the console window: it should only display the name of the running tutorial and the OpenGL version supported by your video card. If no errors appear, then you're done and you can start exploring other tutorials by running `TutorialChooser.java`. To quit any tutorial simply press `ESC`.
 

@@ -1,6 +1,6 @@
 package jgltut.tut06;
 
-import jglsdk.glm.*;
+import jgltut.jglsdk.glm.*;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import org.lwjgl.BufferUtils;

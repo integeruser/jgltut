@@ -1,8 +1,8 @@
 package jgltut.framework;
 
-import jglsdk.glm.Glm;
-import jglsdk.glm.Vec3;
-import jglsdk.glm.Vec4;
+import jgltut.jglsdk.glm.Glm;
+import jgltut.jglsdk.glm.Vec3;
+import jgltut.jglsdk.glm.Vec4;
 
 import java.util.ArrayList;
 

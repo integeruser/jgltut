@@ -1,7 +1,7 @@
 package jgltut.tut08;
 
-import jglsdk.glm.*;
-import jglsdk.glutil.MatrixStack;
+import jgltut.jglsdk.glm.*;
+import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.framework.Mesh;

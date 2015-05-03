@@ -1,6 +1,6 @@
-package jglsdk.glutil;
+package jgltut.jglsdk.glutil;
 
-import jglsdk.glm.*;
+import jgltut.jglsdk.glm.*;
 import org.lwjgl.input.Keyboard;
 
 

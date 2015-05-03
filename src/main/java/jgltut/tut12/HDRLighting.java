@@ -1,15 +1,15 @@
 package jgltut.tut12;
 
-import jglsdk.BufferableData;
-import jglsdk.glm.Mat4;
-import jglsdk.glm.Quaternion;
-import jglsdk.glm.Vec3;
-import jglsdk.glm.Vec4;
-import jglsdk.glutil.MatrixStack;
-import jglsdk.glutil.MousePoles.MouseButtons;
-import jglsdk.glutil.MousePoles.ViewData;
-import jglsdk.glutil.MousePoles.ViewPole;
-import jglsdk.glutil.MousePoles.ViewScale;
+import jgltut.jglsdk.BufferableData;
+import jgltut.jglsdk.glm.Mat4;
+import jgltut.jglsdk.glm.Quaternion;
+import jgltut.jglsdk.glm.Vec3;
+import jgltut.jglsdk.glm.Vec4;
+import jgltut.jglsdk.glutil.MatrixStack;
+import jgltut.jglsdk.glutil.MousePoles.MouseButtons;
+import jgltut.jglsdk.glutil.MousePoles.ViewData;
+import jgltut.jglsdk.glutil.MousePoles.ViewPole;
+import jgltut.jglsdk.glutil.MousePoles.ViewScale;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.framework.MousePole;

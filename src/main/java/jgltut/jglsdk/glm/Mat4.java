@@ -1,6 +1,6 @@
-package jglsdk.glm;
+package jgltut.jglsdk.glm;
 
-import jglsdk.BufferableData;
+import jgltut.jglsdk.BufferableData;
 
 import java.nio.FloatBuffer;
 

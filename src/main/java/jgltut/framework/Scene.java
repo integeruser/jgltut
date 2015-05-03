@@ -1,11 +1,11 @@
 package jgltut.framework;
 
-import jglsdk.glimg.DdsLoader;
-import jglsdk.glimg.ImageSet;
-import jglsdk.glimg.TextureGenerator;
-import jglsdk.glimg.TextureGenerator.ForcedConvertFlags;
-import jglsdk.glm.*;
 import jgltut.framework.SceneBinders.StateBinder;
+import jgltut.jglsdk.glimg.DdsLoader;
+import jgltut.jglsdk.glimg.ImageSet;
+import jgltut.jglsdk.glimg.TextureGenerator;
+import jgltut.jglsdk.glimg.TextureGenerator.ForcedConvertFlags;
+import jgltut.jglsdk.glm.*;
 import org.lwjgl.BufferUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

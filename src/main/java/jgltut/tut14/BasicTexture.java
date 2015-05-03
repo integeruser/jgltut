@@ -1,9 +1,9 @@
 package jgltut.tut14;
 
-import jglsdk.BufferableData;
-import jglsdk.glm.*;
-import jglsdk.glutil.MatrixStack;
-import jglsdk.glutil.MousePoles.*;
+import jgltut.jglsdk.BufferableData;
+import jgltut.jglsdk.glm.*;
+import jgltut.jglsdk.glutil.MatrixStack;
+import jgltut.jglsdk.glutil.MousePoles.*;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.framework.Mesh;

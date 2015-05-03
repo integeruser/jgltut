@@ -1,15 +1,15 @@
 package jgltut.tut17;
 
-import jglsdk.BufferableData;
-import jglsdk.glimg.DdsLoader;
-import jglsdk.glimg.ImageSet;
-import jglsdk.glimg.TextureGenerator;
-import jglsdk.glm.*;
-import jglsdk.glutil.MatrixStack;
-import jglsdk.glutil.MousePoles.MouseButtons;
-import jglsdk.glutil.MousePoles.ViewData;
-import jglsdk.glutil.MousePoles.ViewPole;
-import jglsdk.glutil.MousePoles.ViewScale;
+import jgltut.jglsdk.BufferableData;
+import jgltut.jglsdk.glimg.DdsLoader;
+import jgltut.jglsdk.glimg.ImageSet;
+import jgltut.jglsdk.glimg.TextureGenerator;
+import jgltut.jglsdk.glm.*;
+import jgltut.jglsdk.glutil.MatrixStack;
+import jgltut.jglsdk.glutil.MousePoles.MouseButtons;
+import jgltut.jglsdk.glutil.MousePoles.ViewData;
+import jgltut.jglsdk.glutil.MousePoles.ViewPole;
+import jgltut.jglsdk.glutil.MousePoles.ViewScale;
 import jgltut.LWJGLWindow;
 import jgltut.framework.*;
 import jgltut.framework.Scene.SceneNode;

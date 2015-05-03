@@ -1,14 +1,14 @@
 package jgltut.tut16;
 
-import jglsdk.BufferableData;
-import jglsdk.glimg.ImageSet;
-import jglsdk.glimg.ImageSet.Dimensions;
-import jglsdk.glimg.ImageSet.SingleImage;
-import jglsdk.glimg.StbLoader;
-import jglsdk.glimg.TextureGenerator;
-import jglsdk.glimg.TextureGenerator.OpenGLPixelTransferParams;
-import jglsdk.glm.Mat4;
-import jglsdk.glutil.MatrixStack;
+import jgltut.jglsdk.BufferableData;
+import jgltut.jglsdk.glimg.ImageSet;
+import jgltut.jglsdk.glimg.ImageSet.Dimensions;
+import jgltut.jglsdk.glimg.ImageSet.SingleImage;
+import jgltut.jglsdk.glimg.StbLoader;
+import jgltut.jglsdk.glimg.TextureGenerator;
+import jgltut.jglsdk.glimg.TextureGenerator.OpenGLPixelTransferParams;
+import jgltut.jglsdk.glm.Mat4;
+import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import org.lwjgl.BufferUtils;

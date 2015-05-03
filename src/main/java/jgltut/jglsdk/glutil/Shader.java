@@ -1,4 +1,4 @@
-package jglsdk.glutil;
+package jgltut.jglsdk.glutil;
 
 import java.util.ArrayList;
 

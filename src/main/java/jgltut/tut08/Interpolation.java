@@ -1,10 +1,10 @@
 package jgltut.tut08;
 
-import jglsdk.glm.Glm;
-import jglsdk.glm.Mat4;
-import jglsdk.glm.Quaternion;
-import jglsdk.glm.Vec4;
-import jglsdk.glutil.MatrixStack;
+import jgltut.jglsdk.glm.Glm;
+import jgltut.jglsdk.glm.Mat4;
+import jgltut.jglsdk.glm.Quaternion;
+import jgltut.jglsdk.glm.Vec4;
+import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.framework.Mesh;

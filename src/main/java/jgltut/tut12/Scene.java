@@ -1,8 +1,8 @@
 package jgltut.tut12;
 
-import jglsdk.BufferableData;
-import jglsdk.glm.*;
-import jglsdk.glutil.MatrixStack;
+import jgltut.jglsdk.BufferableData;
+import jgltut.jglsdk.glm.*;
+import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.framework.Mesh;
 import org.lwjgl.BufferUtils;
 

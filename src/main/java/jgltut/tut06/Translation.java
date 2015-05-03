@@ -1,8 +1,8 @@
 package jgltut.tut06;
 
-import jglsdk.glm.Mat4;
-import jglsdk.glm.Vec3;
-import jglsdk.glm.Vec4;
+import jgltut.jglsdk.glm.Mat4;
+import jgltut.jglsdk.glm.Vec3;
+import jgltut.jglsdk.glm.Vec4;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import org.lwjgl.BufferUtils;

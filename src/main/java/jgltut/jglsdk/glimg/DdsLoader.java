@@ -1,7 +1,7 @@
-package jglsdk.glimg;
+package jgltut.jglsdk.glimg;
 
-import jglsdk.glimg.ImageFormat.*;
-import jglsdk.glimg.ImageSet.Dimensions;
+import jgltut.jglsdk.glimg.ImageFormat.*;
+import jgltut.jglsdk.glimg.ImageSet.Dimensions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

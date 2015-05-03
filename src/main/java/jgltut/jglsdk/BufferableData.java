@@ -1,4 +1,4 @@
-package jglsdk;
+package jgltut.jglsdk;
 
 import java.nio.Buffer;
 

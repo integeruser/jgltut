@@ -1,9 +1,9 @@
 package jgltut.framework;
 
-import jglsdk.glm.Vec2;
-import jglsdk.glutil.MousePoles.MouseButtons;
-import jglsdk.glutil.MousePoles.MouseModifiers;
-import jglsdk.glutil.MousePoles.Pole;
+import jgltut.jglsdk.glm.Vec2;
+import jgltut.jglsdk.glutil.MousePoles.MouseButtons;
+import jgltut.jglsdk.glutil.MousePoles.MouseModifiers;
+import jgltut.jglsdk.glutil.MousePoles.Pole;
 import org.lwjgl.input.Keyboard;
 
 

@@ -1,8 +1,8 @@
-package jglsdk.glutil;
+package jgltut.jglsdk.glutil;
 
-import jglsdk.glm.Glm;
-import jglsdk.glm.Mat4;
-import jglsdk.glm.Vec3;
+import jgltut.jglsdk.glm.Glm;
+import jgltut.jglsdk.glm.Mat4;
+import jgltut.jglsdk.glm.Vec3;
 
 
 /**

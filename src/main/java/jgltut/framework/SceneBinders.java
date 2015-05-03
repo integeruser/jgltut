@@ -1,8 +1,8 @@
 package jgltut.framework;
 
-import jglsdk.glm.Mat4;
-import jglsdk.glm.Vec3;
 import jgltut.framework.Scene.SceneNode;
+import jgltut.jglsdk.glm.Mat4;
+import jgltut.jglsdk.glm.Vec3;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;

@@ -1,6 +1,6 @@
 package jgltut.framework;
 
-import jglsdk.glm.Glm;
+import jgltut.jglsdk.glm.Glm;
 
 
 /**

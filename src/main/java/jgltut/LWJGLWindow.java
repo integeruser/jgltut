@@ -1,11 +1,19 @@
 package jgltut;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.LWJGLUtil;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
+import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.*;
 
+import java.nio.ByteBuffer;
+
+import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
+import static org.lwjgl.glfw.Callbacks.glfwSetCallback;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 
 /**
@@ -15,6 +23,11 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class LWJGLWindow {
     protected static final int FLOAT_SIZE = Float.SIZE / Byte.SIZE;
+
+    private long window;
+    private GLFWErrorCallback errorCallback;
+    private GLFWKeyCallback keyCallback;
+    private GLFWWindowSizeCallback windowSizeCallback;
 
     // Measured in milliseconds
     private float elapsedTime;
@@ -30,49 +43,82 @@ public class LWJGLWindow {
 
     public final void start(int width, int height) {
         try {
-            Display.setTitle("LWJGLWindow");
-            Display.setDisplayMode(new DisplayMode(width, height));
-            Display.setResizable(true);
-            Display.setVSyncEnabled(true);
-
-            if (LWJGLUtil.getPlatform() == LWJGLUtil.PLATFORM_MACOSX) {
-                Display.create(new PixelFormat(), new ContextAttribs(3, 2).withProfileCore(true));
-            } else {
-                Display.create();
-            }
-
+            initLWJGL(width, height);
             printInfo();
-        } catch (LWJGLException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
 
-        long startTime = System.nanoTime();
-        continueMainLoop = true;
+            init();
+            reshape(width, height);
 
-        init();
-        reshape(width, height);
+            long startTime = System.nanoTime();
+            continueMainLoop = true;
+            while (continueMainLoop && glfwWindowShouldClose(window) == GL_FALSE) {
+                elapsedTime = (float) ((System.nanoTime() - startTime) / 1000000.0);
 
-        while (continueMainLoop && !Display.isCloseRequested()) {
-            elapsedTime = (float) ((System.nanoTime() - startTime) / 1000000.0);
+                double now = System.nanoTime();
+                lastFrameDuration = (float) ((now - lastFrameTimestamp) / 1000000.0);
+                lastFrameTimestamp = now;
 
-            double now = System.nanoTime();
-            lastFrameDuration = (float) ((now - lastFrameTimestamp) / 1000000.0);
-            lastFrameTimestamp = now;
+                update();
+                display();
 
-            update();
-            display();
-
-            Display.update();
-
-            if (Display.wasResized()) {
-                reshape(Display.getWidth(), Display.getHeight());
+                glfwSwapBuffers(window);
+                glfwPollEvents();
             }
-        }
 
-        Display.destroy();
+            glfwDestroyWindow(window);
+            keyCallback.release();
+        } finally {
+            glfwTerminate();
+            errorCallback.release();
+        }
     }
 
+
+    private void initLWJGL(int width, int height) {
+        glfwSetErrorCallback(errorCallback = errorCallbackPrint(System.err));
+
+        if (glfwInit() != GL11.GL_TRUE)
+            throw new IllegalStateException("Unable to initialize GLFW");
+
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+
+        // Create the window
+        window = glfwCreateWindow(width, height, "LWJGLWindow", NULL, NULL);
+        if (window == NULL) {
+            throw new RuntimeException("Failed to create the GLFW window");
+        }
+
+        // Setup a key callback. It will be called every time a key is pressed, repeated or released
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
+                    glfwSetWindowShouldClose(window, GL_TRUE);
+                }
+            }
+        });
+
+        // Setup a window size callback. It will be called every time the window is resized
+        glfwSetCallback(window, windowSizeCallback = new GLFWWindowSizeCallback() {
+            @Override
+            public void invoke(long window, int width, int height) {
+                reshape(width, height);
+            }
+        });
+
+        // Center our window
+        ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowPos(window, (GLFWvidmode.width(vidmode) - width) / 2, (GLFWvidmode.height(vidmode) - height) / 2);
+
+        glfwMakeContextCurrent(window);
+        // Enable v-sync
+        glfwSwapInterval(1);
+
+        GL.createCapabilities();
+        glfwShowWindow(window);
+    }
 
     private void printInfo() {
         System.out.println();
@@ -81,7 +127,7 @@ public class LWJGLWindow {
         System.out.format("%-18s%s\n", "Running:", getClass().getName());
         System.out.format("%-18s%s\n", "OpenGL version:", glGetString(GL_VERSION));
 
-        if (!GLContext.getCapabilities().OpenGL33) {
+        if (!GL.getCapabilities().OpenGL33) {
             System.out.println("You must have at least OpenGL 3.3 to run this tutorial.");
         }
     }
@@ -100,13 +146,6 @@ public class LWJGLWindow {
     }
 
     protected void update() {
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-                    leaveMainLoop();
-                }
-            }
-        }
     }
 
     ////////////////////////////////

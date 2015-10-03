@@ -99,7 +99,7 @@ public class WorldWithUBO extends LWJGLWindow {
             modelMatrix.scale(100.0f, 1.0f, 100.0f);
 
             glUseProgram(uniformColor.theProgram);
-            glUniformMatrix4(uniformColor.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(uniformColor.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniform4f(uniformColor.baseColorUnif, 0.302f, 0.416f, 0.0589f, 1.0f);
             planeMesh.render();
             glUseProgram(0);
@@ -128,7 +128,7 @@ public class WorldWithUBO extends LWJGLWindow {
             modelMatrix.scale(1.0f, 1.0f, 1.0f);
 
             glUseProgram(objectColor.theProgram);
-            glUniformMatrix4(objectColor.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(objectColor.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             cubeColorMesh.render();
             glUseProgram(0);
 
@@ -500,7 +500,7 @@ public class WorldWithUBO extends LWJGLWindow {
             modelMatrix.translate(0.0f, 0.5f, 0.0f);
 
             glUseProgram(uniformColorTint.theProgram);
-            glUniformMatrix4(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniform4f(uniformColorTint.baseColorUnif, 0.694f, 0.4f, 0.106f, 1.0f);
             cylinderMesh.render();
             glUseProgram(0);
@@ -515,7 +515,7 @@ public class WorldWithUBO extends LWJGLWindow {
             modelMatrix.scale(3.0f, coneHeight, 3.0f);
 
             glUseProgram(uniformColorTint.theProgram);
-            glUniformMatrix4(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniform4f(uniformColorTint.baseColorUnif, 0.0f, 1.0f, 0.0f, 1.0f);
             coneMesh.render();
             glUseProgram(0);
@@ -537,7 +537,7 @@ public class WorldWithUBO extends LWJGLWindow {
             modelMatrix.translate(0.0f, 0.5f, 0.0f);
 
             glUseProgram(uniformColorTint.theProgram);
-            glUniformMatrix4(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniform4f(uniformColorTint.baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
             cubeTintMesh.render();
             glUseProgram(0);
@@ -553,7 +553,7 @@ public class WorldWithUBO extends LWJGLWindow {
             modelMatrix.translate(0.0f, 0.5f, 0.0f);
 
             glUseProgram(uniformColorTint.theProgram);
-            glUniformMatrix4(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniform4f(uniformColorTint.baseColorUnif, 0.9f, 0.9f, 0.9f, 0.9f);
             cubeTintMesh.render();
             glUseProgram(0);
@@ -569,7 +569,7 @@ public class WorldWithUBO extends LWJGLWindow {
             modelMatrix.translate(0.0f, 0.5f, 0.0f);
 
             glUseProgram(uniformColorTint.theProgram);
-            glUniformMatrix4(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniform4f(uniformColorTint.baseColorUnif, 0.9f, 0.9f, 0.9f, 0.9f);
             cylinderMesh.render();
             glUseProgram(0);
@@ -594,7 +594,7 @@ public class WorldWithUBO extends LWJGLWindow {
             modelMatrix.translate(0.0f, 0.5f, 0.0f);
 
             glUseProgram(uniformColorTint.theProgram);
-            glUniformMatrix4(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniform4f(uniformColorTint.baseColorUnif, 0.9f, 0.9f, 0.9f, 0.9f);
             cubeTintMesh.render();
             glUseProgram(0);
@@ -610,7 +610,7 @@ public class WorldWithUBO extends LWJGLWindow {
             modelMatrix.translate(0.0f, 0.5f, 0.0f);
 
             glUseProgram(uniformColorTint.theProgram);
-            glUniformMatrix4(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(uniformColorTint.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniform4f(uniformColorTint.baseColorUnif, 0.9f, 0.9f, 0.9f, 0.9f);
             cubeTintMesh.render();
             glUseProgram(0);
@@ -668,7 +668,7 @@ public class WorldWithUBO extends LWJGLWindow {
             modelMatrix.translate(0.0f, 0.5f, 0.0f);
 
             glUseProgram(objectColor.theProgram);
-            glUniformMatrix4(objectColor.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(objectColor.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             cubeColorMesh.render();
             glUseProgram(0);
 
@@ -683,7 +683,7 @@ public class WorldWithUBO extends LWJGLWindow {
             modelMatrix.rotateY(45.0f);
 
             glUseProgram(objectColor.theProgram);
-            glUniformMatrix4(objectColor.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(objectColor.modelToWorldMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             cubeColorMesh.render();
             glUseProgram(0);
 

@@ -164,7 +164,7 @@ public class MaterialTexture extends LWJGLWindow {
             ProgramData prog = programs[shaderMode.ordinal()];
 
             glUseProgram(prog.theProgram);
-            glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
 
             glActiveTexture(GL_TEXTURE0 + gaussTexUnit);
@@ -197,7 +197,7 @@ public class MaterialTexture extends LWJGLWindow {
             modelMatrix.scale(0.25f);
 
             glUseProgram(unlit.theProgram);
-            glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
             Vec4 lightColor = new Vec4(1.0f);
             glUniform4(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
@@ -208,7 +208,7 @@ public class MaterialTexture extends LWJGLWindow {
             modelMatrix.translate(globalLightDirection.scale(100.0f));
             modelMatrix.scale(5.0f);
 
-            glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             cubeMesh.render("flat");
 
             glUseProgram(0);
@@ -224,7 +224,7 @@ public class MaterialTexture extends LWJGLWindow {
             glDisable(GL_DEPTH_TEST);
             glDepthMask(false);
             glUseProgram(unlit.theProgram);
-            glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniform4f(unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
             cubeMesh.render("flat");
             glDepthMask(true);

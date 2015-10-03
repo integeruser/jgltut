@@ -158,7 +158,7 @@ public class HDRLighting extends LWJGLWindow {
                 modelMatrix.scale(30.0f, 30.0f, 30.0f);
 
                 glUseProgram(unlit.theProgram);
-                glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
                 Vec4 lightColor = lights.getSunlightIntensity();
                 glUniform4(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
@@ -175,7 +175,7 @@ public class HDRLighting extends LWJGLWindow {
                     modelMatrix.translate(lights.getWorldLightPosition(light));
 
                     glUseProgram(unlit.theProgram);
-                    glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                    glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
                     Vec4 lightColor = lights.getPointLightIntensity(light);
                     glUniform4(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
@@ -194,7 +194,7 @@ public class HDRLighting extends LWJGLWindow {
                 glDisable(GL_DEPTH_TEST);
                 glDepthMask(false);
                 glUseProgram(unlit.theProgram);
-                glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                 glUniform4f(unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
                 scene.getCubeMesh().render("flat");
                 glDepthMask(true);

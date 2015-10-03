@@ -80,7 +80,7 @@ public class CameraRelative extends LWJGLWindow {
             currMatrix.scale(100.0f, 1.0f, 100.0f);
 
             glUniform4f(baseColorUnif, 0.2f, 0.5f, 0.2f, 1.0f);
-            glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
             plane.render();
 
@@ -95,7 +95,7 @@ public class CameraRelative extends LWJGLWindow {
 
             // Set the base color for this object.
             glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-            glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
             ship.render("tint");
 
@@ -111,7 +111,7 @@ public class CameraRelative extends LWJGLWindow {
         cameraToClipMatrix.set(1, 1, frustumScale);
 
         glUseProgram(theProgram);
-        glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
@@ -235,7 +235,7 @@ public class CameraRelative extends LWJGLWindow {
         cameraToClipMatrix.set(3, 2, (2 * zFar * zNear) / (zNear - zFar));
 
         glUseProgram(theProgram);
-        glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
         glUseProgram(0);
     }
 

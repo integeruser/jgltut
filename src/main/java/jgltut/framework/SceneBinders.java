@@ -105,7 +105,7 @@ public class SceneBinders {
         ////////////////////////////////
         @Override
         void bindState(int prog) {
-            glUniformMatrix4(getUniformLoc(prog), false, val.fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(getUniformLoc(prog), false, val.fillAndFlipBuffer(mat4Buffer));
         }
 
         @Override

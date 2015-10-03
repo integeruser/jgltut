@@ -84,7 +84,7 @@ public class GimbalLock extends LWJGLWindow {
 
         // Set the base color for this object.
         glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-        glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
         object.render("tint");
 
@@ -97,7 +97,7 @@ public class GimbalLock extends LWJGLWindow {
         cameraToClipMatrix.set(1, 1, frustumScale);
 
         glUseProgram(theProgram);
-        glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
@@ -174,7 +174,7 @@ public class GimbalLock extends LWJGLWindow {
         cameraToClipMatrix.set(3, 2, (2 * zFar * zNear) / (zNear - zFar));
 
         glUseProgram(theProgram);
-        glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
         glUseProgram(0);
     }
 
@@ -235,7 +235,7 @@ public class GimbalLock extends LWJGLWindow {
 
         // Set the base color for this object.
         glUniform4f(baseColorUnif, baseColor.x, baseColor.y, baseColor.z, baseColor.w);
-        glUniformMatrix4(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
         gimbals[axis.ordinal()].render();
 

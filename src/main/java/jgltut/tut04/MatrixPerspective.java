@@ -96,7 +96,7 @@ public class MatrixPerspective extends LWJGLWindow {
 
         glUseProgram(theProgram);
         int perspectiveMatrixUnif = glGetUniformLocation(theProgram, "perspectiveMatrix");
-        glUniformMatrix4(perspectiveMatrixUnif, false, theMatrixBuffer);
+        glUniformMatrix4fv(perspectiveMatrixUnif, false, theMatrixBuffer);
         glUseProgram(0);
     }
 

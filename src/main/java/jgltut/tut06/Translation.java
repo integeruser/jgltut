@@ -76,7 +76,7 @@ public class Translation extends LWJGLWindow {
         float elapsedTime = getElapsedTime() / 1000.0f;
         for (Instance currInst : instanceList) {
             final Mat4 transformMatrix = currInst.constructMatrix(elapsedTime);
-            glUniformMatrix4(modelToCameraMatrixUnif, false, transformMatrix.fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(modelToCameraMatrixUnif, false, transformMatrix.fillAndFlipBuffer(mat4Buffer));
             glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
         }
 
@@ -90,7 +90,7 @@ public class Translation extends LWJGLWindow {
         cameraToClipMatrix.set(1, 1, frustumScale);
 
         glUseProgram(theProgram);
-        glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
@@ -126,7 +126,7 @@ public class Translation extends LWJGLWindow {
         cameraToClipMatrix.set(2, 3, -1.0f);
 
         glUseProgram(theProgram);
-        glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
         glUseProgram(0);
     }
 

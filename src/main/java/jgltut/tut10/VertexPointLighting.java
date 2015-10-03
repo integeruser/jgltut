@@ -124,7 +124,7 @@ public class VertexPointLighting extends LWJGLWindow {
                 modelMatrix.push();
 
                 glUseProgram(whiteDiffuseColor.theProgram);
-                glUniformMatrix4(whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                 Mat3 normMatrix = new Mat3(modelMatrix.top());
                 glUniformMatrix3(whiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                 planeMesh.render();
@@ -141,13 +141,13 @@ public class VertexPointLighting extends LWJGLWindow {
 
                 if (drawColoredCyl) {
                     glUseProgram(vertexDiffuseColor.theProgram);
-                    glUniformMatrix4(vertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                    glUniformMatrix4fv(vertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                     Mat3 normMatrix = new Mat3(modelMatrix.top());
                     glUniformMatrix3(vertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                     cylinderMesh.render("lit-color");
                 } else {
                     glUseProgram(whiteDiffuseColor.theProgram);
-                    glUniformMatrix4(whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                    glUniformMatrix4fv(whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                     Mat3 normMatrix = new Mat3(modelMatrix.top());
                     glUniformMatrix3(whiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                     cylinderMesh.render("lit");
@@ -165,7 +165,7 @@ public class VertexPointLighting extends LWJGLWindow {
                 modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
                 glUseProgram(unlit.theProgram);
-                glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                 glUniform4f(unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f);
                 cubeMesh.render("flat");
 

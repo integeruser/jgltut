@@ -142,7 +142,7 @@ public class BlinnVsPhongLighting extends LWJGLWindow {
                 normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 
                 glUseProgram(whiteProg.theProgram);
-                glUniformMatrix4(whiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(whiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
                 glUniformMatrix3(whiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                 planeMesh.render();
@@ -166,7 +166,7 @@ public class BlinnVsPhongLighting extends LWJGLWindow {
 
                 ProgramData prog = drawColoredCyl ? colorProg : whiteProg;
                 glUseProgram(prog.theProgram);
-                glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
                 glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
 
@@ -189,7 +189,7 @@ public class BlinnVsPhongLighting extends LWJGLWindow {
                 modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
                 glUseProgram(unlit.theProgram);
-                glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                 glUniform4f(unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f);
                 cubeMesh.render("flat");
 

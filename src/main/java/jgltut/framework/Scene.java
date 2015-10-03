@@ -205,7 +205,7 @@ public class Scene {
             Mat4 objMat = Mat4.mul(baseMat, objTransform.getMatrix());
 
             program.useProgram();
-            glUniformMatrix4(program.getMatrixLoc(), false, objMat.fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(program.getMatrixLoc(), false, objMat.fillAndFlipBuffer(mat4Buffer));
 
             if (program.getNormalMatLoc() != -1) {
                 Mat3 normMat = new Mat3(Glm.transpose(Glm.inverse(objMat)));

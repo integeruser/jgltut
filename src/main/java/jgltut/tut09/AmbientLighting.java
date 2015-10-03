@@ -126,7 +126,7 @@ public class AmbientLighting extends LWJGLWindow {
                 modelMatrix.push();
 
                 glUseProgram(whiteDiffuse.theProgram);
-                glUniformMatrix4(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                 Mat3 normMatrix = new Mat3(modelMatrix.top());
                 glUniformMatrix3(whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                 planeMesh.render();
@@ -143,13 +143,13 @@ public class AmbientLighting extends LWJGLWindow {
 
                 if (drawColoredCyl) {
                     glUseProgram(vertexDiffuse.theProgram);
-                    glUniformMatrix4(vertexDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                    glUniformMatrix4fv(vertexDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                     Mat3 normMatrix = new Mat3(modelMatrix.top());
                     glUniformMatrix3(vertexDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                     cylinderMesh.render("lit-color");
                 } else {
                     glUseProgram(whiteDiffuse.theProgram);
-                    glUniformMatrix4(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                    glUniformMatrix4fv(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                     Mat3 normMatrix = new Mat3(modelMatrix.top());
                     glUniformMatrix3(whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                     cylinderMesh.render("lit");

@@ -188,7 +188,7 @@ public class ProjectedLight extends LWJGLWindow {
             modelMatrix.scale(1.0f, 1.0f, -1.0f);     // Invert the Z-axis so that it points in the right direction.
 
             glUseProgram(coloredProg);
-            glUniformMatrix4(coloredModelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(coloredModelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             axesMesh.render();
 
             modelMatrix.pop();
@@ -205,7 +205,7 @@ public class ProjectedLight extends LWJGLWindow {
             glDisable(GL_DEPTH_TEST);
             glDepthMask(false);
             glUseProgram(unlitProg);
-            glUniformMatrix4(unlitModelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(unlitModelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniform4f(unlitObjectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
             sphereMesh.render("flat");
             glDepthMask(true);

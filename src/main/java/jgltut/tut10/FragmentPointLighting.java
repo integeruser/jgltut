@@ -131,7 +131,7 @@ public class FragmentPointLighting extends LWJGLWindow {
                 modelMatrix.push();
 
                 glUseProgram(whiteProgram.theProgram);
-                glUniformMatrix4(whiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(whiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
                 Mat4 invTransform = Glm.inverse(modelMatrix.top());
                 Vec4 lightPosModelSpace = Mat4.mul(invTransform, lightPosCameraSpace);
@@ -158,14 +158,14 @@ public class FragmentPointLighting extends LWJGLWindow {
 
                 if (drawColoredCyl) {
                     glUseProgram(vertColorProgram.theProgram);
-                    glUniformMatrix4(vertColorProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                    glUniformMatrix4fv(vertColorProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
                     glUniform3(vertColorProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillAndFlipBuffer(vec4Buffer));
 
                     cylinderMesh.render("lit-color");
                 } else {
                     glUseProgram(whiteProgram.theProgram);
-                    glUniformMatrix4(whiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                    glUniformMatrix4fv(whiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
                     glUniform3(whiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillAndFlipBuffer(vec4Buffer));
 
@@ -184,7 +184,7 @@ public class FragmentPointLighting extends LWJGLWindow {
                 modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
                 glUseProgram(unlit.theProgram);
-                glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                 glUniform4f(unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f);
                 cubeMesh.render("flat");
 

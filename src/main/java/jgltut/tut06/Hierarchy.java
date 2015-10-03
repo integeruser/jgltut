@@ -77,7 +77,7 @@ public class Hierarchy extends LWJGLWindow {
         cameraToClipMatrix.set(1, 1, frustumScale);
 
         glUseProgram(theProgram);
-        glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
@@ -172,7 +172,7 @@ public class Hierarchy extends LWJGLWindow {
         cameraToClipMatrix.set(3, 2, (2 * zFar * zNear) / (zNear - zFar));
 
         glUseProgram(theProgram);
-        glUniformMatrix4(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
         glUseProgram(0);
     }
 
@@ -441,7 +441,7 @@ public class Hierarchy extends LWJGLWindow {
                 modelToCameraStack.push();
                 modelToCameraStack.translate(posBaseLeft);
                 modelToCameraStack.scale(new Vec3(1.0f, 1.0f, scaleBaseZ));
-                glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
                 glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
                 modelToCameraStack.pop();
             }
@@ -451,7 +451,7 @@ public class Hierarchy extends LWJGLWindow {
                 modelToCameraStack.push();
                 modelToCameraStack.translate(posBaseRight);
                 modelToCameraStack.scale(new Vec3(1.0f, 1.0f, scaleBaseZ));
-                glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
                 glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
                 modelToCameraStack.pop();
             }
@@ -471,7 +471,7 @@ public class Hierarchy extends LWJGLWindow {
                 modelToCameraStack.push();
                 modelToCameraStack.translate(new Vec3(0.0f, 0.0f, (sizeUpperArm / 2.0f) - 1.0f));
                 modelToCameraStack.scale(new Vec3(1.0f, 1.0f, sizeUpperArm / 2.0f));
-                glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
                 glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
                 modelToCameraStack.pop();
             }
@@ -489,7 +489,7 @@ public class Hierarchy extends LWJGLWindow {
             modelToCameraStack.push();
             modelToCameraStack.translate(new Vec3(0.0f, 0.0f, lenLowerArm / 2.0f));
             modelToCameraStack.scale(new Vec3(widthLowerArm / 2.0f, widthLowerArm / 2.0f, lenLowerArm / 2.0f));
-            glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
             glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
             modelToCameraStack.pop();
 
@@ -506,7 +506,7 @@ public class Hierarchy extends LWJGLWindow {
 
             modelToCameraStack.push();
             modelToCameraStack.scale(new Vec3(widthWrist / 2.0f, widthWrist / 2.0f, lenWrist / 2.0f));
-            glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
             glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
             modelToCameraStack.pop();
 
@@ -524,7 +524,7 @@ public class Hierarchy extends LWJGLWindow {
             modelToCameraStack.push();
             modelToCameraStack.translate(new Vec3(0.0f, 0.0f, lenFinger / 2.0f));
             modelToCameraStack.scale(new Vec3(widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f));
-            glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
             glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
             modelToCameraStack.pop();
 
@@ -537,7 +537,7 @@ public class Hierarchy extends LWJGLWindow {
                 modelToCameraStack.push();
                 modelToCameraStack.translate(new Vec3(0.0f, 0.0f, lenFinger / 2.0f));
                 modelToCameraStack.scale(new Vec3(widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f));
-                glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
                 glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
                 modelToCameraStack.pop();
 
@@ -554,7 +554,7 @@ public class Hierarchy extends LWJGLWindow {
             modelToCameraStack.push();
             modelToCameraStack.translate(new Vec3(0.0f, 0.0f, lenFinger / 2.0f));
             modelToCameraStack.scale(new Vec3(widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f));
-            glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
             glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
             modelToCameraStack.pop();
 
@@ -567,7 +567,7 @@ public class Hierarchy extends LWJGLWindow {
                 modelToCameraStack.push();
                 modelToCameraStack.translate(new Vec3(0.0f, 0.0f, lenFinger / 2.0f));
                 modelToCameraStack.scale(new Vec3(widthFinger / 2.0f, widthFinger / 2.0f, lenFinger / 2.0f));
-                glUniformMatrix4(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(modelToCameraMatrixUnif, false, modelToCameraStack.top().fillAndFlipBuffer(mat4Buffer));
                 glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
                 modelToCameraStack.pop();
 

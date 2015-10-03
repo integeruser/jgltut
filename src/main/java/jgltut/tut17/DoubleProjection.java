@@ -151,7 +151,7 @@ public class DoubleProjection extends LWJGLWindow {
             glDisable(GL_DEPTH_TEST);
             glDepthMask(false);
             glUseProgram(unlitProg);
-            glUniformMatrix4(unlitModelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(unlitModelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniform4f(unlitObjectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
             sphereMesh.render("flat");
             glDepthMask(true);

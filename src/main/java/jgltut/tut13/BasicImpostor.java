@@ -146,7 +146,7 @@ public class BasicImpostor extends LWJGLWindow {
             normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 
             glUseProgram(litMeshProg.theProgram);
-            glUniformMatrix4(litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniformMatrix3(litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
 
             planeMesh.render();
@@ -170,7 +170,7 @@ public class BasicImpostor extends LWJGLWindow {
             modelMatrix.scale(0.5f);
 
             glUseProgram(unlit.theProgram);
-            glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
             Vec4 lightColor = new Vec4(1.0f);
             glUniform4(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
@@ -188,7 +188,7 @@ public class BasicImpostor extends LWJGLWindow {
             glDisable(GL_DEPTH_TEST);
             glDepthMask(false);
             glUseProgram(unlit.theProgram);
-            glUniformMatrix4(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniform4f(unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
             cubeMesh.render("flat");
             glDepthMask(true);
@@ -516,7 +516,7 @@ public class BasicImpostor extends LWJGLWindow {
             normMatrix = Glm.transpose(Glm.inverse(normMatrix));
 
             glUseProgram(litMeshProg.theProgram);
-            glUniformMatrix4(litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniformMatrix3(litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
 
             sphereMesh.render("lit");

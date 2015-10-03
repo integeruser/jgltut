@@ -150,7 +150,7 @@ public class GammaLandscape extends LWJGLWindow {
         modelMatrix.rotateX(-90.0f);
 
         glUseProgram(progStandard.theProgram);
-        glUniformMatrix4(progStandard.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(progStandard.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
         glUniform1i(progStandard.numberOfLightsUnif, lightEnv.getNumLights());
 
         glActiveTexture(GL_TEXTURE0 + colorTexUnit);
@@ -175,7 +175,7 @@ public class GammaLandscape extends LWJGLWindow {
             modelMatrix.scale(30.0f, 30.0f, 30.0f);
 
             glUseProgram(progUnlit.theProgram);
-            glUniformMatrix4(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
             Vec4 lightColor = lightEnv.getSunlightScaledIntensity();
             glUniform4(progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
@@ -191,7 +191,7 @@ public class GammaLandscape extends LWJGLWindow {
             modelMatrix.translate(lightEnv.getPointLightWorldPos(light));
 
             glUseProgram(progUnlit.theProgram);
-            glUniformMatrix4(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
             Vec4 lightColor = lightEnv.getPointLightScaledIntensity(light);
             glUniform4(progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
@@ -210,7 +210,7 @@ public class GammaLandscape extends LWJGLWindow {
             glDisable(GL_DEPTH_TEST);
             glDepthMask(false);
             glUseProgram(progUnlit.theProgram);
-            glUniformMatrix4(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
             glUniform4f(progUnlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
             sphere.render("flat");
             glDepthMask(true);

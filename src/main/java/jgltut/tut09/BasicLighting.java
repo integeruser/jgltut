@@ -108,7 +108,7 @@ public class BasicLighting extends LWJGLWindow {
                 modelMatrix.push();
 
                 glUseProgram(whiteDiffuseColor.theProgram);
-                glUniformMatrix4(whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                 Mat3 normMatrix = new Mat3(modelMatrix.top());
                 glUniformMatrix3(whiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                 glUniform4f(whiteDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -126,14 +126,14 @@ public class BasicLighting extends LWJGLWindow {
 
                 if (drawColoredCyl) {
                     glUseProgram(vertexDiffuseColor.theProgram);
-                    glUniformMatrix4(vertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                    glUniformMatrix4fv(vertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                     Mat3 normMatrix = new Mat3(modelMatrix.top());
                     glUniformMatrix3(vertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                     glUniform4f(vertexDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f);
                     cylinderMesh.render("lit-color");
                 } else {
                     glUseProgram(whiteDiffuseColor.theProgram);
-                    glUniformMatrix4(whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                    glUniformMatrix4fv(whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                     Mat3 normMatrix = new Mat3(modelMatrix.top());
                     glUniformMatrix3(whiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                     glUniform4f(whiteDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f);

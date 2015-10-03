@@ -114,7 +114,7 @@ public class ManyImages extends LWJGLWindow {
         modelMatrix.applyMatrix(worldToCamMat);
 
         glUseProgram(program.theProgram);
-        glUniformMatrix4(program.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(program.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
         glActiveTexture(GL_TEXTURE0 + colorTexUnit);
         glBindTexture(GL_TEXTURE_2D, useMipmapTexture ? mipmapTestTexture : checkerTexture);

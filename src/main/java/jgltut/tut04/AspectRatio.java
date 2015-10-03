@@ -76,7 +76,7 @@ public class AspectRatio extends LWJGLWindow {
         perspectiveMatrixBuffer.flip();
 
         glUseProgram(theProgram);
-        glUniformMatrix4(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);
+        glUniformMatrix4fv(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
@@ -115,7 +115,7 @@ public class AspectRatio extends LWJGLWindow {
         perspectiveMatrixBuffer.flip();
 
         glUseProgram(theProgram);
-        glUniformMatrix4(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);
+        glUniformMatrix4fv(perspectiveMatrixUnif, false, perspectiveMatrixBuffer);
         glUseProgram(0);
     }
 

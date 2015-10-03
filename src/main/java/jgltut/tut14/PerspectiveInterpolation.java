@@ -123,9 +123,9 @@ public class PerspectiveInterpolation extends LWJGLWindow {
         persMatrix.perspective(60.0f, 1.0f, zNear, zFar);
 
         glUseProgram(smoothInterp.theProgram);
-        glUniformMatrix4(smoothInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(smoothInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer(mat4Buffer));
         glUseProgram(linearInterp.theProgram);
-        glUniformMatrix4(linearInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(linearInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer(mat4Buffer));
         glUseProgram(0);
     }
 

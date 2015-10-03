@@ -109,7 +109,7 @@ public class ScaleAndLighting extends LWJGLWindow {
                 modelMatrix.push();
 
                 glUseProgram(whiteDiffuseColor.theProgram);
-                glUniformMatrix4(whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(whiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                 Mat3 normMatrix = new Mat3(modelMatrix.top());
                 glUniformMatrix3(whiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                 glUniform4f(whiteDiffuseColor.lightIntensityUnif, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -128,7 +128,7 @@ public class ScaleAndLighting extends LWJGLWindow {
                 if (scaleCyl) modelMatrix.scale(1.0f, 1.0f, 0.2f);
 
                 glUseProgram(vertexDiffuseColor.theProgram);
-                glUniformMatrix4(vertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(vertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
                 Mat3 normMatrix = new Mat3(modelMatrix.top());
                 if (doInvTranspose) normMatrix = Glm.transpose(Glm.inverse(normMatrix));
                 glUniformMatrix3(vertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));

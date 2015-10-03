@@ -116,7 +116,7 @@ public class GammaCheckers extends LWJGLWindow {
         final ProgramData prog = drawGammaProgram ? progGamma : progNoGamma;
 
         glUseProgram(prog.theProgram);
-        glUniformMatrix4(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
         glActiveTexture(GL_TEXTURE0 + colorTexUnit);
         glBindTexture(GL_TEXTURE_2D, drawGammaTexture ? gammaTexture : linearTexture);

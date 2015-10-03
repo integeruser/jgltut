@@ -1,4 +1,4 @@
-## Learning Modern 3D Graphics Programming with LWJGL
+## Learning Modern 3D Graphics Programming with LWJGL 3
 This project is a port of *[Learning Modern 3D Graphics Programming](http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using [LWJGL](http://www.lwjgl.org), distributed in the hope that it will be useful. The original project, named `gltut`, can be found [here](https://bitbucket.org/alfonse/gltut/wiki/Home). Since it is needed by the tutorials, this repository also includes a port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)* (`glsdk` for short), which contains a small math library derived from the [GLM math library](http://glm.g-truc.net), a DDS texture loader and other useful stuff.  
 
 To try the tutorials without building the source code, you can download the runnable JAR included in the [Releases](https://github.com/integeruser/jgltut/releases) section. Several tutorials print messages to console: run the JAR from the command line with `java -jar jgltut.jar` to view the output. This can also be useful to read error messages.
@@ -12,7 +12,7 @@ Francesco
 I have included in this repository all the files needed to run the tutorials, so you don't have to download anything else (except the LWJGL library). To correctly compile the code, you will need:
 
 - Java SE Development Kit 7
-- LWJGL 2.9.*
+- LWJGL 3.*
 
 Working with different versions of JDK/LWJGL requires minor adjustments to the code.
 
@@ -51,13 +51,12 @@ jgltut/
 Each tutorial loads the files it needs from the global `data` folder or from its own `data` folder. The `framework` package contains utility code needed by multiple tutorials. The `jglsdk` package contains the port of the `glsdk` project. The class `LWJGLWindow.java` is used to create and display a LWJGL window, and `TutorialChooser.java` is a handy program for quickly executing the various tutorials.  
 At first, the code may appear difficult to read, but after a bit of reading you will realize that it is well-grouped into logical sections. I suggest you to start by skimming through the code with methods and inner classes folded. Don't get lost in the details of the `jglsdk` module (which is quite big and boring), and remember that the interesting code is the one contained in the tutorials.
 
-If your graphics card does not meet the minimum requirements, running any tutorial will print to the console the message `You must have at least OpenGL 3.3 to run this tutorial.`. The requirements are checked in `LWJGLWindow.java` using the LWJGL function `GLContext.getCapabilities().OpenGL33`.
+If your graphics card does not meet the minimum requirements, running any tutorial will print to the console the message `You must have at least OpenGL 3.3 to run this tutorial.`. The requirements are checked in `LWJGLWindow.java` using the LWJGL function `GL.getCapabilities().OpenGL33`.
 
 I can't dedicate much time to this project anymore, but in the future I will probably:
 
 - keep refactoring code I don't like;
-- rework some parts of `jglsdk`;
-- update the code to work with LWJGL 3 (when it will be officially released).
+- rework some parts of `jglsdk`.
 
 ## License
 This project is licensed under the [Attribution 4.0 International license](http://creativecommons.org/licenses/by/4.0/): you can do what you want with my code, but if you want to publish some derived work I kindly ask you to simply provide a link to this repository.

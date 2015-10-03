@@ -14,7 +14,8 @@ I have included in this repository all the files needed to run the tutorials, so
 - Java SE Development Kit 7
 - LWJGL 3.*
 
-Working with different versions of JDK/LWJGL requires minor adjustments to the code.
+If you need to work with LWJGL 2, you can use the release [v0.9.1](https://github.com/integeruser/jgltut/releases/tag/v0.9.1) of this repository.  
+Working with previous versions of the JDK requires minor adjustments to the code.
 
 To get the code running just do the usual steps needed by any LWJGL application:
 

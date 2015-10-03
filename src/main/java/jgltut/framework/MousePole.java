@@ -4,7 +4,8 @@ import jgltut.jglsdk.glm.Vec2;
 import jgltut.jglsdk.glutil.MousePoles.MouseButtons;
 import jgltut.jglsdk.glutil.MousePoles.MouseModifiers;
 import jgltut.jglsdk.glutil.MousePoles.Pole;
-import org.lwjgl.input.Keyboard;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 
 /**
@@ -17,8 +18,8 @@ public class MousePole {
         forward.mouseMove(new Vec2(x, y));
     }
 
-    public static void forwardMouseButton(Pole forwardPole, int button, boolean state, int x, int y) {
-        MouseModifiers modifiers = calcModifiers();
+    public static void forwardMouseButton(long window, Pole forwardPole, int button, boolean state, int x, int y) {
+        MouseModifiers modifiers = calcModifiers(window);
         Vec2 mouseLoc = new Vec2(x, y);
         MouseButtons mouseButtons = null;
 
@@ -39,17 +40,18 @@ public class MousePole {
         forwardPole.mouseClick(mouseButtons, state, modifiers, mouseLoc);
     }
 
-    public static void forwardMouseWheel(Pole forward, int direction, int x, int y) {
-        forward.mouseWheel(direction, calcModifiers(), new Vec2(x, y));
+    public static void forwardMouseWheel(long window, Pole forward, int direction, int x, int y) {
+        forward.mouseWheel(direction, calcModifiers(window), new Vec2(x, y));
     }
 
 
-    private static MouseModifiers calcModifiers() {
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+    private static MouseModifiers calcModifiers(long window) {
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == 1 || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == 1)
             return MouseModifiers.MM_KEY_SHIFT;
-        if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
+        if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == 1 ||glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == 1)
             return MouseModifiers.MM_KEY_CTRL;
-        if (Keyboard.isKeyDown(Keyboard.KEY_LMENU)) return MouseModifiers.MM_KEY_ALT;
+        if (glfwGetKey(window, GLFW_KEY_MENU) == 1)
+            return MouseModifiers.MM_KEY_ALT;
         return null;
     }
 }

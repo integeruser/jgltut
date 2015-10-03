@@ -147,7 +147,7 @@ public class BasicImpostor extends LWJGLWindow {
 
             glUseProgram(litMeshProg.theProgram);
             glUniformMatrix4fv(litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
-            glUniformMatrix3(litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+            glUniformMatrix3fv(litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
 
             planeMesh.render();
 
@@ -517,7 +517,7 @@ public class BasicImpostor extends LWJGLWindow {
 
             glUseProgram(litMeshProg.theProgram);
             glUniformMatrix4fv(litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
-            glUniformMatrix3(litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+            glUniformMatrix3fv(litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
 
             sphereMesh.render("lit");
 

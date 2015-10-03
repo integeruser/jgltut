@@ -209,7 +209,7 @@ public class Scene {
 
             if (program.getNormalMatLoc() != -1) {
                 Mat3 normMat = new Mat3(Glm.transpose(Glm.inverse(objMat)));
-                glUniformMatrix3(program.getNormalMatLoc(), false, normMat.fillAndFlipBuffer(mat3Buffer));
+                glUniformMatrix3fv(program.getNormalMatLoc(), false, normMat.fillAndFlipBuffer(mat3Buffer));
             }
 
             for (StateBinder stateBinder : stateBinders) {

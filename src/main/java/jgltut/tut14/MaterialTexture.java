@@ -165,7 +165,7 @@ public class MaterialTexture extends LWJGLWindow {
 
             glUseProgram(prog.theProgram);
             glUniformMatrix4fv(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
-            glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+            glUniformMatrix3fv(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
 
             glActiveTexture(GL_TEXTURE0 + gaussTexUnit);
             glBindTexture(GL_TEXTURE_2D, gaussTextures[currTexture]);

@@ -144,7 +144,7 @@ public class FragmentAttenuation extends LWJGLWindow {
                 glUseProgram(fragWhiteDiffuseColor.theProgram);
                 glUniformMatrix4fv(fragWhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-                glUniformMatrix3(fragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+                glUniformMatrix3fv(fragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                 planeMesh.render();
                 glUseProgram(0);
 
@@ -168,13 +168,13 @@ public class FragmentAttenuation extends LWJGLWindow {
                     glUseProgram(fragVertexDiffuseColor.theProgram);
                     glUniformMatrix4fv(fragVertexDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-                    glUniformMatrix3(fragVertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+                    glUniformMatrix3fv(fragVertexDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                     cylinderMesh.render("lit-color");
                 } else {
                     glUseProgram(fragWhiteDiffuseColor.theProgram);
                     glUniformMatrix4fv(fragWhiteDiffuseColor.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-                    glUniformMatrix3(fragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+                    glUniformMatrix3fv(fragWhiteDiffuseColor.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                     cylinderMesh.render("lit");
                 }
                 glUseProgram(0);

@@ -144,7 +144,7 @@ public class BlinnVsPhongLighting extends LWJGLWindow {
                 glUseProgram(whiteProg.theProgram);
                 glUniformMatrix4fv(whiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-                glUniformMatrix3(whiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+                glUniformMatrix3fv(whiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
                 planeMesh.render();
                 glUseProgram(0);
 
@@ -168,7 +168,7 @@ public class BlinnVsPhongLighting extends LWJGLWindow {
                 glUseProgram(prog.theProgram);
                 glUniformMatrix4fv(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-                glUniformMatrix3(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+                glUniformMatrix3fv(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
 
                 if (drawColoredCyl) {
                     cylinderMesh.render("lit-color");

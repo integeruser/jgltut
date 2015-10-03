@@ -170,7 +170,7 @@ abstract class Scene {
         glUseProgram(progData.theProgram);
         glUniformMatrix4fv(progData.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-        glUniformMatrix3(progData.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+        glUniformMatrix3fv(progData.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
         mesh.render();
         glUseProgram(0);
 
@@ -187,7 +187,7 @@ abstract class Scene {
         glUseProgram(progData.theProgram);
         glUniformMatrix4fv(progData.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-        glUniformMatrix3(progData.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+        glUniformMatrix3fv(progData.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
         mesh.render(meshName);
         glUseProgram(0);
 

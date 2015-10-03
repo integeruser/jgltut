@@ -519,7 +519,7 @@ public class TextureGenerator {
     private static void throwIfEXT_SRGBNotSupported() {
         if (!GL.getCapabilities().GL_EXT_texture_sRGB) {
             // TODO temporary "fix" for OS X, needs rework
-            if (LWJGLUtil.getPlatform() != LWJGLUtil.PLATFORM_MACOSX) {
+            if (LWJGLUtil.getPlatform() != LWJGLUtil.Platform.MACOSX) {
                 throw new ImageFormatUnsupportedException("sRGB and S3TC textures not supported.");
             }
         }

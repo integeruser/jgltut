@@ -1,16 +1,17 @@
 package jgltut.tut14;
 
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.framework.Mesh;
+import jgltut.jglsdk.glm.Mat4;
+import jgltut.jglsdk.glutil.MatrixStack;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
@@ -45,6 +46,38 @@ public class PerspectiveInterpolation extends LWJGLWindow {
             exception.printStackTrace();
             System.exit(-1);
         }
+
+
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    switch (key) {
+                        case GLFW_KEY_S:
+                            useFakeHallway = !useFakeHallway;
+                            if (useFakeHallway) {
+                                System.out.printf("Fake Hallway.\n");
+                            } else {
+                                System.out.printf("Real Hallway.\n");
+                            }
+                            break;
+
+                        case GLFW_KEY_P:
+                            useSmoothInterpolation = !useSmoothInterpolation;
+                            if (useSmoothInterpolation) {
+                                System.out.printf("Perspective correct interpolation.\n");
+                            } else {
+                                System.out.printf("Just linear interpolation.\n");
+                            }
+                            break;
+
+                        case GLFW_KEY_ESCAPE:
+                            glfwSetWindowShouldClose(window, GL_TRUE);
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -66,37 +99,6 @@ public class PerspectiveInterpolation extends LWJGLWindow {
         }
 
         glUseProgram(0);
-    }
-
-    @Override
-    protected void update() {
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                switch (Keyboard.getEventKey()) {
-                    case Keyboard.KEY_S:
-                        useFakeHallway = !useFakeHallway;
-                        if (useFakeHallway) {
-                            System.out.printf("Fake Hallway.\n");
-                        } else {
-                            System.out.printf("Real Hallway.\n");
-                        }
-                        break;
-
-                    case Keyboard.KEY_P:
-                        useSmoothInterpolation = !useSmoothInterpolation;
-                        if (useSmoothInterpolation) {
-                            System.out.printf("Perspective correct interpolation.\n");
-                        } else {
-                            System.out.printf("Just linear interpolation.\n");
-                        }
-                        break;
-
-                    case Keyboard.KEY_ESCAPE:
-                        leaveMainLoop();
-                        break;
-                }
-            }
-        }
     }
 
     ////////////////////////////////

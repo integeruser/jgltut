@@ -1,20 +1,21 @@
 package jgltut.tut08;
 
+import jgltut.LWJGLWindow;
+import jgltut.framework.Framework;
+import jgltut.framework.Mesh;
+import jgltut.framework.Timer;
 import jgltut.jglsdk.glm.Glm;
 import jgltut.jglsdk.glm.Mat4;
 import jgltut.jglsdk.glm.Quaternion;
 import jgltut.jglsdk.glm.Vec4;
 import jgltut.jglsdk.glutil.MatrixStack;
-import jgltut.LWJGLWindow;
-import jgltut.framework.Framework;
-import jgltut.framework.Mesh;
-import jgltut.framework.Timer;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
@@ -57,6 +58,32 @@ public class Interpolation extends LWJGLWindow {
         glDepthMask(true);
         glDepthFunc(GL_LEQUAL);
         glDepthRange(0.0f, 1.0f);
+
+
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    for (int orientIndex = 0; orientIndex < orientKeys.length; orientIndex++) {
+                        if (key == orientKeys[orientIndex]) {
+                            applyOrientation(orientIndex);
+                            break;
+                        }
+                    }
+
+                    switch (key) {
+                        case GLFW_KEY_SPACE:
+                            boolean slerp = orient.toggleSlerp();
+                            System.out.printf(slerp ? "Slerp\n" : "Lerp\n");
+                            break;
+
+                        case GLFW_KEY_ESCAPE:
+                            glfwSetWindowShouldClose(window, GL_TRUE);
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -95,31 +122,6 @@ public class Interpolation extends LWJGLWindow {
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
-    }
-
-    @Override
-    protected void update() {
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                for (int orientIndex = 0; orientIndex < orientKeys.length; orientIndex++) {
-                    if (Keyboard.getEventKey() == orientKeys[orientIndex]) {
-                        applyOrientation(orientIndex);
-                        break;
-                    }
-                }
-
-                switch (Keyboard.getEventKey()) {
-                    case Keyboard.KEY_SPACE:
-                        boolean slerp = orient.toggleSlerp();
-                        System.out.printf(slerp ? "Slerp\n" : "Lerp\n");
-                        break;
-
-                    case Keyboard.KEY_ESCAPE:
-                        leaveMainLoop();
-                        break;
-                }
-            }
-        }
     }
 
     ////////////////////////////////
@@ -180,14 +182,14 @@ public class Interpolation extends LWJGLWindow {
     };
 
     private int orientKeys[] = {
-            Keyboard.KEY_Q,
-            Keyboard.KEY_W,
-            Keyboard.KEY_E,
-            Keyboard.KEY_R,
+            GLFW_KEY_Q,
+            GLFW_KEY_W,
+            GLFW_KEY_E,
+            GLFW_KEY_R,
 
-            Keyboard.KEY_T,
-            Keyboard.KEY_Y,
-            Keyboard.KEY_U
+            GLFW_KEY_T,
+            GLFW_KEY_Y,
+            GLFW_KEY_U
     };
 
     private Orientation orient = new Orientation();

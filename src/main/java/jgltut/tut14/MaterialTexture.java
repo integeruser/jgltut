@@ -1,5 +1,7 @@
 package jgltut.tut14;
 
+import jgltut.LWJGLWindow;
+import jgltut.framework.*;
 import jgltut.jglsdk.BufferableData;
 import jgltut.jglsdk.glimg.DdsLoader;
 import jgltut.jglsdk.glimg.ImageSet;
@@ -8,16 +10,17 @@ import jgltut.jglsdk.glimg.ImageSet.SingleImage;
 import jgltut.jglsdk.glm.*;
 import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.jglsdk.glutil.MousePoles.*;
-import jgltut.LWJGLWindow;
-import jgltut.framework.*;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
@@ -114,6 +117,95 @@ public class MaterialTexture extends LWJGLWindow {
 
         createGaussianTextures();
         createShininessTexture();
+
+
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    switch (key) {
+                        case GLFW_KEY_P:
+                            lightTimer.togglePause();
+                            break;
+
+                        case GLFW_KEY_MINUS:
+                            lightTimer.rewind(0.5f);
+                            break;
+
+                        case GLFW_KEY_EQUAL:
+                            lightTimer.fastForward(0.5f);
+                            break;
+
+                        case GLFW_KEY_T:
+                            drawCameraPos = !drawCameraPos;
+                            break;
+
+                        case GLFW_KEY_G:
+                            drawLights = !drawLights;
+                            break;
+
+                        case GLFW_KEY_Y:
+                            useInfinity = !useInfinity;
+                            break;
+
+                        case GLFW_KEY_SPACE:
+                            int index = (shaderMode.ordinal() + 1) % ShaderMode.NUM_SHADER_MODES.ordinal();
+                            shaderMode = ShaderMode.values()[index];
+                            System.out.printf("%s\n", shaderModeNames[shaderMode.ordinal()]);
+                            break;
+
+                        case GLFW_KEY_ESCAPE:
+                            glfwSetWindowShouldClose(window, GL_TRUE);
+                            break;
+                    }
+
+                    if (GLFW_KEY_1 <= key && key <= GLFW_KEY_9) {
+                        int number = key - GLFW_KEY_1;
+                        if (number < NUM_GAUSS_TEXTURES) {
+                            System.out.printf("Angle Resolution: %d\n", calcCosAngResolution(number));
+                            currTexture = number;
+                        }
+
+                        if (number >= (9 - NUM_MATERIALS)) {
+                            number = number - (9 - NUM_MATERIALS);
+                            System.out.printf("Material number %d\n", number);
+                            currMaterial = number;
+                        }
+                    }
+                }
+            }
+        });
+
+        glfwSetMouseButtonCallback(window, mouseCallback = new GLFWMouseButtonCallback() {
+            @Override
+            public void invoke(long window, int button, int action, int mods) {
+                boolean pressed = action == GLFW_PRESS;
+                glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
+                int x = (int) mouseBuffer1.get(0);
+                int y = (int) mouseBuffer2.get(0);
+                MousePole.forwardMouseButton(window, viewPole, button, pressed, x, y);
+                MousePole.forwardMouseButton(window, objtPole, button, pressed, x, y);
+            }
+        });
+        glfwSetCursorPosCallback(window, mousePosCallback = new GLFWCursorPosCallback() {
+            @Override
+            public void invoke(long window, double xpos, double ypos) {
+                if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) || isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+                    MousePole.forwardMouseMotion(viewPole, (int) xpos, (int) ypos);
+                    MousePole.forwardMouseMotion(objtPole, (int) xpos, (int) ypos);
+                }
+            }
+        });
+        glfwSetScrollCallback(window, mouseScrollCallback = new GLFWScrollCallback() {
+            @Override
+            public void invoke(long window, double xoffset, double yoffset) {
+                glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
+                int x = (int) mouseBuffer1.get(0);
+                int y = (int) mouseBuffer2.get(0);
+                MousePole.forwardMouseWheel(window, viewPole, (int) yoffset, x, y);
+                MousePole.forwardMouseWheel(window, objtPole, (int) yoffset, x, y);
+            }
+        });
     }
 
     @Override
@@ -251,86 +343,6 @@ public class MaterialTexture extends LWJGLWindow {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
-    }
-
-    @Override
-    protected void update() {
-        while (Mouse.next()) {
-            int eventButton = Mouse.getEventButton();
-            if (eventButton != -1) {
-                boolean pressed = Mouse.getEventButtonState();
-                MousePole.forwardMouseButton(viewPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
-                MousePole.forwardMouseButton(objtPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
-            } else {
-                // Mouse moving or mouse scrolling
-                int dWheel = Mouse.getDWheel();
-                if (dWheel != 0) {
-                    MousePole.forwardMouseWheel(viewPole, dWheel, Mouse.getX(), Mouse.getY());
-                    MousePole.forwardMouseWheel(objtPole, dWheel, Mouse.getX(), Mouse.getY());
-                }
-
-                if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)) {
-                    MousePole.forwardMouseMotion(viewPole, Mouse.getX(), Mouse.getY());
-                    MousePole.forwardMouseMotion(objtPole, Mouse.getX(), Mouse.getY());
-                }
-            }
-        }
-
-
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                switch (Keyboard.getEventKey()) {
-                    case Keyboard.KEY_P:
-                        lightTimer.togglePause();
-                        break;
-
-                    case Keyboard.KEY_MINUS:
-                        lightTimer.rewind(0.5f);
-                        break;
-
-                    case Keyboard.KEY_EQUALS:
-                        lightTimer.fastForward(0.5f);
-                        break;
-
-                    case Keyboard.KEY_T:
-                        drawCameraPos = !drawCameraPos;
-                        break;
-
-                    case Keyboard.KEY_G:
-                        drawLights = !drawLights;
-                        break;
-
-                    case Keyboard.KEY_Y:
-                        useInfinity = !useInfinity;
-                        break;
-
-                    case Keyboard.KEY_SPACE:
-                        int index = (shaderMode.ordinal() + 1) % ShaderMode.NUM_SHADER_MODES.ordinal();
-                        shaderMode = ShaderMode.values()[index];
-                        System.out.printf("%s\n", shaderModeNames[shaderMode.ordinal()]);
-                        break;
-
-                    case Keyboard.KEY_ESCAPE:
-                        leaveMainLoop();
-                        break;
-                }
-
-
-                if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
-                    int number = Keyboard.getEventKey() - Keyboard.KEY_1;
-                    if (number < NUM_GAUSS_TEXTURES) {
-                        System.out.printf("Angle Resolution: %d\n", calcCosAngResolution(number));
-                        currTexture = number;
-                    }
-
-                    if (number >= (9 - NUM_MATERIALS)) {
-                        number = number - (9 - NUM_MATERIALS);
-                        System.out.printf("Material number %d\n", number);
-                        currMaterial = number;
-                    }
-                }
-            }
-        }
     }
 
     ////////////////////////////////

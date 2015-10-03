@@ -1,17 +1,18 @@
 package jgltut.tut08;
 
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glm.Vec4;
-import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.framework.Mesh;
+import jgltut.jglsdk.glm.Mat4;
+import jgltut.jglsdk.glm.Vec4;
+import jgltut.jglsdk.glutil.MatrixStack;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
@@ -60,6 +61,24 @@ public class GimbalLock extends LWJGLWindow {
         glDepthMask(true);
         glDepthFunc(GL_LEQUAL);
         glDepthRange(0.0f, 1.0f);
+
+
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    switch (key) {
+                        case GLFW_KEY_SPACE:
+                            drawGimbals = !drawGimbals;
+                            break;
+
+                        case GLFW_KEY_ESCAPE:
+                            glfwSetWindowShouldClose(window, GL_TRUE);
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -108,37 +127,22 @@ public class GimbalLock extends LWJGLWindow {
         final float SMALL_ANGLE_INCREMENT = 9.0f;
         float lastFrameDuration = getLastFrameDuration() * 10 / 1000.0f;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+        if (isKeyPressed(GLFW_KEY_W)) {
             gimbalAngles.angleX += SMALL_ANGLE_INCREMENT * lastFrameDuration;
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+        } else if (isKeyPressed(GLFW_KEY_S)) {
             gimbalAngles.angleX -= SMALL_ANGLE_INCREMENT * lastFrameDuration;
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+        if (isKeyPressed(GLFW_KEY_A)) {
             gimbalAngles.angleY += SMALL_ANGLE_INCREMENT * lastFrameDuration;
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+        } else if (isKeyPressed(GLFW_KEY_D)) {
             gimbalAngles.angleY -= SMALL_ANGLE_INCREMENT * lastFrameDuration;
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
+        if (isKeyPressed(GLFW_KEY_Q)) {
             gimbalAngles.angleZ += SMALL_ANGLE_INCREMENT * lastFrameDuration;
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
+        } else if (isKeyPressed(GLFW_KEY_E)) {
             gimbalAngles.angleZ -= SMALL_ANGLE_INCREMENT * lastFrameDuration;
-        }
-
-
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                switch (Keyboard.getEventKey()) {
-                    case Keyboard.KEY_SPACE:
-                        drawGimbals = !drawGimbals;
-                        break;
-
-                    case Keyboard.KEY_ESCAPE:
-                        leaveMainLoop();
-                        break;
-                }
-            }
         }
     }
 

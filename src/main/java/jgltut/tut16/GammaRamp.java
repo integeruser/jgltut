@@ -1,5 +1,7 @@
 package jgltut.tut16;
 
+import jgltut.LWJGLWindow;
+import jgltut.framework.Framework;
 import jgltut.jglsdk.BufferableData;
 import jgltut.jglsdk.glimg.ImageSet;
 import jgltut.jglsdk.glimg.ImageSet.Dimensions;
@@ -9,15 +11,14 @@ import jgltut.jglsdk.glimg.TextureGenerator;
 import jgltut.jglsdk.glimg.TextureGenerator.OpenGLPixelTransferParams;
 import jgltut.jglsdk.glm.Mat4;
 import jgltut.jglsdk.glutil.MatrixStack;
-import jgltut.LWJGLWindow;
-import jgltut.framework.Framework;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
@@ -63,6 +64,38 @@ public class GammaRamp extends LWJGLWindow {
         glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE);
 
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    switch (key) {
+                        case GLFW_KEY_1:
+                            useGammaCorrect[0] = !useGammaCorrect[0];
+                            if (useGammaCorrect[0]) {
+                                System.out.printf("Top:\tsRGB texture.\n");
+                            } else {
+                                System.out.printf("Top:\tlinear texture.\n");
+                            }
+                            break;
+
+                        case GLFW_KEY_2:
+                            useGammaCorrect[1] = !useGammaCorrect[1];
+                            if (useGammaCorrect[1]) {
+                                System.out.printf("Bottom:\tsRGB texture.\n");
+                            } else {
+                                System.out.printf("Bottom:\tlinear texture.\n");
+                            }
+                            break;
+
+                        case GLFW_KEY_ESCAPE:
+                            glfwSetWindowShouldClose(window, GL_TRUE);
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -106,37 +139,6 @@ public class GammaRamp extends LWJGLWindow {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
-    }
-
-    @Override
-    protected void update() {
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                switch (Keyboard.getEventKey()) {
-                    case Keyboard.KEY_1:
-                        useGammaCorrect[0] = !useGammaCorrect[0];
-                        if (useGammaCorrect[0]) {
-                            System.out.printf("Top:\tsRGB texture.\n");
-                        } else {
-                            System.out.printf("Top:\tlinear texture.\n");
-                        }
-                        break;
-
-                    case Keyboard.KEY_2:
-                        useGammaCorrect[1] = !useGammaCorrect[1];
-                        if (useGammaCorrect[1]) {
-                            System.out.printf("Bottom:\tsRGB texture.\n");
-                        } else {
-                            System.out.printf("Bottom:\tlinear texture.\n");
-                        }
-                        break;
-
-                    case Keyboard.KEY_ESCAPE:
-                        leaveMainLoop();
-                        break;
-                }
-            }
-        }
     }
 
     ////////////////////////////////

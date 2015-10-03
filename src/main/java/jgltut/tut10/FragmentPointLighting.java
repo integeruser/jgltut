@@ -1,21 +1,24 @@
 package jgltut.tut10;
 
-import jgltut.jglsdk.BufferableData;
-import jgltut.jglsdk.glm.*;
-import jgltut.jglsdk.glutil.MatrixStack;
-import jgltut.jglsdk.glutil.MousePoles.*;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.framework.Mesh;
 import jgltut.framework.MousePole;
 import jgltut.framework.Timer;
+import jgltut.jglsdk.BufferableData;
+import jgltut.jglsdk.glm.*;
+import jgltut.jglsdk.glutil.MatrixStack;
+import jgltut.jglsdk.glutil.MousePoles.*;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -88,6 +91,71 @@ public class FragmentPointLighting extends LWJGLWindow {
         glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE);
 
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    switch (key) {
+                        case GLFW_KEY_SPACE:
+                            drawColoredCyl = !drawColoredCyl;
+                            break;
+
+                        case GLFW_KEY_Y:
+                            drawLight = !drawLight;
+                            break;
+
+                        case GLFW_KEY_T:
+                            scaleCyl = !scaleCyl;
+                            break;
+
+                        case GLFW_KEY_H:
+                            useFragmentLighting = !useFragmentLighting;
+                            break;
+
+                        case GLFW_KEY_B:
+                            lightTimer.togglePause();
+                            break;
+
+                        case GLFW_KEY_ESCAPE:
+                            glfwSetWindowShouldClose(window, GL_TRUE);
+                            break;
+                    }
+                }
+            }
+        });
+
+        glfwSetMouseButtonCallback(window, mouseCallback = new GLFWMouseButtonCallback() {
+            @Override
+            public void invoke(long window, int button, int action, int mods) {
+                boolean pressed = action == GLFW_PRESS;
+                glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
+                int x = (int) mouseBuffer1.get(0);
+                int y = (int) mouseBuffer2.get(0);
+                MousePole.forwardMouseButton(window, viewPole, button, pressed, x, y);
+                MousePole.forwardMouseButton(window, objtPole, button, pressed, x, y);
+            }
+        });
+        glfwSetCursorPosCallback(window, mousePosCallback = new GLFWCursorPosCallback() {
+            @Override
+            public void invoke(long window, double xpos, double ypos) {
+                if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) || isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+                    MousePole.forwardMouseMotion(viewPole, (int) xpos, (int) ypos);
+                    MousePole.forwardMouseMotion(objtPole, (int) xpos, (int) ypos);
+                }
+            }
+        });
+        glfwSetScrollCallback(window, mouseScrollCallback = new GLFWScrollCallback() {
+            @Override
+            public void invoke(long window, double xoffset, double yoffset) {
+                glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
+                int x = (int) mouseBuffer1.get(0);
+                int y = (int) mouseBuffer2.get(0);
+                MousePole.forwardMouseWheel(window, viewPole, (int) yoffset, x, y);
+                MousePole.forwardMouseWheel(window, objtPole, (int) yoffset, x, y);
+            }
+        });
     }
 
     @Override
@@ -214,52 +282,30 @@ public class FragmentPointLighting extends LWJGLWindow {
 
     @Override
     protected void update() {
-        while (Mouse.next()) {
-            int eventButton = Mouse.getEventButton();
-            if (eventButton != -1) {
-                boolean pressed = Mouse.getEventButtonState();
-                MousePole.forwardMouseButton(viewPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
-                MousePole.forwardMouseButton(objtPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
-            } else {
-                // Mouse moving or mouse scrolling
-                int dWheel = Mouse.getDWheel();
-                if (dWheel != 0) {
-                    MousePole.forwardMouseWheel(viewPole, dWheel, Mouse.getX(), Mouse.getY());
-                    MousePole.forwardMouseWheel(objtPole, dWheel, Mouse.getX(), Mouse.getY());
-                }
-
-                if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)) {
-                    MousePole.forwardMouseMotion(viewPole, Mouse.getX(), Mouse.getY());
-                    MousePole.forwardMouseMotion(objtPole, Mouse.getX(), Mouse.getY());
-                }
-            }
-        }
-
-
         float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        if (isKeyPressed(GLFW_KEY_J)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 lightRadius -= 0.05f * lastFrameDuration;
             } else {
                 lightRadius -= 0.2f * lastFrameDuration;
             }
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        } else if (isKeyPressed(GLFW_KEY_L)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 lightRadius += 0.05f * lastFrameDuration;
             } else {
                 lightRadius += 0.2f * lastFrameDuration;
             }
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        if (isKeyPressed(GLFW_KEY_I)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 lightHeight += 0.05f * lastFrameDuration;
             } else {
                 lightHeight += 0.2f * lastFrameDuration;
             }
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        } else if (isKeyPressed(GLFW_KEY_K)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 lightHeight -= 0.05f * lastFrameDuration;
             } else {
                 lightHeight -= 0.2f * lastFrameDuration;
@@ -269,37 +315,6 @@ public class FragmentPointLighting extends LWJGLWindow {
 
         if (lightRadius < 0.2f) {
             lightRadius = 0.2f;
-        }
-
-
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                switch (Keyboard.getEventKey()) {
-                    case Keyboard.KEY_SPACE:
-                        drawColoredCyl = !drawColoredCyl;
-                        break;
-
-                    case Keyboard.KEY_Y:
-                        drawLight = !drawLight;
-                        break;
-
-                    case Keyboard.KEY_T:
-                        scaleCyl = !scaleCyl;
-                        break;
-
-                    case Keyboard.KEY_H:
-                        useFragmentLighting = !useFragmentLighting;
-                        break;
-
-                    case Keyboard.KEY_B:
-                        lightTimer.togglePause();
-                        break;
-
-                    case Keyboard.KEY_ESCAPE:
-                        leaveMainLoop();
-                        break;
-                }
-            }
         }
     }
 

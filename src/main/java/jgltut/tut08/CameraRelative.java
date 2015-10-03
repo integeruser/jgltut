@@ -1,16 +1,17 @@
 package jgltut.tut08;
 
-import jgltut.jglsdk.glm.*;
-import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.framework.Mesh;
+import jgltut.jglsdk.glm.*;
+import jgltut.jglsdk.glutil.MatrixStack;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
@@ -61,6 +62,38 @@ public class CameraRelative extends LWJGLWindow {
         glDepthMask(true);
         glDepthFunc(GL_LEQUAL);
         glDepthRange(0.0f, 1.0f);
+
+
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    switch (key) {
+                        case GLFW_KEY_SPACE:
+                            int ordinal = (offsetRelative.ordinal() + 1) % OffsetRelative.NUM_RELATIVES.ordinal();
+                            offsetRelative = OffsetRelative.values()[ordinal];
+                            switch (offsetRelative) {
+                                case MODEL_RELATIVE:
+                                    System.out.printf("Model Relative\n");
+                                    break;
+
+                                case WORLD_RELATIVE:
+                                    System.out.printf("World Relative\n");
+                                    break;
+
+                                case CAMERA_RELATIVE:
+                                    System.out.printf("Camera Relative\n");
+                                    break;
+                            }
+                            break;
+
+                        case GLFW_KEY_ESCAPE:
+                            glfwSetWindowShouldClose(window, GL_TRUE);
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -122,80 +155,50 @@ public class CameraRelative extends LWJGLWindow {
         final float SMALL_ANGLE_INCREMENT = 9.0f;
         float lastFrameDuration = getLastFrameDuration() * 10 / 1000.0f;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+        if (isKeyPressed(GLFW_KEY_W)) {
             offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+        } else if (isKeyPressed(GLFW_KEY_S)) {
             offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+        if (isKeyPressed(GLFW_KEY_A)) {
             offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+        } else if (isKeyPressed(GLFW_KEY_D)) {
             offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
+        if (isKeyPressed(GLFW_KEY_Q)) {
             offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
+        } else if (isKeyPressed(GLFW_KEY_E)) {
             offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration);
         }
 
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        if (isKeyPressed(GLFW_KEY_I)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 sphereCamRelPos.y = sphereCamRelPos.y - 1.125f * lastFrameDuration;
             } else {
                 sphereCamRelPos.y = sphereCamRelPos.y - 11.25f * lastFrameDuration;
             }
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        } else if (isKeyPressed(GLFW_KEY_K)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 sphereCamRelPos.y = sphereCamRelPos.y + 1.125f * lastFrameDuration;
             } else {
                 sphereCamRelPos.y = sphereCamRelPos.y + 11.25f * lastFrameDuration;
             }
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        if (isKeyPressed(GLFW_KEY_J)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 sphereCamRelPos.x = sphereCamRelPos.x - 1.125f * lastFrameDuration;
             } else {
                 sphereCamRelPos.x = sphereCamRelPos.x - 11.25f * lastFrameDuration;
             }
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        } else if (isKeyPressed(GLFW_KEY_L)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 sphereCamRelPos.x = sphereCamRelPos.x + 1.125f * lastFrameDuration;
             } else {
                 sphereCamRelPos.x = sphereCamRelPos.x + 11.25f * lastFrameDuration;
-            }
-        }
-
-
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                switch (Keyboard.getEventKey()) {
-                    case Keyboard.KEY_SPACE:
-                        int ordinal = (offsetRelative.ordinal() + 1) % OffsetRelative.NUM_RELATIVES.ordinal();
-                        offsetRelative = OffsetRelative.values()[ordinal];
-                        switch (offsetRelative) {
-                            case MODEL_RELATIVE:
-                                System.out.printf("Model Relative\n");
-                                break;
-
-                            case WORLD_RELATIVE:
-                                System.out.printf("World Relative\n");
-                                break;
-
-                            case CAMERA_RELATIVE:
-                                System.out.printf("Camera Relative\n");
-                                break;
-                        }
-
-                        break;
-
-                    case Keyboard.KEY_ESCAPE:
-                        leaveMainLoop();
-                        break;
-                }
             }
         }
 

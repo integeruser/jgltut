@@ -1,5 +1,11 @@
 package jgltut.tut17;
 
+import jgltut.LWJGLWindow;
+import jgltut.framework.*;
+import jgltut.framework.Scene.SceneNode;
+import jgltut.framework.SceneBinders.UniformIntBinder;
+import jgltut.framework.SceneBinders.UniformMat4Binder;
+import jgltut.framework.SceneBinders.UniformVec3Binder;
 import jgltut.jglsdk.BufferableData;
 import jgltut.jglsdk.glimg.DdsLoader;
 import jgltut.jglsdk.glimg.ImageSet;
@@ -10,19 +16,16 @@ import jgltut.jglsdk.glutil.MousePoles.MouseButtons;
 import jgltut.jglsdk.glutil.MousePoles.ViewData;
 import jgltut.jglsdk.glutil.MousePoles.ViewPole;
 import jgltut.jglsdk.glutil.MousePoles.ViewScale;
-import jgltut.LWJGLWindow;
-import jgltut.framework.*;
-import jgltut.framework.Scene.SceneNode;
-import jgltut.framework.SceneBinders.UniformIntBinder;
-import jgltut.framework.SceneBinders.UniformMat4Binder;
-import jgltut.framework.SceneBinders.UniformVec3Binder;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL13.*;
@@ -116,6 +119,88 @@ public class ProjectedLight extends LWJGLWindow {
         glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.SIZE);
 
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    switch (key) {
+                        case GLFW_KEY_SPACE:
+                            lightViewPole.reset();
+                            break;
+
+                        case GLFW_KEY_T:
+                            drawCameraPos = !drawCameraPos;
+                            break;
+
+                        case GLFW_KEY_G:
+                            showOtherLights = !showOtherLights;
+                            break;
+
+                        case GLFW_KEY_H:
+                            currSampler = (currSampler + 1) % NUM_SAMPLERS;
+                            break;
+
+                        case GLFW_KEY_P:
+                            timer.togglePause();
+                            break;
+
+                        case GLFW_KEY_Y:
+                            currFOVIndex = Math.min(currFOVIndex + 1, lightFOVs.length - 1);
+                            System.out.printf("Curr FOV: %f\n", lightFOVs[currFOVIndex]);
+                            break;
+
+                        case GLFW_KEY_N:
+                            currFOVIndex = Math.max(currFOVIndex - 1, 0);
+                            System.out.printf("Curr FOV: %f\n", lightFOVs[currFOVIndex]);
+                            break;
+
+                        case GLFW_KEY_1:
+                        case GLFW_KEY_2:
+                        case GLFW_KEY_3:
+                            currTextureIndex = key - GLFW_KEY_1;
+                            System.out.printf("%s\n", texDefs[currTextureIndex].name);
+                            break;
+
+                        case GLFW_KEY_ESCAPE:
+                            glfwSetWindowShouldClose(window, GL_TRUE);
+                            break;
+                    }
+                }
+            }
+        });
+
+        glfwSetMouseButtonCallback(window, mouseCallback = new GLFWMouseButtonCallback() {
+            @Override
+            public void invoke(long window, int button, int action, int mods) {
+                boolean pressed = action == GLFW_PRESS;
+                glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
+                int x = (int) mouseBuffer1.get(0);
+                int y = (int) mouseBuffer2.get(0);
+                MousePole.forwardMouseButton(window, viewPole, button, pressed, x, y);
+                MousePole.forwardMouseButton(window, lightViewPole, button, pressed, x, y);
+            }
+        });
+        glfwSetCursorPosCallback(window, mousePosCallback = new GLFWCursorPosCallback() {
+            @Override
+            public void invoke(long window, double xpos, double ypos) {
+                if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) || isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+                    MousePole.forwardMouseMotion(viewPole, (int) xpos, (int) ypos);
+                    MousePole.forwardMouseMotion(lightViewPole, (int) xpos, (int) ypos);
+                }
+            }
+        });
+        glfwSetScrollCallback(window, mouseScrollCallback = new GLFWScrollCallback() {
+            @Override
+            public void invoke(long window, double xoffset, double yoffset) {
+                glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
+                int x = (int) mouseBuffer1.get(0);
+                int y = (int) mouseBuffer2.get(0);
+                MousePole.forwardMouseWheel(window, viewPole, (int) yoffset, x, y);
+                MousePole.forwardMouseWheel(window, lightViewPole, (int) yoffset, x, y);
+            }
+        });
     }
 
     @Override
@@ -229,124 +314,55 @@ public class ProjectedLight extends LWJGLWindow {
 
     @Override
     protected void update() {
-        while (Mouse.next()) {
-            int eventButton = Mouse.getEventButton();
-            if (eventButton != -1) {
-                boolean pressed = Mouse.getEventButtonState();
-                MousePole.forwardMouseButton(viewPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
-                MousePole.forwardMouseButton(lightViewPole, eventButton, pressed, Mouse.getX(), Mouse.getY());
-            } else {
-                // Mouse moving or mouse scrolling
-                int dWheel = Mouse.getDWheel();
-                if (dWheel != 0) {
-                    MousePole.forwardMouseWheel(viewPole, dWheel, Mouse.getX(), Mouse.getY());
-                }
-
-                if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)) {
-                    MousePole.forwardMouseMotion(viewPole, Mouse.getX(), Mouse.getY());
-                    MousePole.forwardMouseMotion(lightViewPole, Mouse.getX(), Mouse.getY());
-                }
-            }
-        }
-
-
         float lastFrameDuration = (float) (getLastFrameDuration() / 100.0);
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            viewPole.charPress(Keyboard.KEY_W, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            viewPole.charPress(Keyboard.KEY_S, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+        if (isKeyPressed(GLFW_KEY_W)) {
+            viewPole.charPress(GLFW_KEY_W, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+        } else if (isKeyPressed(GLFW_KEY_S)) {
+            viewPole.charPress(GLFW_KEY_S, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            viewPole.charPress(Keyboard.KEY_D, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            viewPole.charPress(Keyboard.KEY_A, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+        if (isKeyPressed(GLFW_KEY_D)) {
+            viewPole.charPress(GLFW_KEY_D, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+        } else if (isKeyPressed(GLFW_KEY_A)) {
+            viewPole.charPress(GLFW_KEY_A, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
-            viewPole.charPress(Keyboard.KEY_E, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-            viewPole.charPress(Keyboard.KEY_Q, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
-        }
-
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-            lightViewPole.charPress(Keyboard.KEY_I, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-            lightViewPole.charPress(Keyboard.KEY_K, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-            lightViewPole.charPress(Keyboard.KEY_L, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-            lightViewPole.charPress(Keyboard.KEY_J, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
-            lightViewPole.charPress(Keyboard.KEY_O, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_U)) {
-            lightViewPole.charPress(Keyboard.KEY_U, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RSHIFT), lastFrameDuration);
+        if (isKeyPressed(GLFW_KEY_E)) {
+            viewPole.charPress(GLFW_KEY_E, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+        } else if (isKeyPressed(GLFW_KEY_Q)) {
+            viewPole.charPress(GLFW_KEY_Q, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
         }
 
 
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                switch (Keyboard.getEventKey()) {
-                    case Keyboard.KEY_SPACE:
-                        lightViewPole.reset();
-                        break;
+        if (isKeyPressed(GLFW_KEY_I)) {
+            lightViewPole.charPress(GLFW_KEY_I, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+        } else if (isKeyPressed(GLFW_KEY_K)) {
+            lightViewPole.charPress(GLFW_KEY_K, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+        }
 
-                    case Keyboard.KEY_T:
-                        drawCameraPos = !drawCameraPos;
-                        break;
+        if (isKeyPressed(GLFW_KEY_L)) {
+            lightViewPole.charPress(GLFW_KEY_L, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+        } else if (isKeyPressed(GLFW_KEY_J)) {
+            lightViewPole.charPress(GLFW_KEY_J, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+        }
 
-                    case Keyboard.KEY_G:
-                        showOtherLights = !showOtherLights;
-                        break;
-
-                    case Keyboard.KEY_H:
-                        currSampler = (currSampler + 1) % NUM_SAMPLERS;
-                        break;
-
-                    case Keyboard.KEY_P:
-                        timer.togglePause();
-                        break;
-
-                    case Keyboard.KEY_Y:
-                        currFOVIndex = Math.min(currFOVIndex + 1, lightFOVs.length - 1);
-                        System.out.printf("Curr FOV: %f\n", lightFOVs[currFOVIndex]);
-                        break;
-
-                    case Keyboard.KEY_N:
-                        currFOVIndex = Math.max(currFOVIndex - 1, 0);
-                        System.out.printf("Curr FOV: %f\n", lightFOVs[currFOVIndex]);
-                        break;
-
-                    case Keyboard.KEY_1:
-                    case Keyboard.KEY_2:
-                    case Keyboard.KEY_3:
-                        currTextureIndex = Keyboard.getEventKey() - Keyboard.KEY_1;
-                        System.out.printf("%s\n", texDefs[currTextureIndex].name);
-                        break;
-
-                    case Keyboard.KEY_ESCAPE:
-                        leaveMainLoop();
-                        break;
-                }
-            }
+        if (isKeyPressed(GLFW_KEY_O)) {
+            lightViewPole.charPress(GLFW_KEY_O, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+        } else if (isKeyPressed(GLFW_KEY_U)) {
+            lightViewPole.charPress(GLFW_KEY_U, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
         }
     }
 
@@ -524,7 +540,7 @@ public class ProjectedLight extends LWJGLWindow {
 
         colorBuffer.flip();
 
-        glSamplerParameter(samplers[1], GL_TEXTURE_BORDER_COLOR, colorBuffer);
+        glSamplerParameterfv(samplers[1], GL_TEXTURE_BORDER_COLOR, colorBuffer);
     }
 
     ////////////////////////////////

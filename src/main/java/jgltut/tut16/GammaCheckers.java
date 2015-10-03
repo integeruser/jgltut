@@ -1,5 +1,9 @@
 package jgltut.tut16;
 
+import jgltut.LWJGLWindow;
+import jgltut.framework.Framework;
+import jgltut.framework.Mesh;
+import jgltut.framework.Timer;
 import jgltut.jglsdk.BufferableData;
 import jgltut.jglsdk.glimg.DdsLoader;
 import jgltut.jglsdk.glimg.ImageSet;
@@ -9,16 +13,13 @@ import jgltut.jglsdk.glm.Glm;
 import jgltut.jglsdk.glm.Mat4;
 import jgltut.jglsdk.glm.Vec3;
 import jgltut.jglsdk.glutil.MatrixStack;
-import jgltut.LWJGLWindow;
-import jgltut.framework.Framework;
-import jgltut.framework.Mesh;
-import jgltut.framework.Timer;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 import static org.lwjgl.opengl.GL11.*;
@@ -93,6 +94,58 @@ public class GammaCheckers extends LWJGLWindow {
 
         loadCheckerTexture();
         createSamplers();
+
+
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    boolean particularKeyPressed = false;
+                    switch (key) {
+                        case GLFW_KEY_A:
+                            drawGammaProgram = !drawGammaProgram;
+                            particularKeyPressed = true;
+                            break;
+
+                        case GLFW_KEY_G:
+                            drawGammaTexture = !drawGammaTexture;
+                            particularKeyPressed = true;
+                            break;
+
+                        case GLFW_KEY_SPACE:
+                            drawGammaProgram = !drawGammaProgram;
+                            drawGammaTexture = !drawGammaTexture;
+                            particularKeyPressed = true;
+                            break;
+
+                        case GLFW_KEY_Y:
+                            drawCorridor = !drawCorridor;
+                            break;
+
+                        case GLFW_KEY_P:
+                            camTimer.togglePause();
+                            break;
+
+                        case GLFW_KEY_ESCAPE:
+                            glfwSetWindowShouldClose(window, GL_TRUE);
+                            break;
+                    }
+
+                    if (particularKeyPressed) {
+                        System.out.printf("----\n");
+                        System.out.printf("Rendering:\t\t%s\n", drawGammaProgram ? "Gamma" : "Linear");
+                        System.out.printf("Mipmap Generation:\t%s\n", drawGammaTexture ? "Gamma" : "Linear");
+                    }
+
+                    if (GLFW_KEY_1 <= key && key <= GLFW_KEY_9) {
+                        int number = key - GLFW_KEY_1;
+                        if (number < NUM_SAMPLERS) {
+                            currSampler = number;
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -149,60 +202,6 @@ public class GammaCheckers extends LWJGLWindow {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
-    }
-
-    @Override
-    protected void update() {
-        while (Keyboard.next()) {
-            boolean particularKeyPressed = false;
-
-            if (Keyboard.getEventKeyState()) {
-                switch (Keyboard.getEventKey()) {
-                    case Keyboard.KEY_A:
-                        drawGammaProgram = !drawGammaProgram;
-                        particularKeyPressed = true;
-                        break;
-
-                    case Keyboard.KEY_G:
-                        drawGammaTexture = !drawGammaTexture;
-                        particularKeyPressed = true;
-                        break;
-
-                    case Keyboard.KEY_SPACE:
-                        drawGammaProgram = !drawGammaProgram;
-                        drawGammaTexture = !drawGammaTexture;
-                        particularKeyPressed = true;
-                        break;
-
-                    case Keyboard.KEY_Y:
-                        drawCorridor = !drawCorridor;
-                        break;
-
-                    case Keyboard.KEY_P:
-                        camTimer.togglePause();
-                        break;
-
-                    case Keyboard.KEY_ESCAPE:
-                        leaveMainLoop();
-                        break;
-                }
-
-
-                if (Keyboard.KEY_1 <= Keyboard.getEventKey() && Keyboard.getEventKey() <= Keyboard.KEY_9) {
-                    int number = Keyboard.getEventKey() - Keyboard.KEY_1;
-                    if (number < NUM_SAMPLERS) {
-                        currSampler = number;
-                    }
-                }
-            }
-
-
-            if (particularKeyPressed) {
-                System.out.printf("----\n");
-                System.out.printf("Rendering:\t\t%s\n", drawGammaProgram ? "Gamma" : "Linear");
-                System.out.printf("Mipmap Generation:\t%s\n", drawGammaTexture ? "Gamma" : "Linear");
-            }
-        }
     }
 
     ////////////////////////////////

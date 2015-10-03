@@ -20,7 +20,7 @@ To get the code running just do the usual steps needed by any LWJGL application:
 
 1. Clone this repository :+1:;
 2. Using your favorite IDE, create a new Java project and import the source code of the repository just cloned;
-3. Configure the project settings in your IDE options (as written in [lwjgl.org](http://www.lwjgl.org/guide)):
+3. Configure the project settings in your IDE options (as written [here](http://www.lwjgl.org/guide)):
     - Add the LWJGL JARs to the classpath (usually done by setting up a library dependency for your project and attaching JARs to it);
     - Set `-Djava.library.path=path/to/natives` as a JVM launch argument or, alternatively, simply copy all the files from the LWJGL `natives` folder to the root folder of your project. Failing to link the natives will result in `Exception in thread "main" java.lang.UnsatisfiedLinkError: no lwjgl in java.library.path`.
 

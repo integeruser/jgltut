@@ -159,4 +159,8 @@ public class LWJGLWindow {
     protected final boolean isKeyPressed(int key) {
         return glfwGetKey(window, key) == 1;
     }
+
+    protected final boolean isMouseButtonPressed(int key) {
+        return glfwGetMouseButton(window, key) == 1;
+    }
 }

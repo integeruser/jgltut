@@ -48,7 +48,7 @@ public class MousePole {
     private static MouseModifiers calcModifiers(long window) {
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == 1 || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == 1)
             return MouseModifiers.MM_KEY_SHIFT;
-        if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == 1 ||glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == 1)
+        if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == 1 || glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == 1)
             return MouseModifiers.MM_KEY_CTRL;
         if (glfwGetKey(window, GLFW_KEY_MENU) == 1)
             return MouseModifiers.MM_KEY_ALT;

@@ -1,9 +1,9 @@
 package jgltut.tut12;
 
+import jgltut.framework.Mesh;
 import jgltut.jglsdk.BufferableData;
 import jgltut.jglsdk.glm.*;
 import jgltut.jglsdk.glutil.MatrixStack;
-import jgltut.framework.Mesh;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;

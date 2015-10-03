@@ -16,11 +16,11 @@ import static org.lwjgl.opengl.ARBTextureCompressionBPTC.*;
 import static org.lwjgl.opengl.ARBTextureFloat.*;
 import static org.lwjgl.opengl.EXTTextureCompressionLATC.GL_COMPRESSED_LUMINANCE_LATC1_EXT;
 import static org.lwjgl.opengl.EXTTextureCompressionLATC.GL_COMPRESSED_SIGNED_LUMINANCE_LATC1_EXT;
+import static org.lwjgl.opengl.EXTTextureCompressionS3TC.*;
 import static org.lwjgl.opengl.EXTTextureInteger.*;
 import static org.lwjgl.opengl.EXTTextureSRGB.*;
 import static org.lwjgl.opengl.EXTTextureSnorm.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.glGetInteger;
 import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT16;
@@ -28,7 +28,6 @@ import static org.lwjgl.opengl.GL21.GL_SRGB8;
 import static org.lwjgl.opengl.GL21.GL_SRGB8_ALPHA8;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL40.GL_TEXTURE_CUBE_MAP_ARRAY;
-import static org.lwjgl.opengl.EXTTextureCompressionS3TC.*;
 
 
 /**

@@ -1,15 +1,15 @@
 package jgltut.tut16;
 
-import jgltut.jglsdk.BufferableData;
-import jgltut.jglsdk.glm.Glm;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glm.Vec3;
-import jgltut.jglsdk.glm.Vec4;
 import jgltut.framework.Framework;
 import jgltut.framework.Interpolators.ConstVelLinearInterpolatorVec3;
 import jgltut.framework.Interpolators.WeightedLinearInterpolatorFloat;
 import jgltut.framework.Interpolators.WeightedLinearInterpolatorVec4;
 import jgltut.framework.Timer;
+import jgltut.jglsdk.BufferableData;
+import jgltut.jglsdk.glm.Glm;
+import jgltut.jglsdk.glm.Mat4;
+import jgltut.jglsdk.glm.Vec3;
+import jgltut.jglsdk.glm.Vec4;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

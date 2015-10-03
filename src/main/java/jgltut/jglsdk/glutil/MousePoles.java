@@ -141,7 +141,7 @@ public class MousePoles {
                 switch (rotateMode) {
                     case RM_DUAL_AXIS: {
                         Quaternion rot = calcRotationQuat(Axis.AXIS_Y.ordinal(), diff.x * rotateScale);
-                        rot = Glm.normalize(calcRotationQuat(Axis.AXIS_X.ordinal(), -diff.y * rotateScale).mul(rot));  // Y axis is different in LWJGL
+                        rot = Glm.normalize(calcRotationQuat(Axis.AXIS_X.ordinal(), diff.y * rotateScale).mul(rot));
                         rotateViewDegrees(rot);
                         break;
                     }
@@ -520,7 +520,7 @@ public class MousePoles {
         private void onDragRotate(Vec2 ptCurr) {
             Vec2 diff = Vec2.sub(ptCurr, startDragMouseLoc);
             int diffX = (int) diff.x;
-            int diffY = (int) -diff.y;  // Y axis is different in LWJGL
+            int diffY = (int) diff.y;
 
             switch (rotateMode) {
                 case RM_DUAL_AXIS_ROTATE:

@@ -1,17 +1,16 @@
 package jgltut;
 
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWWindowSizeCallback;
-import org.lwjgl.glfw.GLFWvidmode;
-import org.lwjgl.opengl.*;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 
 import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
 
 import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
 import static org.lwjgl.glfw.Callbacks.glfwSetCallback;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -25,9 +24,15 @@ public class LWJGLWindow {
     protected static final int FLOAT_SIZE = Float.SIZE / Byte.SIZE;
 
     protected long window;
-    protected GLFWErrorCallback errorCallback;
     protected GLFWKeyCallback keyCallback;
-    protected GLFWWindowSizeCallback windowSizeCallback;
+    protected GLFWMouseButtonCallback mouseCallback;
+    protected GLFWCursorPosCallback mousePosCallback;
+    protected GLFWScrollCallback mouseScrollCallback;
+    protected DoubleBuffer mouseBuffer1 = BufferUtils.createDoubleBuffer(1);
+    protected DoubleBuffer mouseBuffer2 = BufferUtils.createDoubleBuffer(1);
+
+    private GLFWErrorCallback errorCallback;
+    private GLFWWindowSizeCallback windowSizeCallback;
 
     // Measured in milliseconds
     private float elapsedTime;
@@ -73,6 +78,10 @@ public class LWJGLWindow {
 
             glfwDestroyWindow(window);
             keyCallback.release();
+            if (mouseCallback != null) mouseCallback.release();
+            if (mousePosCallback != null) mousePosCallback.release();
+            if (mouseScrollCallback != null) mouseScrollCallback.release();
+            windowSizeCallback.release();
         } finally {
             glfwTerminate();
             errorCallback.release();

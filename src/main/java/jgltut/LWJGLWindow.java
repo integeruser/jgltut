@@ -153,4 +153,9 @@ public class LWJGLWindow {
     protected final float getLastFrameDuration() {
         return lastFrameDuration;
     }
+
+
+    protected final boolean isKeyPressed(int key) {
+        return glfwGetKey(window, key) == 1;
+    }
 }

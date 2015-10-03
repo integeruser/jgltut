@@ -1,13 +1,13 @@
 package jgltut.tut07;
 
+import jgltut.LWJGLWindow;
+import jgltut.framework.Framework;
+import jgltut.framework.Mesh;
 import jgltut.jglsdk.glm.Glm;
 import jgltut.jglsdk.glm.Mat4;
 import jgltut.jglsdk.glm.Vec3;
 import jgltut.jglsdk.glm.Vec4;
 import jgltut.jglsdk.glutil.MatrixStack;
-import jgltut.LWJGLWindow;
-import jgltut.framework.Framework;
-import jgltut.framework.Mesh;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
 

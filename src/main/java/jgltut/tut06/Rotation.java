@@ -1,8 +1,8 @@
 package jgltut.tut06;
 
-import jgltut.jglsdk.glm.*;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
+import jgltut.jglsdk.glm.*;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;

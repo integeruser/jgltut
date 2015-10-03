@@ -85,7 +85,7 @@ public class SceneBinders {
         ////////////////////////////////
         @Override
         void bindState(int prog) {
-            glUniform3(getUniformLoc(prog), val.fillAndFlipBuffer(vec3Buffer));
+            glUniform3fv(getUniformLoc(prog), val.fillAndFlipBuffer(vec3Buffer));
         }
 
         @Override

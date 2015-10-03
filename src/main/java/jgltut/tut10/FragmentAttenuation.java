@@ -119,14 +119,14 @@ public class FragmentAttenuation extends LWJGLWindow {
         glUseProgram(fragWhiteDiffuseColor.theProgram);
         glUniform4f(fragWhiteDiffuseColor.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
         glUniform4f(fragWhiteDiffuseColor.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-        glUniform3(fragWhiteDiffuseColor.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(fragWhiteDiffuseColor.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
         glUniform1f(fragWhiteDiffuseColor.lightAttenuationUnif, lightAttenuation);
         glUniform1i(fragWhiteDiffuseColor.useRSquareUnif, useRSquare ? 1 : 0);
 
         glUseProgram(fragVertexDiffuseColor.theProgram);
         glUniform4f(fragVertexDiffuseColor.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
         glUniform4f(fragVertexDiffuseColor.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-        glUniform3(fragVertexDiffuseColor.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(fragVertexDiffuseColor.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
         glUniform1f(fragVertexDiffuseColor.lightAttenuationUnif, lightAttenuation);
         glUniform1i(fragVertexDiffuseColor.useRSquareUnif, useRSquare ? 1 : 0);
         glUseProgram(0);

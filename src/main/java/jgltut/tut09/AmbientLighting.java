@@ -113,9 +113,9 @@ public class AmbientLighting extends LWJGLWindow {
         }
 
         glUseProgram(whiteDiffuse.theProgram);
-        glUniform3(whiteDiffuse.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(whiteDiffuse.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(vec4Buffer));
         glUseProgram(vertexDiffuse.theProgram);
-        glUniform3(vertexDiffuse.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(vertexDiffuse.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(vec4Buffer));
         glUseProgram(0);
 
         {

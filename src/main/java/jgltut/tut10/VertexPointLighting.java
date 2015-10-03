@@ -104,9 +104,9 @@ public class VertexPointLighting extends LWJGLWindow {
         Vec4 lightPosCameraSpace = Mat4.mul(modelMatrix.top(), worldLightPos);
 
         glUseProgram(whiteDiffuseColor.theProgram);
-        glUniform3(whiteDiffuseColor.lightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(whiteDiffuseColor.lightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
         glUseProgram(vertexDiffuseColor.theProgram);
-        glUniform3(vertexDiffuseColor.lightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(vertexDiffuseColor.lightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
 
         glUseProgram(whiteDiffuseColor.theProgram);
         glUniform4f(whiteDiffuseColor.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);

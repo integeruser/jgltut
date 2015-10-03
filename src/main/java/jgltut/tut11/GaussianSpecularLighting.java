@@ -117,7 +117,7 @@ public class GaussianSpecularLighting extends LWJGLWindow {
         glUseProgram(whiteProg.theProgram);
         glUniform4f(whiteProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
         glUniform4f(whiteProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-        glUniform3(whiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(whiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
         float lightAttenuation = 1.2f;
         glUniform1f(whiteProg.lightAttenuationUnif, lightAttenuation);
         glUniform1f(whiteProg.shininessFactorUnif, matParams.getSpecularValue());
@@ -126,7 +126,7 @@ public class GaussianSpecularLighting extends LWJGLWindow {
         glUseProgram(colorProg.theProgram);
         glUniform4f(colorProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
         glUniform4f(colorProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-        glUniform3(colorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(colorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
         glUniform1f(colorProg.lightAttenuationUnif, lightAttenuation);
         glUniform1f(colorProg.shininessFactorUnif, matParams.getSpecularValue());
         glUseProgram(0);

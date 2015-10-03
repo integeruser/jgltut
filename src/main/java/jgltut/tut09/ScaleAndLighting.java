@@ -96,9 +96,9 @@ public class ScaleAndLighting extends LWJGLWindow {
         Vec4 lightDirCameraSpace = Mat4.mul(modelMatrix.top(), lightDirection);
 
         glUseProgram(whiteDiffuseColor.theProgram);
-        glUniform3(whiteDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(whiteDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(vec4Buffer));
         glUseProgram(vertexDiffuseColor.theProgram);
-        glUniform3(vertexDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(vertexDiffuseColor.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(vec4Buffer));
         glUseProgram(0);
 
         {

@@ -135,7 +135,7 @@ public class FragmentPointLighting extends LWJGLWindow {
 
                 Mat4 invTransform = Glm.inverse(modelMatrix.top());
                 Vec4 lightPosModelSpace = Mat4.mul(invTransform, lightPosCameraSpace);
-                glUniform3(whiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillAndFlipBuffer(vec4Buffer));
+                glUniform3fv(whiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillAndFlipBuffer(vec4Buffer));
 
                 planeMesh.render();
                 glUseProgram(0);
@@ -160,14 +160,14 @@ public class FragmentPointLighting extends LWJGLWindow {
                     glUseProgram(vertColorProgram.theProgram);
                     glUniformMatrix4fv(vertColorProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-                    glUniform3(vertColorProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillAndFlipBuffer(vec4Buffer));
+                    glUniform3fv(vertColorProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillAndFlipBuffer(vec4Buffer));
 
                     cylinderMesh.render("lit-color");
                 } else {
                     glUseProgram(whiteProgram.theProgram);
                     glUniformMatrix4fv(whiteProgram.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
-                    glUniform3(whiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillAndFlipBuffer(vec4Buffer));
+                    glUniform3fv(whiteProgram.modelSpaceLightPosUnif, lightPosModelSpace.fillAndFlipBuffer(vec4Buffer));
 
                     cylinderMesh.render("lit");
                 }

@@ -495,7 +495,7 @@ public class BasicImpostor extends LWJGLWindow {
         if (drawImposter) {
             Vec4 cameraSpherePos = Mat4.mul(modelMatrix.top(), new Vec4(position, 1.0f));
             glUseProgram(litImpProgs[currImpostor.ordinal()].theProgram);
-            glUniform3(litImpProgs[currImpostor.ordinal()].cameraSpherePosUnif, cameraSpherePos.fillAndFlipBuffer(vec4Buffer));
+            glUniform3fv(litImpProgs[currImpostor.ordinal()].cameraSpherePosUnif, cameraSpherePos.fillAndFlipBuffer(vec4Buffer));
             glUniform1f(litImpProgs[currImpostor.ordinal()].sphereRadiusUnif, radius);
 
             glBindVertexArray(imposterVAO);

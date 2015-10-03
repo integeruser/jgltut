@@ -3,12 +3,13 @@ package jgltut.tut05;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -62,6 +63,30 @@ public class DepthClamping extends LWJGLWindow {
         glDepthMask(true);
         glDepthFunc(GL_LESS);
         glDepthRange(0.0f, 1.0f);
+
+
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    switch (key) {
+                        case GLFW_KEY_SPACE:
+                            if (depthClampingActive) {
+                                glDisable(GL_DEPTH_CLAMP);
+                            } else {
+                                glEnable(GL_DEPTH_CLAMP);
+                            }
+
+                            depthClampingActive = !depthClampingActive;
+                            break;
+
+                        case GLFW_KEY_ESCAPE:
+                            glfwSetWindowShouldClose(window, GL_TRUE);
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -97,29 +122,6 @@ public class DepthClamping extends LWJGLWindow {
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
-    }
-
-    @Override
-    protected void update() {
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                switch (Keyboard.getEventKey()) {
-                    case Keyboard.KEY_SPACE:
-                        if (depthClampingActive) {
-                            glDisable(GL_DEPTH_CLAMP);
-                        } else {
-                            glEnable(GL_DEPTH_CLAMP);
-                        }
-
-                        depthClampingActive = !depthClampingActive;
-                        break;
-
-                    case Keyboard.KEY_ESCAPE:
-                        leaveMainLoop();
-                        break;
-                }
-            }
-        }
     }
 
     ////////////////////////////////

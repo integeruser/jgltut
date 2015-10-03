@@ -9,11 +9,12 @@ import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.framework.Mesh;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -74,6 +75,26 @@ public class WorldWithUBO extends LWJGLWindow {
         glDepthFunc(GL_LEQUAL);
         glDepthRange(0.0f, 1.0f);
         glEnable(GL_DEPTH_CLAMP);
+
+
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    switch (key) {
+                        case GLFW_KEY_SPACE:
+                            drawLookatPoint = !drawLookatPoint;
+                            System.out.printf("Target: %f, %f, %f\n", camTarget.x, camTarget.y, camTarget.z);
+                            System.out.printf("Position: %f, %f, %f\n", sphereCamRelPos.x, sphereCamRelPos.y, sphereCamRelPos.z);
+                            break;
+
+                        case GLFW_KEY_ESCAPE:
+                            glfwSetWindowShouldClose(window, GL_TRUE);
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -156,42 +177,42 @@ public class WorldWithUBO extends LWJGLWindow {
     protected void update() {
         float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        if (isKeyPressed(GLFW_KEY_W)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 camTarget.z = camTarget.z - 0.4f * lastFrameDuration;
             } else {
                 camTarget.z = camTarget.z - 4.0f * lastFrameDuration;
             }
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        } else if (isKeyPressed(GLFW_KEY_S)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 camTarget.z = camTarget.z + 0.4f * lastFrameDuration;
             } else {
                 camTarget.z = camTarget.z + 4.0f * lastFrameDuration;
             }
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        if (isKeyPressed(GLFW_KEY_D)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 camTarget.x = camTarget.x + 0.4f * lastFrameDuration;
             } else {
                 camTarget.x = camTarget.x + 4.0f * lastFrameDuration;
             }
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        } else if (isKeyPressed(GLFW_KEY_A)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 camTarget.x = camTarget.x - 0.4f * lastFrameDuration;
             } else {
                 camTarget.x = camTarget.x - 4.0f * lastFrameDuration;
             }
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        if (isKeyPressed(GLFW_KEY_E)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 camTarget.y = camTarget.y - 0.4f * lastFrameDuration;
             } else {
                 camTarget.y = camTarget.y - 4.0f * lastFrameDuration;
             }
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        } else if (isKeyPressed(GLFW_KEY_Q)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 camTarget.y = camTarget.y + 0.4f * lastFrameDuration;
             } else {
                 camTarget.y = camTarget.y + 4.0f * lastFrameDuration;
@@ -199,62 +220,45 @@ public class WorldWithUBO extends LWJGLWindow {
         }
 
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        if (isKeyPressed(GLFW_KEY_I)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 sphereCamRelPos.y = sphereCamRelPos.y - 1.125f * lastFrameDuration;
             } else {
                 sphereCamRelPos.y = sphereCamRelPos.y - 11.25f * lastFrameDuration;
             }
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        } else if (isKeyPressed(GLFW_KEY_K)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 sphereCamRelPos.y = sphereCamRelPos.y + 1.125f * lastFrameDuration;
             } else {
                 sphereCamRelPos.y = sphereCamRelPos.y + 11.25f * lastFrameDuration;
             }
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        if (isKeyPressed(GLFW_KEY_J)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 sphereCamRelPos.x = sphereCamRelPos.x - 1.125f * lastFrameDuration;
             } else {
                 sphereCamRelPos.x = sphereCamRelPos.x - 11.25f * lastFrameDuration;
             }
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        } else if (isKeyPressed(GLFW_KEY_L)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 sphereCamRelPos.x = sphereCamRelPos.x + 1.125f * lastFrameDuration;
             } else {
                 sphereCamRelPos.x = sphereCamRelPos.x + 11.25f * lastFrameDuration;
             }
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        if (isKeyPressed(GLFW_KEY_O)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 sphereCamRelPos.z = sphereCamRelPos.z - 0.5f * lastFrameDuration;
             } else {
                 sphereCamRelPos.z = sphereCamRelPos.z - 5.0f * lastFrameDuration;
             }
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_U)) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+        } else if (isKeyPressed(GLFW_KEY_U)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 sphereCamRelPos.z = sphereCamRelPos.z + 0.5f * lastFrameDuration;
             } else {
                 sphereCamRelPos.z = sphereCamRelPos.z + 5.0f * lastFrameDuration;
-            }
-        }
-
-
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                switch (Keyboard.getEventKey()) {
-                    case Keyboard.KEY_SPACE:
-                        drawLookatPoint = !drawLookatPoint;
-                        System.out.printf("Target: %f, %f, %f\n", camTarget.x, camTarget.y, camTarget.z);
-                        System.out.printf("Position: %f, %f, %f\n", sphereCamRelPos.x, sphereCamRelPos.y, sphereCamRelPos.z);
-                        break;
-
-                    case Keyboard.KEY_ESCAPE:
-                        leaveMainLoop();
-                        break;
-                }
             }
         }
 

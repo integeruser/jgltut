@@ -121,7 +121,7 @@ public class BlinnVsPhongLighting extends LWJGLWindow {
         float lightAttenuation = 1.2f;
         glUniform1f(whiteProg.lightAttenuationUnif, lightAttenuation);
         glUniform1f(whiteProg.shininessFactorUnif, matParams.getSpecularValue());
-        glUniform4(whiteProg.baseDiffuseColorUnif, drawDark ? darkColor.fillAndFlipBuffer(vec4Buffer) : lightColor.fillAndFlipBuffer(vec4Buffer));
+        glUniform4fv(whiteProg.baseDiffuseColorUnif, drawDark ? darkColor.fillAndFlipBuffer(vec4Buffer) : lightColor.fillAndFlipBuffer(vec4Buffer));
 
         glUseProgram(colorProg.theProgram);
         glUniform4f(colorProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);

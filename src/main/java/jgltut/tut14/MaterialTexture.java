@@ -200,7 +200,7 @@ public class MaterialTexture extends LWJGLWindow {
             glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
             Vec4 lightColor = new Vec4(1.0f);
-            glUniform4(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+            glUniform4fv(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
             cubeMesh.render("flat");
 
             modelMatrix.pop();

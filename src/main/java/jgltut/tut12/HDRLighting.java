@@ -161,7 +161,7 @@ public class HDRLighting extends LWJGLWindow {
                 glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
                 Vec4 lightColor = lights.getSunlightIntensity();
-                glUniform4(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+                glUniform4fv(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
                 scene.getSphereMesh().render("flat");
 
                 modelMatrix.pop();
@@ -178,7 +178,7 @@ public class HDRLighting extends LWJGLWindow {
                     glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
                     Vec4 lightColor = lights.getPointLightIntensity(light);
-                    glUniform4(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+                    glUniform4fv(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
                     scene.getCubeMesh().render("flat");
 
                     modelMatrix.pop();

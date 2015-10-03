@@ -178,7 +178,7 @@ public class GammaLandscape extends LWJGLWindow {
             glUniformMatrix4fv(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
             Vec4 lightColor = lightEnv.getSunlightScaledIntensity();
-            glUniform4(progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+            glUniform4fv(progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
             sphere.render("flat");
 
             modelMatrix.pop();
@@ -194,7 +194,7 @@ public class GammaLandscape extends LWJGLWindow {
             glUniformMatrix4fv(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
 
             Vec4 lightColor = lightEnv.getPointLightScaledIntensity(light);
-            glUniform4(progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+            glUniform4fv(progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
             sphere.render("flat");
 
             modelMatrix.pop();

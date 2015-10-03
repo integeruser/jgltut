@@ -7,8 +7,8 @@ import jgltut.jglsdk.glimg.ImageFormat.PixelDataType;
 import jgltut.jglsdk.glimg.ImageSet.Dimensions;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.opengl.EXTTextureSnorm;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL32;
-import org.lwjgl.opengl.GLContext;
 
 import java.nio.ByteBuffer;
 
@@ -483,41 +483,41 @@ public class TextureGenerator {
 
 
     private static void throwIfS3TCNotSupported() {
-        if (!GLContext.getCapabilities().GL_EXT_texture_compression_s3tc) {
+        if (!GL.getCapabilities().GL_EXT_texture_compression_s3tc) {
             throw new ImageFormatUnsupportedException("S3TC not supported.");
         }
     }
 
     private static void throwIfLATCNotSupported() {
-        if (!GLContext.getCapabilities().GL_EXT_texture_compression_latc) {
+        if (!GL.getCapabilities().GL_EXT_texture_compression_latc) {
             throw new ImageFormatUnsupportedException("LATC not supported.");
         }
     }
 
     private static void throwIfRGTCNotSupported() {
-        if (!GLContext.getCapabilities().OpenGL30) {
-            if (!GLContext.getCapabilities().GL_ARB_texture_compression_rgtc || !GLContext.getCapabilities().GL_EXT_texture_compression_rgtc) {
+        if (!GL.getCapabilities().OpenGL30) {
+            if (!GL.getCapabilities().GL_ARB_texture_compression_rgtc || !GL.getCapabilities().GL_EXT_texture_compression_rgtc) {
                 throw new ImageFormatUnsupportedException("RGTC, part of GL 3.0 and above, is not supported.");
             }
         }
     }
 
     private static void throwIfBPTCNotSupported() {
-        if (!GLContext.getCapabilities().GL_ARB_texture_compression_bptc) {
+        if (!GL.getCapabilities().GL_ARB_texture_compression_bptc) {
             throw new ImageFormatUnsupportedException("PBTC not supported.");
         }
     }
 
     private static void throwIfSRGBNotSupported() {
-        if (!GLContext.getCapabilities().OpenGL21) {
-            if (!GLContext.getCapabilities().GL_EXT_texture_sRGB) {
+        if (!GL.getCapabilities().OpenGL21) {
+            if (!GL.getCapabilities().GL_EXT_texture_sRGB) {
                 throw new ImageFormatUnsupportedException("sRGB textures not supported.");
             }
         }
     }
 
     private static void throwIfEXT_SRGBNotSupported() {
-        if (!GLContext.getCapabilities().GL_EXT_texture_sRGB) {
+        if (!GL.getCapabilities().GL_EXT_texture_sRGB) {
             // TODO temporary "fix" for OS X, needs rework
             if (LWJGLUtil.getPlatform() != LWJGLUtil.PLATFORM_MACOSX) {
                 throw new ImageFormatUnsupportedException("sRGB and S3TC textures not supported.");
@@ -526,84 +526,84 @@ public class TextureGenerator {
     }
 
     private static void throwIfSharedExpNotSupported() {
-        if (!GLContext.getCapabilities().OpenGL30) {
-            if (!GLContext.getCapabilities().GL_EXT_texture_shared_exponent) {
+        if (!GL.getCapabilities().OpenGL30) {
+            if (!GL.getCapabilities().GL_EXT_texture_shared_exponent) {
                 throw new ImageFormatUnsupportedException("Shared exponent texture format not supported.");
             }
         }
     }
 
     private static void throwIfFloatNotSupported() {
-        if (!GLContext.getCapabilities().OpenGL30) {
-            if (!GLContext.getCapabilities().GL_ARB_texture_float) {
+        if (!GL.getCapabilities().OpenGL30) {
+            if (!GL.getCapabilities().GL_ARB_texture_float) {
                 throw new ImageFormatUnsupportedException("Float textures not supported.");
             }
         }
     }
 
     private static void throwIfEXT_FloatNotSupported() {
-        if (!GLContext.getCapabilities().GL_ARB_texture_float) {
+        if (!GL.getCapabilities().GL_ARB_texture_float) {
             throw new ImageFormatUnsupportedException("ARB Float textures not supported.");
         }
     }
 
     private static void throwIfHalfFloatNotSupported() {
-        if (!GLContext.getCapabilities().OpenGL30) {
-            if (!GLContext.getCapabilities().GL_ARB_half_float_pixel) {
+        if (!GL.getCapabilities().OpenGL30) {
+            if (!GL.getCapabilities().GL_ARB_half_float_pixel) {
                 throw new ImageFormatUnsupportedException("Half floats textures not supported.");
             }
         }
     }
 
     private static void throwIfSnormNotSupported() {
-        if (!GLContext.getCapabilities().OpenGL31) {
-            if (!GLContext.getCapabilities().GL_EXT_texture_snorm) {
+        if (!GL.getCapabilities().OpenGL31) {
+            if (!GL.getCapabilities().GL_EXT_texture_snorm) {
                 throw new ImageFormatUnsupportedException("Signed normalized textures not supported.");
             }
         }
     }
 
     private static void throwIfEXT_SnormNotSupported() {
-        if (!GLContext.getCapabilities().GL_EXT_texture_snorm) {
+        if (!GL.getCapabilities().GL_EXT_texture_snorm) {
             throw new ImageFormatUnsupportedException("Signed normalized texture extension not supported.");
         }
     }
 
     private static void throwIfPackedFloatNotSupported() {
-        if (!GLContext.getCapabilities().OpenGL30) {
-            if (!GLContext.getCapabilities().GL_EXT_packed_float) {
+        if (!GL.getCapabilities().OpenGL30) {
+            if (!GL.getCapabilities().GL_EXT_packed_float) {
                 throw new ImageFormatUnsupportedException("Packed 11, 11, 10 float textures not supported.");
             }
         }
     }
 
     private static void throwIfIntegralNotSupported() {
-        if (!GLContext.getCapabilities().OpenGL30) {
-            if (!GLContext.getCapabilities().GL_EXT_texture_integer) {
+        if (!GL.getCapabilities().OpenGL30) {
+            if (!GL.getCapabilities().GL_EXT_texture_integer) {
                 throw new ImageFormatUnsupportedException("Integral textures not supported.");
             }
         }
     }
 
     private static void throwIfEXT_IntegralNotSupported() {
-        if (!GLContext.getCapabilities().GL_EXT_texture_integer) {
+        if (!GL.getCapabilities().GL_EXT_texture_integer) {
             throw new ImageFormatUnsupportedException("Integral texture extension not supported.");
         }
     }
 
     private static void throwIfRGNotSupported() {
-        if (!GLContext.getCapabilities().OpenGL30) {
-            if (!GLContext.getCapabilities().GL_ARB_texture_rg) {
+        if (!GL.getCapabilities().OpenGL30) {
+            if (!GL.getCapabilities().GL_ARB_texture_rg) {
                 throw new ImageFormatUnsupportedException("RG textures not supported.");
             }
         }
     }
 
     private static void throwIfLANotSupported() {
-        if (!GLContext.getCapabilities().OpenGL30) return;
+        if (!GL.getCapabilities().OpenGL30) return;
 
-        if (!GLContext.getCapabilities().OpenGL32) {
-            if (!GLContext.getCapabilities().GL_ARB_compatibility) {
+        if (!GL.getCapabilities().OpenGL32) {
+            if (!GL.getCapabilities().GL_ARB_compatibility) {
                 throw new ImageFormatUnsupportedException("Core OpenGL contexts cannot use Luminance/alpha.");
             }
         } else {
@@ -623,24 +623,24 @@ public class TextureGenerator {
     }
 
     private static void throwIfDepthNotSupported() {
-        if (!GLContext.getCapabilities().OpenGL14) {  // Yes, really. Depth textures are old.
-            if (!GLContext.getCapabilities().GL_ARB_depth_texture) {
+        if (!GL.getCapabilities().OpenGL14) {  // Yes, really. Depth textures are old.
+            if (!GL.getCapabilities().GL_ARB_depth_texture) {
                 throw new ImageFormatUnsupportedException("Depth textures not supported.");
             }
         }
     }
 
     private static void throwIfDepthStencilNotSupported() {
-        if (!GLContext.getCapabilities().OpenGL30) {
-            if (!GLContext.getCapabilities().GL_EXT_packed_depth_stencil || !GLContext.getCapabilities().GL_ARB_framebuffer_object) {
+        if (!GL.getCapabilities().OpenGL30) {
+            if (!GL.getCapabilities().GL_EXT_packed_depth_stencil || !GL.getCapabilities().GL_ARB_framebuffer_object) {
                 throw new ImageFormatUnsupportedException("Depth/stencil textures not supported.");
             }
         }
     }
 
     private static void throwIfDepthFloatNotSupported() {
-        if (!GLContext.getCapabilities().OpenGL30) {
-            if (!GLContext.getCapabilities().GL_NV_depth_buffer_float) {
+        if (!GL.getCapabilities().OpenGL30) {
+            if (!GL.getCapabilities().GL_NV_depth_buffer_float) {
                 throw new ImageFormatUnsupportedException("Floating-point depth buffers not supported.");
             }
         }
@@ -1081,14 +1081,14 @@ public class TextureGenerator {
 
 
     private static boolean isTextureStorageSupported() {
-        if (!GLContext.getCapabilities().OpenGL42) {
-            if (!GLContext.getCapabilities().GL_ARB_texture_storage) return false;
+        if (!GL.getCapabilities().OpenGL42) {
+            if (!GL.getCapabilities().GL_ARB_texture_storage) return false;
         }
         return true;
     }
 
     private static boolean isDirectStateAccessSupported() {
-        if (!GLContext.getCapabilities().GL_EXT_direct_state_access) return false;
+        if (!GL.getCapabilities().GL_EXT_direct_state_access) return false;
         return true;
     }
 

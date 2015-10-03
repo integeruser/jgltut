@@ -24,10 +24,10 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class LWJGLWindow {
     protected static final int FLOAT_SIZE = Float.SIZE / Byte.SIZE;
 
-    private long window;
-    private GLFWErrorCallback errorCallback;
-    private GLFWKeyCallback keyCallback;
-    private GLFWWindowSizeCallback windowSizeCallback;
+    protected long window;
+    protected GLFWErrorCallback errorCallback;
+    protected GLFWKeyCallback keyCallback;
+    protected GLFWWindowSizeCallback windowSizeCallback;
 
     // Measured in milliseconds
     private float elapsedTime;

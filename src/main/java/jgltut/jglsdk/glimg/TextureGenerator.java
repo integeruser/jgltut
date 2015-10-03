@@ -28,7 +28,7 @@ import static org.lwjgl.opengl.GL21.GL_SRGB8;
 import static org.lwjgl.opengl.GL21.GL_SRGB8_ALPHA8;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL40.GL_TEXTURE_CUBE_MAP_ARRAY;
-import static org.lwjgl.opengl.NVTextureCompressionVTC.*;
+import static org.lwjgl.opengl.EXTTextureCompressionS3TC.*;
 
 
 /**

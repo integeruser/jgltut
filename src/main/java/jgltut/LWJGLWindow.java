@@ -34,7 +34,6 @@ public class LWJGLWindow {
     private float lastFrameDuration;
 
     private double lastFrameTimestamp;
-    private boolean continueMainLoop;
 
     ////////////////////////////////
     public final void start() {
@@ -50,8 +49,7 @@ public class LWJGLWindow {
             reshape(width, height);
 
             long startTime = System.nanoTime();
-            continueMainLoop = true;
-            while (continueMainLoop && glfwWindowShouldClose(window) == GL_FALSE) {
+            while (glfwWindowShouldClose(window) == GL_FALSE) {
                 elapsedTime = (float) ((System.nanoTime() - startTime) / 1000000.0);
 
                 double now = System.nanoTime();
@@ -155,10 +153,5 @@ public class LWJGLWindow {
 
     protected final float getLastFrameDuration() {
         return lastFrameDuration;
-    }
-
-
-    protected final void leaveMainLoop() {
-        continueMainLoop = false;
     }
 }

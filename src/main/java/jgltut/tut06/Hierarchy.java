@@ -7,13 +7,14 @@ import jgltut.jglsdk.glm.Vec4;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -60,6 +61,24 @@ public class Hierarchy extends LWJGLWindow {
         glDepthMask(true);
         glDepthFunc(GL_LEQUAL);
         glDepthRange(0.0f, 1.0f);
+
+
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    switch (key) {
+                        case GLFW_KEY_SPACE:
+                            armature.writePose();
+                            break;
+
+                        case GLFW_KEY_ESCAPE:
+                            glfwSetWindowShouldClose(window, GL_TRUE);
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -85,55 +104,40 @@ public class Hierarchy extends LWJGLWindow {
 
     @Override
     protected void update() {
-        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+        if (isKeyPressed(GLFW_KEY_A)) {
             armature.adjBase(false);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+        } else if (isKeyPressed(GLFW_KEY_D)) {
             armature.adjBase(true);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+        if (isKeyPressed(GLFW_KEY_W)) {
             armature.adjUpperArm(false);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+        } else if (isKeyPressed(GLFW_KEY_S)) {
             armature.adjUpperArm(true);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_R)) {
+        if (isKeyPressed(GLFW_KEY_R)) {
             armature.adjLowerArm(false);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_F)) {
+        } else if (isKeyPressed(GLFW_KEY_F)) {
             armature.adjLowerArm(true);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_T)) {
+        if (isKeyPressed(GLFW_KEY_T)) {
             armature.adjWristPitch(false);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_G)) {
+        } else if (isKeyPressed(GLFW_KEY_G)) {
             armature.adjWristPitch(true);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
+        if (isKeyPressed(GLFW_KEY_Z)) {
             armature.adjWristRoll(false);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_C)) {
+        } else if (isKeyPressed(GLFW_KEY_C)) {
             armature.adjWristRoll(true);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
+        if (isKeyPressed(GLFW_KEY_Q)) {
             armature.adjFingerOpen(true);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
+        } else if (isKeyPressed(GLFW_KEY_E)) {
             armature.adjFingerOpen(false);
-        }
-
-
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                switch (Keyboard.getEventKey()) {
-                    case Keyboard.KEY_SPACE:
-                        armature.writePose();
-                        break;
-
-                    case Keyboard.KEY_ESCAPE:
-                        leaveMainLoop();
-                        break;
-                }
-            }
         }
     }
 

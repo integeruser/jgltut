@@ -1,7 +1,8 @@
 package jgltut.jglsdk.glutil;
 
 import jgltut.jglsdk.glm.*;
-import org.lwjgl.input.Keyboard;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 
 /**
@@ -384,42 +385,42 @@ public class MousePoles {
         public void charPress(int key, boolean isShiftPressed, float lastFrameDuration) {
             if (rightKeyboardCtrls) {
                 switch (key) {
-                    case Keyboard.KEY_I:
+                    case GLFW_KEY_I:
                         offsetTargetPos(
                                 TargetOffsetDir.DIR_FORWARD,
                                 isShiftPressed ? viewScale.smallPosOffset : viewScale.largePosOffset,
                                 lastFrameDuration);
                         break;
 
-                    case Keyboard.KEY_K:
+                    case GLFW_KEY_K:
                         offsetTargetPos(
                                 TargetOffsetDir.DIR_BACKWARD,
                                 isShiftPressed ? viewScale.smallPosOffset : viewScale.largePosOffset,
                                 lastFrameDuration);
                         break;
 
-                    case Keyboard.KEY_L:
+                    case GLFW_KEY_L:
                         offsetTargetPos(
                                 TargetOffsetDir.DIR_RIGHT,
                                 isShiftPressed ? viewScale.smallPosOffset : viewScale.largePosOffset,
                                 lastFrameDuration);
                         break;
 
-                    case Keyboard.KEY_J:
+                    case GLFW_KEY_J:
                         offsetTargetPos(
                                 TargetOffsetDir.DIR_LEFT,
                                 isShiftPressed ? viewScale.smallPosOffset : viewScale.largePosOffset,
                                 lastFrameDuration);
                         break;
 
-                    case Keyboard.KEY_O:
+                    case GLFW_KEY_O:
                         offsetTargetPos(
                                 TargetOffsetDir.DIR_UP,
                                 isShiftPressed ? viewScale.smallPosOffset : viewScale.largePosOffset,
                                 lastFrameDuration);
                         break;
 
-                    case Keyboard.KEY_U:
+                    case GLFW_KEY_U:
                         offsetTargetPos(
                                 TargetOffsetDir.DIR_DOWN,
                                 isShiftPressed ? viewScale.smallPosOffset : viewScale.largePosOffset,
@@ -428,42 +429,42 @@ public class MousePoles {
                 }
             } else {
                 switch (key) {
-                    case Keyboard.KEY_W:
+                    case GLFW_KEY_W:
                         offsetTargetPos(
                                 TargetOffsetDir.DIR_FORWARD,
                                 isShiftPressed ? viewScale.smallPosOffset : viewScale.largePosOffset,
                                 lastFrameDuration);
                         break;
 
-                    case Keyboard.KEY_S:
+                    case GLFW_KEY_S:
                         offsetTargetPos(
                                 TargetOffsetDir.DIR_BACKWARD,
                                 isShiftPressed ? viewScale.smallPosOffset : viewScale.largePosOffset,
                                 lastFrameDuration);
                         break;
 
-                    case Keyboard.KEY_D:
+                    case GLFW_KEY_D:
                         offsetTargetPos(
                                 TargetOffsetDir.DIR_RIGHT,
                                 isShiftPressed ? viewScale.smallPosOffset : viewScale.largePosOffset,
                                 lastFrameDuration);
                         break;
 
-                    case Keyboard.KEY_A:
+                    case GLFW_KEY_A:
                         offsetTargetPos(
                                 TargetOffsetDir.DIR_LEFT,
                                 isShiftPressed ? viewScale.smallPosOffset : viewScale.largePosOffset,
                                 lastFrameDuration);
                         break;
 
-                    case Keyboard.KEY_E:
+                    case GLFW_KEY_E:
                         offsetTargetPos(
                                 TargetOffsetDir.DIR_UP,
                                 isShiftPressed ? viewScale.smallPosOffset : viewScale.largePosOffset,
                                 lastFrameDuration);
                         break;
 
-                    case Keyboard.KEY_Q:
+                    case GLFW_KEY_Q:
                         offsetTargetPos(
                                 TargetOffsetDir.DIR_DOWN,
                                 isShiftPressed ? viewScale.smallPosOffset : viewScale.largePosOffset,

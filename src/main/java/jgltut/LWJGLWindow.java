@@ -46,6 +46,14 @@ public class LWJGLWindow {
             printInfo();
 
             init();
+
+            // Setup a window size callback. It will be called every time the window is resized
+            glfwSetCallback(window, windowSizeCallback = new GLFWWindowSizeCallback() {
+                @Override
+                public void invoke(long window, int width, int height) {
+                    reshape(width, height);
+                }
+            });
             reshape(width, height);
 
             long startTime = System.nanoTime();
@@ -95,14 +103,6 @@ public class LWJGLWindow {
                 if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                     glfwSetWindowShouldClose(window, GL_TRUE);
                 }
-            }
-        });
-
-        // Setup a window size callback. It will be called every time the window is resized
-        glfwSetCallback(window, windowSizeCallback = new GLFWWindowSizeCallback() {
-            @Override
-            public void invoke(long window, int width, int height) {
-                reshape(width, height);
             }
         });
 

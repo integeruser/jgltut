@@ -66,7 +66,7 @@ public class Hierarchy extends LWJGLWindow {
         glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_RELEASE) {
+                if (action == GLFW_PRESS) {
                     switch (key) {
                         case GLFW_KEY_SPACE:
                             armature.writePose();

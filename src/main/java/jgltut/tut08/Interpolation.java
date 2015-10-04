@@ -63,7 +63,7 @@ public class Interpolation extends LWJGLWindow {
         glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_RELEASE) {
+                if (action == GLFW_PRESS) {
                     for (int orientIndex = 0; orientIndex < orientKeys.length; orientIndex++) {
                         if (key == orientKeys[orientIndex]) {
                             applyOrientation(orientIndex);

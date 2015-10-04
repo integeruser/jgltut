@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
 import static org.lwjgl.glfw.Callbacks.glfwSetCallback;
@@ -33,7 +34,7 @@ public class LWJGLWindow {
     protected DoubleBuffer mouseBuffer2 = BufferUtils.createDoubleBuffer(1);
 
     private GLFWErrorCallback errorCallback;
-    private GLFWWindowSizeCallback windowSizeCallback;
+    private GLFWFramebufferSizeCallback framebufferSizeCallback;
 
     // Measured in milliseconds
     private float elapsedTime;
@@ -53,15 +54,25 @@ public class LWJGLWindow {
 
             init();
 
-            // Setup a window size callback. It will be called every time the window is resized
-            glfwSetCallback(window, windowSizeCallback = new GLFWWindowSizeCallback() {
+            // From [http://www.glfw.org/faq.html#why-is-my-output-in-the-lower-left-corner-of-the-window]:
+            // On OS X with a Retina display, and possibly on other platforms in the future, screen coordinates and
+            // pixels do not map 1:1. Use the framebuffer size, which is in pixels, instead of the window size
+            IntBuffer w = BufferUtils.createIntBuffer(1);
+            IntBuffer h = BufferUtils.createIntBuffer(1);
+            glfwGetFramebufferSize(window, w, h);
+            int currWidth = w.get(0);
+            int currHeight = w.get(0);
+            reshape(currWidth, currHeight);
+
+            // Setup a framebuffer size callback. It will be called every time the window is resized
+            glfwSetCallback(window, framebufferSizeCallback = new GLFWFramebufferSizeCallback() {
                 @Override
                 public void invoke(long window, int width, int height) {
                     reshape(width, height);
                 }
             });
-            reshape(width, height);
 
+            // Start main loop
             long startTime = System.nanoTime();
             while (glfwWindowShouldClose(window) == GL_FALSE) {
                 elapsedTime = (float) ((System.nanoTime() - startTime) / 1000000.0);
@@ -82,7 +93,7 @@ public class LWJGLWindow {
             if (mouseCallback != null) mouseCallback.release();
             if (mousePosCallback != null) mousePosCallback.release();
             if (mouseScrollCallback != null) mouseScrollCallback.release();
-            windowSizeCallback.release();
+            framebufferSizeCallback.release();
         } finally {
             glfwTerminate();
             errorCallback.release();

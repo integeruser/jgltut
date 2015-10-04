@@ -1,6 +1,7 @@
 package jgltut;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLUtil;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -98,6 +99,12 @@ public class LWJGLWindow {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+        if (LWJGLUtil.getPlatform() == LWJGLUtil.Platform.MACOSX) {
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        }
 
         // Create the window
         window = glfwCreateWindow(width, height, "LWJGLWindow", NULL, NULL);

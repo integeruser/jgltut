@@ -12,20 +12,19 @@ Francesco
 I have included in this repository all the files needed to run the tutorials, so you don't have to download anything else (except the LWJGL library). To correctly compile the code, you will need:
 
 - Java SE Development Kit 7
-- LWJGL 3.*
+- LWJGL 3.0.0b build 35
 
 If you need to work with LWJGL 2, you can use the release [v0.9.1](https://github.com/integeruser/jgltut/releases/tag/v0.9.1) of this repository.  
-Working with previous versions of the JDK requires minor adjustments to the code.
+Working with different versions of JDK/LJWGL 3 may require minor adjustments to the code.
 
-To get the code running just do the usual steps needed by any LWJGL application:
+To get the code running just clone this repository, then:
 
-1. Clone this repository :+1:;
-2. Using your favorite IDE, create a new Java project and import the source code of the repository just cloned;
-3. Configure the project settings in your IDE options (as written [here](http://www.lwjgl.org/guide)):
+1. Using your favorite IDE, create a new Java project importing the source code of this repository;
+2. Configure the project settings in your IDE options, as explained also [here](http://www.lwjgl.org/guide):
     - Add the LWJGL JARs to the classpath (usually done by setting up a library dependency for your project and attaching JARs to it);
-    - Set `-Djava.library.path=path/to/natives` as a JVM launch argument or, alternatively, simply copy all the files from the LWJGL `natives` folder to the root folder of your project. Failing to link the natives will result in `Exception in thread "main" java.lang.UnsatisfiedLinkError: no lwjgl in java.library.path`.
+    - Link the LWJGL native files to the project. This can be done, for example, by setting `-Djava.library.path=path/to/natives` as a JVM launch argument or, alternatively, by copying all the files from the LWJGL `natives` folder to the root folder of your project. Failing to link the natives will result in `Exception in thread "main" java.lang.UnsatisfiedLinkError: no lwjgl in java.library.path`.
 
-Run the `main` method of the first tutorial `jgltut.tut01.Tut1` and check the output in the console window: it should only display the name of the running tutorial and the OpenGL version supported by your video card. If no errors appear, then you're done and you can start exploring other tutorials by running `TutorialChooser.java`. To quit any tutorial simply press `ESC`.
+Run the `main` method of the first tutorial `jgltut.tut01.Tut1` and check the output in the console window. If no error messages appear, then you're done with the setup and you can start exploring other tutorials using `TutorialChooser.java`. To quit any tutorial simply press `ESC`.
 
 ## Notes
 I decided to keep the ported code as similar as possible to the original C++ code, despite I would have done some things differently; hence, variables and functions are almost identical to their counterparts in the original projects. I also decided to keep the same project layout:
@@ -40,6 +39,8 @@ jgltut/
 |------ data/
 |------ FragPosition.java
 |------ VertexColor.java
+|-- ...
+|-- ...
 |-- ...
 |-- tut17/
 |------ data/
@@ -57,7 +58,8 @@ If your graphics card does not meet the minimum requirements, running any tutori
 I can't dedicate much time to this project anymore, but in the future I will probably:
 
 - keep refactoring code I don't like;
-- rework some parts of `jglsdk`.
+- rework some parts of `jglsdk`;
+- rework the `TutorialChooser`.
 
 ## License
 This project is licensed under the [Attribution 4.0 International license](http://creativecommons.org/licenses/by/4.0/): you can do what you want with my code, but if you want to publish some derived work I kindly ask you to simply provide a link to this repository.

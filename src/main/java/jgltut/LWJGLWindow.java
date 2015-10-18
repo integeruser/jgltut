@@ -22,7 +22,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  *
  * @author integeruser
  */
-public class LWJGLWindow {
+public abstract class LWJGLWindow {
     protected static final int FLOAT_SIZE = Float.SIZE / Byte.SIZE;
 
     protected long window;
@@ -158,20 +158,13 @@ public class LWJGLWindow {
     }
 
     ////////////////////////////////
-    protected void init() {
-    }
+    protected abstract void init();
 
-    protected void display() {
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-    }
+    protected abstract void display();
 
-    protected void reshape(int w, int h) {
-        glViewport(0, 0, w, h);
-    }
+    protected abstract void reshape(int w, int h);
 
-    protected void update() {
-    }
+    protected abstract void update();
 
     ////////////////////////////////
     protected final float getElapsedTime() {

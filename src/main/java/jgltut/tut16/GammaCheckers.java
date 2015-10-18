@@ -204,6 +204,10 @@ public class GammaCheckers extends LWJGLWindow {
         glViewport(0, 0, w, h);
     }
 
+    @Override
+    protected void update() {
+    }
+
     ////////////////////////////////
     private ProgramData progNoGamma;
     private ProgramData progGamma;

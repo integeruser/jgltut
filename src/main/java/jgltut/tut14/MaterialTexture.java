@@ -345,6 +345,10 @@ public class MaterialTexture extends LWJGLWindow {
         glViewport(0, 0, w, h);
     }
 
+    @Override
+    protected void update() {
+    }
+
     ////////////////////////////////
     private ProgramData[] programs = new ProgramData[ShaderMode.NUM_SHADER_MODES.ordinal()];
     private ShaderPairs[] shaderPairs = new ShaderPairs[]{

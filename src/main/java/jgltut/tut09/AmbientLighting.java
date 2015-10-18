@@ -241,6 +241,10 @@ public class AmbientLighting extends LWJGLWindow {
         glViewport(0, 0, w, h);
     }
 
+    @Override
+    protected void update() {
+    }
+
     ////////////////////////////////
     private ProgramData whiteDiffuseColor;
     private ProgramData vertexDiffuseColor;

@@ -101,6 +101,15 @@ public class PerspectiveInterpolation extends LWJGLWindow {
         glUseProgram(0);
     }
 
+    @Override
+    protected void reshape(int w, int h) {
+        glViewport(0, 0, w, h);
+    }
+
+    @Override
+    protected void update() {
+    }
+
     ////////////////////////////////
     private ProgramData smoothInterp;
     private ProgramData linearInterp;

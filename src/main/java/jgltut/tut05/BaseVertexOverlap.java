@@ -90,6 +90,10 @@ public class BaseVertexOverlap extends LWJGLWindow {
         glViewport(0, 0, w, h);
     }
 
+    @Override
+    protected void update() {
+    }
+
     ////////////////////////////////
     private int theProgram;
 

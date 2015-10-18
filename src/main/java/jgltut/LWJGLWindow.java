@@ -57,7 +57,7 @@ public abstract class LWJGLWindow {
             IntBuffer h = BufferUtils.createIntBuffer(1);
             glfwGetFramebufferSize(window, w, h);
             int currWidth = w.get(0);
-            int currHeight = w.get(0);
+            int currHeight = h.get(0);
             reshape(currWidth, currHeight);
 
             // Setup a framebuffer size callback. It will be called every time the window is resized

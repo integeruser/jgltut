@@ -123,7 +123,7 @@ public class CameraRelative extends LWJGLWindow {
         {
             currMatrix.push();
             currMatrix.translate(camTarget);
-            currMatrix.applyMatrix(Glm.matCast(orientation));
+            currMatrix.applyMatrix(Glm.mat4Cast(orientation));
             currMatrix.rotateX(-90.0f);
 
             // Set the base color for this object.

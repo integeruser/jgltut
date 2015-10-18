@@ -88,7 +88,7 @@ public class QuaternionYPR extends LWJGLWindow {
 
         MatrixStack currMatrix = new MatrixStack();
         currMatrix.translate(0.0f, 0.0f, -200.0f);
-        currMatrix.applyMatrix(Glm.matCast(orientation));
+        currMatrix.applyMatrix(Glm.mat4Cast(orientation));
 
         glUseProgram(theProgram);
 

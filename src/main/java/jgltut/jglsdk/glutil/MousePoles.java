@@ -227,7 +227,7 @@ public class MousePoles {
         public Mat4 calcMatrix() {
             Mat4 translateMat = new Mat4(1.0f);
             translateMat.setColumn(3, new Vec4(objectData.position, 1.0f));
-            return translateMat.mul(Glm.matCast(objectData.orientation));
+            return translateMat.mul(Glm.mat4Cast(objectData.orientation));
         }
 
         ////////////////////////////////
@@ -488,7 +488,7 @@ public class MousePoles {
             // Rotate the world to look in the right direction.
             Quaternion fullRotation = Glm.angleAxis(currView.degSpinRotation, new Vec3(0.0f, 0.0f, 1.0f)).mul(currView.orient);
 
-            mat.mul(Glm.matCast(fullRotation));
+            mat.mul(Glm.mat4Cast(fullRotation));
 
             // Translate the world by the negation of the lookat point, placing the origin at the lookat point.
             mat = Glm.translate(mat, Vec3.negate(currView.targetPos));

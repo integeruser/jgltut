@@ -272,7 +272,7 @@ public class Scene {
         Mat4 getMatrix() {
             Mat4 ret = new Mat4();
             ret = Glm.translate(ret, trans);
-            ret.mul(Glm.matCast(orient));
+            ret.mul(Glm.mat4Cast(orient));
             ret = Glm.scale(ret, scale);
             return ret;
         }

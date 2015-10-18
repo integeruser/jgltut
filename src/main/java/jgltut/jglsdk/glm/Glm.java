@@ -341,7 +341,7 @@ public class Glm {
     }
 
 
-    public static Mat4 matCast(Quaternion quat) {
+    public static Mat4 mat4Cast(Quaternion quat) {
         //  Converts this quaternion to a rotation matrix.
         //  | 1 - 2(y^2 + z^2)	2(xy + wz)			2(xz - wy)			0  |
         //  | 2(xy - wz)		1 - 2(x^2 + z^2)	2(yz + wx)			0  |

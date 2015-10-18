@@ -583,38 +583,38 @@ public class Hierarchy extends LWJGLWindow {
 
 
         void adjBase(boolean increment) {
-            float lastFrameDuration = getLastFrameDuration() * 5;
-            angBase += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+            final float scale = 5;
+            angBase += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration * scale : -STANDARD_ANGLE_INCREMENT * lastFrameDuration * scale;
             angBase = angBase % 360.0f;
         }
 
         void adjUpperArm(boolean increment) {
-            float lastFrameDuration = getLastFrameDuration() * 5 ;
-            angUpperArm += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+            final float scale = 5;
+            angUpperArm += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration * scale : -STANDARD_ANGLE_INCREMENT * lastFrameDuration * scale;
             angUpperArm = clamp(angUpperArm, -90.0f, 0.0f);
         }
 
         void adjLowerArm(boolean increment) {
-            float lastFrameDuration = getLastFrameDuration() * 5;
-            angLowerArm += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+            final float scale = 5;
+            angLowerArm += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration * scale : -STANDARD_ANGLE_INCREMENT * lastFrameDuration * scale;
             angLowerArm = clamp(angLowerArm, 0.0f, 146.25f);
         }
 
         void adjWristPitch(boolean increment) {
-            float lastFrameDuration = getLastFrameDuration() * 5;
-            angWristPitch += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+            final float scale = 5;
+            angWristPitch += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration * scale : -STANDARD_ANGLE_INCREMENT * lastFrameDuration * scale;
             angWristPitch = clamp(angWristPitch, 0.0f, 90.0f);
         }
 
         void adjWristRoll(boolean increment) {
-            float lastFrameDuration = getLastFrameDuration() * 5;
-            angWristRoll += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
+            final float scale = 5;
+            angWristRoll += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration * scale : -STANDARD_ANGLE_INCREMENT * lastFrameDuration * scale;
             angWristRoll = angWristRoll % 360.0f;
         }
 
         void adjFingerOpen(boolean increment) {
-            float lastFrameDuration = getLastFrameDuration() * 5;
-            angFingerOpen += increment ? SMALL_ANGLE_INCREMENT * lastFrameDuration : -SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            final float scale = 5;
+            angFingerOpen += increment ? SMALL_ANGLE_INCREMENT * lastFrameDuration * scale : -SMALL_ANGLE_INCREMENT * lastFrameDuration * scale;
             angFingerOpen = clamp(angFingerOpen, 9.0f, 90.0f);
         }
 

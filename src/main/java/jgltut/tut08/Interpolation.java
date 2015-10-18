@@ -211,7 +211,7 @@ public class Interpolation extends LWJGLWindow {
 
 
             boolean updateTime() {
-                return currTimer.update(getElapsedTime());
+                return currTimer.update(elapsedTime);
             }
 
             void startAnimation(int destinationIndex, float duration) {

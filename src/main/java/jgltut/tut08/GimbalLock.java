@@ -125,24 +125,24 @@ public class GimbalLock extends LWJGLWindow {
     @Override
     protected void update() {
         final float SMALL_ANGLE_INCREMENT = 9.0f;
-        float lastFrameDuration = getLastFrameDuration() * 10;
+        final float scale = 10;
 
         if (isKeyPressed(GLFW_KEY_W)) {
-            gimbalAngles.angleX += SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            gimbalAngles.angleX += SMALL_ANGLE_INCREMENT * lastFrameDuration * scale;
         } else if (isKeyPressed(GLFW_KEY_S)) {
-            gimbalAngles.angleX -= SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            gimbalAngles.angleX -= SMALL_ANGLE_INCREMENT * lastFrameDuration * scale;
         }
 
         if (isKeyPressed(GLFW_KEY_A)) {
-            gimbalAngles.angleY += SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            gimbalAngles.angleY += SMALL_ANGLE_INCREMENT * lastFrameDuration * scale;
         } else if (isKeyPressed(GLFW_KEY_D)) {
-            gimbalAngles.angleY -= SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            gimbalAngles.angleY -= SMALL_ANGLE_INCREMENT * lastFrameDuration * scale;
         }
 
         if (isKeyPressed(GLFW_KEY_Q)) {
-            gimbalAngles.angleZ += SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            gimbalAngles.angleZ += SMALL_ANGLE_INCREMENT * lastFrameDuration * scale;
         } else if (isKeyPressed(GLFW_KEY_E)) {
-            gimbalAngles.angleZ -= SMALL_ANGLE_INCREMENT * lastFrameDuration;
+            gimbalAngles.angleZ -= SMALL_ANGLE_INCREMENT * lastFrameDuration * scale;
         }
     }
 

@@ -206,7 +206,7 @@ public class GaussianSpecularLighting extends LWJGLWindow {
 
     @Override
     protected void display() {
-        lightTimer.update(getElapsedTime());
+        lightTimer.update(elapsedTime);
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClearDepth(1.0f);
@@ -326,33 +326,33 @@ public class GaussianSpecularLighting extends LWJGLWindow {
 
     @Override
     protected void update() {
-        float lastFrameDuration = getLastFrameDuration() * 5;
+        final float scale = 5;
 
         if (isKeyPressed(GLFW_KEY_J)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                lightRadius -= 0.05f * lastFrameDuration;
+                lightRadius -= 0.05f * lastFrameDuration * scale;
             } else {
-                lightRadius -= 0.2f * lastFrameDuration;
+                lightRadius -= 0.2f * lastFrameDuration * scale;
             }
         } else if (isKeyPressed(GLFW_KEY_L)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                lightRadius += 0.05f * lastFrameDuration;
+                lightRadius += 0.05f * lastFrameDuration * scale;
             } else {
-                lightRadius += 0.2f * lastFrameDuration;
+                lightRadius += 0.2f * lastFrameDuration * scale;
             }
         }
 
         if (isKeyPressed(GLFW_KEY_I)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                lightHeight += 0.05f * lastFrameDuration;
+                lightHeight += 0.05f * lastFrameDuration * scale;
             } else {
-                lightHeight += 0.2f * lastFrameDuration;
+                lightHeight += 0.2f * lastFrameDuration * scale;
             }
         } else if (isKeyPressed(GLFW_KEY_K)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                lightHeight -= 0.05f * lastFrameDuration;
+                lightHeight -= 0.05f * lastFrameDuration * scale;
             } else {
-                lightHeight -= 0.2f * lastFrameDuration;
+                lightHeight -= 0.2f * lastFrameDuration * scale;
             }
         }
 

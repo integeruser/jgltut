@@ -202,7 +202,7 @@ public class GammaLandscape extends LWJGLWindow {
             glDisable(GL_FRAMEBUFFER_SRGB);
         }
 
-        lightEnv.updateTime(getElapsedTime());
+        lightEnv.updateTime(elapsedTime);
 
         Vec4 bgColor = lightEnv.getBackgroundColor();
         glClearColor(bgColor.x, bgColor.y, bgColor.z, bgColor.w);
@@ -313,30 +313,30 @@ public class GammaLandscape extends LWJGLWindow {
 
     @Override
     protected void update() {
-        float lastFrameDuration = getLastFrameDuration() * 20;
+        final float scale = 20;
 
         if (isKeyPressed(GLFW_KEY_W)) {
             viewPole.charPress(GLFW_KEY_W, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
-                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_S)) {
             viewPole.charPress(GLFW_KEY_S, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
-                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration * scale);
         }
 
         if (isKeyPressed(GLFW_KEY_D)) {
             viewPole.charPress(GLFW_KEY_D, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
-                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_A)) {
             viewPole.charPress(GLFW_KEY_A, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
-                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration * scale);
         }
 
         if (isKeyPressed(GLFW_KEY_E)) {
             viewPole.charPress(GLFW_KEY_E, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
-                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_Q)) {
             viewPole.charPress(GLFW_KEY_Q, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
-                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration * scale);
         }
     }
 

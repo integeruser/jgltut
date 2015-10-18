@@ -175,90 +175,90 @@ public class WorldWithUBO extends LWJGLWindow {
 
     @Override
     protected void update() {
-        float lastFrameDuration = getLastFrameDuration() * 5;
+        final float scale = 5;
 
         if (isKeyPressed(GLFW_KEY_W)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                camTarget.z = camTarget.z - 0.4f * lastFrameDuration;
+                camTarget.z = camTarget.z - 0.4f * lastFrameDuration * scale;
             } else {
-                camTarget.z = camTarget.z - 4.0f * lastFrameDuration;
+                camTarget.z = camTarget.z - 4.0f * lastFrameDuration * scale;
             }
         } else if (isKeyPressed(GLFW_KEY_S)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                camTarget.z = camTarget.z + 0.4f * lastFrameDuration;
+                camTarget.z = camTarget.z + 0.4f * lastFrameDuration * scale;
             } else {
-                camTarget.z = camTarget.z + 4.0f * lastFrameDuration;
+                camTarget.z = camTarget.z + 4.0f * lastFrameDuration * scale;
             }
         }
 
         if (isKeyPressed(GLFW_KEY_D)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                camTarget.x = camTarget.x + 0.4f * lastFrameDuration;
+                camTarget.x = camTarget.x + 0.4f * lastFrameDuration * scale;
             } else {
-                camTarget.x = camTarget.x + 4.0f * lastFrameDuration;
+                camTarget.x = camTarget.x + 4.0f * lastFrameDuration * scale;
             }
         } else if (isKeyPressed(GLFW_KEY_A)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                camTarget.x = camTarget.x - 0.4f * lastFrameDuration;
+                camTarget.x = camTarget.x - 0.4f * lastFrameDuration * scale;
             } else {
-                camTarget.x = camTarget.x - 4.0f * lastFrameDuration;
+                camTarget.x = camTarget.x - 4.0f * lastFrameDuration * scale;
             }
         }
 
         if (isKeyPressed(GLFW_KEY_E)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                camTarget.y = camTarget.y - 0.4f * lastFrameDuration;
+                camTarget.y = camTarget.y - 0.4f * lastFrameDuration * scale;
             } else {
-                camTarget.y = camTarget.y - 4.0f * lastFrameDuration;
+                camTarget.y = camTarget.y - 4.0f * lastFrameDuration * scale;
             }
         } else if (isKeyPressed(GLFW_KEY_Q)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                camTarget.y = camTarget.y + 0.4f * lastFrameDuration;
+                camTarget.y = camTarget.y + 0.4f * lastFrameDuration * scale;
             } else {
-                camTarget.y = camTarget.y + 4.0f * lastFrameDuration;
+                camTarget.y = camTarget.y + 4.0f * lastFrameDuration * scale;
             }
         }
 
 
         if (isKeyPressed(GLFW_KEY_I)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                sphereCamRelPos.y = sphereCamRelPos.y - 1.125f * lastFrameDuration;
+                sphereCamRelPos.y = sphereCamRelPos.y - 1.125f * lastFrameDuration * scale;
             } else {
-                sphereCamRelPos.y = sphereCamRelPos.y - 11.25f * lastFrameDuration;
+                sphereCamRelPos.y = sphereCamRelPos.y - 11.25f * lastFrameDuration * scale;
             }
         } else if (isKeyPressed(GLFW_KEY_K)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                sphereCamRelPos.y = sphereCamRelPos.y + 1.125f * lastFrameDuration;
+                sphereCamRelPos.y = sphereCamRelPos.y + 1.125f * lastFrameDuration * scale;
             } else {
-                sphereCamRelPos.y = sphereCamRelPos.y + 11.25f * lastFrameDuration;
+                sphereCamRelPos.y = sphereCamRelPos.y + 11.25f * lastFrameDuration * scale;
             }
         }
 
         if (isKeyPressed(GLFW_KEY_J)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                sphereCamRelPos.x = sphereCamRelPos.x - 1.125f * lastFrameDuration;
+                sphereCamRelPos.x = sphereCamRelPos.x - 1.125f * lastFrameDuration * scale;
             } else {
-                sphereCamRelPos.x = sphereCamRelPos.x - 11.25f * lastFrameDuration;
+                sphereCamRelPos.x = sphereCamRelPos.x - 11.25f * lastFrameDuration * scale;
             }
         } else if (isKeyPressed(GLFW_KEY_L)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                sphereCamRelPos.x = sphereCamRelPos.x + 1.125f * lastFrameDuration;
+                sphereCamRelPos.x = sphereCamRelPos.x + 1.125f * lastFrameDuration * scale;
             } else {
-                sphereCamRelPos.x = sphereCamRelPos.x + 11.25f * lastFrameDuration;
+                sphereCamRelPos.x = sphereCamRelPos.x + 11.25f * lastFrameDuration * scale;
             }
         }
 
         if (isKeyPressed(GLFW_KEY_O)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                sphereCamRelPos.z = sphereCamRelPos.z - 0.5f * lastFrameDuration;
+                sphereCamRelPos.z = sphereCamRelPos.z - 0.5f * lastFrameDuration * scale;
             } else {
-                sphereCamRelPos.z = sphereCamRelPos.z - 5.0f * lastFrameDuration;
+                sphereCamRelPos.z = sphereCamRelPos.z - 5.0f * lastFrameDuration * scale;
             }
         } else if (isKeyPressed(GLFW_KEY_U)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                sphereCamRelPos.z = sphereCamRelPos.z + 0.5f * lastFrameDuration;
+                sphereCamRelPos.z = sphereCamRelPos.z + 0.5f * lastFrameDuration * scale;
             } else {
-                sphereCamRelPos.z = sphereCamRelPos.z + 5.0f * lastFrameDuration;
+                sphereCamRelPos.z = sphereCamRelPos.z + 5.0f * lastFrameDuration * scale;
             }
         }
 

@@ -210,7 +210,7 @@ public class MaterialTexture extends LWJGLWindow {
 
     @Override
     protected void display() {
-        lightTimer.update(getElapsedTime());
+        lightTimer.update(elapsedTime);
 
         glClearColor(0.75f, 0.75f, 1.0f, 1.0f);
         glClearDepth(1.0f);

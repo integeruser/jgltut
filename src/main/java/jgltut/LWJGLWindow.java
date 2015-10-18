@@ -37,8 +37,8 @@ public abstract class LWJGLWindow {
     private GLFWFramebufferSizeCallback framebufferSizeCallback;
 
     // Measured in seconds
-    private float elapsedTime;
-    private float lastFrameDuration;
+    protected float elapsedTime;
+    protected float lastFrameDuration;
 
     private double lastFrameTimestamp;
 
@@ -163,15 +163,6 @@ public abstract class LWJGLWindow {
     protected abstract void update();
 
     ////////////////////////////////
-    protected final float getElapsedTime() {
-        return elapsedTime;
-    }
-
-    protected final float getLastFrameDuration() {
-        return lastFrameDuration;
-    }
-
-
     protected final boolean isKeyPressed(int key) {
         return glfwGetKey(window, key) == 1;
     }

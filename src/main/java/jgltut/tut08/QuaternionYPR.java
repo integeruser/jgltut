@@ -119,24 +119,24 @@ public class QuaternionYPR extends LWJGLWindow {
     @Override
     protected void update() {
         final float SMALL_ANGLE_INCREMENT = 9.0f;
-        float lastFrameDuration = getLastFrameDuration() * 10;
+        final float scale = 10;
 
         if (isKeyPressed(GLFW_KEY_W)) {
-            offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration);
+            offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_S)) {
-            offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration);
+            offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         }
 
         if (isKeyPressed(GLFW_KEY_A)) {
-            offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration);
+            offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_D)) {
-            offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration);
+            offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         }
 
         if (isKeyPressed(GLFW_KEY_Q)) {
-            offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration);
+            offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_E)) {
-            offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration);
+            offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         }
     }
 

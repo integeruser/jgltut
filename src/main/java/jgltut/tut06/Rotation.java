@@ -71,7 +71,6 @@ public class Rotation extends LWJGLWindow {
 
         glBindVertexArray(vao);
 
-        float elapsedTime = getElapsedTime();
         for (Instance currInst : instanceList) {
             final Mat4 transformMatrix = currInst.constructMatrix(elapsedTime);
             glUniformMatrix4fv(modelToCameraMatrixUnif, false, transformMatrix.fillAndFlipBuffer(mat4Buffer));

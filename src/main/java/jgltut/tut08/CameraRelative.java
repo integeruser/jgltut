@@ -153,52 +153,52 @@ public class CameraRelative extends LWJGLWindow {
     @Override
     protected void update() {
         final float SMALL_ANGLE_INCREMENT = 9.0f;
-        float lastFrameDuration = getLastFrameDuration() * 10;
+        final float scale = 10;
 
         if (isKeyPressed(GLFW_KEY_W)) {
-            offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration);
+            offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_S)) {
-            offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration);
+            offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         }
 
         if (isKeyPressed(GLFW_KEY_A)) {
-            offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration);
+            offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_D)) {
-            offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration);
+            offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         }
 
         if (isKeyPressed(GLFW_KEY_Q)) {
-            offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration);
+            offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_E)) {
-            offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration);
+            offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         }
 
 
         if (isKeyPressed(GLFW_KEY_I)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                sphereCamRelPos.y = sphereCamRelPos.y - 1.125f * lastFrameDuration;
+                sphereCamRelPos.y = sphereCamRelPos.y - 1.125f * lastFrameDuration * scale;
             } else {
-                sphereCamRelPos.y = sphereCamRelPos.y - 11.25f * lastFrameDuration;
+                sphereCamRelPos.y = sphereCamRelPos.y - 11.25f * lastFrameDuration * scale;
             }
         } else if (isKeyPressed(GLFW_KEY_K)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                sphereCamRelPos.y = sphereCamRelPos.y + 1.125f * lastFrameDuration;
+                sphereCamRelPos.y = sphereCamRelPos.y + 1.125f * lastFrameDuration * scale;
             } else {
-                sphereCamRelPos.y = sphereCamRelPos.y + 11.25f * lastFrameDuration;
+                sphereCamRelPos.y = sphereCamRelPos.y + 11.25f * lastFrameDuration * scale;
             }
         }
 
         if (isKeyPressed(GLFW_KEY_J)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                sphereCamRelPos.x = sphereCamRelPos.x - 1.125f * lastFrameDuration;
+                sphereCamRelPos.x = sphereCamRelPos.x - 1.125f * lastFrameDuration * scale;
             } else {
-                sphereCamRelPos.x = sphereCamRelPos.x - 11.25f * lastFrameDuration;
+                sphereCamRelPos.x = sphereCamRelPos.x - 11.25f * lastFrameDuration * scale;
             }
         } else if (isKeyPressed(GLFW_KEY_L)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                sphereCamRelPos.x = sphereCamRelPos.x + 1.125f * lastFrameDuration;
+                sphereCamRelPos.x = sphereCamRelPos.x + 1.125f * lastFrameDuration * scale;
             } else {
-                sphereCamRelPos.x = sphereCamRelPos.x + 11.25f * lastFrameDuration;
+                sphereCamRelPos.x = sphereCamRelPos.x + 11.25f * lastFrameDuration * scale;
             }
         }
 

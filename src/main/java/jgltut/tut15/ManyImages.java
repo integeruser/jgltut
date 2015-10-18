@@ -135,7 +135,7 @@ public class ManyImages extends LWJGLWindow {
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        camTimer.update(getElapsedTime());
+        camTimer.update(elapsedTime);
 
         float cyclicAngle = camTimer.getAlpha() * 6.28f;
         float hOffset = (float) (Math.cos(cyclicAngle) * 0.25f);

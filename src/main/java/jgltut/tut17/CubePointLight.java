@@ -184,7 +184,7 @@ public class CubePointLight extends LWJGLWindow {
 
     @Override
     protected void display() {
-        timer.update(getElapsedTime());
+        timer.update(elapsedTime);
 
         glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
         glClearDepth(1.0f);
@@ -284,30 +284,30 @@ public class CubePointLight extends LWJGLWindow {
 
     @Override
     protected void update() {
-        float lastFrameDuration = getLastFrameDuration() * 10;
+        final float scale = 10;
 
         if (isKeyPressed(GLFW_KEY_W)) {
             viewPole.charPress(GLFW_KEY_W, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
-                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_S)) {
             viewPole.charPress(GLFW_KEY_S, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
-                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration * scale);
         }
 
         if (isKeyPressed(GLFW_KEY_D)) {
             viewPole.charPress(GLFW_KEY_D, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
-                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_A)) {
             viewPole.charPress(GLFW_KEY_A, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
-                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration * scale);
         }
 
         if (isKeyPressed(GLFW_KEY_E)) {
             viewPole.charPress(GLFW_KEY_E, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
-                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_Q)) {
             viewPole.charPress(GLFW_KEY_Q, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||
-                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration);
+                    isKeyPressed(GLFW_KEY_RIGHT_SHIFT), lastFrameDuration * scale);
         }
     }
 

@@ -27,7 +27,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class OverlapNoDepth extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut05/data/";
-        new OverlapNoDepth().start();
+        new OverlapNoDepth().start(500, 500);
     }
 
 

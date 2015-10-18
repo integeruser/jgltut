@@ -56,7 +56,7 @@ import static org.lwjgl.opengl.GL32.*;
 public class GeomImpostor extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut13/data/";
-        new GeomImpostor().start();
+        new GeomImpostor().start(500, 500);
     }
 
 

@@ -28,7 +28,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class Rotation extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut06/data/";
-        new Rotation().start();
+        new Rotation().start(500, 500);
     }
 
 

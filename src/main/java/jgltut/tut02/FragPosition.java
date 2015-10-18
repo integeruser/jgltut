@@ -26,7 +26,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class FragPosition extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut02/data/";
-        new FragPosition().start();
+        new FragPosition().start(500, 500);
     }
 
 

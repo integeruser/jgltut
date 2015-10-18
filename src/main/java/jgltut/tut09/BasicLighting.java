@@ -50,7 +50,7 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 public class BasicLighting extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut09/data/";
-        new BasicLighting().start();
+        new BasicLighting().start(500, 500);
     }
 
 

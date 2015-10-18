@@ -31,7 +31,7 @@ import static org.lwjgl.opengl.GL20.*;
 public class PerspectiveInterpolation extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut14/data/";
-        new PerspectiveInterpolation().start();
+        new PerspectiveInterpolation().start(500, 500);
     }
 
 

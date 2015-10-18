@@ -26,7 +26,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class AspectRatio extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut04/data/";
-        new AspectRatio().start();
+        new AspectRatio().start(500, 500);
     }
 
 

@@ -25,7 +25,7 @@ import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
  */
 public class Tut1 extends LWJGLWindow {
     public static void main(String[] args) {
-        new Tut1().start();
+        new Tut1().start(500, 500);
     }
 
 

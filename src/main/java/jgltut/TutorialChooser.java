@@ -99,85 +99,85 @@ public class TutorialChooser extends JPanel implements TreeSelectionListener {
                 public void run() {
                     switch (selectedTutorial) {
                         case "Tut1":
-                            new Tut1().start();
+                            new Tut1().start(500, 500);
                             break;
 
                         case "FragPosition":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut02/data/";
-                            new FragPosition().start();
+                            new FragPosition().start(500, 500);
                             break;
                         case "VertexColor":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut02/data/";
-                            new VertexColor().start();
+                            new VertexColor().start(500, 500);
                             break;
 
 
                         case "CpuPositionOffset":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut03/data/";
-                            new CpuPositionOffset().start();
+                            new CpuPositionOffset().start(500, 500);
                             break;
                         case "VertPositionOffset":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut03/data/";
-                            new VertPositionOffset().start();
+                            new VertPositionOffset().start(500, 500);
                             break;
                         case "VertCalcOffset":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut03/data/";
-                            new VertCalcOffset().start();
+                            new VertCalcOffset().start(500, 500);
                             break;
                         case "FragChangeColor":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut03/data/";
-                            new FragChangeColor().start();
+                            new FragChangeColor().start(500, 500);
                             break;
 
                         case "OrthoCube":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut04/data/";
-                            new OrthoCube().start();
+                            new OrthoCube().start(500, 500);
                             break;
                         case "ShaderPerspective":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut04/data/";
-                            new ShaderPerspective().start();
+                            new ShaderPerspective().start(500, 500);
                             break;
                         case "MatrixPerspective":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut04/data/";
-                            new MatrixPerspective().start();
+                            new MatrixPerspective().start(500, 500);
                             break;
                         case "AspectRatio":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut04/data/";
-                            new AspectRatio().start();
+                            new AspectRatio().start(500, 500);
                             break;
 
                         case "OverlapNoDepth":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut05/data/";
-                            new OverlapNoDepth().start();
+                            new OverlapNoDepth().start(500, 500);
                             break;
                         case "BaseVertexOverlap":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut05/data/";
-                            new BaseVertexOverlap().start();
+                            new BaseVertexOverlap().start(500, 500);
                             break;
                         case "DepthBuffer":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut05/data/";
-                            new DepthBuffer().start();
+                            new DepthBuffer().start(500, 500);
                             break;
                         case "VertexClipping":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut05/data/";
-                            new VertexClipping().start();
+                            new VertexClipping().start(500, 500);
                             break;
                         case "DepthClamping":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut05/data/";
-                            new DepthClamping().start();
+                            new DepthClamping().start(500, 500);
                             break;
 
                         case "Translation":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut06/data/";
-                            new Translation().start();
+                            new Translation().start(500, 500);
                             break;
                         case "Scale":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut06/data/";
-                            new Scale().start();
+                            new Scale().start(500, 500);
                             break;
                         case "Rotation":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut06/data/";
-                            new Rotation().start();
+                            new Rotation().start(500, 500);
                             break;
                         case "Hierarchy":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut06/data/";
@@ -195,59 +195,59 @@ public class TutorialChooser extends JPanel implements TreeSelectionListener {
 
                         case "GimbalLock":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut08/data/";
-                            new GimbalLock().start();
+                            new GimbalLock().start(500, 500);
                             break;
                         case "QuaternionYPR":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut08/data/";
-                            new QuaternionYPR().start();
+                            new QuaternionYPR().start(500, 500);
                             break;
                         case "CameraRelative":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut08/data/";
-                            new CameraRelative().start();
+                            new CameraRelative().start(500, 500);
                             break;
                         case "Interpolation":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut08/data/";
-                            new Interpolation().start();
+                            new Interpolation().start(500, 500);
                             break;
 
 
                         case "Basic Lighting":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut09/data/";
-                            new BasicLighting().start();
+                            new BasicLighting().start(500, 500);
                             break;
                         case "Scale and Lighting":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut09/data/";
-                            new ScaleAndLighting().start();
+                            new ScaleAndLighting().start(500, 500);
                             break;
                         case "Ambient Lighting":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut09/data/";
-                            new AmbientLighting().start();
+                            new AmbientLighting().start(500, 500);
                             break;
 
                         case "Vertex Point Lighting":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut10/data/";
-                            new VertexPointLighting().start();
+                            new VertexPointLighting().start(500, 500);
                             break;
                         case "Fragment Point Lighting":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut10/data/";
-                            new FragmentPointLighting().start();
+                            new FragmentPointLighting().start(500, 500);
                             break;
                         case "Fragment Attenuation":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut10/data/";
-                            new FragmentAttenuation().start();
+                            new FragmentAttenuation().start(500, 500);
                             break;
 
                         case "Phong Lighting":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut11/data/";
-                            new PhongLighting().start();
+                            new PhongLighting().start(500, 500);
                             break;
                         case "Blinn vs Phong Lighting":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut11/data/";
-                            new BlinnVsPhongLighting().start();
+                            new BlinnVsPhongLighting().start(500, 500);
                             break;
                         case "Gaussian Specular Lighting":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut11/data/";
-                            new GaussianSpecularLighting().start();
+                            new GaussianSpecularLighting().start(500, 500);
                             break;
 
                         case "Scene Lighting":
@@ -265,30 +265,30 @@ public class TutorialChooser extends JPanel implements TreeSelectionListener {
 
                         case "BasicImpostor":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut13/data/";
-                            new BasicImpostor().start();
+                            new BasicImpostor().start(500, 500);
                             break;
                         case "GeomImpostor":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut13/data/";
-                            new GeomImpostor().start();
+                            new GeomImpostor().start(500, 500);
                             break;
 
 
                         case "Basic Texture":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut14/data/";
-                            new BasicTexture().start();
+                            new BasicTexture().start(500, 500);
                             break;
                         case "Perspective Interpolation":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut14/data/";
-                            new PerspectiveInterpolation().start();
+                            new PerspectiveInterpolation().start(500, 500);
                             break;
                         case "Material Texture":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut14/data/";
-                            new MaterialTexture().start();
+                            new MaterialTexture().start(500, 500);
                             break;
 
                         case "Many Images":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut15/data/";
-                            new ManyImages().start();
+                            new ManyImages().start(500, 500);
                             break;
 
                         case "GammaRamp":
@@ -297,7 +297,7 @@ public class TutorialChooser extends JPanel implements TreeSelectionListener {
                             break;
                         case "Gamma Checkers":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut16/data/";
-                            new GammaCheckers().start();
+                            new GammaCheckers().start(500, 500);
                             break;
                         case "Gamma Landscape":
                             Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut16/data/";

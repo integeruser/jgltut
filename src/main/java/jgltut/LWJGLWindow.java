@@ -43,10 +43,6 @@ public abstract class LWJGLWindow {
     private double lastFrameTimestamp;
 
     ////////////////////////////////
-    public final void start() {
-        start(500, 500);
-    }
-
     public final void start(int width, int height) {
         try {
             initLWJGL(width, height);

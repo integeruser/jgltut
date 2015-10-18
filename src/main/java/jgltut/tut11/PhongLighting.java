@@ -60,7 +60,7 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 public class PhongLighting extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut11/data/";
-        new PhongLighting().start();
+        new PhongLighting().start(500, 500);
     }
 
 

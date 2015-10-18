@@ -26,7 +26,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class FragChangeColor extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut03/data/";
-        new FragChangeColor().start();
+        new FragChangeColor().start(500, 500);
     }
 
 

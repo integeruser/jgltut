@@ -36,7 +36,7 @@ import static org.lwjgl.opengl.GL20.*;
 public class QuaternionYPR extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut08/data/";
-        new QuaternionYPR().start();
+        new QuaternionYPR().start(500, 500);
     }
 
 

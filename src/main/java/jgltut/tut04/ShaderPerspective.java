@@ -26,7 +26,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class ShaderPerspective extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut04/data/";
-        new ShaderPerspective().start();
+        new ShaderPerspective().start(500, 500);
     }
 
 

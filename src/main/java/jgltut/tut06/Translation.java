@@ -30,7 +30,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class Translation extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut06/data/";
-        new Translation().start();
+        new Translation().start(500, 500);
     }
 
 

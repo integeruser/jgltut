@@ -28,7 +28,7 @@ import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
 public class BaseVertexOverlap extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut05/data/";
-        new BaseVertexOverlap().start();
+        new BaseVertexOverlap().start(500, 500);
     }
 
 

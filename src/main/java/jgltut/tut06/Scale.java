@@ -31,7 +31,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class Scale extends LWJGLWindow {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut06/data/";
-        new Scale().start();
+        new Scale().start(500, 500);
     }
 
 

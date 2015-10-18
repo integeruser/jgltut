@@ -36,7 +36,7 @@ public abstract class LWJGLWindow {
     private GLFWErrorCallback errorCallback;
     private GLFWFramebufferSizeCallback framebufferSizeCallback;
 
-    // Measured in milliseconds
+    // Measured in seconds
     private float elapsedTime;
     private float lastFrameDuration;
 
@@ -71,10 +71,10 @@ public abstract class LWJGLWindow {
             // Start main loop
             long startTime = System.nanoTime();
             while (glfwWindowShouldClose(window) == GL_FALSE) {
-                elapsedTime = (float) ((System.nanoTime() - startTime) / 1000000.0);
+                elapsedTime = (float) ((System.nanoTime() - startTime) / 1000000000.0);
 
                 double now = System.nanoTime();
-                lastFrameDuration = (float) ((now - lastFrameTimestamp) / 1000000.0);
+                lastFrameDuration = (float) ((now - lastFrameTimestamp) / 1000000000.0);
                 lastFrameTimestamp = now;
 
                 update();

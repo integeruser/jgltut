@@ -125,7 +125,7 @@ public class GimbalLock extends LWJGLWindow {
     @Override
     protected void update() {
         final float SMALL_ANGLE_INCREMENT = 9.0f;
-        float lastFrameDuration = getLastFrameDuration() * 10 / 1000.0f;
+        float lastFrameDuration = getLastFrameDuration() * 10;
 
         if (isKeyPressed(GLFW_KEY_W)) {
             gimbalAngles.angleX += SMALL_ANGLE_INCREMENT * lastFrameDuration;

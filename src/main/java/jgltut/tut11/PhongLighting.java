@@ -353,7 +353,7 @@ public class PhongLighting extends LWJGLWindow {
 
     @Override
     protected void update() {
-        float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
+        float lastFrameDuration = getLastFrameDuration() * 5;
 
         if (isKeyPressed(GLFW_KEY_J)) {
             if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {

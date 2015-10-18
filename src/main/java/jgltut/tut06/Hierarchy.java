@@ -583,37 +583,37 @@ public class Hierarchy extends LWJGLWindow {
 
 
         void adjBase(boolean increment) {
-            float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
+            float lastFrameDuration = getLastFrameDuration() * 5;
             angBase += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angBase = angBase % 360.0f;
         }
 
         void adjUpperArm(boolean increment) {
-            float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
+            float lastFrameDuration = getLastFrameDuration() * 5 ;
             angUpperArm += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angUpperArm = clamp(angUpperArm, -90.0f, 0.0f);
         }
 
         void adjLowerArm(boolean increment) {
-            float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
+            float lastFrameDuration = getLastFrameDuration() * 5;
             angLowerArm += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angLowerArm = clamp(angLowerArm, 0.0f, 146.25f);
         }
 
         void adjWristPitch(boolean increment) {
-            float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
+            float lastFrameDuration = getLastFrameDuration() * 5;
             angWristPitch += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angWristPitch = clamp(angWristPitch, 0.0f, 90.0f);
         }
 
         void adjWristRoll(boolean increment) {
-            float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
+            float lastFrameDuration = getLastFrameDuration() * 5;
             angWristRoll += increment ? STANDARD_ANGLE_INCREMENT * lastFrameDuration : -STANDARD_ANGLE_INCREMENT * lastFrameDuration;
             angWristRoll = angWristRoll % 360.0f;
         }
 
         void adjFingerOpen(boolean increment) {
-            float lastFrameDuration = getLastFrameDuration() * 5 / 1000.0f;
+            float lastFrameDuration = getLastFrameDuration() * 5;
             angFingerOpen += increment ? SMALL_ANGLE_INCREMENT * lastFrameDuration : -SMALL_ANGLE_INCREMENT * lastFrameDuration;
             angFingerOpen = clamp(angFingerOpen, 9.0f, 90.0f);
         }

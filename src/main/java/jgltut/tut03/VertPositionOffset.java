@@ -114,7 +114,7 @@ public class VertPositionOffset extends LWJGLWindow {
     private void computePositionOffsets() {
         final float loopDuration = 5.0f;
         final float scale = 3.14159f * 2.0f / loopDuration;
-        final float elapsedTime = getElapsedTime() / 1000.0f;
+        final float elapsedTime = getElapsedTime();
         final float currTimeThroughLoop = elapsedTime % loopDuration;
         xOffset = (float) (Math.cos(currTimeThroughLoop * scale) * 0.5f);
         yOffset = (float) (Math.sin(currTimeThroughLoop * scale) * 0.5f);

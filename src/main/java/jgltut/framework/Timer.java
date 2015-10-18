@@ -29,7 +29,7 @@ public class Timer {
      * @param elapsedTime the time passed since the application start (in milliseconds)
      */
     public boolean update(float elapsedTime) {
-        float absCurrTime = elapsedTime / 1000.0f;
+        float absCurrTime = elapsedTime;
 
         if (!hasUpdated) {
             absPrevTime = absCurrTime;

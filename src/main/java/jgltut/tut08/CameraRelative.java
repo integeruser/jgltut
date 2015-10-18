@@ -153,7 +153,7 @@ public class CameraRelative extends LWJGLWindow {
     @Override
     protected void update() {
         final float SMALL_ANGLE_INCREMENT = 9.0f;
-        float lastFrameDuration = getLastFrameDuration() * 10 / 1000.0f;
+        float lastFrameDuration = getLastFrameDuration() * 10;
 
         if (isKeyPressed(GLFW_KEY_W)) {
             offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration);

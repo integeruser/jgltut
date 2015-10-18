@@ -314,7 +314,7 @@ public class ProjectedLight extends LWJGLWindow {
 
     @Override
     protected void update() {
-        float lastFrameDuration = (float) (getLastFrameDuration() / 100.0);
+        float lastFrameDuration = getLastFrameDuration() * 10;
 
         if (isKeyPressed(GLFW_KEY_W)) {
             viewPole.charPress(GLFW_KEY_W, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||

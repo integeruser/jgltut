@@ -284,7 +284,7 @@ public class CubePointLight extends LWJGLWindow {
 
     @Override
     protected void update() {
-        float lastFrameDuration = getLastFrameDuration() * 10 / 1000.0f;
+        float lastFrameDuration = getLastFrameDuration() * 10;
 
         if (isKeyPressed(GLFW_KEY_W)) {
             viewPole.charPress(GLFW_KEY_W, isKeyPressed(GLFW_KEY_LEFT_SHIFT) ||

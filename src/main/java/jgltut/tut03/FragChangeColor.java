@@ -46,7 +46,7 @@ public class FragChangeColor extends LWJGLWindow {
 
         glUseProgram(theProgram);
 
-        glUniform1f(elapsedTimeUniform, getElapsedTime() / 1000.0f);
+        glUniform1f(elapsedTimeUniform, getElapsedTime());
 
         glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
         glEnableVertexAttribArray(0);

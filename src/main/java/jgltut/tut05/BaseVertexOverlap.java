@@ -195,12 +195,12 @@ public class BaseVertexOverlap extends LWJGLWindow {
             BOTTOM_EXTENT, LEFT_EXTENT, REAR_EXTENT,
 
             // Object 1 colors
-            0.75f, 0.75f, 1.0f, 1.0f,   // GREEN_COLOR
+            0.75f, 0.75f, 1.0f, 1.0f,   // BLUE_COLOR
             0.75f, 0.75f, 1.0f, 1.0f,
             0.75f, 0.75f, 1.0f, 1.0f,
             0.75f, 0.75f, 1.0f, 1.0f,
 
-            0.0f, 0.5f, 0.0f, 1.0f,     // BLUE_COLOR
+            0.0f, 0.5f, 0.0f, 1.0f,     // GREEN_COLOR
             0.0f, 0.5f, 0.0f, 1.0f,
             0.0f, 0.5f, 0.0f, 1.0f,
             0.0f, 0.5f, 0.0f, 1.0f,
@@ -229,11 +229,11 @@ public class BaseVertexOverlap extends LWJGLWindow {
             0.5f, 0.5f, 0.0f, 1.0f,
             0.5f, 0.5f, 0.0f, 1.0f,
 
-            0.0f, 0.5f, 0.0f, 1.0f,     // BLUE_COLOR
+            0.0f, 0.5f, 0.0f, 1.0f,     // GREEN_COLOR
             0.0f, 0.5f, 0.0f, 1.0f,
             0.0f, 0.5f, 0.0f, 1.0f,
 
-            0.75f, 0.75f, 1.0f, 1.0f,   // GREEN_COLOR
+            0.75f, 0.75f, 1.0f, 1.0f,   // BLUE_COLOR
             0.75f, 0.75f, 1.0f, 1.0f,
             0.75f, 0.75f, 1.0f, 1.0f,
 

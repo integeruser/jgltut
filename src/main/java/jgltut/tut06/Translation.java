@@ -2,9 +2,8 @@ package jgltut.tut06;
 
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glm.Vec3;
-import jgltut.jglsdk.glm.Vec4;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -74,8 +73,8 @@ public class Translation extends LWJGLWindow {
         glBindVertexArray(vao);
 
         for (Instance currInst : instanceList) {
-            final Mat4 transformMatrix = currInst.constructMatrix(elapsedTime);
-            glUniformMatrix4fv(modelToCameraMatrixUnif, false, transformMatrix.fillAndFlipBuffer(mat4Buffer));
+            final Matrix4f transformMatrix = currInst.constructMatrix(elapsedTime);
+            glUniformMatrix4fv(modelToCameraMatrixUnif, false, transformMatrix.get(mat4Buffer));
             glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
         }
 
@@ -85,11 +84,11 @@ public class Translation extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
-        cameraToClipMatrix.set(0, 0, frustumScale / (w / (float) h));
-        cameraToClipMatrix.set(1, 1, frustumScale);
+        cameraToClipMatrix.m00(frustumScale / (w / (float) h));
+        cameraToClipMatrix.m11(frustumScale);
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(mat4Buffer));
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
@@ -105,8 +104,8 @@ public class Translation extends LWJGLWindow {
     private int modelToCameraMatrixUnif;
     private int cameraToClipMatrixUnif;
 
-    private Mat4 cameraToClipMatrix = new Mat4(0.0f);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private Matrix4f cameraToClipMatrix = new Matrix4f();
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
     private final float frustumScale = calcFrustumScale(45.0f);
 
@@ -122,14 +121,14 @@ public class Translation extends LWJGLWindow {
 
         float zNear = 1.0f;
         float zFar = 45.0f;
-        cameraToClipMatrix.set(0, 0, frustumScale);
-        cameraToClipMatrix.set(1, 1, frustumScale);
-        cameraToClipMatrix.set(2, 2, (zFar + zNear) / (zNear - zFar));
-        cameraToClipMatrix.set(3, 2, (2 * zFar * zNear) / (zNear - zFar));
-        cameraToClipMatrix.set(2, 3, -1.0f);
+        cameraToClipMatrix.m00(frustumScale);
+        cameraToClipMatrix.m11(frustumScale);
+        cameraToClipMatrix.m22((zFar + zNear) / (zNear - zFar));
+        cameraToClipMatrix.m23(-1.0f);
+        cameraToClipMatrix.m32((2 * zFar * zNear) / (zNear - zFar));
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(mat4Buffer));
         glUseProgram(0);
     }
 
@@ -209,29 +208,30 @@ public class Translation extends LWJGLWindow {
     };
 
     private abstract class Instance {
-        abstract Vec3 calcOffset(float elapsedTime);
+        abstract Vector3f calcOffset(float elapsedTime);
 
-        Mat4 constructMatrix(float elapsedTime) {
-            Mat4 theMat = new Mat4(1.0f);
-            theMat.setColumn(3, new Vec4(calcOffset(elapsedTime), 1.0f));
+        Matrix4f constructMatrix(float elapsedTime) {
+            Matrix4f theMat = new Matrix4f();
+
+            theMat.setTranslation(calcOffset(elapsedTime));
             return theMat;
         }
     }
 
     private class StationaryOffset extends Instance {
         @Override
-        Vec3 calcOffset(float elapsedTime) {
-            return new Vec3(0.0f, 0.0f, -20.0f);
+        Vector3f calcOffset(float elapsedTime) {
+            return new Vector3f(0.0f, 0.0f, -20.0f);
         }
     }
 
     private class OvalOffset extends Instance {
         @Override
-        Vec3 calcOffset(float elapsedTime) {
+        Vector3f calcOffset(float elapsedTime) {
             final float loopDuration = 3.0f;
             final float scale = 3.14159f * 2.0f / loopDuration;
             final float currTimeThroughLoop = elapsedTime % loopDuration;
-            return new Vec3(
+            return new Vector3f(
                     (float) (Math.cos(currTimeThroughLoop * scale) * 4.f),
                     (float) (Math.sin(currTimeThroughLoop * scale) * 6.f),
                     -20.0f
@@ -241,11 +241,11 @@ public class Translation extends LWJGLWindow {
 
     private class BottomCircleOffset extends Instance {
         @Override
-        Vec3 calcOffset(float elapsedTime) {
+        Vector3f calcOffset(float elapsedTime) {
             final float loopDuration = 12.0f;
             final float scale = 3.14159f * 2.0f / loopDuration;
             final float currTimeThroughLoop = elapsedTime % loopDuration;
-            return new Vec3(
+            return new Vector3f(
                     (float) (Math.cos(currTimeThroughLoop * scale) * 5.f),
                     -3.5f,
                     (float) (Math.sin(currTimeThroughLoop * scale) * 5.f - 20.f)

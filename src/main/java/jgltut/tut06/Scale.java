@@ -3,9 +3,8 @@ package jgltut.tut06;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.jglsdk.glm.Glm;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glm.Vec3;
-import jgltut.jglsdk.glm.Vec4;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -75,8 +74,8 @@ public class Scale extends LWJGLWindow {
         glBindVertexArray(vao);
 
         for (Instance currInst : instanceList) {
-            final Mat4 transformMatrix = currInst.constructMatrix(elapsedTime);
-            glUniformMatrix4fv(modelToCameraMatrixUnif, false, transformMatrix.fillAndFlipBuffer(mat4Buffer));
+            final Matrix4f transformMatrix = currInst.constructMatrix(elapsedTime);
+            glUniformMatrix4fv(modelToCameraMatrixUnif, false, transformMatrix.get(mat4Buffer));
             glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
         }
 
@@ -86,11 +85,11 @@ public class Scale extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
-        cameraToClipMatrix.set(0, 0, frustumScale * (h / (float) w));
-        cameraToClipMatrix.set(1, 1, frustumScale);
+        cameraToClipMatrix.m00(frustumScale * (h / (float) w));
+        cameraToClipMatrix.m11(frustumScale);
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(mat4Buffer));
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
@@ -106,8 +105,8 @@ public class Scale extends LWJGLWindow {
     private int modelToCameraMatrixUnif;
     private int cameraToClipMatrixUnif;
 
-    private Mat4 cameraToClipMatrix = new Mat4(0.0f);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private Matrix4f cameraToClipMatrix = new Matrix4f();
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
     private final float frustumScale = calcFrustumScale(45.0f);
 
@@ -123,14 +122,14 @@ public class Scale extends LWJGLWindow {
 
         float zNear = 1.0f;
         float zFar = 61.0f;
-        cameraToClipMatrix.set(0, 0, frustumScale);
-        cameraToClipMatrix.set(1, 1, frustumScale);
-        cameraToClipMatrix.set(2, 2, (zFar + zNear) / (zNear - zFar));
-        cameraToClipMatrix.set(2, 3, -1.0f);
-        cameraToClipMatrix.set(3, 2, (2 * zFar * zNear) / (zNear - zFar));
+        cameraToClipMatrix.m00(frustumScale);
+        cameraToClipMatrix.m11(frustumScale);
+        cameraToClipMatrix.m22((zFar + zNear) / (zNear - zFar));
+        cameraToClipMatrix.m23(-1.0f);
+        cameraToClipMatrix.m32((2 * zFar * zNear) / (zNear - zFar));
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(mat4Buffer));
         glUseProgram(0);
     }
 
@@ -204,89 +203,89 @@ public class Scale extends LWJGLWindow {
 
     ////////////////////////////////
     private Instance instanceList[] = {
-            new NullScale(new Vec3(0.0f, 0.0f, -45.0f)),
-            new StaticUniformScale(new Vec3(-10.0f, -10.0f, -45.0f)),
-            new StaticNonUniformScale(new Vec3(-10.0f, 10.0f, -45.0f)),
-            new DynamicUniformScale(new Vec3(10.0f, 10.0f, -45.0f)),
-            new DynamicNonUniformScale(new Vec3(10.0f, -10.0f, -45.0f))
+            new NullScale(new Vector3f(0.0f, 0.0f, -45.0f)),
+            new StaticUniformScale(new Vector3f(-10.0f, -10.0f, -45.0f)),
+            new StaticNonUniformScale(new Vector3f(-10.0f, 10.0f, -45.0f)),
+            new DynamicUniformScale(new Vector3f(10.0f, 10.0f, -45.0f)),
+            new DynamicNonUniformScale(new Vector3f(10.0f, -10.0f, -45.0f))
     };
 
     private abstract class Instance {
-        private Vec3 offset;
+        private Vector3f offset;
 
-        Instance(Vec3 offset) {
+        Instance(Vector3f offset) {
             this.offset = offset;
         }
 
-        abstract Vec3 calcScale(float elapsedTime);
+        abstract Vector3f calcScale(float elapsedTime);
 
-        Mat4 constructMatrix(float elapsedTime) {
-            Vec3 theScale = calcScale(elapsedTime);
+        Matrix4f constructMatrix(float elapsedTime) {
+            Vector3f theScale = calcScale(elapsedTime);
 
-            Mat4 theMat = new Mat4(1.0f);
-            theMat.set(0, 0, theScale.x);
-            theMat.set(1, 1, theScale.y);
-            theMat.set(2, 2, theScale.z);
-            theMat.setColumn(3, new Vec4(offset, 1.0f));
+            Matrix4f theMat = new Matrix4f();
+            theMat.m00(theScale.x);
+            theMat.m11(theScale.y);
+            theMat.m22(theScale.z);
+            theMat.setTranslation(offset);
             return theMat;
         }
     }
 
     private class NullScale extends Instance {
-        NullScale(Vec3 offset) {
+        NullScale(Vector3f offset) {
             super(offset);
         }
 
         @Override
-        Vec3 calcScale(float elapsedTime) {
-            return new Vec3(1.0f, 1.0f, 1.0f);
+        Vector3f calcScale(float elapsedTime) {
+            return new Vector3f(1.0f, 1.0f, 1.0f);
         }
     }
 
     private class StaticUniformScale extends Instance {
-        StaticUniformScale(Vec3 offset) {
+        StaticUniformScale(Vector3f offset) {
             super(offset);
         }
 
         @Override
-        Vec3 calcScale(float elapsedTime) {
-            return new Vec3(4.0f, 4.0f, 4.0f);
+        Vector3f calcScale(float elapsedTime) {
+            return new Vector3f(4.0f, 4.0f, 4.0f);
         }
     }
 
     private class StaticNonUniformScale extends Instance {
-        StaticNonUniformScale(Vec3 offset) {
+        StaticNonUniformScale(Vector3f offset) {
             super(offset);
         }
 
         @Override
-        Vec3 calcScale(float elapsedTime) {
-            return new Vec3(0.5f, 1.0f, 10.0f);
+        Vector3f calcScale(float elapsedTime) {
+            return new Vector3f(0.5f, 1.0f, 10.0f);
         }
     }
 
     private class DynamicUniformScale extends Instance {
-        DynamicUniformScale(Vec3 offset) {
+        DynamicUniformScale(Vector3f offset) {
             super(offset);
         }
 
         @Override
-        Vec3 calcScale(float elapsedTime) {
+        Vector3f calcScale(float elapsedTime) {
             final float loopDuration = 3.0f;
-            return new Vec3(Glm.mix(1.0f, 4.0f, calcLerpFactor(elapsedTime, loopDuration)));
+            return new Vector3f(Glm.mix(1.0f, 4.0f, calcLerpFactor(elapsedTime, loopDuration)));
         }
     }
 
     private class DynamicNonUniformScale extends Instance {
-        DynamicNonUniformScale(Vec3 offset) {
+        DynamicNonUniformScale(Vector3f offset) {
             super(offset);
         }
 
         @Override
-        Vec3 calcScale(float elapsedTime) {
+        Vector3f calcScale(float elapsedTime) {
             final float xLoopDuration = 3.0f;
             final float zLoopDuration = 5.0f;
-            return new Vec3(
+            return new Vector3f(
                     Glm.mix(1.0f, 0.5f, calcLerpFactor(elapsedTime, xLoopDuration)),
                     1.0f,
                     Glm.mix(1.0f, 10.0f, calcLerpFactor(elapsedTime, zLoopDuration))

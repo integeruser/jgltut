@@ -3,9 +3,9 @@ package jgltut.tut08;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.framework.Mesh;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glm.Vec4;
-import jgltut.jglsdk.glutil.MatrixStack;
+import org.joml.Matrix4f;
+import org.joml.MatrixStackf;
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
@@ -87,23 +87,23 @@ public class GimbalLock extends LWJGLWindow {
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        MatrixStack currMatrix = new MatrixStack();
+        MatrixStackf currMatrix = new MatrixStackf(10);
         currMatrix.translate(0.0f, 0.0f, -200.0f);
-        currMatrix.rotateX(gimbalAngles.angleX);
-        drawGimbal(currMatrix, GimbalAxis.X_AXIS, new Vec4(0.4f, 0.4f, 1.0f, 1.0f));
-        currMatrix.rotateY(gimbalAngles.angleY);
-        drawGimbal(currMatrix, GimbalAxis.Y_AXIS, new Vec4(0.0f, 1.0f, 0.0f, 1.0f));
-        currMatrix.rotateZ(gimbalAngles.angleZ);
-        drawGimbal(currMatrix, GimbalAxis.Z_AXIS, new Vec4(1.0f, 0.3f, 0.3f, 1.0f));
+        currMatrix.rotateX(Framework.degToRad(gimbalAngles.angleX));
+        drawGimbal(currMatrix, GimbalAxis.X_AXIS, new Vector4f(0.4f, 0.4f, 1.0f, 1.0f));
+        currMatrix.rotateY(Framework.degToRad(gimbalAngles.angleY));
+        drawGimbal(currMatrix, GimbalAxis.Y_AXIS, new Vector4f(0.0f, 1.0f, 0.0f, 1.0f));
+        currMatrix.rotateZ(Framework.degToRad(gimbalAngles.angleZ));
+        drawGimbal(currMatrix, GimbalAxis.Z_AXIS, new Vector4f(1.0f, 0.3f, 0.3f, 1.0f));
 
         glUseProgram(theProgram);
 
         currMatrix.scale(3.0f, 3.0f, 3.0f);
-        currMatrix.rotateX(-90.0f);
+        currMatrix.rotateX(Framework.degToRad(-90.0f));
 
         // Set the base color for this object.
         glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-        glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.get(mat4Buffer));
 
         object.render("tint");
 
@@ -112,11 +112,11 @@ public class GimbalLock extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
-        cameraToClipMatrix.set(0, 0, frustumScale * (h / (float) w));
-        cameraToClipMatrix.set(1, 1, frustumScale);
+        cameraToClipMatrix.m00(frustumScale * (h / (float) w));
+        cameraToClipMatrix.m11(frustumScale);
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(mat4Buffer));
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
@@ -153,8 +153,8 @@ public class GimbalLock extends LWJGLWindow {
     private int cameraToClipMatrixUnif;
     private int baseColorUnif;
 
-    private Mat4 cameraToClipMatrix = new Mat4(0.0f);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private Matrix4f cameraToClipMatrix = new Matrix4f();
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
     private final float frustumScale = calcFrustumScale(20.0f);
 
@@ -171,14 +171,14 @@ public class GimbalLock extends LWJGLWindow {
 
         float zNear = 1.0f;
         float zFar = 600.0f;
-        cameraToClipMatrix.set(0, 0, frustumScale);
-        cameraToClipMatrix.set(1, 1, frustumScale);
-        cameraToClipMatrix.set(2, 2, (zFar + zNear) / (zNear - zFar));
-        cameraToClipMatrix.set(2, 3, -1.0f);
-        cameraToClipMatrix.set(3, 2, (2 * zFar * zNear) / (zNear - zFar));
+        cameraToClipMatrix.m00(frustumScale);
+        cameraToClipMatrix.m11(frustumScale);
+        cameraToClipMatrix.m22((zFar + zNear) / (zNear - zFar));
+        cameraToClipMatrix.m23(-1.0f);
+        cameraToClipMatrix.m32((2 * zFar * zNear) / (zNear - zFar));
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(mat4Buffer));
         glUseProgram(0);
     }
 
@@ -215,23 +215,23 @@ public class GimbalLock extends LWJGLWindow {
     }
 
 
-    private void drawGimbal(MatrixStack currMatrix, GimbalAxis axis, Vec4 baseColor) {
+    private void drawGimbal(MatrixStackf currMatrix, GimbalAxis axis, Vector4f baseColor) {
         if (!drawGimbals) return;
 
-        currMatrix.push();
+        currMatrix.pushMatrix();
 
         switch (axis) {
             case X_AXIS:
                 break;
 
             case Y_AXIS:
-                currMatrix.rotateZ(90.0f);
-                currMatrix.rotateX(90.0f);
+                currMatrix.rotateZ(Framework.degToRad(90.0f));
+                currMatrix.rotateX(Framework.degToRad(90.0f));
                 break;
 
             case Z_AXIS:
-                currMatrix.rotateY(90.0f);
-                currMatrix.rotateX(90.0f);
+                currMatrix.rotateY(Framework.degToRad(90.0f));
+                currMatrix.rotateX(Framework.degToRad(90.0f));
                 break;
         }
 
@@ -239,12 +239,12 @@ public class GimbalLock extends LWJGLWindow {
 
         // Set the base color for this object.
         glUniform4f(baseColorUnif, baseColor.x, baseColor.y, baseColor.z, baseColor.w);
-        glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.get(mat4Buffer));
 
         gimbals[axis.ordinal()].render();
 
         glUseProgram(0);
 
-        currMatrix.pop();
+        currMatrix.popMatrix();
     }
 }

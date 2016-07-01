@@ -4,10 +4,10 @@ import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.framework.Mesh;
 import jgltut.jglsdk.glm.Glm;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glm.Quaternion;
-import jgltut.jglsdk.glm.Vec3;
-import jgltut.jglsdk.glutil.MatrixStack;
+import org.joml.Matrix4f;
+import org.joml.MatrixStackf;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
@@ -86,18 +86,18 @@ public class QuaternionYPR extends LWJGLWindow {
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        MatrixStack currMatrix = new MatrixStack();
+        MatrixStackf currMatrix = new MatrixStackf();
         currMatrix.translate(0.0f, 0.0f, -200.0f);
-        currMatrix.applyMatrix(Glm.mat4Cast(orientation));
+        currMatrix.mul(Glm.mat4CastNew(orientation));
 
         glUseProgram(theProgram);
 
         currMatrix.scale(3.0f, 3.0f, 3.0f);
-        currMatrix.rotateX(-90.0f);
+        currMatrix.rotateX(Framework.degToRad(-90.0f));
 
         // Set the base color for this object.
         glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-        glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.get(Matrix4fBuffer));
 
         ship.render("tint");
 
@@ -106,11 +106,11 @@ public class QuaternionYPR extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
-        cameraToClipMatrix.set(0, 0, frustumScale * (h / (float) w));
-        cameraToClipMatrix.set(1, 1, frustumScale);
+        cameraToClipMatrix.m00(frustumScale * (h / (float) w));
+        cameraToClipMatrix.m11(frustumScale);
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(Matrix4fBuffer));
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
@@ -122,21 +122,21 @@ public class QuaternionYPR extends LWJGLWindow {
         final float scale = 10;
 
         if (isKeyPressed(GLFW_KEY_W)) {
-            offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
+            offsetOrientation(new Vector3f(1.0f, 0.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_S)) {
-            offsetOrientation(new Vec3(1.0f, 0.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
+            offsetOrientation(new Vector3f(1.0f, 0.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         }
 
         if (isKeyPressed(GLFW_KEY_A)) {
-            offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
+            offsetOrientation(new Vector3f(0.0f, 0.0f, 1.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_D)) {
-            offsetOrientation(new Vec3(0.0f, 0.0f, 1.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
+            offsetOrientation(new Vector3f(0.0f, 0.0f, 1.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         }
 
         if (isKeyPressed(GLFW_KEY_Q)) {
-            offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
+            offsetOrientation(new Vector3f(0.0f, 1.0f, 0.0f), SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         } else if (isKeyPressed(GLFW_KEY_E)) {
-            offsetOrientation(new Vec3(0.0f, 1.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
+            offsetOrientation(new Vector3f(0.0f, 1.0f, 0.0f), -SMALL_ANGLE_INCREMENT * lastFrameDuration * scale);
         }
     }
 
@@ -147,8 +147,8 @@ public class QuaternionYPR extends LWJGLWindow {
     private int cameraToClipMatrixUnif;
     private int baseColorUnif;
 
-    private Mat4 cameraToClipMatrix = new Mat4(0.0f);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private Matrix4f cameraToClipMatrix = new Matrix4f();
+    private FloatBuffer Matrix4fBuffer = BufferUtils.createFloatBuffer(16);
 
     private final float frustumScale = calcFrustumScale(20.0f);
 
@@ -165,14 +165,14 @@ public class QuaternionYPR extends LWJGLWindow {
 
         float zNear = 1.0f;
         float zFar = 600.0f;
-        cameraToClipMatrix.set(0, 0, frustumScale);
-        cameraToClipMatrix.set(1, 1, frustumScale);
-        cameraToClipMatrix.set(2, 2, (zFar + zNear) / (zNear - zFar));
-        cameraToClipMatrix.set(2, 3, -1.0f);
-        cameraToClipMatrix.set(3, 2, (2 * zFar * zNear) / (zNear - zFar));
+        cameraToClipMatrix.m00(frustumScale);
+        cameraToClipMatrix.m11(frustumScale);
+        cameraToClipMatrix.m22((zFar + zNear) / (zNear - zFar));
+        cameraToClipMatrix.m23(-1.0f);
+        cameraToClipMatrix.m32((2 * zFar * zNear) / (zNear - zFar));
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(Matrix4fBuffer));
         glUseProgram(0);
     }
 
@@ -186,26 +186,26 @@ public class QuaternionYPR extends LWJGLWindow {
     ////////////////////////////////
     private Mesh ship;
 
-    private Quaternion orientation = new Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
+    private Quaternionf orientation = new Quaternionf(0.0f, 0.0f, 0.0f, 1.0f);
 
     private boolean rightMultiply = true;
 
 
-    private void offsetOrientation(Vec3 axis, float angDeg) {
+    private void offsetOrientation(Vector3f axis, float angDeg) {
         float angRad = Framework.degToRad(angDeg);
 
-        axis = Glm.normalize(axis);
-        axis = Vec3.scale(axis, (float) Math.sin(angRad / 2.0f));
+        axis.normalize();
+        axis.mul((float) Math.sin(angRad / 2.0f));
 
         float scalar = (float) Math.cos(angRad / 2.0f);
-        Quaternion offset = new Quaternion(scalar, axis.x, axis.y, axis.z);
+        Quaternionf offset = new Quaternionf(axis.x, axis.y, axis.z, scalar);
 
         if (rightMultiply) {
-            orientation = Quaternion.mul(orientation, offset);
+            orientation.mul(offset);
         } else {
-            orientation = Quaternion.mul(offset, orientation);
+            orientation = offset.mul(orientation);
         }
 
-        orientation = Glm.normalize(orientation);
+        orientation.normalize();
     }
 }

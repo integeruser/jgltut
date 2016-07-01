@@ -5,13 +5,14 @@ import jgltut.framework.Framework;
 import jgltut.framework.Mesh;
 import jgltut.framework.Timer;
 import jgltut.jglsdk.glm.Glm;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glm.Quaternion;
-import jgltut.jglsdk.glm.Vec4;
-import jgltut.jglsdk.glutil.MatrixStack;
+import org.joml.Matrix4f;
+import org.joml.MatrixStackf;
+import org.joml.Quaternionf;
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
+import java.awt.*;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -94,18 +95,18 @@ public class Interpolation extends LWJGLWindow {
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        MatrixStack currMatrix = new MatrixStack();
+        MatrixStackf currMatrix = new MatrixStackf();
         currMatrix.translate(0.0f, 0.0f, -200.0f);
-        currMatrix.applyMatrix(Glm.mat4Cast(orient.getOrient()));
+        currMatrix.mul(Glm.mat4CastNew(orient.getOrient()));
 
         glUseProgram(theProgram);
 
         currMatrix.scale(3.0f, 3.0f, 3.0f);
-        currMatrix.rotateX(-90.0f);
+        currMatrix.rotateX(Framework.degToRad(-90.0f));
 
         // Set the base color for this object.
         glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-        glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.get(mat4Buffer));
 
         ship.render("tint");
 
@@ -114,11 +115,11 @@ public class Interpolation extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
-        cameraToClipMatrix.set(0, 0, frustumScale * (h / (float) w));
-        cameraToClipMatrix.set(1, 1, frustumScale);
+        cameraToClipMatrix.m00(frustumScale * (h / (float) w));
+        cameraToClipMatrix.m11(frustumScale);
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(mat4Buffer));
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
@@ -135,8 +136,8 @@ public class Interpolation extends LWJGLWindow {
     private int cameraToClipMatrixUnif;
     private int baseColorUnif;
 
-    private Mat4 cameraToClipMatrix = new Mat4(0.0f);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private Matrix4f cameraToClipMatrix = new Matrix4f();
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
     private final float frustumScale = calcFrustumScale(20.0f);
 
@@ -153,14 +154,14 @@ public class Interpolation extends LWJGLWindow {
 
         float zNear = 1.0f;
         float zFar = 600.0f;
-        cameraToClipMatrix.set(0, 0, frustumScale);
-        cameraToClipMatrix.set(1, 1, frustumScale);
-        cameraToClipMatrix.set(2, 2, (zFar + zNear) / (zNear - zFar));
-        cameraToClipMatrix.set(2, 3, -1.0f);
-        cameraToClipMatrix.set(3, 2, (2 * zFar * zNear) / (zNear - zFar));
+        cameraToClipMatrix.m00(frustumScale);
+        cameraToClipMatrix.m11(frustumScale);
+        cameraToClipMatrix.m22((zFar + zNear) / (zNear - zFar));
+        cameraToClipMatrix.m23(-1.0f);
+        cameraToClipMatrix.m32((2 * zFar * zNear) / (zNear - zFar));
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(mat4Buffer));
         glUseProgram(0);
     }
 
@@ -174,15 +175,15 @@ public class Interpolation extends LWJGLWindow {
     ////////////////////////////////
     private Mesh ship;
 
-    private Quaternion orients[] = {
-            new Quaternion(0.7071f, 0.7071f, 0.0f, 0.0f),
-            new Quaternion(0.5f, 0.5f, -0.5f, 0.5f),
-            new Quaternion(-0.4895f, -0.7892f, -0.3700f, -0.02514f),
-            new Quaternion(0.4895f, 0.7892f, 0.3700f, 0.02514f),
+    private Quaternionf orients[] = {
+            new Quaternionf(0.7071f, 0.0f, 0.0f, 0.7071f),
+            new Quaternionf(0.5f, -0.5f, 0.5f, 0.5f),
+            new Quaternionf(-0.7892f, -0.3700f, -0.02514f, -0.4895f),
+            new Quaternionf(0.7892f, 0.3700f, 0.02514f, 0.4895f),
 
-            new Quaternion(0.3840f, -0.1591f, -0.7991f, -0.4344f),
-            new Quaternion(0.5537f, 0.5208f, 0.6483f, 0.0410f),
-            new Quaternion(0.0f, 0.0f, 1.0f, 0.0f)
+            new Quaternionf(-0.1591f, -0.7991f, -0.4344f, 0.3840f),
+            new Quaternionf(0.5208f, 0.6483f, 0.0410f, 0.5537f),
+            new Quaternionf(0.0f, 1.0f, 0.0f, 0.0f)
     };
 
     private int orientKeys[] = {
@@ -220,7 +221,7 @@ public class Interpolation extends LWJGLWindow {
             }
 
 
-            Quaternion getOrient(Quaternion initial, boolean slerp) {
+            Quaternionf getOrient(Quaternionf initial, boolean slerp) {
                 if (slerp) {
                     return slerp(initial, orients[finalOrientIndex], currTimer.getAlpha());
                 } else {
@@ -256,7 +257,7 @@ public class Interpolation extends LWJGLWindow {
             return slerp;
         }
 
-        Quaternion getOrient() {
+        Quaternionf getOrient() {
             if (isAnimating) {
                 return anim.getOrient(orients[currOrientIndex], slerp);
             } else {
@@ -277,33 +278,36 @@ public class Interpolation extends LWJGLWindow {
     }
 
 
-    private Quaternion slerp(Quaternion v0, Quaternion v1, float alpha) {
+    private Quaternionf slerp(Quaternionf v0, Quaternionf v1, float alpha) {
         final float DOT_THRESHOLD = 0.9995f;
-        float dot = Glm.dot(v0, v1);
+        float dot = v0.dot(v1);
         if (dot > DOT_THRESHOLD) return lerp(v0, v1, alpha);
 
         Glm.clamp(dot, -1.0f, 1.0f);
         float theta_0 = (float) Math.acos(dot);
         float theta = theta_0 * alpha;
 
-        Quaternion v2 = Quaternion.add(v1, Quaternion.negate(Quaternion.scale(v0, dot)));
-        v2 = Glm.normalize(v2);
-        return Quaternion.add(Quaternion.scale(v0, (float) Math.cos(theta)), Quaternion.scale(v2, (float) Math.sin(theta)));
+        Vector4f p = vectorize(v0).mul(dot).negate();
+        Vector4f v2 = vectorize(v1).add(p).normalize();
+        Vector4f a = vectorize(v0).mul((float) Math.cos(theta));
+        Vector4f b = new Vector4f(v2).mul((float) Math.sin(theta));
+        Vector4f res = a.add(b);
+        return new Quaternionf(res.x, res.y, res.z, res.w);
     }
 
-    private Quaternion lerp(Quaternion v0, Quaternion v1, float alpha) {
-        Vec4 start = vectorize(v0);
-        Vec4 end = vectorize(v1);
-        Vec4 interp = Glm.mix(start, end, alpha);
+    private Quaternionf lerp(Quaternionf v0, Quaternionf v1, float alpha) {
+        Vector4f start = vectorize(v0);
+        Vector4f end = vectorize(v1);
+        Vector4f interp = Glm.mixNew(start, end, alpha);
 
         System.out.printf("alpha: %f, (%f, %f, %f, %f)\n", alpha, interp.w, interp.x, interp.y, interp.z);
 
-        interp = Glm.normalize(interp);
-        return new Quaternion(interp.w, interp.x, interp.y, interp.z);
+        interp.normalize();
+        return new Quaternionf(interp.x, interp.y, interp.z, interp.w);
     }
 
-    private Vec4 vectorize(Quaternion theQuat) {
-        Vec4 vec = new Vec4();
+    private Vector4f vectorize(Quaternionf theQuat) {
+        Vector4f vec = new Vector4f();
         vec.x = theQuat.x;
         vec.y = theQuat.y;
         vec.z = theQuat.z;

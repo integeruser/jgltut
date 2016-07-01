@@ -1,6 +1,13 @@
 package jgltut.jglsdk.glm;
 
 
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+
+import java.util.Arrays;
+
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  *
@@ -99,7 +106,12 @@ public class Glm {
     }
 
 
-    public static Quaternion angleAxis(float angle, Vec3 vec) {
+    public static Vec3 toVec3( Vector3f v) {
+        return new Vec3(v.x, v.y, v.z);
+    }
+
+    public static Quaternionf angleAxis(float angle, Vector3f v) {
+        Vec3 vec = toVec3(v);
         Quaternion res = new Quaternion();
 
         float a = (float) Math.toRadians(angle);
@@ -110,11 +122,19 @@ public class Glm {
         res.z = vec.z * s;
         res.w = (float) Math.cos(a * 0.5);
 
-        return res;
+        return toQuatNew(res);
     }
 
 
-    public static Quaternion quatCast(Mat4 mat) {
+    public static Mat4 toMat(Matrix4f matNew) {
+        Mat4 res = new Mat4();
+        matNew.get(res.get());
+        return res;
+    }
+
+    public static Quaternionf quatCast(Matrix4f matNew) {
+        Mat4 mat = toMat(matNew);
+
         float fourXSquaredMinus1 = mat.matrix[0] - mat.matrix[5] - mat.matrix[10];
         float fourYSquaredMinus1 = mat.matrix[5] - mat.matrix[0] - mat.matrix[10];
         float fourZSquaredMinus1 = mat.matrix[10] - mat.matrix[0] - mat.matrix[5];
@@ -173,7 +193,11 @@ public class Glm {
                 break;
         }
 
-        return res;
+        return toQuatNew(res);
+    }
+
+    private static Quaternionf toQuatNew(Quaternion q) {
+        return new Quaternionf(q.x, q.y, q.z, q.w);
     }
 
 
@@ -252,7 +276,10 @@ public class Glm {
     }
 
 
-    public static Mat4 translate(Mat4 mat, Vec3 vec) {
+    public static Matrix4f translate(Matrix4f m, Vector3f v) {
+        Vec3 vec = toVec3(v);
+        Mat4 mat = toMat(m);
+
         Vec4 temp0 = mat.getColumn(0).scale(vec.x);
         Vec4 temp1 = mat.getColumn(1).scale(vec.y);
         Vec4 temp2 = mat.getColumn(2).scale(vec.z);
@@ -263,7 +290,7 @@ public class Glm {
         Mat4 res = new Mat4(mat);
         res.setColumn(3, temp);
 
-        return res;
+        return toMatNew(res);
     }
 
     public static Mat4 scale(Mat4 mat, Vec3 vec) {
@@ -321,6 +348,23 @@ public class Glm {
         return res;
     }
 
+    public static Matrix4f perspectiveNew(float fovY, float aspect, float zNear, float zFar) {
+        float range = (float) (Math.tan(Math.toRadians(fovY / 2.0f)) * zNear);
+        float left = -range * aspect;
+        float right = range * aspect;
+        float bottom = -range;
+        float top = range;
+
+        Matrix4f res = new Matrix4f().zero();
+
+        res.m00((2.0f * zNear) / (right - left));
+        res.m11((2.0f * zNear) / (top - bottom));
+        res.m22(-(zFar + zNear) / (zFar - zNear));
+        res.m23(-1.0f);
+        res.m32(-(2.0f * zFar * zNear) / (zFar - zNear));
+
+        return res;
+    }
 
     public static Mat4 perspective(float fovY, float aspect, float zNear, float zFar) {
         float range = (float) (Math.tan(Math.toRadians(fovY / 2.0f)) * zNear);
@@ -341,7 +385,18 @@ public class Glm {
     }
 
 
-    public static Mat4 mat4Cast(Quaternion quat) {
+    private static Quaternion toQuat(Quaternionf q) {
+        return new Quaternion(q.w, q.x, q.y, q.z);
+    }
+
+    public static Matrix4f toMatNew(Mat4 mat) {
+        Matrix4f res = new Matrix4f();
+        res.set(mat.get());
+        return res;
+    }
+
+    public static Matrix4f mat4Cast(Quaternionf quatNew) {
+        Quaternion quat = toQuat(quatNew);
         //  Converts this quaternion to a rotation matrix.
         //  | 1 - 2(y^2 + z^2)	2(xy + wz)			2(xz - wy)			0  |
         //  | 2(xy - wz)		1 - 2(x^2 + z^2)	2(yz + wx)			0  |
@@ -367,7 +422,7 @@ public class Glm {
         res.matrix[14] = 0.0f;
         res.matrix[15] = 1.0f;
 
-        return res;
+        return toMatNew(res);
     }
 
 
@@ -402,7 +457,9 @@ public class Glm {
         return result;
     }
 
-    public static Quaternion rotate(Quaternion quat, float angle, Vec3 vec) {
+    public static Quaternionf rotate(Quaternionf q, float angle, Vector3f v) {
+        Quaternion quat = toQuat(q);
+        Vec3 vec = toVec3(v);
         Vec3 tmp = new Vec3(vec);
 
         // Axis of rotation must be normalised
@@ -419,11 +476,11 @@ public class Glm {
 
         Quaternion res = new Quaternion((float) Math.cos(angleRad * 0.5f), tmp.x * fSin, tmp.y * fSin, tmp.z * fSin);
 
-        return Quaternion.mul(quat, res);
+        return toQuatNew(Quaternion.mul(quat, res));
     }
 
 
-    public static Mat4 lookAt(Vec3 eye, Vec3 center, Vec3 up) {
+    public static Matrix4f lookAt(Vec3 eye, Vec3 center, Vec3 up) {
         Vec3 f = normalize(Vec3.sub(center, eye));
         Vec3 u = normalize(up);
         Vec3 s = normalize(cross(f, u));
@@ -440,6 +497,59 @@ public class Glm {
         result.set(1, 2, -f.y);
         result.set(2, 2, -f.z);
 
-        return translate(result, Vec3.negate(eye));
+        Matrix4f a = toMatNew(result);
+        Vector3f b = toVec3new(Vec3.negate(eye));
+        return translate(a, b);
+    }
+
+    private static Vector3f toVec3new(Vec3 v) {
+        return new Vector3f(v.x, v.y, v.z);
+    }
+
+    public static Matrix4f lookAt(Vector3f eye, Vector3f center, Vector3f up) {
+        Vector3f f = new Vector3f(center).sub(eye).normalize();
+        Vector3f u = new Vector3f(up).normalize();
+        Vector3f s = new Vector3f(f).cross(u).normalize();
+        u = new Vector3f(s).cross(f);
+
+        Matrix4f result = new Matrix4f();
+        result.m00(s.x);
+        result.m10(s.y);
+        result.m20(s.z);
+        result.m01(u.x);
+        result.m11(u.y);
+        result.m21(u.z);
+        result.m02(-f.x);
+        result.m12(-f.y);
+        result.m22(-f.z);
+
+        return translate(result, new Vector3f(eye).negate());
+    }
+
+    public static Matrix4f mat4CastNew(Quaternionf quat) {
+        Matrix4f res = new Matrix4f();
+
+        res.m00(1 - 2 * quat.y * quat.y - 2 * quat.z * quat.z);
+        res.m01(2 * quat.x * quat.y + 2 * quat.w * quat.z);
+        res.m02(2 * quat.x * quat.z - 2 * quat.w * quat.y);
+
+        res.m10(2 * quat.x * quat.y - 2 * quat.w * quat.z);
+        res.m11(1 - 2 * quat.x * quat.x - 2 * quat.z * quat.z);
+        res.m12(2 * quat.y * quat.z + 2 * quat.w * quat.x);
+
+        res.m20(2 * quat.x * quat.z + 2 * quat.w * quat.y);
+        res.m21(2 * quat.y * quat.z - 2 * quat.w * quat.x);
+        res.m22(1 - 2 * quat.x * quat.x - 2 * quat.y * quat.y);
+
+        res.m30(0.0f);
+        res.m31(0.0f);
+        res.m32(0.0f);
+        res.m33(1.0f);
+
+        return res;
+    }
+
+    public static Vector4f mixNew(Vector4f x, Vector4f y, float a) {
+        return new Vector4f(x).add((new Vector4f(y).sub(x)).mul(a));
     }
 }

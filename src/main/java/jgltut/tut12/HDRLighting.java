@@ -5,11 +5,6 @@ import jgltut.framework.Framework;
 import jgltut.framework.MousePole;
 import jgltut.framework.Timer;
 import jgltut.jglsdk.BufferableData;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glm.Quaternion;
-import jgltut.jglsdk.glm.Vec3;
-import jgltut.jglsdk.glm.Vec4;
-import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.jglsdk.glutil.MousePoles.MouseButtons;
 import jgltut.jglsdk.glutil.MousePoles.ViewData;
 import jgltut.jglsdk.glutil.MousePoles.ViewPole;
@@ -20,6 +15,7 @@ import jgltut.tut12.LightManager.SunlightValueHDR;
 import jgltut.tut12.LightManager.TimerTypes;
 import jgltut.tut12.Scene.LightingProgramTypes;
 import jgltut.tut12.Scene.ProgramData;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -220,16 +216,16 @@ public class HDRLighting extends LWJGLWindow {
     protected void display() {
         lights.updateTime(elapsedTime);
 
-        Vec4 bkg = lights.getBackgroundColor();
+        Vector4f bkg = lights.getBackgroundColor();
 
         glClearColor(bkg.x, bkg.y, bkg.z, bkg.w);
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        MatrixStack modelMatrix = new MatrixStack();
-        modelMatrix.setMatrix(viewPole.calcMatrix());
+        MatrixStackf modelMatrix = new MatrixStackf(10);
+        modelMatrix.mul(viewPole.calcMatrix());
 
-        final Mat4 worldToCamMat = modelMatrix.top();
+        final Matrix4f worldToCamMat = modelMatrix;
         LightBlockHDR lightData = lights.getLightInformationHDR(worldToCamMat);
 
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
@@ -237,62 +233,63 @@ public class HDRLighting extends LWJGLWindow {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         {
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
             scene.draw(modelMatrix, materialBlockIndex, lights.getTimerValue("tetra"));
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
 
         {
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
             // Render the sun
             {
-                modelMatrix.push();
+                modelMatrix.pushMatrix();
 
-                Vec3 sunlightDir = new Vec3(lights.getSunlightDirection());
-                modelMatrix.translate(sunlightDir.scale(500.0f));
+                Vector4f temp = lights.getSunlightDirection();
+                Vector3f sunlightDir = new Vector3f(temp.x, temp.y, temp.z);
+                modelMatrix.translate(sunlightDir.mul(500.0f));
                 modelMatrix.scale(30.0f, 30.0f, 30.0f);
 
                 glUseProgram(unlit.theProgram);
-                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
 
-                Vec4 lightColor = lights.getSunlightIntensity();
-                glUniform4fv(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+                Vector4f lightColor = lights.getSunlightIntensity();
+                glUniform4fv(unlit.objectColorUnif, lightColor.get(vec4Buffer));
                 scene.getSphereMesh().render("flat");
 
-                modelMatrix.pop();
+                modelMatrix.popMatrix();
             }
 
             // Render the lights
             {
                 for (int light = 0; light < lights.getNumberOfPointLights(); light++) {
-                    modelMatrix.push();
+                    modelMatrix.pushMatrix();
 
                     modelMatrix.translate(lights.getWorldLightPosition(light));
 
                     glUseProgram(unlit.theProgram);
-                    glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                    glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
 
-                    Vec4 lightColor = lights.getPointLightIntensity(light);
-                    glUniform4fv(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+                    Vector4f lightColor = lights.getPointLightIntensity(light);
+                    glUniform4fv(unlit.objectColorUnif, lightColor.get(vec4Buffer));
                     scene.getCubeMesh().render("flat");
 
-                    modelMatrix.pop();
+                    modelMatrix.popMatrix();
                 }
             }
 
             if (drawCameraPos) {
-                modelMatrix.push();
+                modelMatrix.pushMatrix();
 
-                modelMatrix.setIdentity();
+                modelMatrix.identity();
                 modelMatrix.translate(0.0f, 0.0f, -viewPole.getView().radius);
 
                 glDisable(GL_DEPTH_TEST);
                 glDepthMask(false);
                 glUseProgram(unlit.theProgram);
-                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
                 glUniform4f(unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
                 scene.getCubeMesh().render("flat");
                 glDepthMask(true);
@@ -300,10 +297,10 @@ public class HDRLighting extends LWJGLWindow {
                 glUniform4f(unlit.objectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
                 scene.getCubeMesh().render("flat");
 
-                modelMatrix.pop();
+                modelMatrix.popMatrix();
             }
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
     }
 
@@ -311,14 +308,14 @@ public class HDRLighting extends LWJGLWindow {
     protected void reshape(int w, int h) {
         float zNear = 1.0f;
         float zFar = 1000.0f;
-        MatrixStack persMatrix = new MatrixStack();
+        MatrixStackf persMatrix = new MatrixStackf();
         persMatrix.perspective(45.0f, (w / (float) h), zNear, zFar);
 
         ProjectionBlock projData = new ProjectionBlock();
-        projData.cameraToClipMatrix = persMatrix.top();
+        projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -387,8 +384,8 @@ public class HDRLighting extends LWJGLWindow {
     }
 
 
-    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(Vec4.SIZE);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
     private FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer(LightBlockHDR.SIZE);
 
 
@@ -446,7 +443,7 @@ public class HDRLighting extends LWJGLWindow {
     private Scene scene;
 
     private LightManager lights = new LightManager();
-    private final Vec4 skyDaylightColor = new Vec4(0.65f, 0.65f, 1.0f, 1.0f);
+    private final Vector4f skyDaylightColor = new Vector4f(0.65f, 0.65f, 1.0f, 1.0f);
 
     private TimerTypes timerMode = TimerTypes.ALL;
 
@@ -457,152 +454,152 @@ public class HDRLighting extends LWJGLWindow {
         SunlightValue values[] = {
                 new SunlightValue(
                         0.0f / 24.0f,
-                        new Vec4(0.2f, 0.2f, 0.2f, 1.0f),
-                        new Vec4(0.6f, 0.6f, 0.6f, 1.0f),
-                        new Vec4(skyDaylightColor)),
+                        new Vector4f(0.2f, 0.2f, 0.2f, 1.0f),
+                        new Vector4f(0.6f, 0.6f, 0.6f, 1.0f),
+                        new Vector4f(skyDaylightColor)),
                 new SunlightValue(
                         4.5f / 24.0f,
-                        new Vec4(0.2f, 0.2f, 0.2f, 1.0f),
-                        new Vec4(0.6f, 0.6f, 0.6f, 1.0f),
-                        new Vec4(skyDaylightColor)),
+                        new Vector4f(0.2f, 0.2f, 0.2f, 1.0f),
+                        new Vector4f(0.6f, 0.6f, 0.6f, 1.0f),
+                        new Vector4f(skyDaylightColor)),
                 new SunlightValue(
                         6.5f / 24.0f,
-                        new Vec4(0.15f, 0.05f, 0.05f, 1.0f),
-                        new Vec4(0.3f, 0.1f, 0.10f, 1.0f),
-                        new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+                        new Vector4f(0.15f, 0.05f, 0.05f, 1.0f),
+                        new Vector4f(0.3f, 0.1f, 0.10f, 1.0f),
+                        new Vector4f(0.5f, 0.1f, 0.1f, 1.0f)),
                 new SunlightValue(
                         8.0f / 24.0f,
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f)),
                 new SunlightValue(
                         18.0f / 24.0f,
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f)),
                 new SunlightValue(
                         19.5f / 24.0f,
-                        new Vec4(0.15f, 0.05f, 0.05f, 1.0f),
-                        new Vec4(0.3f, 0.1f, 0.1f, 1.0f),
-                        new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+                        new Vector4f(0.15f, 0.05f, 0.05f, 1.0f),
+                        new Vector4f(0.3f, 0.1f, 0.1f, 1.0f),
+                        new Vector4f(0.5f, 0.1f, 0.1f, 1.0f)),
                 new SunlightValue(
                         20.5f / 24.0f,
-                        new Vec4(0.2f, 0.2f, 0.2f, 1.0f),
-                        new Vec4(0.6f, 0.6f, 0.6f, 1.0f),
-                        new Vec4(skyDaylightColor))
+                        new Vector4f(0.2f, 0.2f, 0.2f, 1.0f),
+                        new Vector4f(0.6f, 0.6f, 0.6f, 1.0f),
+                        new Vector4f(skyDaylightColor))
         };
 
         lights.setSunlightValues(values, 7);
 
-        lights.setPointLightIntensity(0, new Vec4(0.2f, 0.2f, 0.2f, 1.0f));
-        lights.setPointLightIntensity(1, new Vec4(0.0f, 0.0f, 0.3f, 1.0f));
-        lights.setPointLightIntensity(2, new Vec4(0.3f, 0.0f, 0.0f, 1.0f));
+        lights.setPointLightIntensity(0, new Vector4f(0.2f, 0.2f, 0.2f, 1.0f));
+        lights.setPointLightIntensity(1, new Vector4f(0.0f, 0.0f, 0.3f, 1.0f));
+        lights.setPointLightIntensity(2, new Vector4f(0.3f, 0.0f, 0.0f, 1.0f));
     }
 
     private void setupNighttimeLighting() {
         SunlightValue values[] = {
                 new SunlightValue(
                         0.0f / 24.0f,
-                        new Vec4(0.2f, 0.2f, 0.2f, 1.0f),
-                        new Vec4(0.6f, 0.6f, 0.6f, 1.0f),
-                        new Vec4(skyDaylightColor)),
+                        new Vector4f(0.2f, 0.2f, 0.2f, 1.0f),
+                        new Vector4f(0.6f, 0.6f, 0.6f, 1.0f),
+                        new Vector4f(skyDaylightColor)),
                 new SunlightValue(
                         4.5f / 24.0f,
-                        new Vec4(0.2f, 0.2f, 0.2f, 1.0f),
-                        new Vec4(0.6f, 0.6f, 0.6f, 1.0f),
-                        new Vec4(skyDaylightColor)),
+                        new Vector4f(0.2f, 0.2f, 0.2f, 1.0f),
+                        new Vector4f(0.6f, 0.6f, 0.6f, 1.0f),
+                        new Vector4f(skyDaylightColor)),
                 new SunlightValue(
                         6.5f / 24.0f,
-                        new Vec4(0.15f, 0.05f, 0.05f, 1.0f),
-                        new Vec4(0.3f, 0.1f, 0.10f, 1.0f),
-                        new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+                        new Vector4f(0.15f, 0.05f, 0.05f, 1.0f),
+                        new Vector4f(0.3f, 0.1f, 0.10f, 1.0f),
+                        new Vector4f(0.5f, 0.1f, 0.1f, 1.0f)),
                 new SunlightValue(
                         8.0f / 24.0f,
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f)),
                 new SunlightValue(
                         18.0f / 24.0f,
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f)),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f)),
                 new SunlightValue(
                         19.5f / 24.0f,
-                        new Vec4(0.15f, 0.05f, 0.05f, 1.0f),
-                        new Vec4(0.3f, 0.1f, 0.1f, 1.0f),
-                        new Vec4(0.5f, 0.1f, 0.1f, 1.0f)),
+                        new Vector4f(0.15f, 0.05f, 0.05f, 1.0f),
+                        new Vector4f(0.3f, 0.1f, 0.1f, 1.0f),
+                        new Vector4f(0.5f, 0.1f, 0.1f, 1.0f)),
                 new SunlightValue(
                         20.5f / 24.0f,
-                        new Vec4(0.2f, 0.2f, 0.2f, 1.0f),
-                        new Vec4(0.6f, 0.6f, 0.6f, 1.0f),
-                        new Vec4(skyDaylightColor))
+                        new Vector4f(0.2f, 0.2f, 0.2f, 1.0f),
+                        new Vector4f(0.6f, 0.6f, 0.6f, 1.0f),
+                        new Vector4f(skyDaylightColor))
         };
 
         lights.setSunlightValues(values, 7);
 
-        lights.setPointLightIntensity(0, new Vec4(0.6f, 0.6f, 0.6f, 1.0f));
-        lights.setPointLightIntensity(1, new Vec4(0.0f, 0.0f, 0.7f, 1.0f));
-        lights.setPointLightIntensity(2, new Vec4(0.7f, 0.0f, 0.0f, 1.0f));
+        lights.setPointLightIntensity(0, new Vector4f(0.6f, 0.6f, 0.6f, 1.0f));
+        lights.setPointLightIntensity(1, new Vector4f(0.0f, 0.0f, 0.7f, 1.0f));
+        lights.setPointLightIntensity(2, new Vector4f(0.7f, 0.0f, 0.0f, 1.0f));
     }
 
     private void setupHDRLighting() {
         SunlightValueHDR values[] = {
                 new SunlightValueHDR(
                         0.0f / 24.0f,
-                        new Vec4(0.6f, 0.6f, 0.6f, 1.0f),
-                        new Vec4(1.8f, 1.8f, 1.8f, 1.0f),
-                        new Vec4(skyDaylightColor),
+                        new Vector4f(0.6f, 0.6f, 0.6f, 1.0f),
+                        new Vector4f(1.8f, 1.8f, 1.8f, 1.0f),
+                        new Vector4f(skyDaylightColor),
                         3.0f),
                 new SunlightValueHDR(
                         4.5f / 24.0f,
-                        new Vec4(0.6f, 0.6f, 0.6f, 1.0f),
-                        new Vec4(1.8f, 1.8f, 1.8f, 1.0f),
-                        new Vec4(skyDaylightColor),
+                        new Vector4f(0.6f, 0.6f, 0.6f, 1.0f),
+                        new Vector4f(1.8f, 1.8f, 1.8f, 1.0f),
+                        new Vector4f(skyDaylightColor),
                         3.0f),
                 new SunlightValueHDR(
                         6.5f / 24.0f,
-                        new Vec4(0.225f, 0.075f, 0.075f, 1.0f),
-                        new Vec4(0.45f, 0.15f, 0.15f, 1.0f),
-                        new Vec4(0.5f, 0.1f, 0.1f, 1.0f),
+                        new Vector4f(0.225f, 0.075f, 0.075f, 1.0f),
+                        new Vector4f(0.45f, 0.15f, 0.15f, 1.0f),
+                        new Vector4f(0.5f, 0.1f, 0.1f, 1.0f),
                         1.5f),
                 new SunlightValueHDR(
                         8.0f / 24.0f,
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
                         1.0f),
                 new SunlightValueHDR(
                         18.0f / 24.0f,
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
                         1.0f),
                 new SunlightValueHDR(
                         19.5f / 24.0f,
-                        new Vec4(0.225f, 0.075f, 0.075f, 1.0f),
-                        new Vec4(0.45f, 0.15f, 0.15f, 1.0f),
-                        new Vec4(0.5f, 0.1f, 0.1f, 1.0f),
+                        new Vector4f(0.225f, 0.075f, 0.075f, 1.0f),
+                        new Vector4f(0.45f, 0.15f, 0.15f, 1.0f),
+                        new Vector4f(0.5f, 0.1f, 0.1f, 1.0f),
                         1.5f),
                 new SunlightValueHDR(
                         20.5f / 24.0f,
-                        new Vec4(0.6f, 0.6f, 0.6f, 1.0f),
-                        new Vec4(1.8f, 1.8f, 1.8f, 1.0f),
-                        new Vec4(skyDaylightColor),
+                        new Vector4f(0.6f, 0.6f, 0.6f, 1.0f),
+                        new Vector4f(1.8f, 1.8f, 1.8f, 1.0f),
+                        new Vector4f(skyDaylightColor),
                         3.0f)
         };
 
         lights.setSunlightValues(values, 7);
 
-        lights.setPointLightIntensity(0, new Vec4(0.6f, 0.6f, 0.6f, 1.0f));
-        lights.setPointLightIntensity(1, new Vec4(0.0f, 0.0f, 0.7f, 1.0f));
-        lights.setPointLightIntensity(2, new Vec4(0.7f, 0.0f, 0.0f, 1.0f));
+        lights.setPointLightIntensity(0, new Vector4f(0.6f, 0.6f, 0.6f, 1.0f));
+        lights.setPointLightIntensity(1, new Vector4f(0.0f, 0.0f, 0.7f, 1.0f));
+        lights.setPointLightIntensity(2, new Vector4f(0.7f, 0.0f, 0.0f, 1.0f));
     }
 
     ////////////////////////////////
     // View setup.
     private ViewData initialViewData = new ViewData(
-            new Vec3(-59.5f, 44.0f, 95.0f),
-            new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+            new Vector3f(-59.5f, 44.0f, 95.0f),
+            new Quaternionf(0.3826834f, 0.0f, 0.0f, 0.92387953f),
             50.0f,
             0.0f
     );
@@ -623,13 +620,13 @@ public class HDRLighting extends LWJGLWindow {
     private int projectionUniformBuffer;
 
     private class ProjectionBlock extends BufferableData<FloatBuffer> {
-        Mat4 cameraToClipMatrix;
+        Matrix4f cameraToClipMatrix;
 
-        static final int SIZE = Mat4.SIZE;
+        static final int SIZE = 16*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            return cameraToClipMatrix.fillBuffer(buffer);
+            return cameraToClipMatrix.get(buffer);
         }
     }
 }

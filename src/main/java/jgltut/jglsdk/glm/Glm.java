@@ -446,6 +446,9 @@ public class Glm {
     }
 
 
+    public static Matrix4f rotate(Matrix4f mat, float angle, Vector3f vec) {
+        return toMatNew(rotate(toMat(mat), angle, toVec3(vec)));
+    }
     public static Mat4 rotate(Mat4 mat, float angle, Vec3 vec) {
         float a = (float) Math.toRadians(angle);
         float c = (float) Math.cos(a);

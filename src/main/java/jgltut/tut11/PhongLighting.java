@@ -6,7 +6,6 @@ import jgltut.framework.Mesh;
 import jgltut.framework.MousePole;
 import jgltut.framework.Timer;
 import jgltut.jglsdk.BufferableData;
-import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.jglsdk.glutil.MousePoles.*;
 import org.joml.*;
 import org.lwjgl.BufferUtils;

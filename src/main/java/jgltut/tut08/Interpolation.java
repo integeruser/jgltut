@@ -97,7 +97,7 @@ public class Interpolation extends LWJGLWindow {
 
         MatrixStackf currMatrix = new MatrixStackf();
         currMatrix.translate(0.0f, 0.0f, -200.0f);
-        currMatrix.mul(Glm.mat4CastNew(orient.getOrient()));
+        currMatrix.mul(Glm.mat4Cast(orient.getOrient()));
 
         glUseProgram(theProgram);
 
@@ -298,7 +298,7 @@ public class Interpolation extends LWJGLWindow {
     private Quaternionf lerp(Quaternionf v0, Quaternionf v1, float alpha) {
         Vector4f start = vectorize(v0);
         Vector4f end = vectorize(v1);
-        Vector4f interp = Glm.mixNew(start, end, alpha);
+        Vector4f interp = Glm.mix(start, end, alpha);
 
         System.out.printf("alpha: %f, (%f, %f, %f, %f)\n", alpha, interp.w, interp.x, interp.y, interp.z);
 

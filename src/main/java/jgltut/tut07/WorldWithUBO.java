@@ -4,7 +4,6 @@ import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.framework.Mesh;
 import jgltut.jglsdk.glm.Glm;
-import jgltut.jglsdk.glm.Mat4;
 import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Vector3f;
@@ -109,7 +108,7 @@ public class WorldWithUBO extends LWJGLWindow {
         camMatrix.mul(calcLookAtMatrix(camPos, camTarget, new Vector3f(0.0f, 1.0f, 0.0f)));
 
         glBindBuffer(GL_UNIFORM_BUFFER, globalMatricesUBO);
-        glBufferSubData(GL_UNIFORM_BUFFER, Mat4.SIZE, camMatrix.get(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 16*4, camMatrix.get(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         MatrixStackf modelMatrix = new MatrixStackf(4);
@@ -294,9 +293,9 @@ public class WorldWithUBO extends LWJGLWindow {
 
         globalMatricesUBO = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, globalMatricesUBO);
-        glBufferData(GL_UNIFORM_BUFFER, Mat4.SIZE * 2, GL_STREAM_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, 16*4 * 2, GL_STREAM_DRAW);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        glBindBufferRange(GL_UNIFORM_BUFFER, globalMatricesBindingIndex, globalMatricesUBO, 0, Mat4.SIZE * 2);
+        glBindBufferRange(GL_UNIFORM_BUFFER, globalMatricesBindingIndex, globalMatricesUBO, 0, 16*4 * 2);
     }
 
     private ProgramData loadProgram(String vertexShaderFileName, String fragmentShaderFileName) {

@@ -3,8 +3,7 @@ package jgltut.tut14;
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
 import jgltut.framework.Mesh;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glutil.MatrixStack;
+import org.joml.MatrixStackf;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
@@ -121,7 +120,7 @@ public class PerspectiveInterpolation extends LWJGLWindow {
     }
 
 
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
 
     private void initializePrograms() {
@@ -130,13 +129,13 @@ public class PerspectiveInterpolation extends LWJGLWindow {
 
         float zNear = 1.0f;
         float zFar = 1000.0f;
-        MatrixStack persMatrix = new MatrixStack();
-        persMatrix.perspective(60.0f, 1.0f, zNear, zFar);
+        MatrixStackf persMatrix = new MatrixStackf();
+        persMatrix.perspective(Framework.degToRad(60.0f), 1.0f, zNear, zFar);
 
         glUseProgram(smoothInterp.theProgram);
-        glUniformMatrix4fv(smoothInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(smoothInterp.cameraToClipMatrixUnif, false, persMatrix.get(mat4Buffer));
         glUseProgram(linearInterp.theProgram);
-        glUniformMatrix4fv(linearInterp.cameraToClipMatrixUnif, false, persMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(linearInterp.cameraToClipMatrixUnif, false, persMatrix.get(mat4Buffer));
         glUseProgram(0);
     }
 

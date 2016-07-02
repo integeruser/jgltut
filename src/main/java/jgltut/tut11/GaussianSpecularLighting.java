@@ -6,9 +6,8 @@ import jgltut.framework.Mesh;
 import jgltut.framework.MousePole;
 import jgltut.framework.Timer;
 import jgltut.jglsdk.BufferableData;
-import jgltut.jglsdk.glm.*;
-import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.jglsdk.glutil.MousePoles.*;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -212,11 +211,11 @@ public class GaussianSpecularLighting extends LWJGLWindow {
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        MatrixStack modelMatrix = new MatrixStack();
-        modelMatrix.setMatrix(viewPole.calcMatrix());
+        MatrixStackf modelMatrix = new MatrixStackf(10);
+        modelMatrix.mul(viewPole.calcMatrix());
 
-        final Vec4 worldLightPos = calcLightPosition();
-        final Vec4 lightPosCameraSpace = Mat4.mul(modelMatrix.top(), worldLightPos);
+        final Vector4f worldLightPos = calcLightPosition();
+        final Vector4f lightPosCameraSpace = modelMatrix.transform(new Vector4f(worldLightPos));
 
         ProgramData whiteProg = programs[lightModel.ordinal()].whiteProg;
         ProgramData colorProg = programs[lightModel.ordinal()].colorProg;
@@ -224,58 +223,58 @@ public class GaussianSpecularLighting extends LWJGLWindow {
         glUseProgram(whiteProg.theProgram);
         glUniform4f(whiteProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
         glUniform4f(whiteProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-        glUniform3fv(whiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(whiteProg.cameraSpaceLightPosUnif, lightPosCameraSpace.get(vec4Buffer));
         float lightAttenuation = 1.2f;
         glUniform1f(whiteProg.lightAttenuationUnif, lightAttenuation);
         glUniform1f(whiteProg.shininessFactorUnif, matParams.getSpecularValue());
-        glUniform4fv(whiteProg.baseDiffuseColorUnif, drawDark ? darkColor.fillAndFlipBuffer(vec4Buffer) : lightColor.fillAndFlipBuffer(vec4Buffer));
+        glUniform4fv(whiteProg.baseDiffuseColorUnif, drawDark ? darkColor.get(vec4Buffer) : lightColor.get(vec4Buffer));
 
         glUseProgram(colorProg.theProgram);
         glUniform4f(colorProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
         glUniform4f(colorProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
-        glUniform3fv(colorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(colorProg.cameraSpaceLightPosUnif, lightPosCameraSpace.get(vec4Buffer));
         glUniform1f(colorProg.lightAttenuationUnif, lightAttenuation);
         glUniform1f(colorProg.shininessFactorUnif, matParams.getSpecularValue());
         glUseProgram(0);
 
         {
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
             // Render the ground plane.
             {
-                modelMatrix.push();
+                modelMatrix.pushMatrix();
 
-                Mat3 normMatrix = new Mat3(modelMatrix.top());
-                normMatrix = Glm.transpose(Glm.inverse(normMatrix));
+                Matrix3f normMatrix = new Matrix3f(modelMatrix);
+                normMatrix.invert().transpose();
 
                 glUseProgram(whiteProg.theProgram);
-                glUniformMatrix4fv(whiteProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(whiteProg.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
 
-                glUniformMatrix3fv(whiteProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+                glUniformMatrix3fv(whiteProg.normalModelToCameraMatrixUnif, false, normMatrix.get(mat3Buffer));
                 planeMesh.render();
                 glUseProgram(0);
 
-                modelMatrix.pop();
+                modelMatrix.popMatrix();
             }
 
             // Render the Cylinder
             {
-                modelMatrix.push();
+                modelMatrix.pushMatrix();
 
-                modelMatrix.applyMatrix(objtPole.calcMatrix());
+                modelMatrix.mul(objtPole.calcMatrix());
 
                 if (scaleCyl) {
                     modelMatrix.scale(1.0f, 1.0f, 0.2f);
                 }
 
-                Mat3 normMatrix = new Mat3(modelMatrix.top());
-                normMatrix = Glm.transpose(Glm.inverse(normMatrix));
+                Matrix3f normMatrix = new Matrix3f(modelMatrix);
+                normMatrix.invert().transpose();
 
                 ProgramData prog = drawColoredCyl ? colorProg : whiteProg;
                 glUseProgram(prog.theProgram);
-                glUniformMatrix4fv(prog.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(prog.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
 
-                glUniformMatrix3fv(prog.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+                glUniformMatrix3fv(prog.normalModelToCameraMatrixUnif, false, normMatrix.get(mat3Buffer));
 
                 if (drawColoredCyl) {
                     cylinderMesh.render("lit-color");
@@ -285,25 +284,25 @@ public class GaussianSpecularLighting extends LWJGLWindow {
 
                 glUseProgram(0);
 
-                modelMatrix.pop();
+                modelMatrix.popMatrix();
             }
 
             // Render the light
             if (drawLightSource) {
-                modelMatrix.push();
+                modelMatrix.pushMatrix();
 
                 modelMatrix.translate(worldLightPos.x, worldLightPos.y, worldLightPos.z);
                 modelMatrix.scale(0.1f, 0.1f, 0.1f);
 
                 glUseProgram(unlit.theProgram);
-                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
                 glUniform4f(unlit.objectColorUnif, 0.8078f, 0.8706f, 0.9922f, 1.0f);
                 cubeMesh.render("flat");
 
-                modelMatrix.pop();
+                modelMatrix.popMatrix();
             }
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
     }
 
@@ -311,14 +310,14 @@ public class GaussianSpecularLighting extends LWJGLWindow {
     protected void reshape(int w, int h) {
         float zNear = 1.0f;
         float zFar = 1000.0f;
-        MatrixStack persMatrix = new MatrixStack();
+        MatrixStackf persMatrix = new MatrixStackf();
         persMatrix.perspective(45.0f, (w / (float) h), zNear, zFar);
 
         ProjectionBlock projData = new ProjectionBlock();
-        projData.cameraToClipMatrix = persMatrix.top();
+        projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -414,9 +413,9 @@ public class GaussianSpecularLighting extends LWJGLWindow {
     }
 
 
-    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(Vec4.SIZE);
-    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(Mat3.SIZE);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
+    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
 
     private void initializePrograms() {
@@ -484,8 +483,8 @@ public class GaussianSpecularLighting extends LWJGLWindow {
     private boolean scaleCyl;
     private boolean drawDark;
 
-    private final Vec4 darkColor = new Vec4(0.2f, 0.2f, 0.2f, 1.0f);
-    private final Vec4 lightColor = new Vec4(1.0f);
+    private final Vector4f darkColor = new Vector4f(0.2f, 0.2f, 0.2f, 1.0f);
+    private final Vector4f lightColor = new Vector4f(1.0f);
 
     private final String[] lightModelNames = {
             "Phong Specular.",
@@ -497,10 +496,10 @@ public class GaussianSpecularLighting extends LWJGLWindow {
     };
 
 
-    private Vec4 calcLightPosition() {
+    private Vector4f calcLightPosition() {
         float currTimeThroughLoop = lightTimer.getAlpha();
 
-        Vec4 lightPos = new Vec4(0.0f, lightHeight, 0.0f, 1.0f);
+        Vector4f lightPos = new Vector4f(0.0f, lightHeight, 0.0f, 1.0f);
         lightPos.x = (float) (Math.cos(currTimeThroughLoop * (3.14159f * 2.0f)) * lightRadius);
         lightPos.z = (float) (Math.sin(currTimeThroughLoop * (3.14159f * 2.0f)) * lightRadius);
         return lightPos;
@@ -509,8 +508,8 @@ public class GaussianSpecularLighting extends LWJGLWindow {
     ////////////////////////////////
     // View / Object setup.
     private ViewData initialViewData = new ViewData(
-            new Vec3(0.0f, 0.5f, 0.0f),
-            new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+            new Vector3f(0.0f, 0.5f, 0.0f),
+            new Quaternionf(0.3826834f, 0.0f, 0.0f, 0.92387953f),
             5.0f,
             0.0f
     );
@@ -524,8 +523,8 @@ public class GaussianSpecularLighting extends LWJGLWindow {
 
 
     private ObjectData initialObjectData = new ObjectData(
-            new Vec3(0.0f, 0.5f, 0.0f),
-            new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
+            new Vector3f(0.0f, 0.5f, 0.0f),
+            new Quaternionf(0.0f, 0.0f, 0.0f, 1.0f)
     );
 
 
@@ -538,13 +537,13 @@ public class GaussianSpecularLighting extends LWJGLWindow {
     private int projectionUniformBuffer;
 
     private class ProjectionBlock extends BufferableData<FloatBuffer> {
-        Mat4 cameraToClipMatrix;
+        Matrix4f cameraToClipMatrix;
 
-        static final int SIZE = Mat4.SIZE;
+        static final int SIZE = 16*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            return cameraToClipMatrix.fillBuffer(buffer);
+            return cameraToClipMatrix.get(buffer);
         }
     }
 

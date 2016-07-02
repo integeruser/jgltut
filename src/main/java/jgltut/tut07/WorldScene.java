@@ -170,7 +170,7 @@ public class WorldScene extends LWJGLWindow {
         float zNear = 1.0f;
         float zFar = 1000.0f;
         MatrixStackf persMatrix = new MatrixStackf();
-        persMatrix.perspective(45.0f, (w / (float) h), zNear, zFar);
+        persMatrix.perspective(Framework.degToRad(45.0f), (w / (float) h), zNear, zFar);
 
         glUseProgram(uniformColor.theProgram);
         glUniformMatrix4fv(uniformColor.cameraToClipMatrixUnif, false, persMatrix.get(mat4Buffer));

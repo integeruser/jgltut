@@ -11,16 +11,12 @@ import jgltut.jglsdk.glimg.ImageSet.Dimensions;
 import jgltut.jglsdk.glimg.ImageSet.SingleImage;
 import jgltut.jglsdk.glimg.TextureGenerator;
 import jgltut.jglsdk.glimg.TextureGenerator.OpenGLPixelTransferParams;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glm.Quaternion;
-import jgltut.jglsdk.glm.Vec3;
-import jgltut.jglsdk.glm.Vec4;
-import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.jglsdk.glutil.MousePoles.MouseButtons;
 import jgltut.jglsdk.glutil.MousePoles.ViewData;
 import jgltut.jglsdk.glutil.MousePoles.ViewPole;
 import jgltut.jglsdk.glutil.MousePoles.ViewScale;
 import jgltut.tut16.LightEnv.LightBlock;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -204,13 +200,13 @@ public class GammaLandscape extends LWJGLWindow {
 
         lightEnv.updateTime(elapsedTime);
 
-        Vec4 bgColor = lightEnv.getBackgroundColor();
+        Vector4f bgColor = lightEnv.getBackgroundColor();
         glClearColor(bgColor.x, bgColor.y, bgColor.z, bgColor.w);
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        MatrixStack modelMatrix = new MatrixStack();
-        modelMatrix.applyMatrix(viewPole.calcMatrix());
+        MatrixStackf modelMatrix = new MatrixStackf(10);
+        modelMatrix.mul(viewPole.calcMatrix());
 
         LightBlock lightData = lightEnv.getLightBlock(viewPole.calcMatrix());
 
@@ -218,11 +214,11 @@ public class GammaLandscape extends LWJGLWindow {
         glBufferData(GL_UNIFORM_BUFFER, lightData.fillAndFlipBuffer(lightBlockBuffer), GL_STREAM_DRAW);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-        modelMatrix.push();
-        modelMatrix.rotateX(-90.0f);
+        modelMatrix.pushMatrix();
+        modelMatrix.rotateX(Framework.degToRad(-90.0f));
 
         glUseProgram(progStandard.theProgram);
-        glUniformMatrix4fv(progStandard.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(progStandard.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
         glUniform1i(progStandard.numberOfLightsUnif, lightEnv.getNumLights());
 
         glActiveTexture(GL_TEXTURE0 + colorTexUnit);
@@ -236,53 +232,54 @@ public class GammaLandscape extends LWJGLWindow {
 
         glUseProgram(0);
 
-        modelMatrix.pop();
+        modelMatrix.popMatrix();
 
         // Render the sun
         {
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
-            Vec3 sunlightDir = new Vec3(lightEnv.getSunlightDirection());
-            modelMatrix.translate(sunlightDir.scale(500.0f));
+            Vector4f tmp = lightEnv.getSunlightDirection();
+            Vector3f sunlightDir = new Vector3f(tmp.x, tmp.y, tmp.z);
+            modelMatrix.translate(sunlightDir.mul(500.0f));
             modelMatrix.scale(30.0f, 30.0f, 30.0f);
 
             glUseProgram(progUnlit.theProgram);
-            glUniformMatrix4fv(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
 
-            Vec4 lightColor = lightEnv.getSunlightScaledIntensity();
-            glUniform4fv(progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+            Vector4f lightColor = lightEnv.getSunlightScaledIntensity();
+            glUniform4fv(progUnlit.objectColorUnif, lightColor.get(vec4Buffer));
             sphere.render("flat");
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
 
         // Draw lights
         for (int light = 0; light < lightEnv.getNumPointLights(); light++) {
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
             modelMatrix.translate(lightEnv.getPointLightWorldPos(light));
 
             glUseProgram(progUnlit.theProgram);
-            glUniformMatrix4fv(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
 
-            Vec4 lightColor = lightEnv.getPointLightScaledIntensity(light);
-            glUniform4fv(progUnlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+            Vector4f lightColor = lightEnv.getPointLightScaledIntensity(light);
+            glUniform4fv(progUnlit.objectColorUnif, lightColor.get(vec4Buffer));
             sphere.render("flat");
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
 
         if (drawCameraPos) {
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
             // Draw lookat point.
-            modelMatrix.setIdentity();
+            modelMatrix.identity();
             modelMatrix.translate(0.0f, 0.0f, -viewPole.getView().radius);
 
             glDisable(GL_DEPTH_TEST);
             glDepthMask(false);
             glUseProgram(progUnlit.theProgram);
-            glUniformMatrix4fv(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(progUnlit.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
             glUniform4f(progUnlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
             sphere.render("flat");
             glDepthMask(true);
@@ -290,7 +287,7 @@ public class GammaLandscape extends LWJGLWindow {
             glUniform4f(progUnlit.objectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
             sphere.render("flat");
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
     }
 
@@ -298,14 +295,14 @@ public class GammaLandscape extends LWJGLWindow {
     protected void reshape(int w, int h) {
         float zNear = 1.0f;
         float zFar = 1000.0f;
-        MatrixStack persMatrix = new MatrixStack();
-        persMatrix.perspective(60.0f, (w / (float) h), zNear, zFar);
+        MatrixStackf persMatrix = new MatrixStackf();
+        persMatrix.perspective(Framework.degToRad(60.0f), (w / (float) h), zNear, zFar);
 
         ProjectionBlock projData = new ProjectionBlock();
-        projData.cameraToClipMatrix = persMatrix.top();
+        projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -359,8 +356,8 @@ public class GammaLandscape extends LWJGLWindow {
     }
 
 
-    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(Vec4.SIZE);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
     private FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer(LightBlock.SIZE);
 
 
@@ -480,8 +477,8 @@ public class GammaLandscape extends LWJGLWindow {
     ////////////////////////////////
     // View setup.
     private ViewData initialView = new ViewData(
-            new Vec3(-60.257084f, 10.947238f, 62.636356f),
-            new Quaternion(-0.972817f, -0.099283f, -0.211198f, -0.020028f),
+            new Vector3f(-60.257084f, 10.947238f, 62.636356f),
+            new Quaternionf(-0.099283f, -0.211198f, -0.020028f, -0.972817f),
             30.0f,
             0.0f
     );
@@ -502,13 +499,13 @@ public class GammaLandscape extends LWJGLWindow {
     private int projectionUniformBuffer;
 
     private class ProjectionBlock extends BufferableData<FloatBuffer> {
-        Mat4 cameraToClipMatrix;
+        Matrix4f cameraToClipMatrix;
 
-        static final int SIZE = Mat4.SIZE;
+        static final int SIZE = 16*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            return cameraToClipMatrix.fillBuffer(buffer);
+            return cameraToClipMatrix.get(buffer);
         }
     }
 }

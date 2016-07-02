@@ -110,6 +110,17 @@ public class Glm {
         return new Vec3(v.x, v.y, v.z);
     }
 
+    public static Vec4 toVec4( Vector4f v) {
+        return new Vec4(v.x, v.y, v.z, v.w);
+    }
+
+    public static Vector4f toVec4New( Vec4 v) {
+        return new Vector4f(v.x, v.y, v.z, v.w);
+    }
+
+    public static Quaternion angleAxis(float angle, Vec3 v) {
+        return toQuat(angleAxis(angle, toVec3new(v)));
+    }
     public static Quaternionf angleAxis(float angle, Vector3f v) {
         Vec3 vec = toVec3(v);
         Quaternion res = new Quaternion();
@@ -132,6 +143,9 @@ public class Glm {
         return res;
     }
 
+    public static Quaternion quatCast(Mat4 matNew) {
+        return toQuat(quatCast(toMatNew(matNew)));
+    }
     public static Quaternionf quatCast(Matrix4f matNew) {
         Mat4 mat = toMat(matNew);
 
@@ -196,7 +210,7 @@ public class Glm {
         return toQuatNew(res);
     }
 
-    private static Quaternionf toQuatNew(Quaternion q) {
+    public static Quaternionf toQuatNew(Quaternion q) {
         return new Quaternionf(q.x, q.y, q.z, q.w);
     }
 
@@ -275,7 +289,9 @@ public class Glm {
         return res.scale(1.0f / determinant);
     }
 
-
+    public static Mat4 translate(Mat4 m, Vec3 v) {
+        return toMat(translate(toMatNew(m), toVec3new(v)));
+    }
     public static Matrix4f translate(Matrix4f m, Vector3f v) {
         Vec3 vec = toVec3(v);
         Mat4 mat = toMat(m);
@@ -385,7 +401,7 @@ public class Glm {
     }
 
 
-    private static Quaternion toQuat(Quaternionf q) {
+    public static Quaternion toQuat(Quaternionf q) {
         return new Quaternion(q.w, q.x, q.y, q.z);
     }
 
@@ -393,6 +409,10 @@ public class Glm {
         Matrix4f res = new Matrix4f();
         res.set(mat.get());
         return res;
+    }
+
+    public static Mat4 mat4Cast(Quaternion q) {
+        return toMat(mat4Cast(toQuatNew(q)));
     }
 
     public static Matrix4f mat4Cast(Quaternionf quatNew) {
@@ -502,7 +522,7 @@ public class Glm {
         return translate(a, b);
     }
 
-    private static Vector3f toVec3new(Vec3 v) {
+    public static Vector3f toVec3new(Vec3 v) {
         return new Vector3f(v.x, v.y, v.z);
     }
 

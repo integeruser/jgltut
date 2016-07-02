@@ -1,9 +1,9 @@
 package jgltut.framework;
 
-import jgltut.jglsdk.glm.Vec2;
 import jgltut.jglsdk.glutil.MousePoles.MouseButtons;
 import jgltut.jglsdk.glutil.MousePoles.MouseModifiers;
 import jgltut.jglsdk.glutil.MousePoles.Pole;
+import org.joml.Vector2i;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -15,12 +15,12 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class MousePole {
     public static void forwardMouseMotion(Pole forward, int x, int y) {
-        forward.mouseMove(new Vec2(x, y));
+        forward.mouseMove(new Vector2i(x, y));
     }
 
     public static void forwardMouseButton(long window, Pole forwardPole, int button, boolean state, int x, int y) {
         MouseModifiers modifiers = calcModifiers(window);
-        Vec2 mouseLoc = new Vec2(x, y);
+        Vector2i mouseLoc = new Vector2i(x, y);
         MouseButtons mouseButtons = null;
 
         switch (button) {
@@ -41,7 +41,7 @@ public class MousePole {
     }
 
     public static void forwardMouseWheel(long window, Pole forward, int direction, int x, int y) {
-        forward.mouseWheel(direction, calcModifiers(window), new Vec2(x, y));
+        forward.mouseWheel(direction, calcModifiers(window), new Vector2i(x, y));
     }
 
 

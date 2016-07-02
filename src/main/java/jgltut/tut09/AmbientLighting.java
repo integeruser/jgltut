@@ -5,9 +5,8 @@ import jgltut.framework.Framework;
 import jgltut.framework.Mesh;
 import jgltut.framework.MousePole;
 import jgltut.jglsdk.BufferableData;
-import jgltut.jglsdk.glm.*;
-import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.jglsdk.glutil.MousePoles.*;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -151,10 +150,10 @@ public class AmbientLighting extends LWJGLWindow {
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        MatrixStack modelMatrix = new MatrixStack();
-        modelMatrix.setMatrix(viewPole.calcMatrix());
+        MatrixStackf modelMatrix = new MatrixStackf(10);
+        modelMatrix.mul(viewPole.calcMatrix());
 
-        Vec4 lightDirCameraSpace = Mat4.mul(modelMatrix.top(), lightDirection);
+        Vector4f lightDirCameraSpace = modelMatrix.transform(new Vector4f(lightDirection));
 
         ProgramData whiteDiffuse = showAmbient ? whiteAmbDiffuseColor : whiteDiffuseColor;
         ProgramData vertexDiffuse = showAmbient ? vertexAmbDiffuseColor : vertexDiffuseColor;
@@ -174,53 +173,53 @@ public class AmbientLighting extends LWJGLWindow {
         }
 
         glUseProgram(whiteDiffuse.theProgram);
-        glUniform3fv(whiteDiffuse.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(whiteDiffuse.dirToLightUnif, lightDirCameraSpace.get(vec4Buffer));
         glUseProgram(vertexDiffuse.theProgram);
-        glUniform3fv(vertexDiffuse.dirToLightUnif, lightDirCameraSpace.fillAndFlipBuffer(vec4Buffer));
+        glUniform3fv(vertexDiffuse.dirToLightUnif, lightDirCameraSpace.get(vec4Buffer));
         glUseProgram(0);
 
         {
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
             // Render the ground plane.
             {
-                modelMatrix.push();
+                modelMatrix.pushMatrix();
 
                 glUseProgram(whiteDiffuse.theProgram);
-                glUniformMatrix4fv(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
-                Mat3 normMatrix = new Mat3(modelMatrix.top());
-                glUniformMatrix3fv(whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+                glUniformMatrix4fv(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
+                Matrix3f normMatrix = new Matrix3f(modelMatrix);
+                glUniformMatrix3fv(whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.get(mat3Buffer));
                 planeMesh.render();
                 glUseProgram(0);
 
-                modelMatrix.pop();
+                modelMatrix.popMatrix();
             }
 
             // Render the Cylinder
             {
-                modelMatrix.push();
+                modelMatrix.pushMatrix();
 
-                modelMatrix.applyMatrix(objtPole.calcMatrix());
+                modelMatrix.mul(objtPole.calcMatrix());
 
                 if (drawColoredCyl) {
                     glUseProgram(vertexDiffuse.theProgram);
-                    glUniformMatrix4fv(vertexDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
-                    Mat3 normMatrix = new Mat3(modelMatrix.top());
-                    glUniformMatrix3fv(vertexDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+                    glUniformMatrix4fv(vertexDiffuse.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
+                    Matrix3f normMatrix = new Matrix3f(modelMatrix);
+                    glUniformMatrix3fv(vertexDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.get(mat3Buffer));
                     cylinderMesh.render("lit-color");
                 } else {
                     glUseProgram(whiteDiffuse.theProgram);
-                    glUniformMatrix4fv(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
-                    Mat3 normMatrix = new Mat3(modelMatrix.top());
-                    glUniformMatrix3fv(whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+                    glUniformMatrix4fv(whiteDiffuse.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
+                    Matrix3f normMatrix = new Matrix3f(modelMatrix);
+                    glUniformMatrix3fv(whiteDiffuse.normalModelToCameraMatrixUnif, false, normMatrix.get(mat3Buffer));
                     cylinderMesh.render("lit");
                 }
                 glUseProgram(0);
 
-                modelMatrix.pop();
+                modelMatrix.popMatrix();
             }
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
     }
 
@@ -228,14 +227,14 @@ public class AmbientLighting extends LWJGLWindow {
     protected void reshape(int w, int h) {
         float zNear = 1.0f;
         float zFar = 1000.0f;
-        MatrixStack persMatrix = new MatrixStack();
+        MatrixStackf persMatrix = new MatrixStackf();
         persMatrix.perspective(45.0f, (w / (float) h), zNear, zFar);
 
         ProjectionBlock projData = new ProjectionBlock();
-        projData.cameraToClipMatrix = persMatrix.top();
+        projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -263,9 +262,9 @@ public class AmbientLighting extends LWJGLWindow {
     }
 
 
-    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(Vec4.SIZE);
-    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(Mat3.SIZE);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
+    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
 
     private void initializeProgram() {
@@ -298,7 +297,7 @@ public class AmbientLighting extends LWJGLWindow {
     private Mesh cylinderMesh;
     private Mesh planeMesh;
 
-    private Vec4 lightDirection = new Vec4(0.866f, 0.5f, 0.0f, 0.0f);
+    private Vector4f lightDirection = new Vector4f(0.866f, 0.5f, 0.0f, 0.0f);
 
     private boolean drawColoredCyl = true;
     private boolean showAmbient;
@@ -306,8 +305,8 @@ public class AmbientLighting extends LWJGLWindow {
     ////////////////////////////////
     // View / Object setup.
     private ViewData initialViewData = new ViewData(
-            new Vec3(0.0f, 0.5f, 0.0f),
-            new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+            new Vector3f(0.0f, 0.5f, 0.0f),
+            new Quaternionf(0.3826834f, 0.0f, 0.0f, 0.92387953f),
             5.0f,
             0.0f
     );
@@ -321,8 +320,8 @@ public class AmbientLighting extends LWJGLWindow {
 
 
     private ObjectData initialObjectData = new ObjectData(
-            new Vec3(0.0f, 0.5f, 0.0f),
-            new Quaternion(1.0f, 0.0f, 0.0f, 0.0f)
+            new Vector3f(0.0f, 0.5f, 0.0f),
+            new Quaternionf(0.0f, 0.0f, 0.0f, 1.0f)
     );
 
 
@@ -335,13 +334,13 @@ public class AmbientLighting extends LWJGLWindow {
     private int projectionUniformBuffer;
 
     private class ProjectionBlock extends BufferableData<FloatBuffer> {
-        Mat4 cameraToClipMatrix;
+        Matrix4f cameraToClipMatrix;
 
-        static final int SIZE = Mat4.SIZE;
+        static final int SIZE = 16*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            return cameraToClipMatrix.fillBuffer(buffer);
+            return cameraToClipMatrix.get(buffer);
         }
     }
 }

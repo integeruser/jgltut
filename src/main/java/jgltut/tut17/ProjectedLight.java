@@ -10,12 +10,12 @@ import jgltut.jglsdk.BufferableData;
 import jgltut.jglsdk.glimg.DdsLoader;
 import jgltut.jglsdk.glimg.ImageSet;
 import jgltut.jglsdk.glimg.TextureGenerator;
-import jgltut.jglsdk.glm.*;
-import jgltut.jglsdk.glutil.MatrixStack;
+import jgltut.jglsdk.glm.Glm;
 import jgltut.jglsdk.glutil.MousePoles.MouseButtons;
 import jgltut.jglsdk.glutil.MousePoles.ViewData;
 import jgltut.jglsdk.glutil.MousePoles.ViewPole;
 import jgltut.jglsdk.glutil.MousePoles.ViewScale;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -211,30 +211,30 @@ public class ProjectedLight extends LWJGLWindow {
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        final Mat4 cameraMatrix = viewPole.calcMatrix();
-        final Mat4 lightView = lightViewPole.calcMatrix();
+        final Matrix4f cameraMatrix = viewPole.calcMatrix();
+        final Matrix4f lightView = lightViewPole.calcMatrix();
 
-        MatrixStack modelMatrix = new MatrixStack();
-        modelMatrix.applyMatrix(cameraMatrix);
+        MatrixStackf modelMatrix = new MatrixStackf(10);
+        modelMatrix.mul(cameraMatrix);
 
         buildLights(cameraMatrix);
 
-        nodes.get(0).nodeSetOrient(Glm.rotate(new Quaternion(1.0f), 360.0f * timer.getAlpha(), new Vec3(0.0f, 1.0f, 0.0f)));
+        nodes.get(0).nodeSetOrient(Glm.rotate(new Quaternionf(0,0,0,1.0f), 360.0f * timer.getAlpha(), new Vector3f(0.0f, 1.0f, 0.0f)));
 
-        nodes.get(3).nodeSetOrient(Quaternion.mul(spinBarOrient, Glm.rotate(new Quaternion(1.0f),
-                360.0f * timer.getAlpha(), new Vec3(0.0f, 0.0f, 1.0f))));
+        nodes.get(3).nodeSetOrient(new Quaternionf(spinBarOrient).mul(
+                Glm.rotate(new Quaternionf(0,0,0, 1.0f), 360.0f * timer.getAlpha(), new Vector3f(0.0f, 0.0f, 1.0f))));
 
         {
             final float zNear = 1.0f;
             final float zFar = 1000.0f;
-            MatrixStack persMatrix = new MatrixStack();
-            persMatrix.perspective(60.0f, displayWidth / (float) displayHeight, zNear, zFar);
+            MatrixStackf persMatrix = new MatrixStackf();
+            persMatrix.perspective(Framework.degToRad(60.0f), displayWidth / (float) displayHeight, zNear, zFar);
 
             ProjectionBlock projData = new ProjectionBlock();
-            projData.cameraToClipMatrix = persMatrix.top();
+            projData.cameraToClipMatrix = persMatrix;
 
             glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-            glBufferData(GL_UNIFORM_BUFFER, projData.fillAndFlipBuffer(mat4Buffer), GL_STREAM_DRAW);
+            glBufferData(GL_UNIFORM_BUFFER, projData.fillBuffer(mat4Buffer), GL_STREAM_DRAW);
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
         }
 
@@ -243,54 +243,55 @@ public class ProjectedLight extends LWJGLWindow {
         glBindSampler(lightProjTexUnit, samplers[currSampler]);
 
         {
-            MatrixStack lightProjStack = new MatrixStack();
+            MatrixStackf lightProjStack = new MatrixStackf();
             // Texture-space transform
             lightProjStack.translate(0.5f, 0.5f, 0.0f);
             lightProjStack.scale(0.5f, 0.5f, 1.0f);
 
             // Project. Z-range is irrelevant.
-            lightProjStack.perspective(lightFOVs[currFOVIndex], 1.0f, 1.0f, 100.0f);
+            lightProjStack.perspective(Framework.degToRad(lightFOVs[currFOVIndex]), 1.0f, 1.0f, 100.0f);
 
             // Transform from main camera space to light camera space.
-            lightProjStack.applyMatrix(lightView);
-            lightProjStack.applyMatrix(Glm.inverse(cameraMatrix));
-            lightProjMatBinder.setValue(lightProjStack.top());
+            lightProjStack.mul(lightView);
+            lightProjStack.mul(new Matrix4f(cameraMatrix).invert());
+            lightProjMatBinder.setValue(lightProjStack);
 
-            Vec4 worldLightPos = Glm.inverse(lightView).getColumn(3);
-            Vec3 lightPos = new Vec3(Mat4.mul(cameraMatrix, worldLightPos));
+            Vector4f worldLightPos = new Vector4f(lightView.m30, lightView.m31, lightView.m32, lightView.m33);
+            Vector4f tmp = cameraMatrix.transform(new Vector4f(worldLightPos));
+            Vector3f lightPos = new Vector3f(tmp.x, tmp.y, tmp.z);
             camLightPosBinder.setValue(lightPos);
         }
 
         glViewport(0, 0, displayWidth, displayHeight);
-        scene.render(modelMatrix.top());
+        scene.render(modelMatrix);
 
         {
             // Draw axes
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
-            modelMatrix.applyMatrix(Glm.inverse(lightView));
+            modelMatrix.mul(new Matrix4f(lightView).invert());
             modelMatrix.scale(15.0f);
             modelMatrix.scale(1.0f, 1.0f, -1.0f);     // Invert the Z-axis so that it points in the right direction.
 
             glUseProgram(coloredProg);
-            glUniformMatrix4fv(coloredModelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(coloredModelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
             axesMesh.render();
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
 
         if (drawCameraPos) {
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
             // Draw lookat point.
-            modelMatrix.setIdentity();
+            modelMatrix.identity();
             modelMatrix.translate(0.0f, 0.0f, -viewPole.getView().radius);
             modelMatrix.scale(0.5f);
 
             glDisable(GL_DEPTH_TEST);
             glDepthMask(false);
             glUseProgram(unlitProg);
-            glUniformMatrix4fv(unlitModelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(unlitModelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
             glUniform4f(unlitObjectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
             sphereMesh.render("flat");
             glDepthMask(true);
@@ -298,7 +299,7 @@ public class ProjectedLight extends LWJGLWindow {
             glUniform4f(unlitObjectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
             sphereMesh.render("flat");
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
 
         glActiveTexture(GL_TEXTURE0 + lightProjTexUnit);
@@ -375,7 +376,7 @@ public class ProjectedLight extends LWJGLWindow {
     private int unlitObjectColorUnif;
 
 
-    private final FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
     private final FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer(LightBlock.SIZE);
 
 
@@ -437,7 +438,7 @@ public class ProjectedLight extends LWJGLWindow {
 
     private Timer timer = new Timer(Timer.Type.LOOP, 10.0f);
 
-    private Quaternion spinBarOrient;
+    private Quaternionf spinBarOrient;
 
     private boolean showOtherLights = true;
     private boolean drawCameraPos;
@@ -445,8 +446,8 @@ public class ProjectedLight extends LWJGLWindow {
     ////////////////////////////////
     // View setup.
     private ViewData initialView = new ViewData(
-            new Vec3(0.0f, 0.0f, 10.0f),
-            new Quaternion(0.909845f, 0.16043f, -0.376867f, -0.0664516f),
+            new Vector3f(0.0f, 0.0f, 10.0f),
+            new Quaternionf(0.16043f, -0.376867f, -0.0664516f, 0.909845f),
             25.0f,
             0.0f
     );
@@ -460,8 +461,8 @@ public class ProjectedLight extends LWJGLWindow {
 
 
     private ViewData initLightView = new ViewData(
-            new Vec3(0.0f, 0.0f, 20.0f),
-            new Quaternion(1.0f, 0.0f, 0.0f, 0.0f),
+            new Vector3f(0.0f, 0.0f, 20.0f),
+            new Quaternionf(0.0f, 0.0f, 0.0f, 1.0f),
             5.0f,
             0.0f
     );
@@ -549,13 +550,13 @@ public class ProjectedLight extends LWJGLWindow {
     private int projectionUniformBuffer;
 
     private class ProjectionBlock extends BufferableData<FloatBuffer> {
-        Mat4 cameraToClipMatrix;
+        Matrix4f cameraToClipMatrix;
 
-        static final int SIZE = Mat4.SIZE;
+        static final int SIZE = 16*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            return cameraToClipMatrix.fillBuffer(buffer);
+            return cameraToClipMatrix.get(buffer);
         }
     }
 
@@ -569,31 +570,40 @@ public class ProjectedLight extends LWJGLWindow {
     private UniformIntBinder lightNumBinder;
 
     private class PerLight extends BufferableData<FloatBuffer> {
-        Vec4 cameraSpaceLightPos;
-        Vec4 lightIntensity;
+        Vector4f cameraSpaceLightPos;
+        Vector4f lightIntensity;
 
-        static final int SIZE = Vec4.SIZE + Vec4.SIZE;
+        static final int SIZE = 4*4 + 4*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            cameraSpaceLightPos.fillBuffer(buffer);
-            lightIntensity.fillBuffer(buffer);
+            buffer.put(cameraSpaceLightPos.x);
+            buffer.put(cameraSpaceLightPos.y);
+            buffer.put(cameraSpaceLightPos.z);
+            buffer.put(cameraSpaceLightPos.w);
+            buffer.put(lightIntensity.x);
+            buffer.put(lightIntensity.y);
+            buffer.put(lightIntensity.z);
+            buffer.put(lightIntensity.w);
             return buffer;
         }
     }
 
     private class LightBlock extends BufferableData<FloatBuffer> {
-        Vec4 ambientIntensity;
+        Vector4f ambientIntensity;
         float lightAttenuation;
         float maxIntensity;
         float padding[] = new float[2];
         PerLight lights[] = new PerLight[MAX_NUMBER_OF_LIGHTS];
 
-        static final int SIZE = Vec4.SIZE + ((1 + 1 + 2) * FLOAT_SIZE) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
+        static final int SIZE = 4*4 + ((1 + 1 + 2) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            ambientIntensity.fillBuffer(buffer);
+            buffer.put(ambientIntensity.x);
+            buffer.put(ambientIntensity.y);
+            buffer.put(ambientIntensity.z);
+            buffer.put(ambientIntensity.w);
             buffer.put(lightAttenuation);
             buffer.put(maxIntensity);
             buffer.put(padding);
@@ -606,19 +616,19 @@ public class ProjectedLight extends LWJGLWindow {
     }
 
 
-    private void buildLights(Mat4 camMatrix) {
+    private void buildLights(Matrix4f camMatrix) {
         LightBlock lightData = new LightBlock();
-        lightData.ambientIntensity = new Vec4(0.2f, 0.2f, 0.2f, 1.0f);
+        lightData.ambientIntensity = new Vector4f(0.2f, 0.2f, 0.2f, 1.0f);
         lightData.lightAttenuation = 1.0f / (30.0f * 30.0f);
         lightData.maxIntensity = 2.0f;
 
         lightData.lights[0] = new PerLight();
-        lightData.lights[0].lightIntensity = new Vec4(0.2f, 0.2f, 0.2f, 1.0f);
-        lightData.lights[0].cameraSpaceLightPos = Mat4.mul(camMatrix, Glm.normalize(new Vec4(-0.2f, 0.5f, 0.5f, 0.0f)));
+        lightData.lights[0].lightIntensity = new Vector4f(0.2f, 0.2f, 0.2f, 1.0f);
+        lightData.lights[0].cameraSpaceLightPos = camMatrix.transform(new Vector4f(-0.2f, 0.5f, 0.5f, 0.0f).normalize());
 
         lightData.lights[1] = new PerLight();
-        lightData.lights[1].lightIntensity = new Vec4(3.5f, 6.5f, 3.0f, 1.0f).scale(0.5f);
-        lightData.lights[1].cameraSpaceLightPos = Mat4.mul(camMatrix, new Vec4(5.0f, 6.0f, 0.5f, 1.0f));
+        lightData.lights[1].lightIntensity = new Vector4f(3.5f, 6.5f, 3.0f, 1.0f).mul(0.5f);
+        lightData.lights[1].cameraSpaceLightPos = camMatrix.transform(new Vector4f(5.0f, 6.0f, 0.5f, 1.0f));
 
         if (showOtherLights) {
             lightNumBinder.setValue(2);

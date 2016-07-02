@@ -1,8 +1,8 @@
 package jgltut.framework;
 
 import jgltut.framework.Scene.SceneNode;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glm.Vec3;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -78,14 +78,14 @@ public class SceneBinders {
     }
 
     public static class UniformVec3Binder extends UniformBinderBase {
-        public void setValue(Vec3 val) {
-            this.val = new Vec3(val);
+        public void setValue(Vector3f val) {
+            this.val = new Vector3f(val);
         }
 
         ////////////////////////////////
         @Override
         void bindState(int prog) {
-            glUniform3fv(getUniformLoc(prog), val.fillAndFlipBuffer(vec3Buffer));
+            glUniform3fv(getUniformLoc(prog), val.get(vec3Buffer));
         }
 
         @Override
@@ -93,19 +93,19 @@ public class SceneBinders {
         }
 
         ////////////////////////////////
-        private Vec3 val = new Vec3();
-        private FloatBuffer vec3Buffer = BufferUtils.createFloatBuffer(Vec3.SIZE);
+        private Vector3f val = new Vector3f();
+        private FloatBuffer vec3Buffer = BufferUtils.createFloatBuffer(3);
     }
 
     public static class UniformMat4Binder extends UniformBinderBase {
-        public void setValue(Mat4 val) {
-            this.val = new Mat4(val);
+        public void setValue(Matrix4f val) {
+            this.val = new Matrix4f(val);
         }
 
         ////////////////////////////////
         @Override
         void bindState(int prog) {
-            glUniformMatrix4fv(getUniformLoc(prog), false, val.fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(getUniformLoc(prog), false, val.get(mat4Buffer));
         }
 
         @Override
@@ -113,7 +113,7 @@ public class SceneBinders {
         }
 
         ////////////////////////////////
-        private Mat4 val = new Mat4(1.0f);
-        private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+        private Matrix4f val = new Matrix4f();
+        private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
     }
 }

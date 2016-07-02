@@ -309,6 +309,9 @@ public class Glm {
         return toMatNew(res);
     }
 
+    public static Matrix4f scale(Matrix4f mat, Vector3f vec) {
+        return toMatNew(scale(toMat(mat), toVec3(vec)));
+    }
     public static Mat4 scale(Mat4 mat, Vec3 vec) {
         Mat4 result = new Mat4();
         result.setColumn(0, Vec4.scale(mat.getColumn(0), vec.x));

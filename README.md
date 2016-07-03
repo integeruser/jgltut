@@ -1,30 +1,31 @@
-## Learning Modern 3D Graphics Programming with LWJGL 3
-This project is a port of *[Learning Modern 3D Graphics Programming](https://web.archive.org/web/20150225192611/http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using [LWJGL](http://www.lwjgl.org), distributed in the hope that it will be useful. The original project, named `gltut`, can be found [here](https://bitbucket.org/alfonse/gltut/wiki/Home). Since it is needed by the tutorials, this repository also includes a port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)* (`glsdk` for short), which contains a small math library derived from the [GLM math library](http://glm.g-truc.net), a DDS texture loader and other useful stuff.  
+# Learning Modern 3D Graphics Programming with LWJGL 3 and JOML
+This project is a port of *[Learning Modern 3D Graphics Programming](https://web.archive.org/web/20150225192611/http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using [LWJGL](http://www.lwjgl.org) and [JOML](https://github.com/JOML-CI/JOML), distributed in the hope that it will be useful. The original project, named `gltut`, can be found [here](https://bitbucket.org/alfonse/gltut/wiki/Home). Since it is needed by the tutorials, this repository also includes a partial port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)* (`glsdk` for short), which contains a DDS texture loader and other useful stuff.  
 
-To try the tutorials without building the source code, you can download the runnable JAR included in the [Releases](https://github.com/integeruser/jgltut/releases) section. Several tutorials print messages to console: run the JAR from the command line with `java -jar jgltut.jar` to view the output. This can also be useful to read error messages.
+To try the tutorials without building the source code, you can download the runnable JAR included in the [Releases](https://github.com/integeruser/jgltut/releases) section. Many tutorials print messages to console: run the JAR from the command line with `java -jar jgltut.jar` to view the output (also useful in case of errors).
 
-To suggest a feature, report bugs, inconsistencies with the original tutorials or general discussion use the [issue tracker](https://github.com/integeruser/jgltut/issues).
+To suggest a feature, report bugs or general discussion use the [issue tracker](https://github.com/integeruser/jgltut/issues).
 
 Happy coding! :smile:  
 Francesco
 
+
 ## Usage
-I have included in this repository all the files needed to run the tutorials, so you don't have to download anything else (except the LWJGL library). To correctly compile the code, you will need:
+To compile and run the code, you will need:
 
-- Java SE Development Kit 7
-- LWJGL 3.0.0b build 35
+- Java SE Development Kit 8
+- LWJGL 3 (tested with [3.0.0b build 35](https://www.lwjgl.org/download))
+- JOML (tested with [1.8.1](https://github.com/JOML-CI/JOML/releases/tag/1.8.1))
 
-If you need to work with LWJGL 2, you can use the release [v0.9.1](https://github.com/integeruser/jgltut/releases/tag/v0.9.1) of this repository.  
-Working with different versions of JDK/LJWGL 3 may require minor adjustments to the code.
+Working with different versions of LJWGL 3 or JOML may require adjustments to the code. If you are stuck with LWJGL 2, you can check the release [v0.9.1](https://github.com/integeruser/jgltut/releases/tag/v0.9.1) of this repository.
 
-To get the code running just clone this repository, then:
+Create a new Java project using your favorite IDE, then:
 
-1. Using your favorite IDE, create a new Java project importing the source code of this repository;
-2. Configure the project settings in your IDE options, as explained also [here](http://www.lwjgl.org/guide):
-    - Add the LWJGL JARs to the classpath (usually done by setting up a library dependency for your project and attaching JARs to it);
-    - Link the LWJGL native files to the project. This can be done, for example, by setting `-Djava.library.path=path/to/natives` as a JVM launch argument or, alternatively, by copying all the files from the LWJGL `natives` folder to the root folder of your project. Failing to link the natives will result in `Exception in thread "main" java.lang.UnsatisfiedLinkError: no lwjgl in java.library.path`.
+1. Import the source code of this repository;
+2. Add `lwjgl.jar` to the classpath and link the LWJGL native libraries, as explained [here](http://www.lwjgl.org/guide);
+3. Import the source code of the JOML library.
 
-Run the `main` method of the first tutorial `jgltut.tut01.Tut1` and check the output in the console window. If no error messages appear, then you're done with the setup and you can start exploring other tutorials using `TutorialChooser.java`. To quit any tutorial simply press `ESC`.
+Finally, run the `main` method of the first tutorial `jgltut.tut01.Tut1` and check the output in the console window. If no error messages appear, then you can start playing with the other tutorials by running the `main` method of `TutorialChooser.java`. To quit any tutorial simply press `ESC`.
+
 
 ## Notes
 I decided to keep the ported code as similar as possible to the original C++ code, despite I would have done some things differently; hence, variables and functions are almost identical to their counterparts in the original projects. I also decided to keep the same project layout:
@@ -61,8 +62,6 @@ I can't dedicate much time to this project anymore, but in the future I will pro
 - rework some parts of `jglsdk`;
 - rework the `TutorialChooser`.
 
-## License
-This project is licensed under the [Attribution 4.0 International license](http://creativecommons.org/licenses/by/4.0/): you can do what you want with my code, but if you want to publish some derived work I kindly ask you to simply provide a link to this repository.
 
 ## Credits
 The LWJGL license can be found [here](http://lwjgl.org/license.php).  
@@ -81,3 +80,7 @@ Attributed to p0ss, of OpenGameArt.org:
 * data/dsc_1621_small.dds
 * data/rough645_small.dds
 ```
+
+
+## License
+This project is licensed under the [Attribution 4.0 International license](http://creativecommons.org/licenses/by/4.0/): you can do what you want with my code, but if you want to publish some derived work I kindly ask you to simply provide a link to this repository.

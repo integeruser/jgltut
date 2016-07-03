@@ -1,5 +1,5 @@
 # Learning Modern 3D Graphics Programming with LWJGL 3 and JOML
-This project is a port of *[Learning Modern 3D Graphics Programming](https://web.archive.org/web/20150225192611/http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using [LWJGL](http://www.lwjgl.org) and [JOML](https://github.com/JOML-CI/JOML), distributed in the hope that it will be useful. The original project, named `gltut`, can be found [here](https://bitbucket.org/alfonse/gltut/wiki/Home). Since it is needed by the tutorials, this repository also includes a partial port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)* (`glsdk` for short), which contains a DDS texture loader and other useful stuff.  
+This project is a port of *[Learning Modern 3D Graphics Programming](https://web.archive.org/web/20150225192611/http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using [LWJGL](https://www.lwjgl.org/) and [JOML](http://joml-ci.github.io/JOML/), distributed in the hope that it will be useful. The original project, named `gltut`, can be found [here](https://bitbucket.org/alfonse/gltut/wiki/Home). Since it is needed by the tutorials, this repository also includes a partial port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)* (`glsdk` for short), which contains a DDS texture loader and other useful stuff.  
 
 To try the tutorials without building the source code, you can download the runnable JAR included in the [Releases](https://github.com/integeruser/jgltut/releases) section. Many tutorials print messages to console: run the JAR from the command line with `java -jar jgltut.jar` to view the output (also useful in case of errors).
 
@@ -21,7 +21,7 @@ Working with different versions of LJWGL 3 or JOML may require adjustments to th
 Create a new Java project using your favorite IDE, then:
 
 1. Import the source code of this repository;
-2. Add `lwjgl.jar` to the classpath and link the LWJGL native libraries, as explained [here](http://www.lwjgl.org/guide);
+2. Add `lwjgl.jar` to the classpath and link the LWJGL native libraries, as explained [here](https://www.lwjgl.org/guide);
 3. Import the source code of the JOML library.
 
 Finally, run the `main` method of the first tutorial `jgltut.tut01.Tut1` and check the output in the console window. If no error messages appear, then you can start playing with the other tutorials by running the `main` method of `TutorialChooser.java`. To quit any tutorial simply press `ESC`.

@@ -37,23 +37,6 @@ public class Glm {
     }
 
 
-    public static Quaternionf angleAxis(float angle, Vector3f v) {
-        Vec3 vec = toVec3(v);
-        Quaternion res = new Quaternion();
-
-        float a = (float) Math.toRadians(angle);
-        float s = (float) Math.sin(a * 0.5);
-
-        res.x = vec.x * s;
-        res.y = vec.y * s;
-        res.z = vec.z * s;
-        res.w = (float) Math.cos(a * 0.5);
-
-        return toQuatNew(res);
-    }
-
-
-
     public static Quaternionf quatCast(Matrix4f matNew) {
         Mat4 mat = toMat(matNew);
 
@@ -153,70 +136,6 @@ public class Glm {
     }
 
 
-    public static Mat3 transpose(Mat3 mat) {
-        Mat3 res = new Mat3();
-
-        res.matrix[0] = mat.matrix[0];
-        res.matrix[1] = mat.matrix[3];
-        res.matrix[2] = mat.matrix[6];
-
-        res.matrix[3] = mat.matrix[1];
-        res.matrix[4] = mat.matrix[4];
-        res.matrix[5] = mat.matrix[7];
-
-        res.matrix[6] = mat.matrix[2];
-        res.matrix[7] = mat.matrix[5];
-        res.matrix[8] = mat.matrix[8];
-
-        return res;
-    }
-
-    public static Mat4 transpose(Mat4 mat) {
-        Mat4 res = new Mat4();
-
-        res.matrix[0] = mat.matrix[0];
-        res.matrix[1] = mat.matrix[4];
-        res.matrix[2] = mat.matrix[8];
-        res.matrix[3] = mat.matrix[12];
-
-        res.matrix[4] = mat.matrix[1];
-        res.matrix[5] = mat.matrix[5];
-        res.matrix[6] = mat.matrix[9];
-        res.matrix[7] = mat.matrix[13];
-
-        res.matrix[8] = mat.matrix[2];
-        res.matrix[9] = mat.matrix[6];
-        res.matrix[10] = mat.matrix[10];
-        res.matrix[11] = mat.matrix[14];
-
-        res.matrix[12] = mat.matrix[3];
-        res.matrix[13] = mat.matrix[7];
-        res.matrix[14] = mat.matrix[11];
-        res.matrix[15] = mat.matrix[15];
-
-        return res;
-    }
-
-    public static Mat4 perspective(float fovY, float aspect, float zNear, float zFar) {
-        float range = (float) (Math.tan(Math.toRadians(fovY / 2.0f)) * zNear);
-        float left = -range * aspect;
-        float right = range * aspect;
-        float bottom = -range;
-        float top = range;
-
-        Mat4 res = new Mat4(0.0f);
-
-        res.matrix[0] = (2.0f * zNear) / (right - left);
-        res.matrix[5] = (2.0f * zNear) / (top - bottom);
-        res.matrix[10] = -(zFar + zNear) / (zFar - zNear);
-        res.matrix[11] = -1.0f;
-        res.matrix[14] = -(2.0f * zFar * zNear) / (zFar - zNear);
-
-        return res;
-    }
-
-
-
     public static Matrix4f mat4Cast(Quaternionf quatNew) {
         Quaternion quat = toQuat(quatNew);
         //  Converts this quaternion to a rotation matrix.
@@ -301,27 +220,6 @@ public class Glm {
         Quaternion res = new Quaternion((float) Math.cos(angleRad * 0.5f), tmp.x * fSin, tmp.y * fSin, tmp.z * fSin);
 
         return toQuatNew(Quaternion.mul(quat, res));
-    }
-
-
-    public static Matrix4f lookAt(Vector3f eye, Vector3f center, Vector3f up) {
-        Vector3f f = new Vector3f(center).sub(eye).normalize();
-        Vector3f u = new Vector3f(up).normalize();
-        Vector3f s = new Vector3f(f).cross(u).normalize();
-        u = new Vector3f(s).cross(f);
-
-        Matrix4f result = new Matrix4f();
-        result.m00(s.x);
-        result.m10(s.y);
-        result.m20(s.z);
-        result.m01(u.x);
-        result.m11(u.y);
-        result.m21(u.z);
-        result.m02(-f.x);
-        result.m12(-f.y);
-        result.m22(-f.z);
-
-        return translate(result, new Vector3f(eye).negate());
     }
 
 

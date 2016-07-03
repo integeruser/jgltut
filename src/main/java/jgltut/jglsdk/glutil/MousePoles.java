@@ -275,7 +275,7 @@ public class MousePoles {
 
 
         private Quaternionf calcRotationQuat(int axis, float degAngle) {
-            return Glm.angleAxis(degAngle, axisVectors[axis]);
+            return new Quaternionf().setAngleAxis((float) Math.toRadians(degAngle), axisVectors[axis].x, axisVectors[axis].y, axisVectors[axis].z);
         }
     }
 
@@ -494,7 +494,8 @@ public class MousePoles {
             mat = Glm.translate(mat, new Vector3f(0.0f, 0.0f, -currView.radius));
 
             // Rotate the world to look in the right direction.
-            Quaternionf fullRotation = Glm.angleAxis(currView.degSpinRotation, new Vector3f(0.0f, 0.0f, 1.0f)).mul(currView.orient);
+            Quaternionf angleAxis = new Quaternionf().setAngleAxis((float) Math.toRadians(currView.degSpinRotation), 0.0f, 0.0f, 1.0f);
+            Quaternionf fullRotation = angleAxis.mul(currView.orient);
 
             mat.mul(Glm.mat4Cast(fullRotation));
 
@@ -581,7 +582,8 @@ public class MousePoles {
             float degAngleDiff = diffX * viewScale.rotationScale;
 
             // Rotate about the world-space Y axis.
-            currView.orient = new Quaternionf(startDragOrient).mul(Glm.angleAxis(degAngleDiff, new Vector3f(0.0f, 1.0f, 0.0f)));
+            Quaternionf angleAxisY = new Quaternionf().setAngleAxis((float) Math.toRadians(degAngleDiff), 0.0f, 1.0f, 0.0f);
+            currView.orient = new Quaternionf(startDragOrient).mul(angleAxisY);
         }
 
 
@@ -593,7 +595,8 @@ public class MousePoles {
             float degAngleDiff = diffY * viewScale.rotationScale;
 
             // Rotate about the local-space X axis.
-            currView.orient = Glm.angleAxis(degAngleDiff, new Vector3f(1.0f, 0.0f, 0.0f)).mul(startDragOrient);
+            Quaternionf angleAxisX = new Quaternionf().setAngleAxis((float) Math.toRadians(degAngleDiff), 1.0f, 0.0f, 0.0f);
+            currView.orient = angleAxisX.mul(startDragOrient);
         }
 
 
@@ -602,9 +605,11 @@ public class MousePoles {
             float degYAngleDiff = (diffY * viewScale.rotationScale);
 
             // Rotate about the world-space Y axis.
-            currView.orient = new Quaternionf(startDragOrient).mul(Glm.angleAxis(degXAngleDiff, new Vector3f(0.0f, 1.0f, 0.0f)));
+            Quaternionf angleAxisY = new Quaternionf().setAngleAxis((float) Math.toRadians(degXAngleDiff), 0.0f, 1.0f, 0.0f);
+            currView.orient = new Quaternionf(startDragOrient).mul(angleAxisY);
             // Rotate about the local-space X axis.
-            currView.orient = Glm.angleAxis(degYAngleDiff, new Vector3f(1.0f, 0.0f, 0.0f)).mul(currView.orient);
+            Quaternionf angleAxisX = new Quaternionf().setAngleAxis((float) Math.toRadians(degYAngleDiff), 1.0f, 0.0f, 0.0f);
+            currView.orient = angleAxisX.mul(currView.orient);
         }
 
 

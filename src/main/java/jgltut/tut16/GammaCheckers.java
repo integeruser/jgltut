@@ -160,8 +160,10 @@ public class GammaCheckers extends LWJGLWindow {
         float hOffset = (float) (Math.cos(cyclicAngle) * 0.25f);
         float vOffset = (float) (Math.sin(cyclicAngle) * 0.25f);
 
-        final Matrix4f worldToCamMat = Glm.lookAt(new Vector3f(hOffset, 1.0f, -64.0f),
-                new Vector3f(hOffset, -5.0f + vOffset, -44.0f), new Vector3f(0.0f, 1.0f, 0.0f));
+        Vector3f eye = new Vector3f(hOffset, 1.0f, -64.0f);
+        Vector3f center = new Vector3f(hOffset, -5.0f + vOffset, -44.0f);
+        Vector3f up = new Vector3f(0.0f, 1.0f, 0.0f);
+        final Matrix4f worldToCamMat = new Matrix4f().lookAt(eye, center, up);
 
         MatrixStackf modelMatrix = new MatrixStackf(10);
         modelMatrix.mul(worldToCamMat);

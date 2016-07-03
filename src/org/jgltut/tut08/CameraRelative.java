@@ -127,7 +127,7 @@ public class CameraRelative extends LWJGLWindow {
             currMatrix.pushMatrix();
             currMatrix.translate(camTarget);
             currMatrix.mul(orientation.get(new Matrix4f()));
-            currMatrix.rotateX(-90.0f);
+            currMatrix.rotateX((float) Math.toRadians(-90.0f));
 
             // Set the base color for this object.
             glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);

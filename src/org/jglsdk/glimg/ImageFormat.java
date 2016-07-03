@@ -1,4 +1,4 @@
-package org.jgltut.jglsdk.glimg;
+package org.jglsdk.glimg;
 
 
 /**

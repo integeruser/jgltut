@@ -2,7 +2,7 @@ package org.jgltut.tut06;
 
 import org.jgltut.LWJGLWindow;
 import org.jgltut.framework.Framework;
-import org.jgltut.jglsdk.glm.Glm;
+import org.jglsdk.glm.Glm;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;

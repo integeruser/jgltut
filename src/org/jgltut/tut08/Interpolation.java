@@ -4,7 +4,7 @@ import org.jgltut.LWJGLWindow;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.Timer;
-import org.jgltut.jglsdk.glm.Glm;
+import org.jglsdk.glm.Glm;
 import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Quaternionf;

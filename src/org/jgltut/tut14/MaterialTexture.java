@@ -2,12 +2,12 @@ package org.jgltut.tut14;
 
 import org.jgltut.LWJGLWindow;
 import org.jgltut.framework.*;
-import org.jgltut.jglsdk.BufferableData;
-import org.jgltut.jglsdk.glimg.DdsLoader;
-import org.jgltut.jglsdk.glimg.ImageSet;
-import org.jgltut.jglsdk.glimg.ImageSet.Dimensions;
-import org.jgltut.jglsdk.glimg.ImageSet.SingleImage;
-import org.jgltut.jglsdk.glutil.MousePoles.*;
+import org.jglsdk.BufferableData;
+import org.jglsdk.glimg.DdsLoader;
+import org.jglsdk.glimg.ImageSet;
+import org.jglsdk.glimg.ImageSet.Dimensions;
+import org.jglsdk.glimg.ImageSet.SingleImage;
+import org.jglsdk.glutil.MousePoles.*;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;

@@ -1,6 +1,6 @@
-package org.jgltut.jglsdk.glutil;
+package org.jglsdk.glutil;
 
-import org.jgltut.jglsdk.glm.Glm;
+import org.jglsdk.glm.Glm;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2i;

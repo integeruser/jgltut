@@ -1,6 +1,6 @@
 package org.jgltut.framework;
 
-import org.jgltut.jglsdk.glutil.Shader;
+import org.jglsdk.glutil.Shader;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,8 +1,8 @@
 package org.jgltut.framework;
 
-import org.jgltut.jglsdk.glutil.MousePoles.MouseButtons;
-import org.jgltut.jglsdk.glutil.MousePoles.MouseModifiers;
-import org.jgltut.jglsdk.glutil.MousePoles.Pole;
+import org.jglsdk.glutil.MousePoles.MouseButtons;
+import org.jglsdk.glutil.MousePoles.MouseModifiers;
+import org.jglsdk.glutil.MousePoles.Pole;
 import org.joml.Vector2i;
 
 import static org.lwjgl.glfw.GLFW.*;

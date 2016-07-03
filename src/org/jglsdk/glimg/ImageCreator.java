@@ -1,8 +1,8 @@
-package org.jgltut.jglsdk.glimg;
+package org.jglsdk.glimg;
 
-import org.jgltut.jglsdk.glimg.ImageFormat.PixelDataType;
-import org.jgltut.jglsdk.glimg.ImageSet.Dimensions;
-import org.jgltut.jglsdk.glimg.Util.CompressedBlockData;
+import org.jglsdk.glimg.ImageFormat.PixelDataType;
+import org.jglsdk.glimg.ImageSet.Dimensions;
+import org.jglsdk.glimg.Util.CompressedBlockData;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,9 +1,9 @@
-package org.jgltut.jglsdk.glimg;
+package org.jglsdk.glimg;
 
-import org.jgltut.jglsdk.glimg.ImageFormat.BitDepth;
-import org.jgltut.jglsdk.glimg.ImageFormat.PixelComponents;
-import org.jgltut.jglsdk.glimg.ImageFormat.PixelDataType;
-import org.jgltut.jglsdk.glimg.ImageSet.Dimensions;
+import org.jglsdk.glimg.ImageFormat.BitDepth;
+import org.jglsdk.glimg.ImageFormat.PixelComponents;
+import org.jglsdk.glimg.ImageFormat.PixelDataType;
+import org.jglsdk.glimg.ImageSet.Dimensions;
 
 
 /**

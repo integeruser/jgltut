@@ -1,10 +1,10 @@
-package org.jgltut.jglsdk.glimg;
+package org.jglsdk.glimg;
 
-import org.jgltut.jglsdk.glimg.ImageFormat.BitDepth;
-import org.jgltut.jglsdk.glimg.ImageFormat.ComponentOrder;
-import org.jgltut.jglsdk.glimg.ImageFormat.PixelComponents;
-import org.jgltut.jglsdk.glimg.ImageFormat.PixelDataType;
-import org.jgltut.jglsdk.glimg.ImageSet.Dimensions;
+import org.jglsdk.glimg.ImageFormat.BitDepth;
+import org.jglsdk.glimg.ImageFormat.ComponentOrder;
+import org.jglsdk.glimg.ImageFormat.PixelComponents;
+import org.jglsdk.glimg.ImageFormat.PixelDataType;
+import org.jglsdk.glimg.ImageSet.Dimensions;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.opengl.EXTTextureSnorm;
 import org.lwjgl.opengl.GL;

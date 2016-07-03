@@ -1,11 +1,11 @@
 package org.jgltut.framework;
 
 import org.jgltut.framework.SceneBinders.StateBinder;
-import org.jgltut.jglsdk.glimg.DdsLoader;
-import org.jgltut.jglsdk.glimg.ImageSet;
-import org.jgltut.jglsdk.glimg.TextureGenerator;
-import org.jgltut.jglsdk.glimg.TextureGenerator.ForcedConvertFlags;
-import org.jgltut.jglsdk.glm.Glm;
+import org.jglsdk.glimg.DdsLoader;
+import org.jglsdk.glimg.ImageSet;
+import org.jglsdk.glimg.TextureGenerator;
+import org.jglsdk.glimg.TextureGenerator.ForcedConvertFlags;
+import org.jglsdk.glm.Glm;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;

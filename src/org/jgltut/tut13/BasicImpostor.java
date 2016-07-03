@@ -2,11 +2,11 @@ package org.jgltut.tut13;
 
 import org.jgltut.LWJGLWindow;
 import org.jgltut.framework.*;
-import org.jgltut.jglsdk.BufferableData;
-import org.jgltut.jglsdk.glutil.MousePoles.MouseButtons;
-import org.jgltut.jglsdk.glutil.MousePoles.ViewData;
-import org.jgltut.jglsdk.glutil.MousePoles.ViewPole;
-import org.jgltut.jglsdk.glutil.MousePoles.ViewScale;
+import org.jglsdk.BufferableData;
+import org.jglsdk.glutil.MousePoles.MouseButtons;
+import org.jglsdk.glutil.MousePoles.ViewData;
+import org.jglsdk.glutil.MousePoles.ViewPole;
+import org.jglsdk.glutil.MousePoles.ViewScale;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;

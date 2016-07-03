@@ -10,9 +10,9 @@ import jgltut.jglsdk.glimg.ImageSet;
 import jgltut.jglsdk.glimg.ImageSet.Dimensions;
 import jgltut.jglsdk.glimg.ImageSet.SingleImage;
 import jgltut.jglsdk.glm.Glm;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glm.Vec3;
-import jgltut.jglsdk.glutil.MatrixStack;
+import org.joml.Matrix4f;
+import org.joml.MatrixStackf;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
@@ -141,15 +141,17 @@ public class ManyImages extends LWJGLWindow {
         float hOffset = (float) (Math.cos(cyclicAngle) * 0.25f);
         float vOffset = (float) (Math.sin(cyclicAngle) * 0.25f);
 
-        MatrixStack modelMatrix = new MatrixStack();
+        MatrixStackf modelMatrix = new MatrixStackf(10);
 
-        final Mat4 worldToCamMat = Glm.lookAt(new Vec3(hOffset, 1.0f, -64.0f),
-                new Vec3(hOffset, -5.0f + vOffset, -44.0f), new Vec3(0.0f, 1.0f, 0.0f));
+        Vector3f eye = new Vector3f(hOffset, 1.0f, -64.0f);
+        Vector3f center = new Vector3f(hOffset, -5.0f + vOffset, -44.0f);
+        Vector3f up = new Vector3f(0.0f, 1.0f, 0.0f);
+        final Matrix4f worldToCamMat = new Matrix4f().lookAt(eye, center, up);
 
-        modelMatrix.applyMatrix(worldToCamMat);
+        modelMatrix.mul(worldToCamMat);
 
         glUseProgram(program.theProgram);
-        glUniformMatrix4fv(program.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(program.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
 
         glActiveTexture(GL_TEXTURE0 + colorTexUnit);
         glBindTexture(GL_TEXTURE_2D, useMipmapTexture ? mipmapTestTexture : checkerTexture);
@@ -171,14 +173,14 @@ public class ManyImages extends LWJGLWindow {
     protected void reshape(int w, int h) {
         float zNear = 1.0f;
         float zFar = 1000.0f;
-        MatrixStack persMatrix = new MatrixStack();
+        MatrixStackf persMatrix = new MatrixStackf();
         persMatrix.perspective(90.0f, (w / (float) h), zNear, zFar);
 
         ProjectionBlock projData = new ProjectionBlock();
-        projData.cameraToClipMatrix = persMatrix.top();
+        projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -198,7 +200,7 @@ public class ManyImages extends LWJGLWindow {
     }
 
 
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
 
     private void initializePrograms() {
@@ -374,13 +376,13 @@ public class ManyImages extends LWJGLWindow {
     private int projectionUniformBuffer;
 
     private class ProjectionBlock extends BufferableData<FloatBuffer> {
-        Mat4 cameraToClipMatrix;
+        Matrix4f cameraToClipMatrix;
 
-        static final int SIZE = Mat4.SIZE;
+        static final int SIZE = 16*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            return cameraToClipMatrix.fillBuffer(buffer);
+            return cameraToClipMatrix.get(buffer);
         }
     }
 }

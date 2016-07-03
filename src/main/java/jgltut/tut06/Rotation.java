@@ -2,7 +2,9 @@ package jgltut.tut06;
 
 import jgltut.LWJGLWindow;
 import jgltut.framework.Framework;
-import jgltut.jglsdk.glm.*;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -72,8 +74,8 @@ public class Rotation extends LWJGLWindow {
         glBindVertexArray(vao);
 
         for (Instance currInst : instanceList) {
-            final Mat4 transformMatrix = currInst.constructMatrix(elapsedTime);
-            glUniformMatrix4fv(modelToCameraMatrixUnif, false, transformMatrix.fillAndFlipBuffer(mat4Buffer));
+            final Matrix4f transformMatrix = currInst.constructMatrix(elapsedTime);
+            glUniformMatrix4fv(modelToCameraMatrixUnif, false, transformMatrix.get(mat4Buffer));
             glDrawElements(GL_TRIANGLES, indexData.length, GL_UNSIGNED_SHORT, 0);
         }
 
@@ -83,11 +85,11 @@ public class Rotation extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
-        cameraToClipMatrix.set(0, 0, frustumScale / (w / (float) h));
-        cameraToClipMatrix.set(1, 1, frustumScale);
+        cameraToClipMatrix.m00(frustumScale / (w / (float) h));
+        cameraToClipMatrix.m11(frustumScale);
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(mat4Buffer));
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
@@ -103,8 +105,8 @@ public class Rotation extends LWJGLWindow {
     private int modelToCameraMatrixUnif;
     private int cameraToClipMatrixUnif;
 
-    private Mat4 cameraToClipMatrix = new Mat4(0.0f);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private Matrix4f cameraToClipMatrix = new Matrix4f();
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
     private final float frustumScale = calcFrustumScale(45.0f);
 
@@ -120,14 +122,14 @@ public class Rotation extends LWJGLWindow {
 
         float zNear = 1.0f;
         float zFar = 61.0f;
-        cameraToClipMatrix.set(0, 0, frustumScale);
-        cameraToClipMatrix.set(1, 1, frustumScale);
-        cameraToClipMatrix.set(2, 2, (zFar + zNear) / (zNear - zFar));
-        cameraToClipMatrix.set(2, 3, -1.0f);
-        cameraToClipMatrix.set(3, 2, (2 * zFar * zNear) / (zNear - zFar));
+        cameraToClipMatrix.m00(frustumScale);
+        cameraToClipMatrix.m11(frustumScale);
+        cameraToClipMatrix.m22((zFar + zNear) / (zNear - zFar));
+        cameraToClipMatrix.m23(-1.0f);
+        cameraToClipMatrix.m32((2 * zFar * zNear) / (zNear - zFar));
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(mat4Buffer));
         glUseProgram(0);
     }
 
@@ -201,127 +203,127 @@ public class Rotation extends LWJGLWindow {
 
     ////////////////////////////////
     private Instance instanceList[] = {
-            new NullRotation(new Vec3(0.0f, 0.0f, -25.0f)),
-            new RotateX(new Vec3(-5.0f, -5.0f, -25.0f)),
-            new RotateY(new Vec3(-5.0f, 5.0f, -25.0f)),
-            new RotateZ(new Vec3(5.0f, 5.0f, -25.0f)),
-            new RotateAxis(new Vec3(5.0f, -5.0f, -25.0f))
+            new NullRotation(new Vector3f(0.0f, 0.0f, -25.0f)),
+            new RotateX(new Vector3f(-5.0f, -5.0f, -25.0f)),
+            new RotateY(new Vector3f(-5.0f, 5.0f, -25.0f)),
+            new RotateZ(new Vector3f(5.0f, 5.0f, -25.0f)),
+            new RotateAxis(new Vector3f(5.0f, -5.0f, -25.0f))
     };
 
     private abstract class Instance {
-        private Vec3 offset;
+        private Vector3f offset;
 
-        Instance(Vec3 offset) {
+        Instance(Vector3f offset) {
             this.offset = offset;
         }
 
-        abstract Mat3 calcRotation(float elapsedTime);
+        abstract Matrix3f calcRotation(float elapsedTime);
 
-        Mat4 constructMatrix(float elapsedTime) {
-            final Mat3 rotMatrix = calcRotation(elapsedTime);
+        Matrix4f constructMatrix(float elapsedTime) {
+            final Matrix3f rotMatrix = calcRotation(elapsedTime);
 
-            Mat4 theMat = new Mat4(rotMatrix);
-            theMat.setColumn(3, new Vec4(offset, 1.0f));
+            Matrix4f theMat = new Matrix4f(rotMatrix);
+            theMat.setTranslation(offset);
             return theMat;
         }
     }
 
     private class NullRotation extends Instance {
-        NullRotation(Vec3 offset) {
+        NullRotation(Vector3f offset) {
             super(offset);
         }
 
         @Override
-        Mat3 calcRotation(float elapsedTime) {
-            return new Mat3(1.0f);
+        Matrix3f calcRotation(float elapsedTime) {
+            return new Matrix3f();
         }
     }
 
     private class RotateX extends Instance {
-        RotateX(Vec3 offset) {
+        RotateX(Vector3f offset) {
             super(offset);
         }
 
         @Override
-        Mat3 calcRotation(float elapsedTime) {
+        Matrix3f calcRotation(float elapsedTime) {
             float angRad = computeAngleRad(elapsedTime, 3.0f);
             float cos = (float) Math.cos(angRad);
             float sin = (float) Math.sin(angRad);
 
-            Mat3 theMat = new Mat3(1.0f);
-            theMat.set(1, 1, cos);
-            theMat.set(2, 1, -sin);
-            theMat.set(1, 2, sin);
-            theMat.set(2, 2, cos);
+            Matrix3f theMat = new Matrix3f();
+            theMat.m11(cos);
+            theMat.m21(-sin);
+            theMat.m12(sin);
+            theMat.m22(cos);
             return theMat;
         }
     }
 
     private class RotateY extends Instance {
-        RotateY(Vec3 offset) {
+        RotateY(Vector3f offset) {
             super(offset);
         }
 
         @Override
-        Mat3 calcRotation(float elapsedTime) {
+        Matrix3f calcRotation(float elapsedTime) {
             float angRad = computeAngleRad(elapsedTime, 2.0f);
             float cos = (float) Math.cos(angRad);
             float sin = (float) Math.sin(angRad);
 
-            Mat3 theMat = new Mat3(1.0f);
-            theMat.set(0, 0, cos);
-            theMat.set(2, 0, sin);
-            theMat.set(0, 2, -sin);
-            theMat.set(2, 2, cos);
+            Matrix3f theMat = new Matrix3f();
+            theMat.m00(cos);
+            theMat.m20(sin);
+            theMat.m02(-sin);
+            theMat.m22(cos);
             return theMat;
         }
     }
 
     private class RotateZ extends Instance {
-        RotateZ(Vec3 offset) {
+        RotateZ(Vector3f offset) {
             super(offset);
         }
 
         @Override
-        Mat3 calcRotation(float elapsedTime) {
+        Matrix3f calcRotation(float elapsedTime) {
             float angRad = computeAngleRad(elapsedTime, 2.0f);
             float cos = (float) Math.cos(angRad);
             float sin = (float) Math.sin(angRad);
 
-            Mat3 theMat = new Mat3(1.0f);
-            theMat.set(0, 0, cos);
-            theMat.set(1, 0, -sin);
-            theMat.set(0, 1, sin);
-            theMat.set(1, 1, cos);
+            Matrix3f theMat = new Matrix3f();
+            theMat.m00(cos);
+            theMat.m10(-sin);
+            theMat.m01(sin);
+            theMat.m11(cos);
             return theMat;
         }
     }
 
     private class RotateAxis extends Instance {
-        RotateAxis(Vec3 offset) {
+        RotateAxis(Vector3f offset) {
             super(offset);
         }
 
         @Override
-        Mat3 calcRotation(float elapsedTime) {
+        Matrix3f calcRotation(float elapsedTime) {
             float angRad = computeAngleRad(elapsedTime, 2.0f);
             float cos = (float) Math.cos(angRad);
             float invCos = 1.0f - cos;
             float sin = (float) Math.sin(angRad);
 
-            Vec3 axis = new Vec3(1.0f, 1.0f, 1.0f);
-            axis = Glm.normalize(axis);
+            Vector3f axis = new Vector3f(1.0f, 1.0f, 1.0f);
+            axis.normalize();
 
-            Mat3 theMat = new Mat3(1.0f);
-            theMat.set(0, 0, (axis.x * axis.x) + ((1 - axis.x * axis.x) * cos));
-            theMat.set(1, 0, axis.x * axis.y * (invCos) - (axis.z * sin));
-            theMat.set(2, 0, axis.x * axis.z * (invCos) + (axis.y * sin));
-            theMat.set(0, 1, axis.x * axis.y * (invCos) + (axis.z * sin));
-            theMat.set(1, 1, (axis.y * axis.y) + ((1 - axis.y * axis.y) * cos));
-            theMat.set(2, 1, axis.y * axis.z * (invCos) - (axis.x * sin));
-            theMat.set(0, 2, axis.x * axis.z * (invCos) - (axis.y * sin));
-            theMat.set(1, 2, axis.y * axis.z * (invCos) + (axis.x * sin));
-            theMat.set(2, 2, (axis.z * axis.z) + ((1 - axis.z * axis.z) * cos));
+            Matrix3f theMat = new Matrix3f();
+            theMat.m00((axis.x * axis.x) + ((1 - axis.x * axis.x) * cos));
+            theMat.m10(axis.x * axis.y * (invCos) - (axis.z * sin));
+            theMat.m20(axis.x * axis.z * (invCos) + (axis.y * sin));
+            theMat.m01(axis.x * axis.y * (invCos) + (axis.z * sin));
+            theMat.m11((axis.y * axis.y) + ((1 - axis.y * axis.y) * cos));
+            theMat.m21(axis.y * axis.z * (invCos) - (axis.x * sin));
+            theMat.m02(axis.x * axis.z * (invCos) - (axis.y * sin));
+            theMat.m12(axis.y * axis.z * (invCos) + (axis.x * sin));
+            theMat.m22((axis.z * axis.z) + ((1 - axis.z * axis.z) * cos));
             return theMat;
         }
     }

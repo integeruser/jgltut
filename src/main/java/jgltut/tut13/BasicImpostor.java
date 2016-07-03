@@ -3,12 +3,11 @@ package jgltut.tut13;
 import jgltut.LWJGLWindow;
 import jgltut.framework.*;
 import jgltut.jglsdk.BufferableData;
-import jgltut.jglsdk.glm.*;
-import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.jglsdk.glutil.MousePoles.MouseButtons;
 import jgltut.jglsdk.glutil.MousePoles.ViewData;
 import jgltut.jglsdk.glutil.MousePoles.ViewPole;
 import jgltut.jglsdk.glutil.MousePoles.ViewScale;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -210,22 +209,22 @@ public class BasicImpostor extends LWJGLWindow {
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        MatrixStack modelMatrix = new MatrixStack();
-        modelMatrix.setMatrix(viewPole.calcMatrix());
-        final Mat4 worldToCamMat = modelMatrix.top();
+        MatrixStackf modelMatrix = new MatrixStackf(10);
+        modelMatrix.mul(viewPole.calcMatrix());
+        final Matrix4f worldToCamMat = modelMatrix;
 
         LightBlock lightData = new LightBlock();
-        lightData.ambientIntensity = new Vec4(0.2f, 0.2f, 0.2f, 1.0f);
+        lightData.ambientIntensity = new Vector4f(0.2f, 0.2f, 0.2f, 1.0f);
         float halfLightDistance = 25.0f;
         lightData.lightAttenuation = 1.0f / (halfLightDistance * halfLightDistance);
 
         lightData.lights[0] = new PerLight();
-        lightData.lights[0].cameraSpaceLightPos = Mat4.mul(worldToCamMat, new Vec4(0.707f, 0.707f, 0.0f, 0.0f));
-        lightData.lights[0].lightIntensity = new Vec4(0.6f, 0.6f, 0.6f, 1.0f);
+        lightData.lights[0].cameraSpaceLightPos = new Matrix4f(worldToCamMat).transform(new Vector4f(0.707f, 0.707f, 0.0f, 0.0f));
+        lightData.lights[0].lightIntensity = new Vector4f(0.6f, 0.6f, 0.6f, 1.0f);
 
         lightData.lights[1] = new PerLight();
-        lightData.lights[1].cameraSpaceLightPos = Mat4.mul(worldToCamMat, calcLightPosition());
-        lightData.lights[1].lightIntensity = new Vec4(0.4f, 0.4f, 0.4f, 1.0f);
+        lightData.lights[1].cameraSpaceLightPos = new Matrix4f(worldToCamMat).transform(calcLightPosition());
+        lightData.lights[1].lightIntensity = new Vector4f(0.4f, 0.4f, 0.4f, 1.0f);
 
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillAndFlipBuffer(lightBlockBuffer));
@@ -235,12 +234,12 @@ public class BasicImpostor extends LWJGLWindow {
             glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
                     MaterialNames.TERRAIN.ordinal() * materialBlockOffset, MaterialBlock.SIZE);
 
-            Mat3 normMatrix = new Mat3(modelMatrix.top());
-            normMatrix = Glm.transpose(Glm.inverse(normMatrix));
+            Matrix3f normMatrix = new Matrix3f(modelMatrix);
+            normMatrix.invert().transpose();
 
             glUseProgram(litMeshProg.theProgram);
-            glUniformMatrix4fv(litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
-            glUniformMatrix3fv(litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+            glUniformMatrix4fv(litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
+            glUniformMatrix3fv(litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.get(mat3Buffer));
 
             planeMesh.render();
 
@@ -248,40 +247,41 @@ public class BasicImpostor extends LWJGLWindow {
             glBindBufferBase(GL_UNIFORM_BUFFER, materialBlockIndex, 0);
         }
 
-        drawSphere(modelMatrix, new Vec3(0.0f, 10.0f, 0.0f), 4.0f, MaterialNames.BLUE_SHINY, drawImposter[0]);
-        drawSphereOrbit(modelMatrix, new Vec3(0.0f, 10.0f, 0.0f), new Vec3(0.6f, 0.8f, 0.0f), 20.0f,
+        drawSphere(modelMatrix, new Vector3f(0.0f, 10.0f, 0.0f), 4.0f, MaterialNames.BLUE_SHINY, drawImposter[0]);
+        drawSphereOrbit(modelMatrix, new Vector3f(0.0f, 10.0f, 0.0f), new Vector3f(0.6f, 0.8f, 0.0f), 20.0f,
                 sphereTimer.getAlpha(), 2.0f, MaterialNames.DULL_GREY, drawImposter[1]);
-        drawSphereOrbit(modelMatrix, new Vec3(-10.0f, 1.0f, 0.0f), new Vec3(0.0f, 1.0f, 0.0f), 10.0f,
+        drawSphereOrbit(modelMatrix, new Vector3f(-10.0f, 1.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), 10.0f,
                 sphereTimer.getAlpha(), 1.0f, MaterialNames.BLACK_SHINY, drawImposter[2]);
-        drawSphereOrbit(modelMatrix, new Vec3(10.0f, 1.0f, 0.0f), new Vec3(0.0f, 1.0f, 0.0f), 10.0f,
+        drawSphereOrbit(modelMatrix, new Vector3f(10.0f, 1.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), 10.0f,
                 sphereTimer.getAlpha() * 2.0f, 1.0f, MaterialNames.GOLD_METAL, drawImposter[3]);
 
         if (drawLights) {
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
-            modelMatrix.translate(new Vec3(calcLightPosition()));
+            Vector4f v = calcLightPosition();
+            modelMatrix.translate(new Vector3f(v.x, v.y, v.z));
             modelMatrix.scale(0.5f);
 
             glUseProgram(unlit.theProgram);
-            glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
 
-            Vec4 lightColor = new Vec4(1.0f);
-            glUniform4fv(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+            Vector4f lightColor = new Vector4f(1.0f);
+            glUniform4fv(unlit.objectColorUnif, lightColor.get(vec4Buffer));
             cubeMesh.render("flat");
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
 
         if (drawCameraPos) {
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
-            modelMatrix.setIdentity();
-            modelMatrix.translate(new Vec3(0.0f, 0.0f, -viewPole.getView().radius));
+            modelMatrix.identity();
+            modelMatrix.translate(new Vector3f(0.0f, 0.0f, -viewPole.getView().radius));
 
             glDisable(GL_DEPTH_TEST);
             glDepthMask(false);
             glUseProgram(unlit.theProgram);
-            glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
             glUniform4f(unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
             cubeMesh.render("flat");
             glDepthMask(true);
@@ -289,7 +289,7 @@ public class BasicImpostor extends LWJGLWindow {
             glUniform4f(unlit.objectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
             cubeMesh.render("flat");
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
     }
 
@@ -297,14 +297,14 @@ public class BasicImpostor extends LWJGLWindow {
     protected void reshape(int w, int h) {
         float zNear = 1.0f;
         float zFar = 1000.0f;
-        MatrixStack persMatrix = new MatrixStack();
-        persMatrix.perspective(45.0f, (w / (float) h), zNear, zFar);
+        MatrixStackf persMatrix = new MatrixStackf();
+        persMatrix.perspective(Framework.degToRad(45.0f), (w / (float) h), zNear, zFar);
 
         ProjectionBlock projData = new ProjectionBlock();
-        projData.cameraToClipMatrix = persMatrix.top();
+        projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -371,9 +371,9 @@ public class BasicImpostor extends LWJGLWindow {
     }
 
 
-    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(Vec4.SIZE);
-    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(Mat3.SIZE);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
+    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
     private FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer(LightBlock.SIZE);
 
 
@@ -461,12 +461,12 @@ public class BasicImpostor extends LWJGLWindow {
     private boolean drawLights = true;
 
 
-    private Vec4 calcLightPosition() {
+    private Vector4f calcLightPosition() {
         final float scale = 3.14159f * 2.0f;
         float timeThroughLoop = sphereTimer.getAlpha();
 
         float lightHeight = 20.0f;
-        Vec4 lightPos = new Vec4(0.0f, lightHeight, 0.0f, 1.0f);
+        Vector4f lightPos = new Vector4f(0.0f, lightHeight, 0.0f, 1.0f);
         lightPos.x = (float) (Math.cos(timeThroughLoop * scale) * 20.0f);
         lightPos.z = (float) (Math.sin(timeThroughLoop * scale) * 20.0f);
         return lightPos;
@@ -475,8 +475,8 @@ public class BasicImpostor extends LWJGLWindow {
     ////////////////////////////////
     // View setup.
     private ViewData initialViewData = new ViewData(
-            new Vec3(0.0f, 30.0f, 25.0f),
-            new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+            new Vector3f(0.0f, 30.0f, 25.0f),
+            new Quaternionf(0.3826834f, 0.0f, 0.0f, 0.92387953f),
             10.0f,
             0.0f
     );
@@ -503,14 +503,14 @@ public class BasicImpostor extends LWJGLWindow {
     }
 
 
-    private void drawSphere(MatrixStack modelMatrix, Vec3 position, float radius, MaterialNames material, boolean drawImposter) {
+    private void drawSphere(MatrixStackf modelMatrix, Vector3f position, float radius, MaterialNames material, boolean drawImposter) {
         glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
                 material.ordinal() * materialBlockOffset, MaterialBlock.SIZE);
 
         if (drawImposter) {
-            Vec4 cameraSpherePos = Mat4.mul(modelMatrix.top(), new Vec4(position, 1.0f));
+            Vector4f cameraSpherePos = new Matrix4f(modelMatrix).transform(new Vector4f(position, 1.0f));
             glUseProgram(litImpProgs[currImpostor.ordinal()].theProgram);
-            glUniform3fv(litImpProgs[currImpostor.ordinal()].cameraSpherePosUnif, cameraSpherePos.fillAndFlipBuffer(vec4Buffer));
+            glUniform3fv(litImpProgs[currImpostor.ordinal()].cameraSpherePosUnif, cameraSpherePos.get(vec4Buffer));
             glUniform1f(litImpProgs[currImpostor.ordinal()].sphereRadiusUnif, radius);
 
             glBindVertexArray(imposterVAO);
@@ -522,48 +522,48 @@ public class BasicImpostor extends LWJGLWindow {
             glBindVertexArray(0);
             glUseProgram(0);
         } else {
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
             modelMatrix.translate(position);
             modelMatrix.scale(radius * 2.0f);  // The unit sphere has a radius 0.5f.
 
-            Mat3 normMatrix = new Mat3(modelMatrix.top());
-            normMatrix = Glm.transpose(Glm.inverse(normMatrix));
+            Matrix3f normMatrix = new Matrix3f(modelMatrix);
+            normMatrix.invert().transpose();
 
             glUseProgram(litMeshProg.theProgram);
-            glUniformMatrix4fv(litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
-            glUniformMatrix3fv(litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.fillAndFlipBuffer(mat3Buffer));
+            glUniformMatrix4fv(litMeshProg.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
+            glUniformMatrix3fv(litMeshProg.normalModelToCameraMatrixUnif, false, normMatrix.get(mat3Buffer));
 
             sphereMesh.render("lit");
 
             glUseProgram(0);
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
 
         glBindBufferBase(GL_UNIFORM_BUFFER, materialBlockIndex, 0);
     }
 
-    private void drawSphereOrbit(MatrixStack modelMatrix, Vec3 orbitCenter, Vec3 orbitAxis,
+    private void drawSphereOrbit(MatrixStackf modelMatrix, Vector3f orbitCenter, Vector3f orbitAxis,
                                  float orbitRadius, float orbitAlpha, float sphereRadius, MaterialNames material,
                                  boolean drawImposter) {
-        modelMatrix.push();
+        modelMatrix.pushMatrix();
 
         modelMatrix.translate(orbitCenter);
-        modelMatrix.rotate(orbitAxis, 360.0f * orbitAlpha);
+        modelMatrix.rotate(Framework.degToRad(360.0f * orbitAlpha), orbitAxis);
 
-        Vec3 offsetDir = Glm.cross(orbitAxis, new Vec3(0.0f, 1.0f, 0.0f));
-        if (Glm.length(offsetDir) < 0.001f) {
-            offsetDir = Glm.cross(orbitAxis, new Vec3(1.0f, 0.0f, 0.0f));
+        Vector3f offsetDir = new Vector3f(orbitAxis).cross(new Vector3f(0.0f, 1.0f, 0.0f));
+        if (offsetDir.length() < 0.001f) {
+            offsetDir = new Vector3f(orbitAxis).cross(new Vector3f(1.0f, 0.0f, 0.0f));
         }
 
-        offsetDir = Glm.normalize(offsetDir);
+        offsetDir.normalize();
 
-        modelMatrix.translate(offsetDir.scale(orbitRadius));
+        modelMatrix.translate(offsetDir.mul(orbitRadius));
 
-        drawSphere(modelMatrix, new Vec3(0.0f), sphereRadius, material, drawImposter);
+        drawSphere(modelMatrix, new Vector3f(0.0f), sphereRadius, material, drawImposter);
 
-        modelMatrix.pop();
+        modelMatrix.popMatrix();
     }
 
     ////////////////////////////////
@@ -572,13 +572,13 @@ public class BasicImpostor extends LWJGLWindow {
     private int projectionUniformBuffer;
 
     private class ProjectionBlock extends BufferableData<FloatBuffer> {
-        Mat4 cameraToClipMatrix;
+        Matrix4f cameraToClipMatrix;
 
-        static final int SIZE = Mat4.SIZE;
+        static final int SIZE = 16*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            return cameraToClipMatrix.fillBuffer(buffer);
+            return cameraToClipMatrix.get(buffer);
         }
     }
 
@@ -590,30 +590,39 @@ public class BasicImpostor extends LWJGLWindow {
     private int lightUniformBuffer;
 
     class PerLight extends BufferableData<FloatBuffer> {
-        Vec4 cameraSpaceLightPos;
-        Vec4 lightIntensity;
+        Vector4f cameraSpaceLightPos;
+        Vector4f lightIntensity;
 
-        static final int SIZE = Vec4.SIZE + Vec4.SIZE;
+        static final int SIZE = 4*4 + 4*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            cameraSpaceLightPos.fillBuffer(buffer);
-            lightIntensity.fillBuffer(buffer);
+            buffer.put(cameraSpaceLightPos.x);
+            buffer.put(cameraSpaceLightPos.y);
+            buffer.put(cameraSpaceLightPos.z);
+            buffer.put(cameraSpaceLightPos.w);
+            buffer.put(lightIntensity.x);
+            buffer.put(lightIntensity.y);
+            buffer.put(lightIntensity.z);
+            buffer.put(lightIntensity.w);
             return buffer;
         }
     }
 
     class LightBlock extends BufferableData<FloatBuffer> {
-        Vec4 ambientIntensity;
+        Vector4f ambientIntensity;
         float lightAttenuation;
         float padding[] = new float[3];
         PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
-        static final int SIZE = Vec4.SIZE + ((1 + 3) * FLOAT_SIZE) + PerLight.SIZE * NUMBER_OF_LIGHTS;
+        static final int SIZE = 4*4 + ((1 + 3) * FLOAT_SIZE) + PerLight.SIZE * NUMBER_OF_LIGHTS;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            ambientIntensity.fillBuffer(buffer);
+            buffer.put(ambientIntensity.x);
+            buffer.put(ambientIntensity.y);
+            buffer.put(ambientIntensity.z);
+            buffer.put(ambientIntensity.w);
             buffer.put(lightAttenuation);
             buffer.put(padding);
             for (PerLight light : lights) {
@@ -630,12 +639,12 @@ public class BasicImpostor extends LWJGLWindow {
     private int materialBlockOffset;
 
     private class MaterialBlock extends BufferableData<ByteBuffer> {
-        Vec4 diffuseColor;
-        Vec4 specularColor;
+        Vector4f diffuseColor;
+        Vector4f specularColor;
         float specularShininess;
         float padding[] = new float[3];
 
-        static final int SIZE = Vec4.SIZE + Vec4.SIZE + ((1 + 3) * FLOAT_SIZE);
+        static final int SIZE = 4*4 + 4*4 + ((1 + 3) * FLOAT_SIZE);
 
         @Override
         public ByteBuffer fillBuffer(ByteBuffer buffer) {
@@ -671,28 +680,28 @@ public class BasicImpostor extends LWJGLWindow {
         materialBlockOffset = ubArray.getArrayOffset();
 
         MaterialBlock matBlock = new MaterialBlock();
-        matBlock.diffuseColor = new Vec4(0.5f, 0.5f, 0.5f, 1.0f);
-        matBlock.specularColor = new Vec4(0.5f, 0.5f, 0.5f, 1.0f);
+        matBlock.diffuseColor = new Vector4f(0.5f, 0.5f, 0.5f, 1.0f);
+        matBlock.specularColor = new Vector4f(0.5f, 0.5f, 0.5f, 1.0f);
         matBlock.specularShininess = 0.6f;
         ubArray.set(MaterialNames.TERRAIN.ordinal(), matBlock);
 
-        matBlock.diffuseColor = new Vec4(0.1f, 0.1f, 0.8f, 1.0f);
-        matBlock.specularColor = new Vec4(0.8f, 0.8f, 0.8f, 1.0f);
+        matBlock.diffuseColor = new Vector4f(0.1f, 0.1f, 0.8f, 1.0f);
+        matBlock.specularColor = new Vector4f(0.8f, 0.8f, 0.8f, 1.0f);
         matBlock.specularShininess = 0.1f;
         ubArray.set(MaterialNames.BLUE_SHINY.ordinal(), matBlock);
 
-        matBlock.diffuseColor = new Vec4(0.803f, 0.709f, 0.15f, 1.0f);
-        matBlock.specularColor = new Vec4(0.803f, 0.709f, 0.15f, 1.0f).scale(0.75f);
+        matBlock.diffuseColor = new Vector4f(0.803f, 0.709f, 0.15f, 1.0f);
+        matBlock.specularColor = new Vector4f(0.803f, 0.709f, 0.15f, 1.0f).mul(0.75f);
         matBlock.specularShininess = 0.18f;
         ubArray.set(MaterialNames.GOLD_METAL.ordinal(), matBlock);
 
-        matBlock.diffuseColor = new Vec4(0.4f, 0.4f, 0.4f, 1.0f);
-        matBlock.specularColor = new Vec4(0.1f, 0.1f, 0.1f, 1.0f);
+        matBlock.diffuseColor = new Vector4f(0.4f, 0.4f, 0.4f, 1.0f);
+        matBlock.specularColor = new Vector4f(0.1f, 0.1f, 0.1f, 1.0f);
         matBlock.specularShininess = 0.8f;
         ubArray.set(MaterialNames.DULL_GREY.ordinal(), matBlock);
 
-        matBlock.diffuseColor = new Vec4(0.05f, 0.05f, 0.05f, 1.0f);
-        matBlock.specularColor = new Vec4(0.95f, 0.95f, 0.95f, 1.0f);
+        matBlock.diffuseColor = new Vector4f(0.05f, 0.05f, 0.05f, 1.0f);
+        matBlock.specularColor = new Vector4f(0.95f, 0.95f, 0.95f, 1.0f);
         matBlock.specularShininess = 0.3f;
         ubArray.set(MaterialNames.BLACK_SHINY.ordinal(), matBlock);
 

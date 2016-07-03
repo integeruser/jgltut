@@ -5,11 +5,6 @@ import jgltut.framework.Framework;
 import jgltut.framework.MousePole;
 import jgltut.framework.Timer;
 import jgltut.jglsdk.BufferableData;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glm.Quaternion;
-import jgltut.jglsdk.glm.Vec3;
-import jgltut.jglsdk.glm.Vec4;
-import jgltut.jglsdk.glutil.MatrixStack;
 import jgltut.jglsdk.glutil.MousePoles.MouseButtons;
 import jgltut.jglsdk.glutil.MousePoles.ViewData;
 import jgltut.jglsdk.glutil.MousePoles.ViewPole;
@@ -19,6 +14,7 @@ import jgltut.tut12.LightManager.SunlightValueHDR;
 import jgltut.tut12.LightManager.TimerTypes;
 import jgltut.tut12.Scene.LightingProgramTypes;
 import jgltut.tut12.Scene.ProgramData;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -240,16 +236,16 @@ public class GammaCorrection extends LWJGLWindow {
 
         float gamma = isGammaCorrect ? gammaValue : 1.0f;
 
-        Vec4 bkg = gammaCorrect(lights.getBackgroundColor(), gamma);
+        Vector4f bkg = gammaCorrect(lights.getBackgroundColor(), gamma);
 
         glClearColor(bkg.x, bkg.y, bkg.z, bkg.w);
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        MatrixStack modelMatrix = new MatrixStack();
-        modelMatrix.setMatrix(viewPole.calcMatrix());
+        MatrixStackf modelMatrix = new MatrixStackf(10);
+        modelMatrix.mul(viewPole.calcMatrix());
 
-        final Mat4 worldToCamMat = modelMatrix.top();
+        final Matrix4f worldToCamMat = modelMatrix;
         LightBlockGamma lightData = lights.getLightInformationGamma(worldToCamMat);
         lightData.gamma = gamma;
 
@@ -258,62 +254,63 @@ public class GammaCorrection extends LWJGLWindow {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         {
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
             scene.draw(modelMatrix, materialBlockIndex, lights.getTimerValue("tetra"));
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
 
         {
-            modelMatrix.push();
+            modelMatrix.pushMatrix();
 
             // Render the sun
             {
-                modelMatrix.push();
+                modelMatrix.pushMatrix();
 
-                Vec3 sunlightDir = new Vec3(lights.getSunlightDirection());
-                modelMatrix.translate(sunlightDir.scale(500.0f));
+                Vector4f temp = lights.getSunlightDirection();
+                Vector3f sunlightDir = new Vector3f(temp.x, temp.y, temp.z);
+                modelMatrix.translate(sunlightDir.mul(500.0f));
                 modelMatrix.scale(30.0f, 30.0f, 30.0f);
 
                 glUseProgram(unlit.theProgram);
-                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
 
-                Vec4 lightColor = lights.getSunlightIntensity();
-                glUniform4fv(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+                Vector4f lightColor = lights.getSunlightIntensity();
+                glUniform4fv(unlit.objectColorUnif, lightColor.get(vec4Buffer));
                 scene.getSphereMesh().render("flat");
 
-                modelMatrix.pop();
+                modelMatrix.popMatrix();
             }
 
             // Render the lights
             {
                 for (int light = 0; light < lights.getNumberOfPointLights(); light++) {
-                    modelMatrix.push();
+                    modelMatrix.pushMatrix();
 
                     modelMatrix.translate(lights.getWorldLightPosition(light));
 
                     glUseProgram(unlit.theProgram);
-                    glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                    glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
 
-                    Vec4 lightColor = lights.getPointLightIntensity(light);
-                    glUniform4fv(unlit.objectColorUnif, lightColor.fillAndFlipBuffer(vec4Buffer));
+                    Vector4f lightColor = lights.getPointLightIntensity(light);
+                    glUniform4fv(unlit.objectColorUnif, lightColor.get(vec4Buffer));
                     scene.getCubeMesh().render("flat");
 
-                    modelMatrix.pop();
+                    modelMatrix.popMatrix();
                 }
             }
 
             if (drawCameraPos) {
-                modelMatrix.push();
+                modelMatrix.pushMatrix();
 
-                modelMatrix.setIdentity();
+                modelMatrix.identity();
                 modelMatrix.translate(0.0f, 0.0f, -viewPole.getView().radius);
 
                 glDisable(GL_DEPTH_TEST);
                 glDepthMask(false);
                 glUseProgram(unlit.theProgram);
-                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.top().fillAndFlipBuffer(mat4Buffer));
+                glUniformMatrix4fv(unlit.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
                 glUniform4f(unlit.objectColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
                 scene.getCubeMesh().render("flat");
                 glDepthMask(true);
@@ -321,10 +318,10 @@ public class GammaCorrection extends LWJGLWindow {
                 glUniform4f(unlit.objectColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
                 scene.getCubeMesh().render("flat");
 
-                modelMatrix.pop();
+                modelMatrix.popMatrix();
             }
 
-            modelMatrix.pop();
+            modelMatrix.popMatrix();
         }
     }
 
@@ -332,14 +329,14 @@ public class GammaCorrection extends LWJGLWindow {
     protected void reshape(int w, int h) {
         float zNear = 1.0f;
         float zFar = 1000.0f;
-        MatrixStack persMatrix = new MatrixStack();
-        persMatrix.perspective(45.0f, (w / (float) h), zNear, zFar);
+        MatrixStackf persMatrix = new MatrixStackf();
+        persMatrix.perspective(Framework.degToRad(45.0f), (w / (float) h), zNear, zFar);
 
         ProjectionBlock projData = new ProjectionBlock();
-        projData.cameraToClipMatrix = persMatrix.top();
+        projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.fillAndFlipBuffer(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.cameraToClipMatrix.get(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -408,8 +405,8 @@ public class GammaCorrection extends LWJGLWindow {
     }
 
 
-    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(Vec4.SIZE);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
     private FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer(LightBlockGamma.SIZE);
 
 
@@ -467,7 +464,7 @@ public class GammaCorrection extends LWJGLWindow {
     private Scene scene;
 
     private LightManager lights = new LightManager();
-    private final Vec4 skyDaylightColor = new Vec4(0.65f, 0.65f, 1.0f, 1.0f);
+    private final Vector4f skyDaylightColor = new Vector4f(0.65f, 0.65f, 1.0f, 1.0f);
 
     private TimerTypes timerMode = TimerTypes.ALL;
 
@@ -481,114 +478,114 @@ public class GammaCorrection extends LWJGLWindow {
         SunlightValueHDR values[] = {
                 new SunlightValueHDR(
                         0.0f / 24.0f,
-                        new Vec4(0.6f, 0.6f, 0.6f, 1.0f),
-                        new Vec4(1.8f, 1.8f, 1.8f, 1.0f),
-                        new Vec4(skyDaylightColor),
+                        new Vector4f(0.6f, 0.6f, 0.6f, 1.0f),
+                        new Vector4f(1.8f, 1.8f, 1.8f, 1.0f),
+                        new Vector4f(skyDaylightColor),
                         3.0f),
                 new SunlightValueHDR(
                         4.5f / 24.0f,
-                        new Vec4(0.6f, 0.6f, 0.6f, 1.0f),
-                        new Vec4(1.8f, 1.8f, 1.8f, 1.0f),
-                        new Vec4(skyDaylightColor),
+                        new Vector4f(0.6f, 0.6f, 0.6f, 1.0f),
+                        new Vector4f(1.8f, 1.8f, 1.8f, 1.0f),
+                        new Vector4f(skyDaylightColor),
                         3.0f),
                 new SunlightValueHDR(
                         6.5f / 24.0f,
-                        new Vec4(0.225f, 0.075f, 0.075f, 1.0f),
-                        new Vec4(0.45f, 0.15f, 0.15f, 1.0f),
-                        new Vec4(0.5f, 0.1f, 0.1f, 1.0f),
+                        new Vector4f(0.225f, 0.075f, 0.075f, 1.0f),
+                        new Vector4f(0.45f, 0.15f, 0.15f, 1.0f),
+                        new Vector4f(0.5f, 0.1f, 0.1f, 1.0f),
                         1.5f),
                 new SunlightValueHDR(
                         8.0f / 24.0f,
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
                         1.0f),
                 new SunlightValueHDR(
                         18.0f / 24.0f,
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
                         1.0f),
                 new SunlightValueHDR(
                         19.5f / 24.0f,
-                        new Vec4(0.225f, 0.075f, 0.075f, 1.0f),
-                        new Vec4(0.45f, 0.15f, 0.15f, 1.0f),
-                        new Vec4(0.5f, 0.1f, 0.1f, 1.0f),
+                        new Vector4f(0.225f, 0.075f, 0.075f, 1.0f),
+                        new Vector4f(0.45f, 0.15f, 0.15f, 1.0f),
+                        new Vector4f(0.5f, 0.1f, 0.1f, 1.0f),
                         1.5f),
                 new SunlightValueHDR(
                         20.5f / 24.0f,
-                        new Vec4(0.6f, 0.6f, 0.6f, 1.0f),
-                        new Vec4(1.8f, 1.8f, 1.8f, 1.0f),
-                        new Vec4(skyDaylightColor),
+                        new Vector4f(0.6f, 0.6f, 0.6f, 1.0f),
+                        new Vector4f(1.8f, 1.8f, 1.8f, 1.0f),
+                        new Vector4f(skyDaylightColor),
                         3.0f),
         };
 
         lights.setSunlightValues(values, 7);
 
-        lights.setPointLightIntensity(0, new Vec4(0.6f, 0.6f, 0.6f, 1.0f));
-        lights.setPointLightIntensity(1, new Vec4(0.0f, 0.0f, 0.7f, 1.0f));
-        lights.setPointLightIntensity(2, new Vec4(0.7f, 0.0f, 0.0f, 1.0f));
+        lights.setPointLightIntensity(0, new Vector4f(0.6f, 0.6f, 0.6f, 1.0f));
+        lights.setPointLightIntensity(1, new Vector4f(0.0f, 0.0f, 0.7f, 1.0f));
+        lights.setPointLightIntensity(2, new Vector4f(0.7f, 0.0f, 0.0f, 1.0f));
     }
 
     private void setupGammaLighting() {
-        Vec4 sunlight = new Vec4(6.5f, 6.5f, 6.5f, 1.0f);
-        Vec4 brightAmbient = new Vec4(0.4f, 0.4f, 0.4f, 1.0f);
+        Vector4f sunlight = new Vector4f(6.5f, 6.5f, 6.5f, 1.0f);
+        Vector4f brightAmbient = new Vector4f(0.4f, 0.4f, 0.4f, 1.0f);
 
         SunlightValueHDR values[] = {
                 new SunlightValueHDR(
                         0.0f / 24.0f,
                         brightAmbient,
                         sunlight,
-                        new Vec4(0.65f, 0.65f, 1.0f, 1.0f),
+                        new Vector4f(0.65f, 0.65f, 1.0f, 1.0f),
                         10.0f),
                 new SunlightValueHDR(
                         4.5f / 24.0f,
                         brightAmbient,
                         sunlight,
-                        new Vec4(skyDaylightColor),
+                        new Vector4f(skyDaylightColor),
                         10.0f),
                 new SunlightValueHDR(
                         6.5f / 24.0f,
-                        new Vec4(0.01f, 0.025f, 0.025f, 1.0f),
-                        new Vec4(2.5f, 0.2f, 0.2f, 1.0f),
-                        new Vec4(0.5f, 0.1f, 0.1f, 1.0f),
+                        new Vector4f(0.01f, 0.025f, 0.025f, 1.0f),
+                        new Vector4f(2.5f, 0.2f, 0.2f, 1.0f),
+                        new Vector4f(0.5f, 0.1f, 0.1f, 1.0f),
                         5.0f),
                 new SunlightValueHDR(
                         8.0f / 24.0f,
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
                         3.0f),
                 new SunlightValueHDR(
                         18.0f / 24.0f,
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
-                        new Vec4(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
+                        new Vector4f(0.0f, 0.0f, 0.0f, 1.0f),
                         3.0f),
                 new SunlightValueHDR(
                         19.5f / 24.0f,
-                        new Vec4(0.01f, 0.025f, 0.025f, 1.0f),
-                        new Vec4(2.5f, 0.2f, 0.2f, 1.0f),
-                        new Vec4(0.5f, 0.1f, 0.1f, 1.0f),
+                        new Vector4f(0.01f, 0.025f, 0.025f, 1.0f),
+                        new Vector4f(2.5f, 0.2f, 0.2f, 1.0f),
+                        new Vector4f(0.5f, 0.1f, 0.1f, 1.0f),
                         5.0f),
                 new SunlightValueHDR(
                         20.5f / 24.0f,
                         brightAmbient,
                         sunlight,
-                        new Vec4(skyDaylightColor),
+                        new Vector4f(skyDaylightColor),
                         10.0f)
         };
 
         lights.setSunlightValues(values, 7);
 
-        lights.setPointLightIntensity(0, new Vec4(0.6f, 0.6f, 0.6f, 1.0f));
-        lights.setPointLightIntensity(1, new Vec4(0.0f, 0.0f, 0.7f, 1.0f));
-        lights.setPointLightIntensity(2, new Vec4(0.7f, 0.0f, 0.0f, 1.0f));
+        lights.setPointLightIntensity(0, new Vector4f(0.6f, 0.6f, 0.6f, 1.0f));
+        lights.setPointLightIntensity(1, new Vector4f(0.0f, 0.0f, 0.7f, 1.0f));
+        lights.setPointLightIntensity(2, new Vector4f(0.7f, 0.0f, 0.0f, 1.0f));
     }
 
 
-    private Vec4 gammaCorrect(Vec4 input, float gamma) {
-        Vec4 inputCorrected = new Vec4();
+    private Vector4f gammaCorrect(Vector4f input, float gamma) {
+        Vector4f inputCorrected = new Vector4f();
         inputCorrected.x = (float) Math.pow(input.x, 1.0f / gamma);
         inputCorrected.y = (float) Math.pow(input.y, 1.0f / gamma);
         inputCorrected.z = (float) Math.pow(input.z, 1.0f / gamma);
@@ -599,8 +596,8 @@ public class GammaCorrection extends LWJGLWindow {
     ////////////////////////////////
     // View setup.
     private ViewData initialViewData = new ViewData(
-            new Vec3(-59.5f, 44.0f, 95.0f),
-            new Quaternion(0.92387953f, 0.3826834f, 0.0f, 0.0f),
+            new Vector3f(-59.5f, 44.0f, 95.0f),
+            new Quaternionf(0.3826834f, 0.0f, 0.0f, 0.92387953f),
             50.0f,
             0.0f
     );
@@ -621,13 +618,13 @@ public class GammaCorrection extends LWJGLWindow {
     private int projectionUniformBuffer;
 
     private class ProjectionBlock extends BufferableData<FloatBuffer> {
-        Mat4 cameraToClipMatrix;
+        Matrix4f cameraToClipMatrix;
 
-        static final int SIZE = Mat4.SIZE;
+        static final int SIZE = 16*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            return cameraToClipMatrix.fillBuffer(buffer);
+            return cameraToClipMatrix.get(buffer);
         }
     }
 }

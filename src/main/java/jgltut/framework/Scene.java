@@ -5,7 +5,11 @@ import jgltut.jglsdk.glimg.DdsLoader;
 import jgltut.jglsdk.glimg.ImageSet;
 import jgltut.jglsdk.glimg.TextureGenerator;
 import jgltut.jglsdk.glimg.TextureGenerator.ForcedConvertFlags;
-import jgltut.jglsdk.glm.*;
+import jgltut.jglsdk.glm.Glm;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -44,7 +48,7 @@ public class Scene {
     }
 
     ////////////////////////////////
-    public void render(Mat4 cameraMatrix) {
+    public void render(Matrix4f cameraMatrix) {
         sceneImpl.render(cameraMatrix);
     }
 
@@ -64,8 +68,8 @@ public class Scene {
     ////////////////////////////////
     private SceneImpl sceneImpl;
 
-    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(Mat3.SIZE);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
     ////////////////////////////////
     private class SceneMesh {
@@ -167,7 +171,7 @@ public class Scene {
 
 
     public class SceneNode {
-        SceneNode(SceneMesh mesh, SceneProgram program, Vec3 nodePos, ArrayList<TextureBinding> textureBindings) {
+        SceneNode(SceneMesh mesh, SceneProgram program, Vector3f nodePos, ArrayList<TextureBinding> textureBindings) {
             this.mesh = mesh;
             this.program = program;
 
@@ -181,35 +185,35 @@ public class Scene {
         }
 
 
-        public void nodeSetOrient(Quaternion orient) {
-            nodeTransform.orient = new Quaternion(orient);
+        public void nodeSetOrient(Quaternionf orient) {
+            nodeTransform.orient = new Quaternionf(orient);
         }
 
-        public Quaternion nodeGetOrient() {
+        public Quaternionf nodeGetOrient() {
             return nodeTransform.orient;
         }
 
 
-        void setNodeScale(Vec3 nodeScale) {
-            nodeTransform.scale = new Vec3(nodeScale);
+        void setNodeScale(Vector3f nodeScale) {
+            nodeTransform.scale = new Vector3f(nodeScale);
         }
 
-        void setNodeOrient(Quaternion nodeOrient) {
-            nodeTransform.orient = Glm.normalize(nodeOrient);
+        void setNodeOrient(Quaternionf nodeOrient) {
+            nodeTransform.orient = new Quaternionf(nodeOrient).normalize();
         }
 
 
-        void render(int samplers[], Mat4 mat) {
-            Mat4 baseMat = new Mat4(mat);
+        void render(int samplers[], Matrix4f mat) {
+            Matrix4f baseMat = new Matrix4f(mat);
             baseMat.mul(nodeTransform.getMatrix());
-            Mat4 objMat = Mat4.mul(baseMat, objTransform.getMatrix());
+            Matrix4f objMat = new Matrix4f(baseMat).mul(objTransform.getMatrix());
 
             program.useProgram();
-            glUniformMatrix4fv(program.getMatrixLoc(), false, objMat.fillAndFlipBuffer(mat4Buffer));
+            glUniformMatrix4fv(program.getMatrixLoc(), false, objMat.get(mat4Buffer));
 
             if (program.getNormalMatLoc() != -1) {
-                Mat3 normMat = new Mat3(Glm.transpose(Glm.inverse(objMat)));
-                glUniformMatrix3fv(program.getNormalMatLoc(), false, normMat.fillAndFlipBuffer(mat3Buffer));
+                Matrix3f normMat = new Matrix3f(objMat).invert().transpose();
+                glUniformMatrix3fv(program.getNormalMatLoc(), false, normMat.get(mat3Buffer));
             }
 
             for (StateBinder stateBinder : stateBinders) {
@@ -263,23 +267,24 @@ public class Scene {
 
     private class Transform {
         Transform() {
-            orient = new Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
-            scale = new Vec3(1.0f, 1.0f, 1.0f);
-            trans = new Vec3(0.0f, 0.0f, 0.0f);
+            orient = new Quaternionf(0.0f, 0.0f, 0.0f, 1.0f);
+            scale = new Vector3f(1.0f, 1.0f, 1.0f);
+            trans = new Vector3f(0.0f, 0.0f, 0.0f);
         }
 
 
-        Mat4 getMatrix() {
-            Mat4 ret = new Mat4();
-            ret = Glm.translate(ret, trans);
-            ret.mul(Glm.mat4Cast(orient));
-            ret = Glm.scale(ret, scale);
+        Matrix4f getMatrix() {
+            Matrix4f ret = new Matrix4f();
+            ret.translate(trans);
+            Quaternionf q = new Quaternionf();
+            ret.mul(orient.get(new Matrix4f()));
+            ret.scale(scale);
             return ret;
         }
 
         ////////////////////////////////
-        private Quaternion orient;
-        private Vec3 scale, trans;
+        private Quaternionf orient;
+        private Vector3f scale, trans;
     }
 
     ////////////////////////////////
@@ -408,7 +413,7 @@ public class Scene {
 
         ////////////////////////////////
 
-        private void render(Mat4 cameraMat) {
+        private void render(Matrix4f cameraMat) {
             for (SceneNode sceneNode : nodes.values()) {
                 sceneNode.render(samplers, cameraMat);
             }
@@ -673,7 +678,7 @@ public class Scene {
                         "\" references the program \"" + progNode + "\" which does not exist.");
             }
 
-            Vec3 nodePos = attribToVec3(positionNode);
+            Vector3f nodePos = attribToVec3(positionNode);
             SceneNode node = new SceneNode(meshes.get(meshNode), programs.get(progNode), nodePos, readNodeTextures(nodeNode));
             nodes.put(nameNode, node);
 
@@ -691,7 +696,7 @@ public class Scene {
                     node.setNodeScale(attribToVec3(scaleNode));
                 } else {
                     float unifScale = attribToFloat(scaleNode);
-                    node.setNodeScale(new Vec3(unifScale));
+                    node.setNodeScale(new Vector3f(unifScale));
                 }
             }
         }
@@ -768,9 +773,9 @@ public class Scene {
             }
         }
 
-        private Vec3 attribToVec3(String attrib) {
+        private Vector3f attribToVec3(String attrib) {
             Scanner scanner = new Scanner(attrib);
-            Vec3 vec = new Vec3();
+            Vector3f vec = new Vector3f();
             vec.x = Float.parseFloat(scanner.next());
             vec.y = Float.parseFloat(scanner.next());
             vec.z = Float.parseFloat(scanner.next());
@@ -778,9 +783,9 @@ public class Scene {
             return vec;
         }
 
-        private Quaternion attribToQuat(String attrib) {
+        private Quaternionf attribToQuat(String attrib) {
             Scanner scanner = new Scanner(attrib);
-            Quaternion quat = new Quaternion();
+            Quaternionf quat = new Quaternionf();
             quat.x = Float.parseFloat(scanner.next());
             quat.y = Float.parseFloat(scanner.next());
             quat.z = Float.parseFloat(scanner.next());

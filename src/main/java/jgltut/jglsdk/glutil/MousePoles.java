@@ -1,6 +1,10 @@
 package jgltut.jglsdk.glutil;
 
-import jgltut.jglsdk.glm.*;
+import jgltut.jglsdk.glm.Glm;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector2i;
+import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -25,27 +29,27 @@ public class MousePoles {
 
     ////////////////////////////////
     public static class ObjectData {
-        public Vec3 position;
-        public Quaternion orientation;
+        public Vector3f position;
+        public Quaternionf orientation;
 
-        public ObjectData(Vec3 position, Quaternion orientation) {
+        public ObjectData(Vector3f position, Quaternionf orientation) {
             this.position = position;
             this.orientation = orientation;
         }
 
         public ObjectData(ObjectData objectData) {
-            position = new Vec3(objectData.position);
-            orientation = new Quaternion(objectData.orientation);
+            position = new Vector3f(objectData.position);
+            orientation = new Quaternionf(objectData.orientation);
         }
     }
 
     public static class ViewData {
-        public Vec3 targetPos;
-        public Quaternion orient;
+        public Vector3f targetPos;
+        public Quaternionf orient;
         public float radius;
         public float degSpinRotation;
 
-        public ViewData(Vec3 targetPos, Quaternion orient, float radius, float degSpinRotation) {
+        public ViewData(Vector3f targetPos, Quaternionf orient, float radius, float degSpinRotation) {
             this.targetPos = targetPos;
             this.orient = orient;
             this.radius = radius;
@@ -53,8 +57,8 @@ public class MousePoles {
         }
 
         public ViewData(ViewData viewData) {
-            targetPos = new Vec3(viewData.targetPos);
-            orient = new Quaternion(viewData.orient);
+            targetPos = new Vector3f(viewData.targetPos);
+            orient = new Quaternionf(viewData.orient);
             radius = viewData.radius;
             degSpinRotation = viewData.degSpinRotation;
         }
@@ -83,11 +87,11 @@ public class MousePoles {
 
     ////////////////////////////////
     public static abstract class Pole {
-        public abstract void mouseMove(Vec2 vec2);
+        public abstract void mouseMove(Vector2i vec2);
 
-        public abstract void mouseClick(MouseButtons button, boolean isPressed, MouseModifiers modifiers, Vec2 position);
+        public abstract void mouseClick(MouseButtons button, boolean isPressed, MouseModifiers modifiers, Vector2i position);
 
-        public abstract void mouseWheel(int direction, MouseModifiers modifiers, Vec2 position);
+        public abstract void mouseWheel(int direction, MouseModifiers modifiers, Vector2i position);
 
 
         public abstract void charPress(int key, boolean isShiftPressed, float lastFrameDuration);
@@ -119,9 +123,9 @@ public class MousePoles {
         private RotateMode rotateMode;
         private boolean isDragging;
 
-        private Vec2 prevMousePos;
-        private Vec2 startDragMousePos;
-        private Quaternion startDragOrient;
+        private Vector2i prevMousePos;
+        private Vector2i startDragMousePos;
+        private Quaternionf startDragOrient;
 
         ////////////////////////////////
         public ObjectPole(ObjectData initialData, float rotateScale, MouseButtons actionButton, ViewProvider lookAtViewProvider) {
@@ -134,20 +138,20 @@ public class MousePoles {
 
         ////////////////////////////////
         @Override
-        public void mouseMove(Vec2 position) {
+        public void mouseMove(Vector2i position) {
             if (isDragging) {
-                Vec2 diff = Vec2.sub(position, prevMousePos);
+                Vector2i diff = new Vector2i(position).sub(prevMousePos);
 
                 switch (rotateMode) {
                     case RM_DUAL_AXIS: {
-                        Quaternion rot = calcRotationQuat(Axis.AXIS_Y.ordinal(), diff.x * rotateScale);
-                        rot = Glm.normalize(calcRotationQuat(Axis.AXIS_X.ordinal(), diff.y * rotateScale).mul(rot));
+                        Quaternionf rot = calcRotationQuat(Axis.AXIS_Y.ordinal(), diff.x * rotateScale);
+                        rot = calcRotationQuat(Axis.AXIS_X.ordinal(), diff.y * rotateScale).mul(rot).normalize();
                         rotateViewDegrees(rot);
                         break;
                     }
 
                     case RM_BIAXIAL: {
-                        Vec2 initDiff = Vec2.sub(position, startDragMousePos);
+                        Vector2i initDiff = new Vector2i(position).sub(startDragMousePos);
 
                         Axis axis;
                         float degAngle;
@@ -159,7 +163,7 @@ public class MousePoles {
                             degAngle = initDiff.y * rotateScale;
                         }
 
-                        Quaternion rot = calcRotationQuat(axis.ordinal(), degAngle);
+                        Quaternionf rot = calcRotationQuat(axis.ordinal(), degAngle);
                         rotateViewDegrees(rot, true);
                         break;
                     }
@@ -175,7 +179,7 @@ public class MousePoles {
         }
 
         @Override
-        public void mouseClick(MouseButtons button, boolean isPressed, MouseModifiers modifiers, Vec2 position) {
+        public void mouseClick(MouseButtons button, boolean isPressed, MouseModifiers modifiers, Vector2i position) {
             if (isPressed) {
                 // Ignore button presses when dragging.
                 if (!isDragging) {
@@ -208,7 +212,7 @@ public class MousePoles {
         }
 
         @Override
-        public void mouseWheel(int direction, MouseModifiers modifiers, Vec2 position) {
+        public void mouseWheel(int direction, MouseModifiers modifiers, Vector2i position) {
         }
 
 
@@ -224,56 +228,61 @@ public class MousePoles {
         }
 
 
-        public Mat4 calcMatrix() {
-            Mat4 translateMat = new Mat4(1.0f);
-            translateMat.setColumn(3, new Vec4(objectData.position, 1.0f));
-            return translateMat.mul(Glm.mat4Cast(objectData.orientation));
+        public Matrix4f calcMatrix() {
+            Matrix4f translateMat = new Matrix4f();
+            translateMat.m30(objectData.position.x);
+            translateMat.m31(objectData.position.y);
+            translateMat.m32(objectData.position.z);
+            return translateMat.mul(objectData.orientation.get(new Matrix4f()));
         }
 
         ////////////////////////////////
-        private void rotateWorldDegrees(Quaternion rot, boolean fromInitial) {
+        private void rotateWorldDegrees(Quaternionf rot, boolean fromInitial) {
             if (!isDragging) {
                 fromInitial = false;
             }
-            objectData.orientation = Glm.normalize(Quaternion.mul(rot, fromInitial ? startDragOrient : objectData.orientation));
+            objectData.orientation = new Quaternionf(rot).mul(fromInitial ? startDragOrient : objectData.orientation).normalize();
         }
 
 
-        private void rotateViewDegrees(Quaternion rot) {
+        private void rotateViewDegrees(Quaternionf rot) {
             rotateViewDegrees(rot, false);
         }
 
-        private void rotateViewDegrees(Quaternion rot, boolean bFromInitial) {
+        private void rotateViewDegrees(Quaternionf rot, boolean bFromInitial) {
             if (!isDragging) {
                 bFromInitial = false;
             }
 
             if (viewProvider != null) {
-                Quaternion viewQuat = Glm.quatCast(viewProvider.calcMatrix());
-                Quaternion invViewQuat = Glm.conjugate(viewQuat);
+                Quaternionf viewQuat = new Quaternionf();
+                viewProvider.calcMatrix().getNormalizedRotation(viewQuat);
+                Quaternionf invViewQuat = new Quaternionf(viewQuat).conjugate();
 
-                objectData.orientation = Glm.normalize(Quaternion.mul(Quaternion.mul(invViewQuat, rot), (viewQuat)).mul(bFromInitial ? startDragOrient : objectData.orientation));
+                Quaternionf tmp = new Quaternionf(invViewQuat).mul(rot);
+                objectData.orientation = tmp.mul(viewQuat).mul(bFromInitial ? startDragOrient : objectData.orientation);
+                objectData.orientation.normalize();
             } else {
                 rotateWorldDegrees(rot, bFromInitial);
             }
         }
 
         ////////////////////////////////
-        private Vec3 axisVectors[] = new Vec3[]{
-                new Vec3(1.0f, 0.0f, 0.0f),
-                new Vec3(0.0f, 1.0f, 0.0f),
-                new Vec3(0.0f, 0.0f, 1.0f),
+        private Vector3f axisVectors[] = new Vector3f[]{
+                new Vector3f(1.0f, 0.0f, 0.0f),
+                new Vector3f(0.0f, 1.0f, 0.0f),
+                new Vector3f(0.0f, 0.0f, 1.0f),
         };
 
 
-        private Quaternion calcRotationQuat(int axis, float degAngle) {
-            return Glm.angleAxis(degAngle, axisVectors[axis]);
+        private Quaternionf calcRotationQuat(int axis, float degAngle) {
+            return new Quaternionf().setAngleAxis((float) Math.toRadians(degAngle), axisVectors[axis].x, axisVectors[axis].y, axisVectors[axis].z);
         }
     }
 
 
     public static abstract class ViewProvider extends Pole {
-        public abstract Mat4 calcMatrix();
+        public abstract Matrix4f calcMatrix();
     }
 
     public static class ViewPole extends ViewProvider {
@@ -306,16 +315,16 @@ public class MousePoles {
         private RotateMode rotateMode;
 
         private float degStarDragSpin;
-        private Vec2 startDragMouseLoc;
-        private Quaternion startDragOrient;
+        private Vector2i startDragMouseLoc;
+        private Quaternionf startDragOrient;
 
-        private Vec3 offsets[] = {
-                new Vec3(0.0f, 1.0f, 0.0f),
-                new Vec3(0.0f, -1.0f, 0.0f),
-                new Vec3(0.0f, 0.0f, -1.0f),
-                new Vec3(0.0f, 0.0f, 1.0f),
-                new Vec3(1.0f, 0.0f, 0.0f),
-                new Vec3(-1.0f, 0.0f, 0.0f)
+        private Vector3f offsets[] = {
+                new Vector3f(0.0f, 1.0f, 0.0f),
+                new Vector3f(0.0f, -1.0f, 0.0f),
+                new Vector3f(0.0f, 0.0f, -1.0f),
+                new Vector3f(0.0f, 0.0f, 1.0f),
+                new Vector3f(1.0f, 0.0f, 0.0f),
+                new Vector3f(-1.0f, 0.0f, 0.0f)
         };
 
         ////////////////////////////////
@@ -337,14 +346,14 @@ public class MousePoles {
 
         ////////////////////////////////
         @Override
-        public void mouseMove(Vec2 position) {
+        public void mouseMove(Vector2i position) {
             if (isDragging) {
                 onDragRotate(position);
             }
         }
 
         @Override
-        public void mouseClick(MouseButtons button, boolean isPressed, MouseModifiers modifiers, Vec2 position) {
+        public void mouseClick(MouseButtons button, boolean isPressed, MouseModifiers modifiers, Vector2i position) {
             if (isPressed) {
                 // Ignore all other button presses when dragging.
                 if (!isDragging) {
@@ -372,7 +381,7 @@ public class MousePoles {
         }
 
         @Override
-        public void mouseWheel(int direction, MouseModifiers modifiers, Vec2 position) {
+        public void mouseWheel(int direction, MouseModifiers modifiers, Vector2i position) {
             if (direction > 0) {
                 moveCloser(modifiers != MouseModifiers.MM_KEY_SHIFT);
             } else {
@@ -476,22 +485,23 @@ public class MousePoles {
 
 
         @Override
-        public Mat4 calcMatrix() {
-            Mat4 mat = new Mat4(1.0f);
+        public Matrix4f calcMatrix() {
+            Matrix4f mat = new Matrix4f();
 
             // Remember: these transforms are in reverse order.
 
             // In this space, we are facing in the correct direction. Which means that the camera point
             // is directly behind us by the radius number of units.
-            mat = Glm.translate(mat, new Vec3(0.0f, 0.0f, -currView.radius));
+            mat.translate(new Vector3f(0.0f, 0.0f, -currView.radius));
 
             // Rotate the world to look in the right direction.
-            Quaternion fullRotation = Glm.angleAxis(currView.degSpinRotation, new Vec3(0.0f, 0.0f, 1.0f)).mul(currView.orient);
+            Quaternionf angleAxis = new Quaternionf().setAngleAxis((float) Math.toRadians(currView.degSpinRotation), 0.0f, 0.0f, 1.0f);
+            Quaternionf fullRotation = angleAxis.mul(currView.orient);
 
-            mat.mul(Glm.mat4Cast(fullRotation));
+            mat.mul(fullRotation.get(new Matrix4f()));
 
             // Translate the world by the negation of the lookat point, placing the origin at the lookat point.
-            mat = Glm.translate(mat, Vec3.negate(currView.targetPos));
+            mat.translate(new Vector3f(currView.targetPos).negate());
             return mat;
         }
 
@@ -508,7 +518,7 @@ public class MousePoles {
         }
 
         ////////////////////////////////
-        private void beginDragRotate(Vec2 ptStart, RotateMode rotMode) {
+        private void beginDragRotate(Vector2i ptStart, RotateMode rotMode) {
             rotateMode = rotMode;
             startDragMouseLoc = ptStart;
             degStarDragSpin = currView.degSpinRotation;
@@ -517,8 +527,8 @@ public class MousePoles {
         }
 
 
-        private void onDragRotate(Vec2 ptCurr) {
-            Vec2 diff = Vec2.sub(ptCurr, startDragMouseLoc);
+        private void onDragRotate(Vector2i ptCurr) {
+            Vector2i diff = new Vector2i(ptCurr).sub(startDragMouseLoc);
             int diffX = (int) diff.x;
             int diffY = (int) diff.y;
 
@@ -550,11 +560,11 @@ public class MousePoles {
         }
 
 
-        private void endDragRotate(Vec2 ptEnd) {
+        private void endDragRotate(Vector2i ptEnd) {
             endDragRotate(ptEnd, true);
         }
 
-        private void endDragRotate(Vec2 ptEnd, boolean keepResults) {
+        private void endDragRotate(Vector2i ptEnd, boolean keepResults) {
             if (keepResults) {
                 onDragRotate(ptEnd);
             } else {
@@ -573,7 +583,8 @@ public class MousePoles {
             float degAngleDiff = diffX * viewScale.rotationScale;
 
             // Rotate about the world-space Y axis.
-            currView.orient = Quaternion.mul(startDragOrient, Glm.angleAxis(degAngleDiff, new Vec3(0.0f, 1.0f, 0.0f)));
+            Quaternionf angleAxisY = new Quaternionf().setAngleAxis((float) Math.toRadians(degAngleDiff), 0.0f, 1.0f, 0.0f);
+            currView.orient = new Quaternionf(startDragOrient).mul(angleAxisY);
         }
 
 
@@ -585,7 +596,8 @@ public class MousePoles {
             float degAngleDiff = diffY * viewScale.rotationScale;
 
             // Rotate about the local-space X axis.
-            currView.orient = Glm.angleAxis(degAngleDiff, new Vec3(1.0f, 0.0f, 0.0f)).mul(startDragOrient);
+            Quaternionf angleAxisX = new Quaternionf().setAngleAxis((float) Math.toRadians(degAngleDiff), 1.0f, 0.0f, 0.0f);
+            currView.orient = angleAxisX.mul(startDragOrient);
         }
 
 
@@ -594,9 +606,11 @@ public class MousePoles {
             float degYAngleDiff = (diffY * viewScale.rotationScale);
 
             // Rotate about the world-space Y axis.
-            currView.orient = Quaternion.mul(startDragOrient, Glm.angleAxis(degXAngleDiff, new Vec3(0.0f, 1.0f, 0.0f)));
+            Quaternionf angleAxisY = new Quaternionf().setAngleAxis((float) Math.toRadians(degXAngleDiff), 0.0f, 1.0f, 0.0f);
+            currView.orient = new Quaternionf(startDragOrient).mul(angleAxisY);
             // Rotate about the local-space X axis.
-            currView.orient = Glm.angleAxis(degYAngleDiff, new Vec3(1.0f, 0.0f, 0.0f)).mul(currView.orient);
+            Quaternionf angleAxisX = new Quaternionf().setAngleAxis((float) Math.toRadians(degYAngleDiff), 1.0f, 0.0f, 0.0f);
+            currView.orient = angleAxisX.mul(currView.orient);
         }
 
 
@@ -633,16 +647,17 @@ public class MousePoles {
 
 
         private void offsetTargetPos(TargetOffsetDir dir, float worldDistance, float lastFrameDuration) {
-            Vec3 offsetDir = new Vec3(offsets[dir.ordinal()]);
-            offsetTargetPos(offsetDir.scale(worldDistance).scale(lastFrameDuration), lastFrameDuration);
+            Vector3f offsetDir = new Vector3f(offsets[dir.ordinal()]);
+            offsetTargetPos(offsetDir.mul(worldDistance).mul(lastFrameDuration), lastFrameDuration);
         }
 
-        private void offsetTargetPos(Vec3 cameraOffset, float lastFrameDuration) {
-            Mat4 currMat = calcMatrix();
-            Quaternion orientation = Glm.quatCast(currMat);
+        private void offsetTargetPos(Vector3f cameraOffset, float lastFrameDuration) {
+            Matrix4f currMat = calcMatrix();
+            Quaternionf orientation = new Quaternionf();
+            currMat.getNormalizedRotation(orientation);
 
-            Quaternion invOrient = Glm.conjugate(orientation);
-            Vec3 worldOffset = invOrient.mul(cameraOffset);
+            Quaternionf invOrient = new Quaternionf(orientation).conjugate();
+            Vector3f worldOffset = invOrient.transform(new Vector3f(cameraOffset));
 
             currView.targetPos.add(worldOffset);
         }

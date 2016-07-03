@@ -7,9 +7,9 @@ import jgltut.framework.Interpolators.WeightedLinearInterpolatorVec4;
 import jgltut.framework.Timer;
 import jgltut.jglsdk.BufferableData;
 import jgltut.jglsdk.glm.Glm;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glm.Vec3;
-import jgltut.jglsdk.glm.Vec4;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -104,7 +104,7 @@ class LightEnv {
                 String strVec4 = elemLight.getAttribute("intensity");
                 lightIntensity.add(parseVec4(strVec4));
 
-                ArrayList<Vec3> posValues = new ArrayList<>();
+                ArrayList<Vector3f> posValues = new ArrayList<>();
                 NodeList keys = elemLight.getElementsByTagName("key");
                 Element key;
                 int countKeys = 0;
@@ -136,36 +136,45 @@ class LightEnv {
     private TimedLinearInterpolatorFloat maxIntensityInterpolator = new TimedLinearInterpolatorFloat();
 
     private ArrayList<ConstVelLinearInterpolatorVec3> lightPos = new ArrayList<>();
-    private ArrayList<Vec4> lightIntensity = new ArrayList<>();
+    private ArrayList<Vector4f> lightIntensity = new ArrayList<>();
     private ArrayList<Timer> lightTimers = new ArrayList<>();
 
     ////////////////////////////////
     class PerLight extends BufferableData<FloatBuffer> {
-        Vec4 cameraSpaceLightPos;
-        Vec4 lightIntensity;
+        Vector4f cameraSpaceLightPos;
+        Vector4f lightIntensity;
 
-        static final int SIZE = Vec4.SIZE + Vec4.SIZE;
+        static final int SIZE = 4*4 + 4*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            cameraSpaceLightPos.fillBuffer(buffer);
-            lightIntensity.fillBuffer(buffer);
+            buffer.put(cameraSpaceLightPos.x);
+            buffer.put(cameraSpaceLightPos.y);
+            buffer.put(cameraSpaceLightPos.z);
+            buffer.put(cameraSpaceLightPos.w);
+            buffer.put(lightIntensity.x);
+            buffer.put(lightIntensity.y);
+            buffer.put(lightIntensity.z);
+            buffer.put(lightIntensity.w);
             return buffer;
         }
     }
 
     class LightBlock extends BufferableData<FloatBuffer> {
-        Vec4 ambientIntensity;
+        Vector4f ambientIntensity;
         float lightAttenuation;
         float maxIntensity;
         float padding[] = new float[2];
         PerLight lights[] = new PerLight[MAX_NUMBER_OF_LIGHTS];
 
-        static final int SIZE = Vec4.SIZE + ((1 + 1 + 2) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
+        static final int SIZE = 4*4 + ((1 + 1 + 2) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            ambientIntensity.fillBuffer(buffer);
+            buffer.put(ambientIntensity.x);
+            buffer.put(ambientIntensity.y);
+            buffer.put(ambientIntensity.z);
+            buffer.put(ambientIntensity.w);
             buffer.put(lightAttenuation);
             buffer.put(maxIntensity);
             buffer.put(padding);
@@ -220,7 +229,7 @@ class LightEnv {
 
             for (LightData curr : data) {
                 Data temp = new Data();
-                temp.data = new Vec4(getValue(curr));
+                temp.data = new Vector4f(getValue(curr));
                 temp.weight = getTime(curr);
 
                 values.add(temp);
@@ -228,7 +237,7 @@ class LightEnv {
 
             if (isLooping && !values.isEmpty()) {
                 Data temp = new Data();
-                temp.data = new Vec4(values.get(0).data);
+                temp.data = new Vector4f(values.get(0).data);
                 temp.weight = values.get(0).weight;
 
                 values.add(temp);
@@ -256,15 +265,15 @@ class LightEnv {
         }
     }
 
-    class LightData extends Pair<Vec4, Float> {
-        LightData(Vec4 first, Float second) {
+    class LightData extends Pair<Vector4f, Float> {
+        LightData(Vector4f first, Float second) {
             this.first = first;
             this.second = second;
         }
     }
 
 
-    private static Vec4 getValue(LightData data) {
+    private static Vector4f getValue(LightData data) {
         return data.first;
     }
 
@@ -322,7 +331,7 @@ class LightEnv {
     }
 
     ////////////////////////////////
-    LightBlock getLightBlock(Mat4 worldToCameraMat) {
+    LightBlock getLightBlock(Matrix4f worldToCameraMat) {
         LightBlock lightData = new LightBlock();
         lightData.ambientIntensity = ambientInterpolator.interpolate(sunTimer.getAlpha());
         float halfLightDistance = 70.0f;
@@ -330,36 +339,36 @@ class LightEnv {
         lightData.maxIntensity = maxIntensityInterpolator.interpolate(sunTimer.getAlpha());
 
         lightData.lights[0] = new PerLight();
-        lightData.lights[0].cameraSpaceLightPos = Mat4.mul(worldToCameraMat, getSunlightDirection());
+        lightData.lights[0].cameraSpaceLightPos = worldToCameraMat.transform(getSunlightDirection());
         lightData.lights[0].lightIntensity = sunlightInterpolator.interpolate(sunTimer.getAlpha());
 
         for (int lightIndex = 0; lightIndex < lightPos.size(); lightIndex++) {
-            Vec4 worldLightPos = new Vec4(lightPos.get(lightIndex).interpolate(lightTimers.get(lightIndex).getAlpha()), 1.0f);
-            Vec4 lightPosCameraSpace = Mat4.mul(worldToCameraMat, worldLightPos);
+            Vector4f worldLightPos = new Vector4f(lightPos.get(lightIndex).interpolate(lightTimers.get(lightIndex).getAlpha()), 1.0f);
+            Vector4f lightPosCameraSpace = worldToCameraMat.transform(worldLightPos);
 
             lightData.lights[lightIndex + 1] = new PerLight();
             lightData.lights[lightIndex + 1].cameraSpaceLightPos = lightPosCameraSpace;
-            lightData.lights[lightIndex + 1].lightIntensity = new Vec4(lightIntensity.get(lightIndex));
+            lightData.lights[lightIndex + 1].lightIntensity = new Vector4f(lightIntensity.get(lightIndex));
         }
 
         return lightData;
     }
 
 
-    Vec4 getSunlightDirection() {
+    Vector4f getSunlightDirection() {
         float angle = 2.0f * 3.14159f * sunTimer.getAlpha();
-        Vec4 sunDirection = new Vec4(0.0f);
+        Vector4f sunDirection = new Vector4f(0.0f);
         sunDirection.x = (float) Math.sin(angle);
         sunDirection.y = (float) Math.cos(angle);
 
         // Keep the sun from being perfectly centered overhead.
-        sunDirection = Mat4.mul(Glm.rotate(new Mat4(1.0f), 5.0f, new Vec3(0.0f, 1.0f, 0.0f)), sunDirection);
-
+        Matrix4f rotationMat = new Matrix4f().rotate((float) Math.toRadians(5.0f), 0.0f, 1.0f, 0.0f);
+        rotationMat.transform(sunDirection);
         return sunDirection;
     }
 
-    Vec4 getSunlightScaledIntensity() {
-        return Vec4.scale(sunlightInterpolator.interpolate(sunTimer.getAlpha()),
+    Vector4f getSunlightScaledIntensity() {
+        return new Vector4f(sunlightInterpolator.interpolate(sunTimer.getAlpha())).mul(
                 1.0f / maxIntensityInterpolator.interpolate(sunTimer.getAlpha()));
     }
 
@@ -373,24 +382,24 @@ class LightEnv {
     }
 
 
-    Vec4 getPointLightScaledIntensity(int pointLightIndex) {
-        return Vec4.scale(lightIntensity.get(pointLightIndex),
+    Vector4f getPointLightScaledIntensity(int pointLightIndex) {
+        return new Vector4f(lightIntensity.get(pointLightIndex)).mul(
                 1.0f / maxIntensityInterpolator.interpolate(sunTimer.getAlpha()));
     }
 
-    Vec3 getPointLightWorldPos(int pointLightIndex) {
+    Vector3f getPointLightWorldPos(int pointLightIndex) {
         return lightPos.get(pointLightIndex).interpolate(lightTimers.get(pointLightIndex).getAlpha());
     }
 
 
-    Vec4 getBackgroundColor() {
+    Vector4f getBackgroundColor() {
         return backgroundInterpolator.interpolate(sunTimer.getAlpha());
     }
 
     ////////////////////////////////
-    private Vec4 parseVec4(String s) {
+    private Vector4f parseVec4(String s) {
         Scanner snr = new Scanner(s);
-        Vec4 res = new Vec4();
+        Vector4f res = new Vector4f();
         res.x = Float.parseFloat(snr.next());
         res.y = Float.parseFloat(snr.next());
         res.z = Float.parseFloat(snr.next());
@@ -399,9 +408,9 @@ class LightEnv {
         return res;
     }
 
-    private Vec3 parseVec3(String s) {
+    private Vector3f parseVec3(String s) {
         Scanner snr = new Scanner(s);
-        Vec3 res = new Vec3();
+        Vector3f res = new Vector3f();
         res.x = Float.parseFloat(snr.next());
         res.y = Float.parseFloat(snr.next());
         res.z = Float.parseFloat(snr.next());

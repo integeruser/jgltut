@@ -1,8 +1,8 @@
 package jgltut.framework;
 
 import jgltut.jglsdk.glm.Glm;
-import jgltut.jglsdk.glm.Vec3;
-import jgltut.jglsdk.glm.Vec4;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 
@@ -47,51 +47,51 @@ public class Interpolators {
         public ArrayList<Data> values = new ArrayList<>();
 
         public class Data {
-            Vec3 data;
+            Vector3f data;
             float weight;
         }
 
 
-        public Vec3 interpolate(float alpha) {
-            if (values.isEmpty()) return new Vec3();
+        public Vector3f interpolate(float alpha) {
+            if (values.isEmpty()) return new Vector3f();
 
-            if (values.size() == 1) return new Vec3(values.get(0).data);
+            if (values.size() == 1) return new Vector3f(values.get(0).data);
 
             // Find which segment we are within.
             int segment = 1;
             for (; segment < values.size(); segment++) {
                 if (alpha < values.get(segment).weight) break;
             }
-            if (segment == values.size()) return new Vec3(values.get(segment - 1).data);
+            if (segment == values.size()) return new Vector3f(values.get(segment - 1).data);
 
             float sectionAlpha = alpha - values.get(segment - 1).weight;
             sectionAlpha /= values.get(segment).weight - values.get(segment - 1).weight;
 
             float invSecAlpha = 1.0f - sectionAlpha;
-            return Vec3.scale(values.get(segment - 1).data, invSecAlpha).add(Vec3.scale(values.get(segment).data, sectionAlpha));
+            return new Vector3f(values.get(segment - 1).data).mul(invSecAlpha).add(new Vector3f(values.get(segment).data).mul(sectionAlpha));
         }
     }
 
     public static class ConstVelLinearInterpolatorVec3 extends WeightedLinearInterpolatorVec3 {
         float totalDist;
 
-        public void setValues(ArrayList<Vec3> data) {
+        public void setValues(ArrayList<Vector3f> data) {
             setValues(data, true);
         }
 
-        public void setValues(ArrayList<Vec3> data, boolean isLoop) {
+        public void setValues(ArrayList<Vector3f> data, boolean isLoop) {
             values.clear();
 
-            for (Vec3 curr : data) {
+            for (Vector3f curr : data) {
                 Data currData = new Data();
-                currData.data = new Vec3(curr);
+                currData.data = new Vector3f(curr);
                 currData.weight = 0.0f;
                 values.add(currData);
             }
 
             if (isLoop) {
                 Data currData = new Data();
-                currData.data = new Vec3(data.get(0));
+                currData.data = new Vector3f(data.get(0));
                 currData.weight = 0.0f;
                 values.add(currData);
             }
@@ -111,8 +111,8 @@ public class Interpolators {
         }
 
 
-        float distance(Vec3 lhs, Vec3 rhs) {
-            return Glm.length(Vec3.sub(rhs, lhs));
+        float distance(Vector3f lhs, Vector3f rhs) {
+            return new Vector3f(rhs).sub(lhs).length();
         }
     }
 
@@ -121,28 +121,28 @@ public class Interpolators {
         public ArrayList<Data> values = new ArrayList<>();
 
         public class Data {
-            public Vec4 data;
+            public Vector4f data;
             public float weight;
         }
 
 
-        public Vec4 interpolate(float alpha) {
-            if (values.isEmpty()) return new Vec4();
+        public Vector4f interpolate(float alpha) {
+            if (values.isEmpty()) return new Vector4f();
 
-            if (values.size() == 1) return new Vec4(values.get(0).data);
+            if (values.size() == 1) return new Vector4f(values.get(0).data);
 
             // Find which segment we are within.
             int segment = 1;
             for (; segment < values.size(); segment++) {
                 if (alpha < values.get(segment).weight) break;
             }
-            if (segment == values.size()) return new Vec4(values.get(segment - 1).data);
+            if (segment == values.size()) return new Vector4f(values.get(segment - 1).data);
 
             float sectionAlpha = alpha - values.get(segment - 1).weight;
             sectionAlpha /= values.get(segment).weight - values.get(segment - 1).weight;
 
             float invSecAlpha = 1.0f - sectionAlpha;
-            return Vec4.scale(values.get(segment - 1).data, invSecAlpha).add(Vec4.scale(values.get(segment).data, sectionAlpha));
+            return new Vector4f(values.get(segment - 1).data).mul(invSecAlpha).add(new Vector4f(values.get(segment).data).mul(sectionAlpha));
         }
     }
 }

@@ -9,8 +9,8 @@ import jgltut.jglsdk.glimg.ImageSet.SingleImage;
 import jgltut.jglsdk.glimg.StbLoader;
 import jgltut.jglsdk.glimg.TextureGenerator;
 import jgltut.jglsdk.glimg.TextureGenerator.OpenGLPixelTransferParams;
-import jgltut.jglsdk.glm.Mat4;
-import jgltut.jglsdk.glutil.MatrixStack;
+import org.joml.Matrix4f;
+import org.joml.MatrixStackf;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
@@ -127,15 +127,15 @@ public class GammaRamp extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
-        MatrixStack persMatrix = new MatrixStack();
+        MatrixStackf persMatrix = new MatrixStackf();
         persMatrix.translate(-1.0f, 1.0f, 0.0f);
         persMatrix.scale(2.0f / w, -2.0f / h, 1.0f);
 
         ProjectionBlock projData = new ProjectionBlock();
-        projData.cameraToClipMatrix = persMatrix.top();
+        projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillAndFlipBuffer(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -149,7 +149,7 @@ public class GammaRamp extends LWJGLWindow {
     private int gammaProgram;
     private int noGammaProgram;
 
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(Mat4.SIZE);
+    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
 
     private void initializeProgram() {
@@ -274,13 +274,13 @@ public class GammaRamp extends LWJGLWindow {
     private int projectionUniformBuffer;
 
     private class ProjectionBlock extends BufferableData<FloatBuffer> {
-        Mat4 cameraToClipMatrix;
+        Matrix4f cameraToClipMatrix;
 
-        static final int SIZE = Mat4.SIZE;
+        static final int SIZE = 16*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            return cameraToClipMatrix.fillBuffer(buffer);
+            return cameraToClipMatrix.get(buffer);
         }
     }
 }

@@ -32,7 +32,7 @@ import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
  */
 public class DepthClamping extends LWJGLWindow {
     public static void main(String[] args) {
-        Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut05/data/";
+        Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut05/data/";
         new DepthClamping().start(500, 500);
     }
 

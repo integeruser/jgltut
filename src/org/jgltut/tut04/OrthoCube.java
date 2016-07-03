@@ -25,7 +25,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  */
 public class OrthoCube extends LWJGLWindow {
     public static void main(String[] args) {
-        Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut04/data/";
+        Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut04/data/";
         new OrthoCube().start(500, 500);
     }
 

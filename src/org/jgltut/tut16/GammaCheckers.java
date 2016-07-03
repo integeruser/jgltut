@@ -53,7 +53,7 @@ import static org.lwjgl.opengl.GL33.*;
  */
 public class GammaCheckers extends LWJGLWindow {
     public static void main(String[] args) {
-        Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut16/data/";
+        Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut16/data/";
         new GammaCheckers().start(500, 500);
     }
 

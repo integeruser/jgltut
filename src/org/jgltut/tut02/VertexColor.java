@@ -25,7 +25,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  */
 public class VertexColor extends LWJGLWindow {
     public static void main(String[] args) {
-        Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut02/data/";
+        Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut02/data/";
         new VertexColor().start(500, 500);
     }
 

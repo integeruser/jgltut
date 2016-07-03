@@ -67,7 +67,7 @@ import static org.lwjgl.opengl.GL33.*;
  */
 public class CubePointLight extends LWJGLWindow {
     public static void main(String[] args) {
-        Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut17/data/";
+        Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut17/data/";
         new CubePointLight().start(displayWidth, displayHeight);
     }
 

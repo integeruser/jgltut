@@ -51,7 +51,7 @@ import static org.lwjgl.opengl.GL33.*;
  */
 public class ManyImages extends LWJGLWindow {
     public static void main(String[] args) {
-        Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut15/data/";
+        Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut15/data/";
         new ManyImages().start(500, 500);
     }
 

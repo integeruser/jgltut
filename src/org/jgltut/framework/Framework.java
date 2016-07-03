@@ -17,7 +17,7 @@ import static org.lwjgl.opengl.GL20.glDeleteShader;
  * @author integeruser
  */
 public class Framework {
-    public static String COMMON_DATAPATH = "/jgltut/data/";
+    public static String COMMON_DATAPATH = "/org/jgltut/data/";
     public static String CURRENT_TUTORIAL_DATAPATH = null;
 
 

@@ -33,7 +33,7 @@ import static org.lwjgl.opengl.GL20.*;
  */
 public class GimbalLock extends LWJGLWindow {
     public static void main(String[] args) {
-        Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut08/data/";
+        Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut08/data/";
         new GimbalLock().start(500, 500);
     }
 

@@ -45,7 +45,7 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  */
 public class WorldWithUBO extends LWJGLWindow {
     public static void main(String[] args) {
-        Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut07/data/";
+        Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut07/data/";
         new WorldWithUBO().start(700, 700);
     }
 

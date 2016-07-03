@@ -54,7 +54,7 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  */
 public class FragmentPointLighting extends LWJGLWindow {
     public static void main(String[] args) {
-        Framework.CURRENT_TUTORIAL_DATAPATH = "/jgltut/tut10/data/";
+        Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut10/data/";
         new FragmentPointLighting().start(500, 500);
     }
 

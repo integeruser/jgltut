@@ -231,7 +231,7 @@ public class ProjectedLight extends LWJGLWindow {
             final float zNear = 1.0f;
             final float zFar = 1000.0f;
             MatrixStackf persMatrix = new MatrixStackf();
-            persMatrix.perspective(Framework.degToRad(60.0f), displayWidth / (float) displayHeight, zNear, zFar);
+            persMatrix.perspective((float) Math.toRadians(60.0f), displayWidth / (float) displayHeight, zNear, zFar);
 
             ProjectionBlock projData = new ProjectionBlock();
             projData.cameraToClipMatrix = persMatrix;
@@ -252,7 +252,7 @@ public class ProjectedLight extends LWJGLWindow {
             lightProjStack.scale(0.5f, 0.5f, 1.0f);
 
             // Project. Z-range is irrelevant.
-            lightProjStack.perspective(Framework.degToRad(lightFOVs[currFOVIndex]), 1.0f, 1.0f, 100.0f);
+            lightProjStack.perspective((float) Math.toRadians(lightFOVs[currFOVIndex]), 1.0f, 1.0f, 100.0f);
 
             // Transform from main camera space to light camera space.
             lightProjStack.mul(lightView);

@@ -215,7 +215,7 @@ public class GammaLandscape extends LWJGLWindow {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         modelMatrix.pushMatrix();
-        modelMatrix.rotateX(Framework.degToRad(-90.0f));
+        modelMatrix.rotateX((float) Math.toRadians(-90.0f));
 
         glUseProgram(progStandard.theProgram);
         glUniformMatrix4fv(progStandard.modelToCameraMatrixUnif, false, modelMatrix.get(mat4Buffer));
@@ -296,7 +296,7 @@ public class GammaLandscape extends LWJGLWindow {
         float zNear = 1.0f;
         float zFar = 1000.0f;
         MatrixStackf persMatrix = new MatrixStackf();
-        persMatrix.perspective(Framework.degToRad(60.0f), (w / (float) h), zNear, zFar);
+        persMatrix.perspective((float) Math.toRadians(60.0f), (w / (float) h), zNear, zFar);
 
         ProjectionBlock projData = new ProjectionBlock();
         projData.cameraToClipMatrix = persMatrix;

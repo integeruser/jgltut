@@ -70,10 +70,4 @@ public class Framework {
             }
         }
     }
-
-    ////////////////////////////////
-    public static float degToRad(float angDeg) {
-        final float degToRad = 3.14159f * 2.0f / 360.0f;
-        return angDeg * degToRad;
-    }
 }

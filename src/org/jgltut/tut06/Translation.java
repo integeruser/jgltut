@@ -134,9 +134,8 @@ public class Translation extends LWJGLWindow {
 
 
     private float calcFrustumScale(float fovDeg) {
-        final float degToRad = 3.14159f * 2.0f / 360.0f;
-        float fovRad = fovDeg * degToRad;
-        return 1.0f / (float) (Math.tan(fovRad / 2.0f));
+        float fovRad = (float) Math.toRadians(fovDeg);
+        return (float) (1.0f / Math.tan(fovRad / 2.0f));
     }
 
     ////////////////////////////////

@@ -81,7 +81,7 @@ abstract class Scene {
         {
             modelMatrix.pushMatrix();
 
-            modelMatrix.rotateX(Framework.degToRad(-90.0f));
+            modelMatrix.rotateX((float) Math.toRadians(-90.0f));
 
             drawObject(terrainMesh, getProgram(LightingProgramTypes.VERT_COLOR_DIFFUSE), materialBlockIndex, 0, modelMatrix);
 
@@ -93,10 +93,10 @@ abstract class Scene {
             modelMatrix.pushMatrix();
 
             modelMatrix.translate(75.0f, 5.0f, 75.0f);
-            modelMatrix.rotateY(Framework.degToRad(360.0f * alphaTetra));
+            modelMatrix.rotateY((float) Math.toRadians(360.0f * alphaTetra));
             modelMatrix.scale(10.0f, 10.0f, 10.0f);
             modelMatrix.translate(0.0f, (float) Math.sqrt(2.0f), 0.0f);
-            modelMatrix.rotate(Framework.degToRad(54.735f), new Vector3f(-0.707f, 0.0f, -0.707f));
+            modelMatrix.rotate((float) Math.toRadians(54.735f), new Vector3f(-0.707f, 0.0f, -0.707f));
 
             drawObject(tetraMesh, "lit-color", getProgram(LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR),
                     materialBlockIndex, 1, modelMatrix);
@@ -124,8 +124,8 @@ abstract class Scene {
             modelMatrix.pushMatrix();
 
             modelMatrix.translate(-52.5f, 14.0f, 65.0f);
-            modelMatrix.rotateZ(Framework.degToRad(50.0f));
-            modelMatrix.rotateY(Framework.degToRad(-10.0f));
+            modelMatrix.rotateZ((float) Math.toRadians(50.0f));
+            modelMatrix.rotateY((float) Math.toRadians(-10.0f));
             modelMatrix.scale(20.0f, 20.0f, 20.0f);
 
             drawObject(cubeMesh, "lit-color", getProgram(LightingProgramTypes.VERT_COLOR_DIFFUSE_SPECULAR),

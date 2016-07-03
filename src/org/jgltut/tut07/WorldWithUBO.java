@@ -163,7 +163,7 @@ public class WorldWithUBO extends LWJGLWindow {
         float zNear = 1.0f;
         float zFar = 1000.0f;
         MatrixStackf persMatrix = new MatrixStackf();
-        persMatrix.perspective(Framework.degToRad(45.0f), (w / (float) h), zNear, zFar);
+        persMatrix.perspective((float) Math.toRadians(45.0f), (w / (float) h), zNear, zFar);
 
         glBindBuffer(GL_UNIFORM_BUFFER, globalMatricesUBO);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, persMatrix.get(mat4Buffer));
@@ -329,8 +329,8 @@ public class WorldWithUBO extends LWJGLWindow {
 
 
     private Vector3f resolveCamPosition() {
-        float phi = Framework.degToRad(sphereCamRelPos.x);
-        float theta = Framework.degToRad(sphereCamRelPos.y + 90.0f);
+        float phi = (float) Math.toRadians(sphereCamRelPos.x);
+        float theta = (float) Math.toRadians(sphereCamRelPos.y + 90.0f);
 
         float sinTheta = (float) Math.sin(theta);
         float cosTheta = (float) Math.cos(theta);

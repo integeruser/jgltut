@@ -93,7 +93,7 @@ public class QuaternionYPR extends LWJGLWindow {
         glUseProgram(theProgram);
 
         currMatrix.scale(3.0f, 3.0f, 3.0f);
-        currMatrix.rotateX(Framework.degToRad(-90.0f));
+        currMatrix.rotateX((float) Math.toRadians(-90.0f));
 
         // Set the base color for this object.
         glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -178,8 +178,7 @@ public class QuaternionYPR extends LWJGLWindow {
 
 
     private float calcFrustumScale(float fovDeg) {
-        final float degToRad = 3.14159f * 2.0f / 360.0f;
-        float fovRad = fovDeg * degToRad;
+        float fovRad = (float) Math.toRadians(fovDeg);
         return (float) (1.0f / Math.tan(fovRad / 2.0f));
     }
 
@@ -192,7 +191,7 @@ public class QuaternionYPR extends LWJGLWindow {
 
 
     private void offsetOrientation(Vector3f axis, float angDeg) {
-        float angRad = Framework.degToRad(angDeg);
+        float angRad = (float) Math.toRadians(angDeg);
 
         axis.normalize();
         axis.mul((float) Math.sin(angRad / 2.0f));

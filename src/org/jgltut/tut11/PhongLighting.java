@@ -338,7 +338,7 @@ public class PhongLighting extends LWJGLWindow {
         float zNear = 1.0f;
         float zFar = 1000.0f;
         MatrixStackf persMatrix = new MatrixStackf();
-        persMatrix.perspective(Framework.degToRad(45.0f), (w / (float) h), zNear, zFar);
+        persMatrix.perspective((float) Math.toRadians(45.0f), (w / (float) h), zNear, zFar);
 
         ProjectionBlock projData = new ProjectionBlock();
         projData.cameraToClipMatrix = persMatrix;

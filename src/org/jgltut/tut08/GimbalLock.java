@@ -89,17 +89,17 @@ public class GimbalLock extends LWJGLWindow {
 
         MatrixStackf currMatrix = new MatrixStackf(10);
         currMatrix.translate(0.0f, 0.0f, -200.0f);
-        currMatrix.rotateX(Framework.degToRad(gimbalAngles.angleX));
+        currMatrix.rotateX((float) Math.toRadians(gimbalAngles.angleX));
         drawGimbal(currMatrix, GimbalAxis.X_AXIS, new Vector4f(0.4f, 0.4f, 1.0f, 1.0f));
-        currMatrix.rotateY(Framework.degToRad(gimbalAngles.angleY));
+        currMatrix.rotateY((float) Math.toRadians(gimbalAngles.angleY));
         drawGimbal(currMatrix, GimbalAxis.Y_AXIS, new Vector4f(0.0f, 1.0f, 0.0f, 1.0f));
-        currMatrix.rotateZ(Framework.degToRad(gimbalAngles.angleZ));
+        currMatrix.rotateZ((float) Math.toRadians(gimbalAngles.angleZ));
         drawGimbal(currMatrix, GimbalAxis.Z_AXIS, new Vector4f(1.0f, 0.3f, 0.3f, 1.0f));
 
         glUseProgram(theProgram);
 
         currMatrix.scale(3.0f, 3.0f, 3.0f);
-        currMatrix.rotateX(Framework.degToRad(-90.0f));
+        currMatrix.rotateX((float) Math.toRadians(-90.0f));
 
         // Set the base color for this object.
         glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -184,8 +184,7 @@ public class GimbalLock extends LWJGLWindow {
 
 
     private float calcFrustumScale(float fovDeg) {
-        final float degToRad = 3.14159f * 2.0f / 360.0f;
-        float fovRad = fovDeg * degToRad;
+        float fovRad = (float) Math.toRadians(fovDeg);
         return (float) (1.0f / Math.tan(fovRad / 2.0f));
     }
 
@@ -225,13 +224,13 @@ public class GimbalLock extends LWJGLWindow {
                 break;
 
             case Y_AXIS:
-                currMatrix.rotateZ(Framework.degToRad(90.0f));
-                currMatrix.rotateX(Framework.degToRad(90.0f));
+                currMatrix.rotateZ((float) Math.toRadians(90.0f));
+                currMatrix.rotateX((float) Math.toRadians(90.0f));
                 break;
 
             case Z_AXIS:
-                currMatrix.rotateY(Framework.degToRad(90.0f));
-                currMatrix.rotateX(Framework.degToRad(90.0f));
+                currMatrix.rotateY((float) Math.toRadians(90.0f));
+                currMatrix.rotateX((float) Math.toRadians(90.0f));
                 break;
         }
 

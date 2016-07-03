@@ -181,8 +181,7 @@ public class Hierarchy extends LWJGLWindow {
 
 
     private float calcFrustumScale(float fovDeg) {
-        final float degToRad = 3.14159f * 2.0f / 360.0f;
-        float fovRad = fovDeg * degToRad;
+        float fovRad = (float) Math.toRadians(fovDeg);
         return 1.0f / (float) (Math.tan(fovRad / 2.0f));
     }
 
@@ -385,7 +384,7 @@ public class Hierarchy extends LWJGLWindow {
             glBindVertexArray(vao);
 
             modelToCameraStack.translate(posBase);
-            modelToCameraStack.rotateY(degToRad(angBase));
+            modelToCameraStack.rotateY((float) Math.toRadians(angBase));
 
             // Draw left base.
             {
@@ -416,7 +415,7 @@ public class Hierarchy extends LWJGLWindow {
 
         void drawUpperArm(MatrixStackf modelToCameraStack) {
             modelToCameraStack.pushMatrix();
-            modelToCameraStack.rotateX(degToRad(angUpperArm));
+            modelToCameraStack.rotateX((float) Math.toRadians(angUpperArm));
 
             {
                 modelToCameraStack.pushMatrix();
@@ -435,7 +434,7 @@ public class Hierarchy extends LWJGLWindow {
         void drawLowerArm(MatrixStackf modelToCameraStack) {
             modelToCameraStack.pushMatrix();
             modelToCameraStack.translate(posLowerArm);
-            modelToCameraStack.rotateX(degToRad(angLowerArm));
+            modelToCameraStack.rotateX((float) Math.toRadians(angLowerArm));
 
             modelToCameraStack.pushMatrix();
             modelToCameraStack.translate(new Vector3f(0.0f, 0.0f, lenLowerArm / 2.0f));
@@ -452,8 +451,8 @@ public class Hierarchy extends LWJGLWindow {
         void drawWrist(MatrixStackf modelToCameraStack) {
             modelToCameraStack.pushMatrix();
             modelToCameraStack.translate(posWrist);
-            modelToCameraStack.rotateZ(degToRad(angWristRoll));
-            modelToCameraStack.rotateX(degToRad(angWristPitch));
+            modelToCameraStack.rotateZ((float) Math.toRadians(angWristRoll));
+            modelToCameraStack.rotateX((float) Math.toRadians(angWristPitch));
 
             modelToCameraStack.pushMatrix();
             modelToCameraStack.scale(new Vector3f(widthWrist / 2.0f, widthWrist / 2.0f, lenWrist / 2.0f));
@@ -470,7 +469,7 @@ public class Hierarchy extends LWJGLWindow {
             // Draw left finger
             modelToCameraStack.pushMatrix();
             modelToCameraStack.translate(posLeftFinger);
-            modelToCameraStack.rotateY(degToRad(angFingerOpen));
+            modelToCameraStack.rotateY((float) Math.toRadians(angFingerOpen));
 
             modelToCameraStack.pushMatrix();
             modelToCameraStack.translate(new Vector3f(0.0f, 0.0f, lenFinger / 2.0f));
@@ -483,7 +482,7 @@ public class Hierarchy extends LWJGLWindow {
                 // Draw left lower finger
                 modelToCameraStack.pushMatrix();
                 modelToCameraStack.translate(new Vector3f(0.0f, 0.0f, lenFinger));
-                modelToCameraStack.rotateY(degToRad(-angLowerFinger));
+                modelToCameraStack.rotateY((float) Math.toRadians(-angLowerFinger));
 
                 modelToCameraStack.pushMatrix();
                 modelToCameraStack.translate(new Vector3f(0.0f, 0.0f, lenFinger / 2.0f));
@@ -500,7 +499,7 @@ public class Hierarchy extends LWJGLWindow {
             // Draw right finger
             modelToCameraStack.pushMatrix();
             modelToCameraStack.translate(posRightFinger);
-            modelToCameraStack.rotateY(degToRad(-angFingerOpen));
+            modelToCameraStack.rotateY((float) Math.toRadians(-angFingerOpen));
 
             modelToCameraStack.pushMatrix();
             modelToCameraStack.translate(new Vector3f(0.0f, 0.0f, lenFinger / 2.0f));
@@ -513,7 +512,7 @@ public class Hierarchy extends LWJGLWindow {
                 // Draw right lower finger
                 modelToCameraStack.pushMatrix();
                 modelToCameraStack.translate(new Vector3f(0.0f, 0.0f, lenFinger));
-                modelToCameraStack.rotateY(degToRad(angLowerFinger));
+                modelToCameraStack.rotateY((float) Math.toRadians(angLowerFinger));
 
                 modelToCameraStack.pushMatrix();
                 modelToCameraStack.translate(new Vector3f(0.0f, 0.0f, lenFinger / 2.0f));
@@ -575,12 +574,6 @@ public class Hierarchy extends LWJGLWindow {
             System.out.printf("angFingerOpen:\t%f\n", angFingerOpen);
             System.out.printf("\n");
         }
-    }
-
-
-    private float degToRad(float angDeg) {
-        final float degToRad = 3.14159f * 2.0f / 360.0f;
-        return angDeg * degToRad;
     }
 
 

@@ -247,8 +247,7 @@ public class CameraRelative extends LWJGLWindow {
 
 
     private float calcFrustumScale(float fovDeg) {
-        final float degToRad = 3.14159f * 2.0f / 360.0f;
-        float fovRad = fovDeg * degToRad;
+        float fovRad = (float) Math.toRadians(fovDeg);
         return (float) (1.0f / Math.tan(fovRad / 2.0f));
     }
 
@@ -273,7 +272,7 @@ public class CameraRelative extends LWJGLWindow {
 
 
     private void offsetOrientation(Vector3f axis, float angDeg) {
-        float angRad = Framework.degToRad(angDeg);
+        float angRad = (float) Math.toRadians(angDeg);
 
         axis = new Vector3f(axis).normalize();
         axis.mul((float) Math.sin(angRad / 2.0f));
@@ -307,8 +306,8 @@ public class CameraRelative extends LWJGLWindow {
     }
 
     private Vector3f resolveCamPosition() {
-        float phi = Framework.degToRad(sphereCamRelPos.x);
-        float theta = Framework.degToRad(sphereCamRelPos.y + 90.0f);
+        float phi = (float) Math.toRadians(sphereCamRelPos.x);
+        float theta = (float) Math.toRadians(sphereCamRelPos.y + 90.0f);
 
         float sinTheta = (float) Math.sin(theta);
         float cosTheta = (float) Math.cos(theta);

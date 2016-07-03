@@ -321,7 +321,7 @@ public class GeomImpostor extends LWJGLWindow {
         float zNear = 1.0f;
         float zFar = 1000.0f;
         MatrixStackf persMatrix = new MatrixStackf();
-        persMatrix.perspective(Framework.degToRad(45.0f), (w / (float) h), zNear, zFar);
+        persMatrix.perspective((float) Math.toRadians(45.0f), (w / (float) h), zNear, zFar);
 
         ProjectionBlock projData = new ProjectionBlock();
         projData.cameraToClipMatrix = persMatrix;
@@ -488,7 +488,7 @@ public class GeomImpostor extends LWJGLWindow {
         modelMatrix.pushMatrix();
 
         modelMatrix.translate(orbitCenter);
-        modelMatrix.rotate(Framework.degToRad(360.0f * orbitAlpha), orbitAxis);
+        modelMatrix.rotate((float) Math.toRadians(360.0f * orbitAlpha), orbitAxis);
 
         Vector3f offsetDir = new Vector3f(orbitAxis).cross(new Vector3f(0.0f, 1.0f, 0.0f));
         if (offsetDir.length() < 0.001f) {

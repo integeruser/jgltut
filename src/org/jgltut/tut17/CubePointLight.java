@@ -209,7 +209,7 @@ public class CubePointLight extends LWJGLWindow {
             final float zNear = 1.0f;
             final float zFar = 1000.0f;
             MatrixStackf persMatrix = new MatrixStackf();
-            persMatrix.perspective(Framework.degToRad(60.0f), displayWidth / (float) displayHeight, zNear, zFar);
+            persMatrix.perspective((float) Math.toRadians(60.0f), displayWidth / (float) displayHeight, zNear, zFar);
 
             ProjectionBlock projData = new ProjectionBlock();
             projData.cameraToClipMatrix = persMatrix;

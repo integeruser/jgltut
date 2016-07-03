@@ -194,7 +194,7 @@ public class DoubleProjection extends LWJGLWindow {
             final float zNear = 1.0f;
             final float zFar = 1000.0f;
             MatrixStackf persMatrix = new MatrixStackf();
-            persMatrix.perspective(Framework.degToRad(60.0f), displaySize.x / displaySize.y, zNear, zFar);
+            persMatrix.perspective((float) Math.toRadians(60.0f), displaySize.x / displaySize.y, zNear, zFar);
 
             ProjectionBlock projData = new ProjectionBlock();
             projData.cameraToClipMatrix = persMatrix;
@@ -234,7 +234,7 @@ public class DoubleProjection extends LWJGLWindow {
             final float zFar = 1000.0f;
             MatrixStackf persMatrix = new MatrixStackf();
             persMatrix.mul(new Matrix4f(new Matrix3f(persViewPole.calcMatrix())));
-            persMatrix.perspective(Framework.degToRad(60.0f), displaySize.x / displaySize.y, zNear, zFar);
+            persMatrix.perspective((float) Math.toRadians(60.0f), displaySize.x / displaySize.y, zNear, zFar);
 
             ProjectionBlock projData = new ProjectionBlock();
             projData.cameraToClipMatrix = persMatrix;

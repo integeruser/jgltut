@@ -130,7 +130,7 @@ public class PerspectiveInterpolation extends LWJGLWindow {
         float zNear = 1.0f;
         float zFar = 1000.0f;
         MatrixStackf persMatrix = new MatrixStackf();
-        persMatrix.perspective(Framework.degToRad(60.0f), 1.0f, zNear, zFar);
+        persMatrix.perspective((float) Math.toRadians(60.0f), 1.0f, zNear, zFar);
 
         glUseProgram(smoothInterp.theProgram);
         glUniformMatrix4fv(smoothInterp.cameraToClipMatrixUnif, false, persMatrix.get(mat4Buffer));

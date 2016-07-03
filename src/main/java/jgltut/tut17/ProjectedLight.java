@@ -259,7 +259,7 @@ public class ProjectedLight extends LWJGLWindow {
             lightProjStack.mul(new Matrix4f(cameraMatrix).invert());
             lightProjMatBinder.setValue(lightProjStack);
 
-            Vector4f worldLightPos = new Vector4f(lightView.m30, lightView.m31, lightView.m32, lightView.m33);
+            Vector4f worldLightPos = new Vector4f(lightView.m30(), lightView.m31(), lightView.m32(), lightView.m33());
             Vector4f tmp = cameraMatrix.transform(new Vector4f(worldLightPos));
             Vector3f lightPos = new Vector3f(tmp.x, tmp.y, tmp.z);
             camLightPosBinder.setValue(lightPos);

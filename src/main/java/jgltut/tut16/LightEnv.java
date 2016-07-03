@@ -362,7 +362,8 @@ class LightEnv {
         sunDirection.y = (float) Math.cos(angle);
 
         // Keep the sun from being perfectly centered overhead.
-        Glm.rotate(new Matrix4f(), 5.0f, new Vector3f(0.0f, 1.0f, 0.0f)).transform(sunDirection);
+        Matrix4f rotationMat = new Matrix4f().rotate((float) Math.toRadians(5.0f), 0.0f, 1.0f, 0.0f);
+        rotationMat.transform(sunDirection);
         return sunDirection;
     }
 

@@ -275,10 +275,10 @@ public class Scene {
 
         Matrix4f getMatrix() {
             Matrix4f ret = new Matrix4f();
-            ret = Glm.translate(ret, trans);
+            ret.translate(trans);
             Quaternionf q = new Quaternionf();
             ret.mul(orient.get(new Matrix4f()));
-            ret = Glm.scale(ret, scale);
+            ret.scale(scale);
             return ret;
         }
 

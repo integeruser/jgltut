@@ -219,10 +219,13 @@ public class ProjectedLight extends LWJGLWindow {
 
         buildLights(cameraMatrix);
 
-        nodes.get(0).nodeSetOrient(Glm.rotate(new Quaternionf(0,0,0,1.0f), 360.0f * timer.getAlpha(), new Vector3f(0.0f, 1.0f, 0.0f)));
+        float angle0 = (float) Math.toRadians(360.0f * timer.getAlpha());
+        Quaternionf rotation0 = new Quaternionf().rotateAxis(angle0, 0.0f, 1.0f, 0.0f);
+        nodes.get(0).nodeSetOrient(rotation0);
 
-        nodes.get(3).nodeSetOrient(new Quaternionf(spinBarOrient).mul(
-                Glm.rotate(new Quaternionf(0,0,0, 1.0f), 360.0f * timer.getAlpha(), new Vector3f(0.0f, 0.0f, 1.0f))));
+        float angle3 = (float) Math.toRadians(360.0f * timer.getAlpha());
+        Quaternionf rotation3 = new Quaternionf().rotateAxis(angle3, 0.0f, 0.0f, 1.0f);
+        nodes.get(3).nodeSetOrient(new Quaternionf(spinBarOrient).mul(rotation3));
 
         {
             final float zNear = 1.0f;

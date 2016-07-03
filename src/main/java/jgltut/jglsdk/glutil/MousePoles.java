@@ -492,7 +492,7 @@ public class MousePoles {
 
             // In this space, we are facing in the correct direction. Which means that the camera point
             // is directly behind us by the radius number of units.
-            mat = Glm.translate(mat, new Vector3f(0.0f, 0.0f, -currView.radius));
+            mat.translate(new Vector3f(0.0f, 0.0f, -currView.radius));
 
             // Rotate the world to look in the right direction.
             Quaternionf angleAxis = new Quaternionf().setAngleAxis((float) Math.toRadians(currView.degSpinRotation), 0.0f, 0.0f, 1.0f);
@@ -501,7 +501,7 @@ public class MousePoles {
             mat.mul(fullRotation.get(new Matrix4f()));
 
             // Translate the world by the negation of the lookat point, placing the origin at the lookat point.
-            mat = Glm.translate(mat, new Vector3f(currView.targetPos).negate());
+            mat.translate(new Vector3f(currView.targetPos).negate());
             return mat;
         }
 

@@ -97,7 +97,7 @@ public class Interpolation extends LWJGLWindow {
 
         MatrixStackf currMatrix = new MatrixStackf();
         currMatrix.translate(0.0f, 0.0f, -200.0f);
-        currMatrix.mul(Glm.mat4Cast(orient.getOrient()));
+        currMatrix.mul(orient.getOrient().get(new Matrix4f()));
 
         glUseProgram(theProgram);
 

@@ -37,71 +37,6 @@ public class Glm {
     }
 
 
-    public static Quaternionf quatCast(Matrix4f matNew) {
-        Mat4 mat = toMat(matNew);
-
-        float fourXSquaredMinus1 = mat.matrix[0] - mat.matrix[5] - mat.matrix[10];
-        float fourYSquaredMinus1 = mat.matrix[5] - mat.matrix[0] - mat.matrix[10];
-        float fourZSquaredMinus1 = mat.matrix[10] - mat.matrix[0] - mat.matrix[5];
-        float fourWSquaredMinus1 = mat.matrix[0] + mat.matrix[5] + mat.matrix[10];
-
-        int biggestIndex = 0;
-        float fourBiggestSquaredMinus1 = fourWSquaredMinus1;
-
-        if (fourXSquaredMinus1 > fourBiggestSquaredMinus1) {
-            fourBiggestSquaredMinus1 = fourXSquaredMinus1;
-            biggestIndex = 1;
-        }
-
-        if (fourYSquaredMinus1 > fourBiggestSquaredMinus1) {
-            fourBiggestSquaredMinus1 = fourYSquaredMinus1;
-            biggestIndex = 2;
-        }
-
-        if (fourZSquaredMinus1 > fourBiggestSquaredMinus1) {
-            fourBiggestSquaredMinus1 = fourZSquaredMinus1;
-            biggestIndex = 3;
-        }
-
-        float biggestVal = (float) (Math.sqrt(fourBiggestSquaredMinus1 + 1) * 0.5f);
-        float mult = 0.25f / biggestVal;
-
-        Quaternion res = new Quaternion();
-
-        switch (biggestIndex) {
-            case 0:
-                res.w = biggestVal;
-                res.x = (mat.matrix[6] - mat.matrix[9]) * mult;
-                res.y = (mat.matrix[8] - mat.matrix[2]) * mult;
-                res.z = (mat.matrix[1] - mat.matrix[4]) * mult;
-                break;
-
-            case 1:
-                res.w = (mat.matrix[6] - mat.matrix[9]) * mult;
-                res.x = biggestVal;
-                res.y = (mat.matrix[1] + mat.matrix[4]) * mult;
-                res.z = (mat.matrix[8] + mat.matrix[2]) * mult;
-                break;
-
-            case 2:
-                res.w = (mat.matrix[8] - mat.matrix[2]) * mult;
-                res.x = (mat.matrix[1] + mat.matrix[4]) * mult;
-                res.y = biggestVal;
-                res.z = (mat.matrix[6] + mat.matrix[9]) * mult;
-                break;
-
-            case 3:
-                res.w = (mat.matrix[1] - mat.matrix[4]) * mult;
-                res.x = (mat.matrix[8] + mat.matrix[2]) * mult;
-                res.y = (mat.matrix[6] + mat.matrix[9]) * mult;
-                res.z = biggestVal;
-                break;
-        }
-
-        return toQuatNew(res);
-    }
-
-
     public static Mat4 translate(Mat4 m, Vec3 v) {
         return toMat(translate(toMatNew(m), toVec3new(v)));
     }
@@ -133,37 +68,6 @@ public class Glm {
         result.setColumn(3, mat.getColumn(3));
 
         return result;
-    }
-
-
-    public static Matrix4f mat4Cast(Quaternionf quatNew) {
-        Quaternion quat = toQuat(quatNew);
-        //  Converts this quaternion to a rotation matrix.
-        //  | 1 - 2(y^2 + z^2)	2(xy + wz)			2(xz - wy)			0  |
-        //  | 2(xy - wz)		1 - 2(x^2 + z^2)	2(yz + wx)			0  |
-        //  | 2(xz + wy)		2(yz - wx)			1 - 2(x^2 + y^2)	0  |
-        //  | 0					0					0					1  |
-
-        Mat4 res = new Mat4(0.0f);
-
-        res.matrix[0] = 1 - 2 * quat.y * quat.y - 2 * quat.z * quat.z;
-        res.matrix[1] = 2 * quat.x * quat.y + 2 * quat.w * quat.z;
-        res.matrix[2] = 2 * quat.x * quat.z - 2 * quat.w * quat.y;
-
-        res.matrix[4] = 2 * quat.x * quat.y - 2 * quat.w * quat.z;
-        res.matrix[5] = 1 - 2 * quat.x * quat.x - 2 * quat.z * quat.z;
-        res.matrix[6] = 2 * quat.y * quat.z + 2 * quat.w * quat.x;
-
-        res.matrix[8] = 2 * quat.x * quat.z + 2 * quat.w * quat.y;
-        res.matrix[9] = 2 * quat.y * quat.z - 2 * quat.w * quat.x;
-        res.matrix[10] = 1 - 2 * quat.x * quat.x - 2 * quat.y * quat.y;
-
-        res.matrix[12] = 0.0f;
-        res.matrix[13] = 0.0f;
-        res.matrix[14] = 0.0f;
-        res.matrix[15] = 1.0f;
-
-        return toMatNew(res);
     }
 
 

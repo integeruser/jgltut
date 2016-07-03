@@ -233,7 +233,7 @@ public class MousePoles {
             translateMat.m30(objectData.position.x);
             translateMat.m31(objectData.position.y);
             translateMat.m32(objectData.position.z);
-            return translateMat.mul(Glm.mat4Cast(objectData.orientation));
+            return translateMat.mul(objectData.orientation.get(new Matrix4f()));
         }
 
         ////////////////////////////////
@@ -255,7 +255,8 @@ public class MousePoles {
             }
 
             if (viewProvider != null) {
-                Quaternionf viewQuat = Glm.quatCast(viewProvider.calcMatrix());
+                Quaternionf viewQuat = new Quaternionf();
+                viewProvider.calcMatrix().getNormalizedRotation(viewQuat);
                 Quaternionf invViewQuat = new Quaternionf(viewQuat).conjugate();
 
                 Quaternionf tmp = new Quaternionf(invViewQuat).mul(rot);
@@ -497,7 +498,7 @@ public class MousePoles {
             Quaternionf angleAxis = new Quaternionf().setAngleAxis((float) Math.toRadians(currView.degSpinRotation), 0.0f, 0.0f, 1.0f);
             Quaternionf fullRotation = angleAxis.mul(currView.orient);
 
-            mat.mul(Glm.mat4Cast(fullRotation));
+            mat.mul(fullRotation.get(new Matrix4f()));
 
             // Translate the world by the negation of the lookat point, placing the origin at the lookat point.
             mat = Glm.translate(mat, new Vector3f(currView.targetPos).negate());
@@ -652,7 +653,8 @@ public class MousePoles {
 
         private void offsetTargetPos(Vector3f cameraOffset, float lastFrameDuration) {
             Matrix4f currMat = calcMatrix();
-            Quaternionf orientation = Glm.quatCast(currMat);
+            Quaternionf orientation = new Quaternionf();
+            currMat.getNormalizedRotation(orientation);
 
             Quaternionf invOrient = new Quaternionf(orientation).conjugate();
             Vector3f worldOffset = invOrient.transform(new Vector3f(cameraOffset));

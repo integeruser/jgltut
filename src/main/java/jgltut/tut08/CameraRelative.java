@@ -126,7 +126,7 @@ public class CameraRelative extends LWJGLWindow {
         {
             currMatrix.pushMatrix();
             currMatrix.translate(camTarget);
-            currMatrix.mul(Glm.mat4Cast(orientation));
+            currMatrix.mul(orientation.get(new Matrix4f()));
             currMatrix.rotateX(-90.0f);
 
             // Set the base color for this object.
@@ -294,7 +294,8 @@ public class CameraRelative extends LWJGLWindow {
                 final Vector3f camPos = resolveCamPosition();
                 final Matrix4f camMat = calcLookAtMatrix(camPos, camTarget, new Vector3f(0.0f, 1.0f, 0.0f));
 
-                Quaternionf viewQuat = Glm.quatCast(camMat);
+                Quaternionf viewQuat = new Quaternionf();
+                camMat.getNormalizedRotation(viewQuat);
                 Quaternionf invViewQuat = new Quaternionf(viewQuat).conjugate();
 
                 final Quaternionf worldQuat = invViewQuat.mul(offset.mul(viewQuat));

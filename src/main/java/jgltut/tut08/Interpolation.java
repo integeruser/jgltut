@@ -298,7 +298,7 @@ public class Interpolation extends LWJGLWindow {
     private Quaternionf lerp(Quaternionf v0, Quaternionf v1, float alpha) {
         Vector4f start = vectorize(v0);
         Vector4f end = vectorize(v1);
-        Vector4f interp = Glm.mix(start, end, alpha);
+        Vector4f interp = new Vector4f(start).lerp(end, alpha);
 
         System.out.printf("alpha: %f, (%f, %f, %f, %f)\n", alpha, interp.w, interp.x, interp.y, interp.z);
 

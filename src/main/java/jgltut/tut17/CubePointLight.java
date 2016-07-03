@@ -12,8 +12,6 @@ import jgltut.jglsdk.glimg.ImageSet;
 import jgltut.jglsdk.glimg.ImageSet.Dimensions;
 import jgltut.jglsdk.glimg.ImageSet.SingleImage;
 import jgltut.jglsdk.glimg.TextureGenerator;
-import jgltut.jglsdk.glm.Glm;
-import jgltut.jglsdk.glm.Quaternion;
 import jgltut.jglsdk.glutil.MousePoles.*;
 import org.joml.*;
 import org.lwjgl.BufferUtils;

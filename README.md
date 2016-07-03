@@ -1,5 +1,5 @@
 # Learning Modern 3D Graphics Programming with LWJGL 3 and JOML
-This project is a port of *[Learning Modern 3D Graphics Programming](https://web.archive.org/web/20150225192611/http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using [LWJGL](https://www.lwjgl.org/) and [JOML](http://joml-ci.github.io/JOML/), distributed in the hope that it will be useful. The original project, named `gltut`, can be found [here](https://bitbucket.org/alfonse/gltut/wiki/Home). Since it is needed by the tutorials, this repository also includes a partial port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)* (`glsdk` for short), which contains a DDS texture loader and other useful stuff.  
+This project is a port of *[Learning Modern 3D Graphics Programming](https://web.archive.org/web/20150225192611/http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using [LWJGL](https://www.lwjgl.org/) and [JOML](http://joml-ci.github.io/JOML/), distributed in the hope that it will be useful. The original project, named `gltut`, can be found [here](https://bitbucket.org/alfonse/gltut/wiki/Home). Since it is needed by the tutorials, this repository also includes a partial port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)*, named `glsdk`, which contains a DDS texture loader and other useful stuff.  
 
 To try the tutorials without building the source code, you can download the runnable JAR included in the [Releases](https://github.com/integeruser/jgltut/releases) section. Many tutorials print messages to console: run the JAR from the command line with `java -jar jgltut.jar` to view the output (also useful in case of errors).
 
@@ -22,18 +22,17 @@ Create a new Java project using your favorite IDE, then:
 
 1. Import the source code of this repository;
 2. Add `lwjgl.jar` to the classpath and link the LWJGL native libraries, as explained [here](https://www.lwjgl.org/guide);
-3. Import the source code of the JOML library.
+3. Import the source code of the JOML library (or, alternatively, build yourself a `joml.jar` and add it to the classpath as in the previous step).
 
-Finally, run the `main` method of the first tutorial `jgltut.tut01.Tut1` and check the output in the console window. If no error messages appear, then you can start playing with the other tutorials by running the `main` method of `TutorialChooser.java`. To quit any tutorial simply press `ESC`.
+Finally, run the `main` method of the first tutorial `org.jgltut.tut01.Tut1.java` and check the output in the console window. If your graphics card does not meet the minimum requirements (checked using the LWJGL helper `GL.getCapabilities().OpenGL33`), the message `You must have at least OpenGL 3.3 to run this tutorial.` will appear; otherwise, you can start playing with the other tutorials by running the `main` method of `org.jgltut.TutorialChooser.java`. To quit any tutorial simply press `ESC`.
 
 
 ## Notes
-I decided to keep the ported code as similar as possible to the original C++ code, despite I would have done some things differently; hence, variables and functions are almost identical to their counterparts in the original projects. I also decided to keep the same project layout:
+I decided to keep the ported code as similar as possible to the original C++ code, despite I would have done some things differently; hence, variables and functions are almost identical to their counterpart in the original projects. I also decided to keep the same directory layout:
 ```
 jgltut/
 |-- data/
 |-- framework/
-|-- jglsdk/
 |-- tut01/
 |------ Tut1.java
 |-- tut02/
@@ -50,17 +49,21 @@ jgltut/
 |------ ProjectedLight.java
 |-- LWJGLWindow.java
 |-- TutorialChooser.java
-```
-Each tutorial loads the files it needs from the global `data` folder or from its own `data` folder. The `framework` package contains utility code needed by multiple tutorials. The `jglsdk` package contains the port of the `glsdk` project. The class `LWJGLWindow.java` is used to create and display a LWJGL window, and `TutorialChooser.java` is a handy program for quickly executing the various tutorials.  
-At first, the code may appear difficult to read, but after a bit of reading you will realize that it is well-grouped into logical sections. I suggest you to start by skimming through the code with methods and inner classes folded. Don't get lost in the details of the `jglsdk` module (which is quite big and boring), and remember that the interesting code is the one contained in the tutorials.
 
-If your graphics card does not meet the minimum requirements, running any tutorial will print to the console the message `You must have at least OpenGL 3.3 to run this tutorial.`. The requirements are checked in `LWJGLWindow.java` using the LWJGL function `GL.getCapabilities().OpenGL33`.
+jglsdk/
+|-- glimg/
+|-- glm/
+|-- glutil/
+```
+Each tutorial loads the files it needs from the global `org.jgltut.data` folder or from its own `data` folder. The `org.jgltut.framework` package contains utility code needed by multiple tutorials.
+
+At first, the code may appear difficult to read, but after a bit of reading you will realize that it is well-grouped into logical sections. I suggest you to start by skimming through the code with methods and inner classes folded. Don't get lost in the details of the `org.jglsdk` module which contains only utility classes.
 
 I can't dedicate much time to this project anymore, but in the future I will probably:
 
 - keep refactoring code I don't like;
 - rework some parts of `jglsdk`;
-- rework the `TutorialChooser`.
+- rework `org.jgltut.TutorialChooser.java`.
 
 
 ## Credits

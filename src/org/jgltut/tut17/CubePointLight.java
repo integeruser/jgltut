@@ -8,6 +8,8 @@ import org.jglsdk.glimg.ImageSet.SingleImage;
 import org.jglsdk.glimg.TextureGenerator;
 import org.jglsdk.glutil.MousePoles.*;
 import org.jgltut.LWJGLWindow;
+import org.jgltut.commons.LightBlock;
+import org.jgltut.commons.PerLight;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.*;
 import org.jgltut.framework.Scene.SceneNode;
@@ -488,53 +490,6 @@ public class CubePointLight extends LWJGLWindow {
 
     private int lightUniformBuffer;
     private UniformIntBinder lightNumBinder;
-
-    private class PerLight implements Bufferable<FloatBuffer> {
-        static final int SIZE = 4 * (4 + 4);
-
-        Vector4f cameraSpaceLightPos;
-        Vector4f lightIntensity;
-
-        @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            buffer.put(cameraSpaceLightPos.x);
-            buffer.put(cameraSpaceLightPos.y);
-            buffer.put(cameraSpaceLightPos.z);
-            buffer.put(cameraSpaceLightPos.w);
-            buffer.put(lightIntensity.x);
-            buffer.put(lightIntensity.y);
-            buffer.put(lightIntensity.z);
-            buffer.put(lightIntensity.w);
-            return buffer;
-        }
-    }
-
-    private class LightBlock implements Bufferable<FloatBuffer> {
-        static final int MAX_NUMBER_OF_LIGHTS = 4;
-        static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
-
-        Vector4f ambientIntensity;
-        float lightAttenuation;
-        float maxIntensity;
-        float padding[] = new float[2];
-        PerLight lights[] = new PerLight[MAX_NUMBER_OF_LIGHTS];
-
-        @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            buffer.put(ambientIntensity.x);
-            buffer.put(ambientIntensity.y);
-            buffer.put(ambientIntensity.z);
-            buffer.put(ambientIntensity.w);
-            buffer.put(lightAttenuation);
-            buffer.put(maxIntensity);
-            buffer.put(padding);
-            for (PerLight light : lights) {
-                if (light == null) break;
-                light.get(buffer);
-            }
-            return buffer;
-        }
-    }
 
 
     private void buildLights(Matrix4f camMatrix) {

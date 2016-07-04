@@ -1,6 +1,7 @@
 package org.jgltut.tut16;
 
 import org.jgltut.LWJGLWindow;
+import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
@@ -16,7 +17,6 @@ import org.jglsdk.glutil.MousePoles.MouseButtons;
 import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;
 import org.jglsdk.glutil.MousePoles.ViewScale;
-import org.jgltut.tut16.LightEnv.LightBlock;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;

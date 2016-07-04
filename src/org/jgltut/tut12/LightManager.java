@@ -1,5 +1,7 @@
 package org.jgltut.tut12;
 
+import org.jgltut.commons.LightBlock;
+import org.jgltut.commons.PerLight;
 import org.jgltut.framework.Interpolators.ConstVelLinearInterpolatorVec3;
 import org.jgltut.framework.Interpolators.WeightedLinearInterpolatorFloat;
 import org.jgltut.framework.Interpolators.WeightedLinearInterpolatorVec4;
@@ -202,52 +204,6 @@ class LightManager {
     ////////////////////////////////
     private static final int NUMBER_OF_LIGHTS = 4;
     private static final int NUMBER_OF_POINT_LIGHTS = NUMBER_OF_LIGHTS - 1;
-
-    class PerLight implements Bufferable<FloatBuffer> {
-        static final int SIZE = 4 * (4 + 4);
-
-        Vector4f cameraSpaceLightPos;
-        Vector4f lightIntensity;
-
-        @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            buffer.put(cameraSpaceLightPos.x);
-            buffer.put(cameraSpaceLightPos.y);
-            buffer.put(cameraSpaceLightPos.z);
-            buffer.put(cameraSpaceLightPos.w);
-            buffer.put(lightIntensity.x);
-            buffer.put(lightIntensity.y);
-            buffer.put(lightIntensity.z);
-            buffer.put(lightIntensity.w);
-            return buffer;
-        }
-    }
-
-    class LightBlock implements Bufferable<FloatBuffer> {
-        static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * NUMBER_OF_LIGHTS;
-
-        Vector4f ambientIntensity;
-        float lightAttenuation;
-        float maxIntensity;
-        float padding[] = new float[2];
-        PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
-
-        @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            buffer.put(ambientIntensity.x);
-            buffer.put(ambientIntensity.y);
-            buffer.put(ambientIntensity.z);
-            buffer.put(ambientIntensity.w);
-            buffer.put(lightAttenuation);
-            buffer.put(maxIntensity);
-            buffer.put(padding);
-            for (PerLight light : lights) {
-                if (light == null) break;
-                light.get(buffer);
-            }
-            return buffer;
-        }
-    }
 
     class LightBlockHDR implements Bufferable<FloatBuffer> {
         static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * NUMBER_OF_LIGHTS;

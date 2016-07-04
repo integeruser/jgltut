@@ -1,16 +1,15 @@
 package org.jgltut.tut12;
 
 import org.jgltut.LWJGLWindow;
+import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.MousePole;
 import org.jgltut.framework.Timer;
-import org.jgltut.Bufferable;
 import org.jglsdk.glutil.MousePoles.MouseButtons;
 import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;
 import org.jglsdk.glutil.MousePoles.ViewScale;
-import org.jgltut.tut12.LightManager.LightBlock;
 import org.jgltut.tut12.LightManager.SunlightValue;
 import org.jgltut.tut12.LightManager.TimerTypes;
 import org.jgltut.tut12.Scene.LightingProgramTypes;

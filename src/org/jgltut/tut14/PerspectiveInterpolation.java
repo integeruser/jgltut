@@ -24,8 +24,6 @@ import static org.lwjgl.opengl.GL20.*;
  * <p>
  * S        - switch meshes.
  * P        - toggle between perspective-correct interpolation/window-space linear interpolation.
- *
- * @author integeruser
  */
 public class PerspectiveInterpolation extends LWJGLWindow {
     public static void main(String[] args) {

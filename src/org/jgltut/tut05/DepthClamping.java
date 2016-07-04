@@ -27,8 +27,6 @@ import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2005.html
  * <p>
  * SPACE    - toggle depth clamping on/off.
- *
- * @author integeruser
  */
 public class DepthClamping extends LWJGLWindow {
     public static void main(String[] args) {

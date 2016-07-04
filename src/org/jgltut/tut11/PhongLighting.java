@@ -53,8 +53,6 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * camera view.
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
- *
- * @author integeruser
  */
 public class PhongLighting extends LWJGLWindow {
     public static void main(String[] args) {

@@ -5,8 +5,6 @@ import org.jglsdk.glm.Glm;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author integeruser
  */
 public class Timer {
     public enum Type {

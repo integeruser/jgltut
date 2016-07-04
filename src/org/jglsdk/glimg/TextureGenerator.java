@@ -32,8 +32,6 @@ import static org.lwjgl.opengl.GL40.GL_TEXTURE_CUBE_MAP_ARRAY;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author integeruser
  */
 public class TextureGenerator {
     public static class ForcedConvertFlags {

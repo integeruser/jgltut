@@ -8,8 +8,6 @@ import org.jglsdk.glimg.ImageSet.Dimensions;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author integeruser
  */
 class Util {
     static <T> boolean isOneOfThese(T testValue, T[] testArray) {

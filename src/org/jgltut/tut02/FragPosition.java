@@ -20,8 +20,6 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * Part I. The Basics
  * Chapter 2. Playing with Colors
  * http://www.arcsynthesis.org/gltut/Basics/Tutorial%2002.html
- *
- * @author integeruser
  */
 public class FragPosition extends LWJGLWindow {
     public static void main(String[] args) {

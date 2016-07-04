@@ -57,8 +57,6 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * RIGHT  CLICKING and DRAGGING + ALT   - change the right camera's up direction.
  * WHEEL  SCROLLING                     - move the left camera and the right camera  closer to it's target point or
  * farther away.
- *
- * @author integeruser
  */
 public class DoubleProjection extends LWJGLWindow {
     public static void main(String[] args) {

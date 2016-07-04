@@ -30,8 +30,6 @@ import static org.lwjgl.opengl.GL20.*;
  * W,S      - control the outer gimbal.
  * A,D      - control the middle gimbal.
  * Q,E      - control the inner gimbal.
- *
- * @author integeruser
  */
 public class QuaternionYPR extends LWJGLWindow {
     public static void main(String[] args) {

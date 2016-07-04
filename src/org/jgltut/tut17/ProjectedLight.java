@@ -69,8 +69,6 @@ import static org.lwjgl.opengl.GL33.*;
  * the current camera view.
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the projected flashlight.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
- *
- * @author integeruser
  */
 public class ProjectedLight extends LWJGLWindow {
     public static void main(String[] args) {

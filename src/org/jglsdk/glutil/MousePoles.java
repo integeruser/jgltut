@@ -11,8 +11,6 @@ import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author integeruser
  */
 public class MousePoles {
     public enum MouseButtons {

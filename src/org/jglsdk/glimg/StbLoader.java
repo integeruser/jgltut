@@ -11,8 +11,6 @@ import java.io.InputStream;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author integeruser
  */
 public class StbLoader {
     private static ImageSet buildImageSetFromIntegerData(BufferedImage bufferedImage, int width, int height, int numComponents) {

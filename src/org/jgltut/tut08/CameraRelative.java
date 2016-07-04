@@ -35,8 +35,6 @@ import static org.lwjgl.opengl.GL20.*;
  * camera in smaller increments.
  * J,L      - move the camera left and right around the center point. Holding SHIFT with these keys will move the
  * camera in smaller increments.
- *
- * @author integeruser
  */
 public class CameraRelative extends LWJGLWindow {
     public static void main(String[] args) {

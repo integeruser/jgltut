@@ -24,8 +24,6 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * Part II. Positioning
  * Chapter 6. Objects in Motion
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2006.html
- *
- * @author integeruser
  */
 public class Scale extends LWJGLWindow {
     public static void main(String[] args) {

@@ -21,8 +21,6 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * Part II. Positioning
  * Chapter 5. Objects in Depth
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2005.html
- *
- * @author integeruser
  */
 public class OverlapNoDepth extends LWJGLWindow {
     public static void main(String[] args) {

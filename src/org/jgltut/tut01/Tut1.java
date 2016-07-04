@@ -20,8 +20,6 @@ import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
  * Part I. The Basics
  * Chapter 1. Hello, Triangle!
  * http://www.arcsynthesis.org/gltut/Basics/Tutorial%2001.html
- *
- * @author integeruser
  */
 public class Tut1 extends LWJGLWindow {
     public static void main(String[] args) {

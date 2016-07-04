@@ -40,8 +40,6 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * be much slower.
  * <p>
  * SPACE    - toggle the appearance of an object indicating the position of the camera point.
- *
- * @author integeruser
  */
 public class WorldWithUBO extends LWJGLWindow {
     public static void main(String[] args) {

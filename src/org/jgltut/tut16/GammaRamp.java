@@ -40,8 +40,6 @@ import static org.lwjgl.opengl.GL33.*;
  * <p>
  * 1    - switch the top texture between lRGB and sRGB.
  * 2    - switch the bottom texture between lRGB and sRGB.
- *
- * @author integeruser
  */
 public class GammaRamp extends LWJGLWindow {
     public static void main(String[] args) {

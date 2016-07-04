@@ -17,8 +17,6 @@ import java.util.HashMap;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author integeruser
  */
 class LightManager {
     LightManager() {

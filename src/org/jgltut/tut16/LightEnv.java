@@ -26,8 +26,6 @@ import java.util.Scanner;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author integeruser, xire-
  */
 class LightEnv {
     LightEnv(String envFileName) {

@@ -58,8 +58,6 @@ import static org.lwjgl.opengl.GL33.*;
  * camera view.
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
- *
- * @author integeruser
  */
 public class MaterialTexture extends LWJGLWindow {
     public static void main(String[] args) {

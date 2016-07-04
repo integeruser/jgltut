@@ -46,8 +46,6 @@ import static org.lwjgl.opengl.GL33.*;
  * Y            - toggle between plane/corridor mesh.
  * P            - toggle pausing.
  * 1,2,3,4,5,6  - switch filtering technique.
- *
- * @author integeruser
  */
 public class ManyImages extends LWJGLWindow {
     public static void main(String[] args) {

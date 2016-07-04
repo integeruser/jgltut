@@ -3,8 +3,6 @@ package org.jglsdk.glm;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author integeruser
  */
 public class Glm {
     public static float clamp(float x, float min, float max) {

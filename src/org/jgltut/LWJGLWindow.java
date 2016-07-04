@@ -19,8 +19,6 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author integeruser
  */
 public abstract class LWJGLWindow {
     protected static final int FLOAT_SIZE = Float.SIZE / Byte.SIZE;

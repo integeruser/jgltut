@@ -3,8 +3,6 @@ package org.jglsdk.glimg;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author integeruser
  */
 class ImageFormat {
     enum PixelDataType {

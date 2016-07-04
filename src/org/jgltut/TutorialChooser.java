@@ -57,8 +57,6 @@ import java.awt.*;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author integeruser
  */
 public class TutorialChooser extends JPanel implements TreeSelectionListener {
     public static void main(String[] args) {

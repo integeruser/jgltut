@@ -65,8 +65,6 @@ import static org.lwjgl.opengl.GL33.*;
  * LEFT   CLICKING and DRAGGING + CTRL  - rotate the camera around the target point, either horizontally or vertically.
  * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
- *
- * @author integeruser
  */
 public class GammaLandscape extends LWJGLWindow {
     public static void main(String[] args) {

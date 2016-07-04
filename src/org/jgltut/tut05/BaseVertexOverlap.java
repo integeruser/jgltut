@@ -22,8 +22,6 @@ import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
  * Part II. Positioning
  * Chapter 5. Objects in Depth
  * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2005.html
- *
- * @author integeruser
  */
 public class BaseVertexOverlap extends LWJGLWindow {
     public static void main(String[] args) {

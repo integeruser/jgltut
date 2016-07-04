@@ -30,8 +30,6 @@ import static org.lwjgl.opengl.GL20.*;
  * <p>
  * SPACE            - toggles between regular linear interpolation and slerp.
  * Q,W,E,R,T,Y,U    - cause the ship to interpolate to a new orientation.
- *
- * @author integeruser
  */
 public class Interpolation extends LWJGLWindow {
     public static void main(String[] args) {

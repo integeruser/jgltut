@@ -37,8 +37,6 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * Finger                 Q               E
  * <p>
  * SPACE   - print current armature position.
- *
- * @author integeruser
  */
 public class Hierarchy extends LWJGLWindow {
     public static void main(String[] args) {

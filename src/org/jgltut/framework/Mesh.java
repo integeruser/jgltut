@@ -20,8 +20,6 @@ import static org.lwjgl.opengl.GL30.*;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author xire
  */
 public class Mesh {
     public Mesh(String filename) {

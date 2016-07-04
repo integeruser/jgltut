@@ -8,8 +8,6 @@ import java.util.ArrayList;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author integeruser
  */
 public class ImageSet {
     public static class Dimensions {

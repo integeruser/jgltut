@@ -15,8 +15,6 @@ import static org.lwjgl.opengl.GL20.*;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
- *
- * @author integeruser
  */
 public class SceneBinders {
     public static void associateUniformWithNodes(ArrayList<SceneNode> nodes, UniformBinderBase binder, String unifName) {

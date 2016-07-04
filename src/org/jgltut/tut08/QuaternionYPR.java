@@ -94,7 +94,7 @@ public class QuaternionYPR extends LWJGLWindow {
 
         // Set the base color for this object.
         glUniform4f(baseColorUnif, 1.0f, 1.0f, 1.0f, 1.0f);
-        glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.get(Matrix4fBuffer));
+        glUniformMatrix4fv(modelToCameraMatrixUnif, false, currMatrix.get(mat4Buffer));
 
         ship.render("tint");
 
@@ -107,7 +107,7 @@ public class QuaternionYPR extends LWJGLWindow {
         cameraToClipMatrix.m11(frustumScale);
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(Matrix4fBuffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(mat4Buffer));
         glUseProgram(0);
 
         glViewport(0, 0, w, h);
@@ -145,7 +145,6 @@ public class QuaternionYPR extends LWJGLWindow {
     private int baseColorUnif;
 
     private Matrix4f cameraToClipMatrix = new Matrix4f();
-    private FloatBuffer Matrix4fBuffer = BufferUtils.createFloatBuffer(16);
 
     private final float frustumScale = calcFrustumScale(20.0f);
 
@@ -169,7 +168,7 @@ public class QuaternionYPR extends LWJGLWindow {
         cameraToClipMatrix.m32((2 * zFar * zNear) / (zNear - zFar));
 
         glUseProgram(theProgram);
-        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(Matrix4fBuffer));
+        glUniformMatrix4fv(cameraToClipMatrixUnif, false, cameraToClipMatrix.get(mat4Buffer));
         glUseProgram(0);
     }
 

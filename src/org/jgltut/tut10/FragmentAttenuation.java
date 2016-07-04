@@ -1,7 +1,6 @@
 package org.jgltut.tut10;
 
 import org.jglsdk.glutil.MousePoles.*;
-import org.jgltut.Bufferable;
 import org.jgltut.LWJGLWindow;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.commons.UnProjectionBlock;
@@ -10,14 +9,11 @@ import org.jgltut.framework.Mesh;
 import org.jgltut.framework.MousePole;
 import org.jgltut.framework.Timer;
 import org.joml.*;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -382,13 +378,6 @@ public class FragmentAttenuation extends LWJGLWindow {
         int objectColorUnif;
         int modelToCameraMatrixUnif;
     }
-
-
-    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
-    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
-    private FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE);
-    private ByteBuffer unprojBuffer = BufferUtils.createByteBuffer(UnProjectionBlock.SIZE);
 
 
     private void initializePrograms() {

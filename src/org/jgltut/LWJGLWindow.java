@@ -1,5 +1,8 @@
 package org.jgltut;
 
+import org.jgltut.commons.LightBlock;
+import org.jgltut.commons.ProjectionBlock;
+import org.jgltut.commons.UnProjectionBlock;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.glfw.*;
@@ -8,6 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
@@ -39,6 +43,13 @@ public abstract class LWJGLWindow {
     protected float lastFrameDuration;
 
     private double lastFrameTimestamp;
+
+    protected FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
+    protected FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
+    protected FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
+    protected FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE);
+    protected ByteBuffer unprojBuffer = BufferUtils.createByteBuffer(UnProjectionBlock.SIZE);
+    protected FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer(LightBlock.SIZE);
 
     ////////////////////////////////
     public final void start(int width, int height) {

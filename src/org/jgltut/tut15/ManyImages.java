@@ -197,10 +197,6 @@ public class ManyImages extends LWJGLWindow {
     }
 
 
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
-    private FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE);
-
-
     private void initializePrograms() {
         program = loadProgram("PT.vert", "Tex.frag");
     }

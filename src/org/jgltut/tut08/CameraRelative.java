@@ -8,10 +8,8 @@ import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -214,7 +212,6 @@ public class CameraRelative extends LWJGLWindow {
     private int baseColorUnif;
 
     private Matrix4f cameraToClipMatrix = new Matrix4f();
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
     private final float frustumScale = calcFrustumScale(20.0f);
 

@@ -146,7 +146,6 @@ public class Hierarchy extends LWJGLWindow {
     private int cameraToClipMatrixUnif;
 
     private Matrix4f cameraToClipMatrix = new Matrix4f();
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
     private final float frustumScale = calcFrustumScale(45.0f);
 

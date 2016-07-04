@@ -117,9 +117,6 @@ public class PerspectiveInterpolation extends LWJGLWindow {
     }
 
 
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
-
-
     private void initializePrograms() {
         smoothInterp = loadProgram("SmoothVertexColors.vert", "SmoothVertexColors.frag");
         linearInterp = loadProgram("NoCorrectVertexColors.vert", "NoCorrectVertexColors.frag");

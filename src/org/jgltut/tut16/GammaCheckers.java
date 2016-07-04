@@ -218,10 +218,6 @@ public class GammaCheckers extends LWJGLWindow {
     }
 
 
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
-    private FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE);
-
-
     private void initializePrograms() {
         progNoGamma = loadProgram("PT.vert", "textureNoGamma.frag");
         progGamma = loadProgram("PT.vert", "textureGamma.frag");

@@ -7,10 +7,8 @@ import org.jglsdk.glm.Glm;
 import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -287,8 +285,6 @@ public class WorldScene extends LWJGLWindow {
         int cameraToClipMatrixUnif;
         int baseColorUnif;
     }
-
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
 
     private void initializeProgram() {

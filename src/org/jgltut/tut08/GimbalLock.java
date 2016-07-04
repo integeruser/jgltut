@@ -6,10 +6,8 @@ import org.jgltut.framework.Mesh;
 import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Vector4f;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -151,7 +149,6 @@ public class GimbalLock extends LWJGLWindow {
     private int baseColorUnif;
 
     private Matrix4f cameraToClipMatrix = new Matrix4f();
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
     private final float frustumScale = calcFrustumScale(20.0f);
 

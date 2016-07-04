@@ -134,7 +134,6 @@ public class Interpolation extends LWJGLWindow {
     private int baseColorUnif;
 
     private Matrix4f cameraToClipMatrix = new Matrix4f();
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
 
     private final float frustumScale = calcFrustumScale(20.0f);
 

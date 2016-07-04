@@ -234,12 +234,6 @@ public class BasicLighting extends LWJGLWindow {
     }
 
 
-    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
-    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
-    private FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE);
-
-
     private void initializeProgram() {
         whiteDiffuseColor = loadProgram("DirVertexLighting_PN.vert", "ColorPassthrough.frag");
         vertexDiffuseColor = loadProgram("DirVertexLighting_PCN.vert", "ColorPassthrough.frag");

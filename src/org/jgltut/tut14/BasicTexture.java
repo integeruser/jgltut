@@ -344,13 +344,6 @@ public class BasicTexture extends LWJGLWindow {
     }
 
 
-    private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
-    private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
-    private FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE);
-    private FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer(LightBlock.SIZE);
-
-
     private void initializePrograms() {
         litShaderProg = loadStandardProgram("PN.vert", "ShaderGaussian.frag");
         litTextureProg = loadStandardProgram("PN.vert", "TextureGaussian.frag");

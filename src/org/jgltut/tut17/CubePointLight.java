@@ -323,11 +323,6 @@ public class CubePointLight extends LWJGLWindow {
     private int unlitObjectColorUnif;
 
 
-    private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
-    private FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE);
-    private final FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer(LightBlock.SIZE);
-
-
     private void loadAndSetupScene() {
         scene = new Scene("projCube_scene.xml");
 

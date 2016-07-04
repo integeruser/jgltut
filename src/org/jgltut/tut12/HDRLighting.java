@@ -5,7 +5,6 @@ import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.MousePole;
 import org.jgltut.framework.Timer;
-import org.jgltut.Bufferable;
 import org.jglsdk.glutil.MousePoles.MouseButtons;
 import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;
@@ -17,13 +16,11 @@ import org.jgltut.tut12.LightManager.TimerTypes;
 import org.jgltut.tut12.Scene.LightingProgramTypes;
 import org.jgltut.tut12.Scene.ProgramData;
 import org.joml.*;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;

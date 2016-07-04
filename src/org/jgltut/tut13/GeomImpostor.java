@@ -8,7 +8,7 @@ import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.MousePole;
 import org.jgltut.framework.Timer;
-import org.jgltut.Bufferable;
+import org.jgltut.commons.Bufferable;
 import org.jglsdk.glutil.MousePoles.MouseButtons;
 import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;

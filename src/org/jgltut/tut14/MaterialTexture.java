@@ -5,7 +5,7 @@ import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.PerLight;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.*;
-import org.jgltut.Bufferable;
+import org.jgltut.commons.Bufferable;
 import org.jglsdk.glimg.DdsLoader;
 import org.jglsdk.glimg.ImageSet;
 import org.jglsdk.glimg.ImageSet.Dimensions;
@@ -19,7 +19,6 @@ import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;

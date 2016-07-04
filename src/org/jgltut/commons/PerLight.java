@@ -1,6 +1,5 @@
 package org.jgltut.commons;
 
-import org.jgltut.Bufferable;
 import org.joml.Vector4f;
 
 import java.nio.FloatBuffer;

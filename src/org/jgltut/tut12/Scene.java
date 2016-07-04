@@ -1,7 +1,7 @@
 package org.jgltut.tut12;
 
 import org.jgltut.framework.Mesh;
-import org.jgltut.Bufferable;
+import org.jgltut.commons.Bufferable;
 import org.joml.Matrix3f;
 import org.joml.MatrixStackf;
 import org.joml.Vector3f;

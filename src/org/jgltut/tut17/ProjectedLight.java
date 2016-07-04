@@ -9,7 +9,6 @@ import org.jgltut.framework.Scene.SceneNode;
 import org.jgltut.framework.SceneBinders.UniformIntBinder;
 import org.jgltut.framework.SceneBinders.UniformMat4Binder;
 import org.jgltut.framework.SceneBinders.UniformVec3Binder;
-import org.jgltut.Bufferable;
 import org.jglsdk.glimg.DdsLoader;
 import org.jglsdk.glimg.ImageSet;
 import org.jglsdk.glimg.TextureGenerator;

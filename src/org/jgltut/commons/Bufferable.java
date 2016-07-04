@@ -1,4 +1,4 @@
-package org.jgltut;
+package org.jgltut.commons;
 
 import java.nio.Buffer;
 

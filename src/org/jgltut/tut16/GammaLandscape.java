@@ -6,7 +6,6 @@ import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.MousePole;
-import org.jgltut.Bufferable;
 import org.jglsdk.glimg.DdsLoader;
 import org.jglsdk.glimg.ImageSet;
 import org.jglsdk.glimg.ImageSet.Dimensions;
@@ -18,13 +17,11 @@ import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;
 import org.jglsdk.glutil.MousePoles.ViewScale;
 import org.joml.*;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;

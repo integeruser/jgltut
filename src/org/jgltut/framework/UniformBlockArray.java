@@ -1,6 +1,6 @@
 package org.jgltut.framework;
 
-import org.jgltut.Bufferable;
+import org.jgltut.commons.Bufferable;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;

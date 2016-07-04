@@ -7,7 +7,6 @@ import org.jgltut.framework.Interpolators.ConstVelLinearInterpolatorVec3;
 import org.jgltut.framework.Interpolators.WeightedLinearInterpolatorFloat;
 import org.jgltut.framework.Interpolators.WeightedLinearInterpolatorVec4;
 import org.jgltut.framework.Timer;
-import org.jgltut.Bufferable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -20,7 +19,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Scanner;
 

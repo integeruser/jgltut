@@ -99,7 +99,7 @@ public class GeomImpostor extends Tutorial {
 
         imposterVBO = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, imposterVBO);
-        glBufferData(GL_ARRAY_BUFFER, NUMBER_OF_SPHERES * 4 * FLOAT_SIZE, GL_STREAM_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, NUMBER_OF_SPHERES * 4 * Float.BYTES, GL_STREAM_DRAW);
 
         imposterVAO = glGenVertexArrays();
         glBindVertexArray(imposterVAO);
@@ -520,7 +520,7 @@ public class GeomImpostor extends Tutorial {
         Vector3f cameraPosition;
         float sphereRadius;
 
-        static final int SIZE = 3 * 4 + (1 * FLOAT_SIZE);
+        static final int SIZE = 3 * 4 + (1 * Float.BYTES);
 
         @Override
         public ByteBuffer get(ByteBuffer buffer) {

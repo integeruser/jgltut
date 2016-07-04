@@ -272,7 +272,7 @@ public class OverlapNoDepth extends Tutorial {
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
         final int numberOfVertices = 36;
-        int colorDataOffset = FLOAT_SIZE * 3 * numberOfVertices;
+        int colorDataOffset = Float.BYTES * 3 * numberOfVertices;
         glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, colorDataOffset);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 
@@ -284,8 +284,8 @@ public class OverlapNoDepth extends Tutorial {
         // Use the same buffer object previously bound to GL_ARRAY_BUFFER.
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        int posDataOffset = FLOAT_SIZE * 3 * (numberOfVertices / 2);
-        colorDataOffset += FLOAT_SIZE * 4 * (numberOfVertices / 2);
+        int posDataOffset = Float.BYTES * 3 * (numberOfVertices / 2);
+        colorDataOffset += Float.BYTES * 4 * (numberOfVertices / 2);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, posDataOffset);
         glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, colorDataOffset);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);

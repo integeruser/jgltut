@@ -25,8 +25,6 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  */
 public abstract class Tutorial {
-    protected static final int FLOAT_SIZE = Float.SIZE / Byte.SIZE;
-
     protected long window;
     protected GLFWKeyCallback keyCallback;
     protected GLFWMouseButtonCallback mouseCallback;
@@ -47,8 +45,8 @@ public abstract class Tutorial {
     protected FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
     protected FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
     protected FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
-    protected ByteBuffer projBuffer = BufferUtils.createByteBuffer(ProjectionBlock.SIZE_IN_BYTES);
-    protected ByteBuffer unprojBuffer = BufferUtils.createByteBuffer(UnProjectionBlock.SIZE_IN_BYTES);
+    protected ByteBuffer projBlockBuffer = BufferUtils.createByteBuffer(ProjectionBlock.SIZE_IN_BYTES);
+    protected ByteBuffer unProjBlockBuffer = BufferUtils.createByteBuffer(UnProjectionBlock.SIZE_IN_BYTES);
     protected ByteBuffer lightBlockBuffer = BufferUtils.createByteBuffer(LightBlock.SIZE_IN_BYTES);
 
     ////////////////////////////////

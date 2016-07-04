@@ -300,7 +300,7 @@ public class Hierarchy extends Tutorial {
         glEnableVertexAttribArray(colorAttrib);
         glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, false, 0, 0);
         final int numberOfVertices = 24;
-        int colorDataOffset = FLOAT_SIZE * 3 * numberOfVertices;
+        int colorDataOffset = Float.BYTES * 3 * numberOfVertices;
         glVertexAttribPointer(colorAttrib, 4, GL_FLOAT, false, 0, colorDataOffset);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 

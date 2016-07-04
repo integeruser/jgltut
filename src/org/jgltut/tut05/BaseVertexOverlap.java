@@ -41,7 +41,7 @@ public class BaseVertexOverlap extends Tutorial {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-        int colorDataOffset = FLOAT_SIZE * 3 * numberOfVertices;
+        int colorDataOffset = Float.BYTES * 3 * numberOfVertices;
         glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, colorDataOffset);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 

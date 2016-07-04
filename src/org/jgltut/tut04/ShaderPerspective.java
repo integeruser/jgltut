@@ -53,7 +53,7 @@ public class ShaderPerspective extends Tutorial {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
-        int colorData = (FLOAT_SIZE * vertexData.length) / 2;
+        int colorData = (Float.BYTES * vertexData.length) / 2;
         glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, colorData);
 
         glDrawArrays(GL_TRIANGLES, 0, 36);

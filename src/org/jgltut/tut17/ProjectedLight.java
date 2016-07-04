@@ -235,7 +235,7 @@ public class ProjectedLight extends Tutorial {
             projData.cameraToClipMatrix = persMatrix;
 
             glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-            glBufferData(GL_UNIFORM_BUFFER, projData.getAndFlip(projBuffer), GL_STREAM_DRAW);
+            glBufferData(GL_UNIFORM_BUFFER, projData.getAndFlip(projectionBlockBuffer), GL_STREAM_DRAW);
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
         }
 

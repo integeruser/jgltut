@@ -3,7 +3,7 @@ package org.jgltut.tut10;
 import org.jglsdk.glutil.MousePoles.*;
 import org.jgltut.Tutorial;
 import org.jgltut.commons.ProjectionBlock;
-import org.jgltut.commons.UnProjectionBlock;
+import org.jgltut.commons.UnprojectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.MousePole;
@@ -88,13 +88,13 @@ public class FragmentAttenuation extends Tutorial {
 
         unprojectionUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, unprojectionUniformBuffer);
-        glBufferData(GL_UNIFORM_BUFFER, UnProjectionBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, UnprojectionBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
 
         // Bind the static buffers.
         glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE_IN_BYTES);
 
         // Bind the static buffers.
-        glBindBufferRange(GL_UNIFORM_BUFFER, unprojectionBlockIndex, unprojectionUniformBuffer, 0, UnProjectionBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, unprojectionBlockIndex, unprojectionUniformBuffer, 0, UnprojectionBlock.SIZE_IN_BYTES);
 
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -298,14 +298,14 @@ public class FragmentAttenuation extends Tutorial {
         ProjectionBlock projData = new ProjectionBlock();
         projData.cameraToClipMatrix = persMatrix;
 
-        UnProjectionBlock unprojData = new UnProjectionBlock();
+        UnprojectionBlock unprojData = new UnprojectionBlock();
         unprojData.clipToCameraMatrix = new Matrix4f(persMatrix).invert();
         unprojData.windowSize = new Vector2i(w, h);
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.getAndFlip(projBuffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.getAndFlip(projectionBlockBuffer));
         glBindBuffer(GL_UNIFORM_BUFFER, unprojectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, unprojData.getAndFlip(unprojBuffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, unprojData.getAndFlip(unprojectionBlockBuffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);

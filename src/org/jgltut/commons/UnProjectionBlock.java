@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  */
-public class UnProjectionBlock implements Bufferable {
+public class UnprojectionBlock implements Bufferable {
     public static final int SIZE_IN_BYTES = Float.BYTES * (16) + Integer.BYTES * (2);
 
     public Matrix4f clipToCameraMatrix;

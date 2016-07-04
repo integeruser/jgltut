@@ -1,8 +1,9 @@
 package org.jgltut;
 
 import org.jgltut.commons.LightBlock;
+import org.jgltut.commons.MaterialBlock;
 import org.jgltut.commons.ProjectionBlock;
-import org.jgltut.commons.UnProjectionBlock;
+import org.jgltut.commons.UnprojectionBlock;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.glfw.*;
@@ -45,9 +46,10 @@ public abstract class Tutorial {
     protected FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
     protected FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
     protected FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
-    protected ByteBuffer projBlockBuffer = BufferUtils.createByteBuffer(ProjectionBlock.SIZE_IN_BYTES);
-    protected ByteBuffer unProjBlockBuffer = BufferUtils.createByteBuffer(UnProjectionBlock.SIZE_IN_BYTES);
+    protected ByteBuffer projectionBlockBuffer = BufferUtils.createByteBuffer(ProjectionBlock.SIZE_IN_BYTES);
+    protected ByteBuffer unprojectionBlockBuffer = BufferUtils.createByteBuffer(UnprojectionBlock.SIZE_IN_BYTES);
     protected ByteBuffer lightBlockBuffer = BufferUtils.createByteBuffer(LightBlock.SIZE_IN_BYTES);
+    protected ByteBuffer materialBlockBuffer = BufferUtils.createByteBuffer(MaterialBlock.SIZE_IN_BYTES);
 
     ////////////////////////////////
 

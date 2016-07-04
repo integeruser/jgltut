@@ -21,7 +21,6 @@ import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
  * <p>
  * Part II. Positioning
  * Chapter 5. Objects in Depth
- * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2005.html
  */
 public class DepthBuffer extends LWJGLWindow {
     public static void main(String[] args) {

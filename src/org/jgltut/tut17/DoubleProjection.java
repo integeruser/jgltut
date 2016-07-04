@@ -35,7 +35,6 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * <p>
  * Part IV. Texturing
  * Chapter 17. Spotlight on Textures
- * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2017.html
  * <p>
  * W,A,S,D  - move the camera forward/backwards and left/right, relative to the camera's current orientation. Holding
  * SHIFT with these keys will move in smaller increments.

@@ -36,7 +36,6 @@ import static org.lwjgl.opengl.GL33.*;
  * <p>
  * Part IV. Texturing
  * Chapter 16. Gamma and Textures
- * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2016.html
  * <p>
  * 1    - switch the top texture between lRGB and sRGB.
  * 2    - switch the bottom texture between lRGB and sRGB.

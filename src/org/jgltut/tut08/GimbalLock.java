@@ -22,7 +22,6 @@ import static org.lwjgl.opengl.GL20.*;
  * <p>
  * Part II. Positioning
  * Chapter 8. Getting Oriented
- * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2008.html
  * <p>
  * SPACE    - toggle drawing the gimbal rings.
  * W,S      - control the outer gimbal.

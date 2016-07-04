@@ -40,7 +40,6 @@ import static org.lwjgl.opengl.GL33.*;
  * <p>
  * Part IV. Texturing
  * Chapter 15. Many Images
- * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2015.html
  * <p>
  * SPACE        - toggle between loaded/constructed texture.
  * Y            - toggle between plane/corridor mesh.

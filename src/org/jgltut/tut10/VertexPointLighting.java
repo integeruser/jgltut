@@ -31,7 +31,6 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * <p>
  * Part III. Illumination
  * Chapter 10. Plane Lights
- * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2010.html
  * <p>
  * I,J,K,L  - control the light's position. Holding LEFT_SHIFT with these keys will move in smaller increments.
  * SPACE    - toggle between drawing the uncolored cylinder and the colored one.

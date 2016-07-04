@@ -32,7 +32,6 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * <p>
  * Part III. Illumination
  * Chapter 13. Lies and Impostors
- * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2013.html
  * <p>
  * W,A,S,D  - move the cameras forward/backwards and left/right, relative to the camera's current orientation. Holding
  * SHIFT with these keys will move in smaller increments.

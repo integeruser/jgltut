@@ -19,7 +19,6 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * <p>
  * Part I. The Basics
  * Chapter 2. Playing with Colors
- * http://www.arcsynthesis.org/gltut/Basics/Tutorial%2002.html
  */
 public class VertexColor extends LWJGLWindow {
     public static void main(String[] args) {

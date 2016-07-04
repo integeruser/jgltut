@@ -26,7 +26,6 @@ import static org.lwjgl.opengl.GL20.*;
  * <p>
  * Part II. Positioning
  * Chapter 8. Getting Oriented
- * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2008.html
  * <p>
  * SPACE            - toggles between regular linear interpolation and slerp.
  * Q,W,E,R,T,Y,U    - cause the ship to interpolate to a new orientation.

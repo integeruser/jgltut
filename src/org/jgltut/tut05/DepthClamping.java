@@ -24,7 +24,6 @@ import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
  * <p>
  * Part II. Positioning
  * Chapter 5. Objects in Depth
- * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2005.html
  * <p>
  * SPACE    - toggle depth clamping on/off.
  */

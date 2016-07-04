@@ -49,7 +49,6 @@ import static org.lwjgl.opengl.GL33.*;
  * <p>
  * Part IV. Texturing
  * Chapter 16. Gamma and Textures
- * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2016.html
  * <p>
  * W,A,S,D  - move the cameras forward/backwards and left/right, relative to the camera's current orientation. Holding
  * SHIFT with these keys will move in smaller increments.

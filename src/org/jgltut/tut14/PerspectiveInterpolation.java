@@ -20,7 +20,6 @@ import static org.lwjgl.opengl.GL20.*;
  * <p>
  * Part IV. Texturing
  * Chapter 14. Textures are not Pictures
- * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
  * <p>
  * S        - switch meshes.
  * P        - toggle between perspective-correct interpolation/window-space linear interpolation.

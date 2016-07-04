@@ -37,7 +37,6 @@ import static org.lwjgl.opengl.GL33.*;
  * <p>
  * Part IV. Texturing
  * Chapter 14. Textures are not Pictures
- * http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
  * <p>
  * P        - toggle pausing.
  * -,=      - rewind/jump forward time by 0.5 second (of real-time).

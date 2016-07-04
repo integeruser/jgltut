@@ -24,7 +24,6 @@ import static org.lwjgl.opengl.GL20.*;
  * <p>
  * Part II. Positioning
  * Chapter 8. Getting Oriented
- * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2008.html
  * <p>
  * SPACE    - toggles between three transforms: model-relative (yaw/pitch/roll-style), world-relative, and
  * camera-relative.

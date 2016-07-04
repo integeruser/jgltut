@@ -19,7 +19,6 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * <p>
  * Part II. Positioning
  * Chapter 3. OpenGL's Moving Triangle
- * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2003.html
  */
 public class FragChangeColor extends LWJGLWindow {
     public static void main(String[] args) {

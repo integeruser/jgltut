@@ -31,7 +31,6 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * <p>
  * Part III. Illumination
  * Chapter 11. Shinies
- * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2011.html
  * <p>
  * I,J,K,L  - control the light's position. Holding SHIFT with these keys will move in smaller increments.
  * SPACE    - toggle between drawing the uncolored cylinder and the colored one.

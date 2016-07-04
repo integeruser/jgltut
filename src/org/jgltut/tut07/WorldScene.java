@@ -24,7 +24,6 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * <p>
  * Part II. Positioning
  * Chapter 7. World in Motion
- * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2007.html
  * <p>
  * Function                                     Increase/Left   Decrease/Right
  * Move camera target up/down                          E               Q

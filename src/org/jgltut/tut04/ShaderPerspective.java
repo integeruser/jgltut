@@ -19,7 +19,6 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * <p>
  * Part II. Positioning
  * Chapter 4. Objects at Rest
- * http://www.arcsynthesis.org/gltut/Positioning/Tutorial%2004.html
  */
 public class ShaderPerspective extends LWJGLWindow {
     public static void main(String[] args) {

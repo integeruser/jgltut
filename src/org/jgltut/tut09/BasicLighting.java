@@ -31,7 +31,6 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * <p>
  * Part III. Illumination
  * Chapter 9. Lights On
- * http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2009.html
  * <p>
  * SPACE    - toggle between drawing the uncolored cylinder and the colored one.
  * <p>

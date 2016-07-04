@@ -9,7 +9,7 @@ import java.nio.FloatBuffer;
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  */
 public class ProjectionBlock implements Bufferable<FloatBuffer> {
-    public static final int SIZE = 4 * (16);
+    public static final int SIZE_IN_BYTES = Float.BYTES * (16);
 
     public Matrix4f cameraToClipMatrix;
 

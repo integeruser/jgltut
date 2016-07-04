@@ -9,7 +9,7 @@ import java.nio.FloatBuffer;
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  */
 public class PerLight implements Bufferable<FloatBuffer> {
-    public static final int SIZE = 4 * (4 + 4);
+    public static final int SIZE_IN_BYTES = Float.BYTES * (4 + 4);
 
     public Vector4f cameraSpaceLightPos;
     public Vector4f lightIntensity;

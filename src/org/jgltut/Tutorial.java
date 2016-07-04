@@ -3,7 +3,6 @@ package org.jgltut;
 import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.commons.UnProjectionBlock;
-import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.glfw.*;
@@ -48,9 +47,9 @@ public abstract class Tutorial {
     protected FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
     protected FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
     protected FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
-    protected FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE);
-    protected ByteBuffer unprojBuffer = BufferUtils.createByteBuffer(UnProjectionBlock.SIZE);
-    protected FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer(LightBlock.SIZE);
+    protected FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE_IN_BYTES /4);
+    protected ByteBuffer unprojBuffer = BufferUtils.createByteBuffer(UnProjectionBlock.SIZE_IN_BYTES);
+    protected FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer(LightBlock.SIZE_IN_BYTES /4);
 
     ////////////////////////////////
 

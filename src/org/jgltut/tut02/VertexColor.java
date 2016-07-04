@@ -1,6 +1,6 @@
 package org.jgltut.tut02;
 
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.framework.Framework;
 import org.lwjgl.BufferUtils;
 
@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * Part I. The Basics
  * Chapter 2. Playing with Colors
  */
-public class VertexColor extends LWJGLWindow {
+public class VertexColor extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut02/data/";
         new VertexColor().start(500, 500);

@@ -1,7 +1,7 @@
 package org.jgltut.tut14;
 
 import org.jglsdk.glutil.MousePoles.*;
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.commons.Bufferable;
 import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.PerLight;
@@ -57,7 +57,7 @@ import static org.lwjgl.opengl.GL33.*;
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  */
-public class BasicTexture extends LWJGLWindow {
+public class BasicTexture extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut14/data/";
         new BasicTexture().start(500, 500);

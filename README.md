@@ -47,7 +47,7 @@ jgltut/
 |------ CubePointLight.java
 |------ DoubleProjection.java
 |------ ProjectedLight.java
-|-- LWJGLWindow.java
+|-- Tutorial.java
 |-- TutorialChooser.java
 
 jglsdk/

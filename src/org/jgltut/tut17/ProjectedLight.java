@@ -7,7 +7,7 @@ import org.jglsdk.glutil.MousePoles.MouseButtons;
 import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;
 import org.jglsdk.glutil.MousePoles.ViewScale;
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.PerLight;
 import org.jgltut.commons.ProjectionBlock;
@@ -70,7 +70,7 @@ import static org.lwjgl.opengl.GL33.*;
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the projected flashlight.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  */
-public class ProjectedLight extends LWJGLWindow {
+public class ProjectedLight extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut17/data/";
         new ProjectedLight().start(displayWidth, displayHeight);

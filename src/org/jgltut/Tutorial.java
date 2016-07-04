@@ -3,6 +3,7 @@ package org.jgltut;
 import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.commons.UnProjectionBlock;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.glfw.*;
@@ -24,7 +25,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  */
-public abstract class LWJGLWindow {
+public abstract class Tutorial {
     protected static final int FLOAT_SIZE = Float.SIZE / Byte.SIZE;
 
     protected long window;
@@ -52,6 +53,7 @@ public abstract class LWJGLWindow {
     protected FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer(LightBlock.SIZE);
 
     ////////////////////////////////
+
     public final void start(int width, int height) {
         try {
             initLWJGL(width, height);
@@ -123,7 +125,7 @@ public abstract class LWJGLWindow {
         }
 
         // Create the window
-        window = glfwCreateWindow(width, height, "LWJGLWindow", NULL, NULL);
+        window = glfwCreateWindow(width, height, "Tutorial", NULL, NULL);
         if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
@@ -163,6 +165,7 @@ public abstract class LWJGLWindow {
     }
 
     ////////////////////////////////
+
     protected abstract void init();
 
     protected abstract void display();
@@ -172,6 +175,7 @@ public abstract class LWJGLWindow {
     protected abstract void update();
 
     ////////////////////////////////
+    
     protected final boolean isKeyPressed(int key) {
         return glfwGetKey(window, key) == 1;
     }

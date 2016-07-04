@@ -1,6 +1,6 @@
 package org.jgltut.tut08;
 
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.joml.Matrix4f;
@@ -26,7 +26,7 @@ import static org.lwjgl.opengl.GL20.*;
  * A,D      - control the middle gimbal.
  * Q,E      - control the inner gimbal.
  */
-public class GimbalLock extends LWJGLWindow {
+public class GimbalLock extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut08/data/";
         new GimbalLock().start(500, 500);

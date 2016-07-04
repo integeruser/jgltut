@@ -1,6 +1,6 @@
 package org.jgltut.tut04;
 
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.framework.Framework;
 import org.lwjgl.BufferUtils;
 
@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * Part II. Positioning
  * Chapter 4. Objects at Rest
  */
-public class AspectRatio extends LWJGLWindow {
+public class AspectRatio extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut04/data/";
         new AspectRatio().start(500, 500);

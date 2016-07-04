@@ -4,7 +4,7 @@ import org.jglsdk.glutil.MousePoles.MouseButtons;
 import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;
 import org.jglsdk.glutil.MousePoles.ViewScale;
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.PerLight;
 import org.jgltut.commons.ProjectionBlock;
@@ -56,7 +56,7 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * WHEEL  SCROLLING                     - move the left camera and the right camera  closer to it's target point or
  * farther away.
  */
-public class DoubleProjection extends LWJGLWindow {
+public class DoubleProjection extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut17/data/";
         new DoubleProjection().start(displayWidth, displayHeight);

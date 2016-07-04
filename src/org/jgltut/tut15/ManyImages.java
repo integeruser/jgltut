@@ -4,7 +4,7 @@ import org.jglsdk.glimg.DdsLoader;
 import org.jglsdk.glimg.ImageSet;
 import org.jglsdk.glimg.ImageSet.Dimensions;
 import org.jglsdk.glimg.ImageSet.SingleImage;
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
@@ -44,7 +44,7 @@ import static org.lwjgl.opengl.GL33.*;
  * P            - toggle pausing.
  * 1,2,3,4,5,6  - switch filtering technique.
  */
-public class ManyImages extends LWJGLWindow {
+public class ManyImages extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut15/data/";
         new ManyImages().start(500, 500);

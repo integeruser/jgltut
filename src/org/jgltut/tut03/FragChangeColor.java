@@ -1,6 +1,6 @@
 package org.jgltut.tut03;
 
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.framework.Framework;
 import org.lwjgl.BufferUtils;
 
@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * Part II. Positioning
  * Chapter 3. OpenGL's Moving Triangle
  */
-public class FragChangeColor extends LWJGLWindow {
+public class FragChangeColor extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut03/data/";
         new FragChangeColor().start(500, 500);

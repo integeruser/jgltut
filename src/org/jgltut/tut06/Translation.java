@@ -1,6 +1,6 @@
 package org.jgltut.tut06;
 
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.framework.Framework;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -23,7 +23,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * Part II. Positioning
  * Chapter 6. Objects in Motion
  */
-public class Translation extends LWJGLWindow {
+public class Translation extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut06/data/";
         new Translation().start(500, 500);

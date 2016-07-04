@@ -6,7 +6,7 @@ import org.jglsdk.glimg.ImageSet.SingleImage;
 import org.jglsdk.glimg.StbLoader;
 import org.jglsdk.glimg.TextureGenerator;
 import org.jglsdk.glimg.TextureGenerator.OpenGLPixelTransferParams;
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.joml.Matrix4f;
@@ -38,7 +38,7 @@ import static org.lwjgl.opengl.GL33.*;
  * 1    - switch the top texture between lRGB and sRGB.
  * 2    - switch the bottom texture between lRGB and sRGB.
  */
-public class GammaRamp extends LWJGLWindow {
+public class GammaRamp extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut16/data/";
         new GammaRamp().start(500, 195);

@@ -1,7 +1,7 @@
 package org.jgltut.tut08;
 
 import org.jglsdk.glm.Glm;
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.joml.Matrix4f;
@@ -33,7 +33,7 @@ import static org.lwjgl.opengl.GL20.*;
  * J,L      - move the camera left and right around the center point. Holding SHIFT with these keys will move the
  * camera in smaller increments.
  */
-public class CameraRelative extends LWJGLWindow {
+public class CameraRelative extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut08/data/";
         new CameraRelative().start(500, 500);

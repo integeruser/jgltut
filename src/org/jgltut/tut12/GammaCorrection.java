@@ -4,7 +4,7 @@ import org.jglsdk.glutil.MousePoles.MouseButtons;
 import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;
 import org.jglsdk.glutil.MousePoles.ViewScale;
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.MousePole;
@@ -55,7 +55,7 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * LEFT   CLICKING and DRAGGING + ALT   - change the camera's up direction.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  */
-public class GammaCorrection extends LWJGLWindow {
+public class GammaCorrection extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut12/data/";
         new GammaCorrection().start(700, 700);

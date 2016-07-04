@@ -1,7 +1,7 @@
 package org.jgltut.tut10;
 
 import org.jglsdk.glutil.MousePoles.*;
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.commons.UnProjectionBlock;
 import org.jgltut.framework.Framework;
@@ -49,7 +49,7 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  */
-public class FragmentAttenuation extends LWJGLWindow {
+public class FragmentAttenuation extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut10/data/";
         new FragmentAttenuation().start(500, 500);

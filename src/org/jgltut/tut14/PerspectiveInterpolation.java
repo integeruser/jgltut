@@ -1,6 +1,6 @@
 package org.jgltut.tut14;
 
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.joml.MatrixStackf;
@@ -22,7 +22,7 @@ import static org.lwjgl.opengl.GL20.*;
  * S        - switch meshes.
  * P        - toggle between perspective-correct interpolation/window-space linear interpolation.
  */
-public class PerspectiveInterpolation extends LWJGLWindow {
+public class PerspectiveInterpolation extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut14/data/";
         new PerspectiveInterpolation().start(500, 500);

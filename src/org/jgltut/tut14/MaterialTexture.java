@@ -5,7 +5,7 @@ import org.jglsdk.glimg.ImageSet;
 import org.jglsdk.glimg.ImageSet.Dimensions;
 import org.jglsdk.glimg.ImageSet.SingleImage;
 import org.jglsdk.glutil.MousePoles.*;
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.commons.Bufferable;
 import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.PerLight;
@@ -60,7 +60,7 @@ import static org.lwjgl.opengl.GL33.*;
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the object.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  */
-public class MaterialTexture extends LWJGLWindow {
+public class MaterialTexture extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut14/data/";
         new MaterialTexture().start(500, 500);

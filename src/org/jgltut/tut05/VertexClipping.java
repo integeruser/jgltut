@@ -1,6 +1,6 @@
 package org.jgltut.tut05;
 
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.framework.Framework;
 import org.lwjgl.BufferUtils;
 
@@ -22,7 +22,7 @@ import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
  * Part II. Positioning
  * Chapter 5. Objects in Depth
  */
-public class VertexClipping extends LWJGLWindow {
+public class VertexClipping extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut05/data/";
         new VertexClipping().start(500, 500);

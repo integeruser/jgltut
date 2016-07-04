@@ -1,7 +1,7 @@
 package org.jgltut.tut08;
 
 import org.jglsdk.glm.Glm;
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.Timer;
@@ -27,7 +27,7 @@ import static org.lwjgl.opengl.GL20.*;
  * SPACE            - toggles between regular linear interpolation and slerp.
  * Q,W,E,R,T,Y,U    - cause the ship to interpolate to a new orientation.
  */
-public class Interpolation extends LWJGLWindow {
+public class Interpolation extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut08/data/";
         new Interpolation().start(500, 500);

@@ -1,7 +1,7 @@
 package org.jgltut.tut07;
 
 import org.jglsdk.glm.Glm;
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.joml.Matrix4f;
@@ -38,7 +38,7 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
  * <p>
  * SPACE    - toggle the appearance of an object indicating the position of the camera point.
  */
-public class WorldWithUBO extends LWJGLWindow {
+public class WorldWithUBO extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut07/data/";
         new WorldWithUBO().start(700, 700);

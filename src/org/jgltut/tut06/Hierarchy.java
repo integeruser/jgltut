@@ -1,6 +1,6 @@
 package org.jgltut.tut06;
 
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.framework.Framework;
 import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
@@ -36,7 +36,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * <p>
  * SPACE   - print current armature position.
  */
-public class Hierarchy extends LWJGLWindow {
+public class Hierarchy extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut06/data/";
         new Hierarchy().start(700, 700);

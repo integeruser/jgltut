@@ -4,7 +4,7 @@ import org.jglsdk.glimg.DdsLoader;
 import org.jglsdk.glimg.ImageSet;
 import org.jglsdk.glimg.ImageSet.Dimensions;
 import org.jglsdk.glimg.ImageSet.SingleImage;
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
@@ -45,7 +45,7 @@ import static org.lwjgl.opengl.GL33.*;
  * P        - toggle pausing.
  * 1,2      - select linear mipmap filtering and anisotropic filtering (using the maximum possible anisotropy).
  */
-public class GammaCheckers extends LWJGLWindow {
+public class GammaCheckers extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut16/data/";
         new GammaCheckers().start(500, 500);

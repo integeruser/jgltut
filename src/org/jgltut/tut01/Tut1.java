@@ -1,6 +1,6 @@
 package org.jgltut.tut01;
 
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
  * Part I. The Basics
  * Chapter 1. Hello, Triangle!
  */
-public class Tut1 extends LWJGLWindow {
+public class Tut1 extends Tutorial {
     public static void main(String[] args) {
         new Tut1().start(500, 500);
     }

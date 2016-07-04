@@ -1,6 +1,6 @@
 package org.jgltut.tut05;
 
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.framework.Framework;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -27,7 +27,7 @@ import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
  * <p>
  * SPACE    - toggle depth clamping on/off.
  */
-public class DepthClamping extends LWJGLWindow {
+public class DepthClamping extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut05/data/";
         new DepthClamping().start(500, 500);

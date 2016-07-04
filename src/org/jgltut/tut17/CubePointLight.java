@@ -6,7 +6,7 @@ import org.jglsdk.glimg.ImageSet.Dimensions;
 import org.jglsdk.glimg.ImageSet.SingleImage;
 import org.jglsdk.glimg.TextureGenerator;
 import org.jglsdk.glutil.MousePoles.*;
-import org.jgltut.LWJGLWindow;
+import org.jgltut.Tutorial;
 import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.PerLight;
 import org.jgltut.commons.ProjectionBlock;
@@ -62,7 +62,7 @@ import static org.lwjgl.opengl.GL33.*;
  * RIGHT  CLICKING and DRAGGING + ALT   - spin the orientation of the light.
  * WHEEL  SCROLLING                     - move the camera closer to it's target point or farther away.
  */
-public class CubePointLight extends LWJGLWindow {
+public class CubePointLight extends Tutorial {
     public static void main(String[] args) {
         Framework.CURRENT_TUTORIAL_DATAPATH = "/org/jgltut/tut17/data/";
         new CubePointLight().start(displayWidth, displayHeight);

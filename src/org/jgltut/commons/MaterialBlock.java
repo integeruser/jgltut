@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  */
-public class MaterialBlock implements Bufferable<ByteBuffer> {
+public class MaterialBlock implements Bufferable {
     public static final int SIZE_IN_BYTES = Float.BYTES * (4 + 4 + 1 + 3);
 
     public Vector4f diffuseColor;
@@ -18,18 +18,17 @@ public class MaterialBlock implements Bufferable<ByteBuffer> {
 
     @Override
     public ByteBuffer get(ByteBuffer buffer) {
-        buffer.putFloat(diffuseColor.x);
-        buffer.putFloat(diffuseColor.y);
-        buffer.putFloat(diffuseColor.z);
-        buffer.putFloat(diffuseColor.w);
-        buffer.putFloat(specularColor.x);
-        buffer.putFloat(specularColor.y);
-        buffer.putFloat(specularColor.z);
-        buffer.putFloat(specularColor.w);
+        diffuseColor.get(buffer);
+        buffer.position(buffer.position() + Float.BYTES * 4);
+
+        specularColor.get(buffer);
+        buffer.position(buffer.position() + Float.BYTES * 4);
+
         buffer.putFloat(specularShininess);
-        for (int i = 0; i < 3; i++) {
-            buffer.putFloat(padding[i]);
-        }
+
+        buffer.putFloat(padding[0]);
+        buffer.putFloat(padding[1]);
+        buffer.putFloat(padding[2]);
         return buffer;
     }
 }

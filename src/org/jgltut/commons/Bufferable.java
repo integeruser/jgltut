@@ -1,15 +1,15 @@
 package org.jgltut.commons;
 
-import java.nio.Buffer;
+import java.nio.ByteBuffer;
 
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  */
-public interface Bufferable<T extends Buffer> {
-    T get(T buffer);
+public interface Bufferable {
+    ByteBuffer get(ByteBuffer buffer);
 
-    default T getAndFlip(T buffer) {
+    default ByteBuffer getAndFlip(ByteBuffer buffer) {
         buffer.clear();
         get(buffer);
         buffer.flip();

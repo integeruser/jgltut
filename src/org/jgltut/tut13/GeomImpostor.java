@@ -18,7 +18,6 @@ import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -250,7 +249,7 @@ public class GeomImpostor extends Tutorial {
             glBindBuffer(GL_ARRAY_BUFFER, imposterVBO);
 
             {
-                FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(NUMBER_OF_SPHERES * VertexData.SIZE / FLOAT_SIZE);
+                ByteBuffer vertexDataBuffer = BufferUtils.createByteBuffer(NUMBER_OF_SPHERES * VertexData.SIZE);
 
                 for (VertexData vertexData : posSizeArray) {
                     vertexData.get(vertexDataBuffer);
@@ -517,19 +516,18 @@ public class GeomImpostor extends Tutorial {
     private ViewPole viewPole = new ViewPole(initialViewData, viewScale, MouseButtons.MB_LEFT_BTN);
 
     ////////////////////////////////
-    private class VertexData implements Bufferable<FloatBuffer> {
+    private class VertexData implements Bufferable {
         Vector3f cameraPosition;
         float sphereRadius;
 
         static final int SIZE = 3 * 4 + (1 * FLOAT_SIZE);
 
         @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            buffer.put(cameraPosition.x);
-            buffer.put(cameraPosition.y);
-            buffer.put(cameraPosition.z);
-            buffer.put(sphereRadius);
-
+        public ByteBuffer get(ByteBuffer buffer) {
+            buffer.putFloat(cameraPosition.x);
+            buffer.putFloat(cameraPosition.y);
+            buffer.putFloat(cameraPosition.z);
+            buffer.putFloat(sphereRadius);
             return buffer;
         }
     }

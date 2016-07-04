@@ -11,7 +11,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import java.nio.FloatBuffer;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -205,7 +205,7 @@ class LightManager {
     private static final int NUMBER_OF_LIGHTS = 4;
     private static final int NUMBER_OF_POINT_LIGHTS = NUMBER_OF_LIGHTS - 1;
 
-    class LightBlockHDR implements Bufferable<FloatBuffer> {
+    class LightBlockHDR implements Bufferable {
         static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE_IN_BYTES * NUMBER_OF_LIGHTS;
 
         Vector4f ambientIntensity;
@@ -215,14 +215,15 @@ class LightManager {
         PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
         @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            buffer.put(ambientIntensity.x);
-            buffer.put(ambientIntensity.y);
-            buffer.put(ambientIntensity.z);
-            buffer.put(ambientIntensity.w);
-            buffer.put(lightAttenuation);
-            buffer.put(maxIntensity);
-            buffer.put(padding);
+        public ByteBuffer get(ByteBuffer buffer) {
+            buffer.putFloat(ambientIntensity.x);
+            buffer.putFloat(ambientIntensity.y);
+            buffer.putFloat(ambientIntensity.z);
+            buffer.putFloat(ambientIntensity.w);
+            buffer.putFloat(lightAttenuation);
+            buffer.putFloat(maxIntensity);
+            buffer.putFloat(padding[0]);
+            buffer.putFloat(padding[1]);
             for (PerLight light : lights) {
                 if (light == null) break;
                 light.get(buffer);
@@ -231,7 +232,7 @@ class LightManager {
         }
     }
 
-    class LightBlockGamma implements Bufferable<FloatBuffer> {
+    class LightBlockGamma implements Bufferable {
         static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE_IN_BYTES * NUMBER_OF_LIGHTS;
 
         Vector4f ambientIntensity;
@@ -242,15 +243,15 @@ class LightManager {
         PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
         @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            buffer.put(ambientIntensity.x);
-            buffer.put(ambientIntensity.y);
-            buffer.put(ambientIntensity.z);
-            buffer.put(ambientIntensity.w);
-            buffer.put(lightAttenuation);
-            buffer.put(maxIntensity);
-            buffer.put(gamma);
-            buffer.put(padding);
+        public ByteBuffer get(ByteBuffer buffer) {
+            buffer.putFloat(ambientIntensity.x);
+            buffer.putFloat(ambientIntensity.y);
+            buffer.putFloat(ambientIntensity.z);
+            buffer.putFloat(ambientIntensity.w);
+            buffer.putFloat(lightAttenuation);
+            buffer.putFloat(maxIntensity);
+            buffer.putFloat(gamma);
+            buffer.putFloat(padding);
             for (PerLight light : lights) {
                 if (light == null) break;
                 light.get(buffer);

@@ -2,21 +2,21 @@ package org.jgltut.commons;
 
 import org.joml.Matrix4f;
 
-import java.nio.FloatBuffer;
+import java.nio.ByteBuffer;
 
 
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  */
-public class ProjectionBlock implements Bufferable<FloatBuffer> {
+public class ProjectionBlock implements Bufferable {
     public static final int SIZE_IN_BYTES = Float.BYTES * (16);
 
     public Matrix4f cameraToClipMatrix;
 
     @Override
-    public FloatBuffer get(FloatBuffer buffer) {
+    public ByteBuffer get(ByteBuffer buffer) {
         cameraToClipMatrix.get(buffer);
-        buffer.position(buffer.position() + 16);
+        buffer.position(buffer.position() + Float.BYTES * 16);
         return buffer;
     }
 }

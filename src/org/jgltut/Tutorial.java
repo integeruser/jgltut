@@ -47,9 +47,9 @@ public abstract class Tutorial {
     protected FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
     protected FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
     protected FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
-    protected FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE_IN_BYTES /4);
+    protected ByteBuffer projBuffer = BufferUtils.createByteBuffer(ProjectionBlock.SIZE_IN_BYTES);
     protected ByteBuffer unprojBuffer = BufferUtils.createByteBuffer(UnProjectionBlock.SIZE_IN_BYTES);
-    protected FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer(LightBlock.SIZE_IN_BYTES /4);
+    protected ByteBuffer lightBlockBuffer = BufferUtils.createByteBuffer(LightBlock.SIZE_IN_BYTES);
 
     ////////////////////////////////
 

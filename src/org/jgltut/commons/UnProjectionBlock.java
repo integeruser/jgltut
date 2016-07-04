@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  */
-public class UnProjectionBlock implements Bufferable<ByteBuffer> {
+public class UnProjectionBlock implements Bufferable {
     public static final int SIZE_IN_BYTES = Float.BYTES * (16) + Integer.BYTES * (2);
 
     public Matrix4f clipToCameraMatrix;
@@ -17,14 +17,11 @@ public class UnProjectionBlock implements Bufferable<ByteBuffer> {
 
     @Override
     public ByteBuffer get(ByteBuffer buffer) {
-        float[] matrix = new float[16];
-        clipToCameraMatrix.get(matrix);
-        for (float f : matrix) {
-            buffer.putFloat(f);
-        }
+        clipToCameraMatrix.get(buffer);
+        buffer.position(buffer.position() + Float.BYTES * 16);
 
-        buffer.putInt(windowSize.x);
-        buffer.putInt(windowSize.y);
+        windowSize.get(buffer);
+        buffer.position(buffer.position() + Integer.BYTES * 2);
         return buffer;
     }
 }

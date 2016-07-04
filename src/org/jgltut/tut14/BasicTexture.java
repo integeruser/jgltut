@@ -1,6 +1,8 @@
 package org.jgltut.tut14;
 
+import org.jglsdk.glutil.MousePoles.*;
 import org.jgltut.LWJGLWindow;
+import org.jgltut.commons.Bufferable;
 import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.PerLight;
 import org.jgltut.commons.ProjectionBlock;
@@ -8,8 +10,6 @@ import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.MousePole;
 import org.jgltut.framework.Timer;
-import org.jgltut.commons.Bufferable;
-import org.jglsdk.glutil.MousePoles.*;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
@@ -521,7 +521,7 @@ public class BasicTexture extends LWJGLWindow {
         float specularShininess;
         float padding[] = new float[3];
 
-        static final int SIZE = 4*4 + 4*4 + ((1 + 3) * FLOAT_SIZE);
+        static final int SIZE = 4 * 4 + 4 * 4 + ((1 + 3) * FLOAT_SIZE);
 
         @Override
         public FloatBuffer get(FloatBuffer buffer) {

@@ -1,9 +1,9 @@
 package org.jgltut.tut07;
 
+import org.jglsdk.glm.Glm;
 import org.jgltut.LWJGLWindow;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
-import org.jglsdk.glm.Glm;
 import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Vector3f;

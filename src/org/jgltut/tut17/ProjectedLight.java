@@ -1,5 +1,12 @@
 package org.jgltut.tut17;
 
+import org.jglsdk.glimg.DdsLoader;
+import org.jglsdk.glimg.ImageSet;
+import org.jglsdk.glimg.TextureGenerator;
+import org.jglsdk.glutil.MousePoles.MouseButtons;
+import org.jglsdk.glutil.MousePoles.ViewData;
+import org.jglsdk.glutil.MousePoles.ViewPole;
+import org.jglsdk.glutil.MousePoles.ViewScale;
 import org.jgltut.LWJGLWindow;
 import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.PerLight;
@@ -9,13 +16,6 @@ import org.jgltut.framework.Scene.SceneNode;
 import org.jgltut.framework.SceneBinders.UniformIntBinder;
 import org.jgltut.framework.SceneBinders.UniformMat4Binder;
 import org.jgltut.framework.SceneBinders.UniformVec3Binder;
-import org.jglsdk.glimg.DdsLoader;
-import org.jglsdk.glimg.ImageSet;
-import org.jglsdk.glimg.TextureGenerator;
-import org.jglsdk.glutil.MousePoles.MouseButtons;
-import org.jglsdk.glutil.MousePoles.ViewData;
-import org.jglsdk.glutil.MousePoles.ViewPole;
-import org.jglsdk.glutil.MousePoles.ViewScale;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;

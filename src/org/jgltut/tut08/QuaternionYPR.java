@@ -3,15 +3,12 @@ package org.jgltut.tut08;
 import org.jgltut.LWJGLWindow;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
-import org.jglsdk.glm.Glm;
 import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;

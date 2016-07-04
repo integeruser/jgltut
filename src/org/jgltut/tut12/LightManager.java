@@ -1,12 +1,12 @@
 package org.jgltut.tut12;
 
+import org.jgltut.commons.Bufferable;
 import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.PerLight;
 import org.jgltut.framework.Interpolators.ConstVelLinearInterpolatorVec3;
 import org.jgltut.framework.Interpolators.WeightedLinearInterpolatorFloat;
 import org.jgltut.framework.Interpolators.WeightedLinearInterpolatorVec4;
 import org.jgltut.framework.Timer;
-import org.jgltut.commons.Bufferable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;

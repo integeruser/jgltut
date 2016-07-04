@@ -1,6 +1,11 @@
 package org.jgltut.tut13;
 
+import org.jglsdk.glutil.MousePoles.MouseButtons;
+import org.jglsdk.glutil.MousePoles.ViewData;
+import org.jglsdk.glutil.MousePoles.ViewPole;
+import org.jglsdk.glutil.MousePoles.ViewScale;
 import org.jgltut.LWJGLWindow;
+import org.jgltut.commons.Bufferable;
 import org.jgltut.commons.LightBlock;
 import org.jgltut.commons.PerLight;
 import org.jgltut.commons.ProjectionBlock;
@@ -8,11 +13,6 @@ import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.MousePole;
 import org.jgltut.framework.Timer;
-import org.jgltut.commons.Bufferable;
-import org.jglsdk.glutil.MousePoles.MouseButtons;
-import org.jglsdk.glutil.MousePoles.ViewData;
-import org.jglsdk.glutil.MousePoles.ViewPole;
-import org.jglsdk.glutil.MousePoles.ViewScale;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
@@ -523,7 +523,7 @@ public class GeomImpostor extends LWJGLWindow {
         Vector3f cameraPosition;
         float sphereRadius;
 
-        static final int SIZE = 3*4 + (1 * FLOAT_SIZE);
+        static final int SIZE = 3 * 4 + (1 * FLOAT_SIZE);
 
         @Override
         public FloatBuffer get(FloatBuffer buffer) {
@@ -558,7 +558,7 @@ public class GeomImpostor extends LWJGLWindow {
         float specularShininess;
         float padding[] = new float[3];
 
-        static final int SIZE = 4*4 + 4*4 + ((1 + 3) * FLOAT_SIZE);
+        static final int SIZE = 4 * 4 + 4 * 4 + ((1 + 3) * FLOAT_SIZE);
 
         @Override
         public FloatBuffer get(FloatBuffer buffer) {

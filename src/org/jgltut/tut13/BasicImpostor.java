@@ -1,15 +1,15 @@
 package org.jgltut.tut13;
 
-import org.jgltut.LWJGLWindow;
-import org.jgltut.commons.LightBlock;
-import org.jgltut.commons.PerLight;
-import org.jgltut.commons.ProjectionBlock;
-import org.jgltut.framework.*;
-import org.jgltut.commons.Bufferable;
 import org.jglsdk.glutil.MousePoles.MouseButtons;
 import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;
 import org.jglsdk.glutil.MousePoles.ViewScale;
+import org.jgltut.LWJGLWindow;
+import org.jgltut.commons.Bufferable;
+import org.jgltut.commons.LightBlock;
+import org.jgltut.commons.PerLight;
+import org.jgltut.commons.ProjectionBlock;
+import org.jgltut.framework.*;
 import org.joml.*;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -580,7 +580,7 @@ public class BasicImpostor extends LWJGLWindow {
         float specularShininess;
         float padding[] = new float[3];
 
-        static final int SIZE = 4*4 + 4*4 + ((1 + 3) * FLOAT_SIZE);
+        static final int SIZE = 4 * 4 + 4 * 4 + ((1 + 3) * FLOAT_SIZE);
 
         @Override
         public ByteBuffer get(ByteBuffer buffer) {

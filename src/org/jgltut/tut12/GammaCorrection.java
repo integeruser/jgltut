@@ -1,14 +1,14 @@
 package org.jgltut.tut12;
 
+import org.jglsdk.glutil.MousePoles.MouseButtons;
+import org.jglsdk.glutil.MousePoles.ViewData;
+import org.jglsdk.glutil.MousePoles.ViewPole;
+import org.jglsdk.glutil.MousePoles.ViewScale;
 import org.jgltut.LWJGLWindow;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.MousePole;
 import org.jgltut.framework.Timer;
-import org.jglsdk.glutil.MousePoles.MouseButtons;
-import org.jglsdk.glutil.MousePoles.ViewData;
-import org.jglsdk.glutil.MousePoles.ViewPole;
-import org.jglsdk.glutil.MousePoles.ViewScale;
 import org.jgltut.tut12.LightManager.LightBlockGamma;
 import org.jgltut.tut12.LightManager.SunlightValueHDR;
 import org.jgltut.tut12.LightManager.TimerTypes;

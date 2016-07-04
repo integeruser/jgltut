@@ -1,7 +1,7 @@
 package org.jgltut.tut12;
 
-import org.jgltut.framework.Mesh;
 import org.jgltut.commons.Bufferable;
+import org.jgltut.framework.Mesh;
 import org.joml.Matrix3f;
 import org.joml.MatrixStackf;
 import org.joml.Vector3f;
@@ -231,7 +231,7 @@ abstract class Scene {
         float specularShininess;
         float padding[] = new float[3];
 
-        static final int SIZE = 4*4 + 4*4 + ((1 + 3) * 4);
+        static final int SIZE = 4 * 4 + 4 * 4 + ((1 + 3) * 4);
 
         @Override
         public FloatBuffer get(FloatBuffer buffer) {

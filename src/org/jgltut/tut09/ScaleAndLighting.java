@@ -1,11 +1,11 @@
 package org.jgltut.tut09;
 
+import org.jglsdk.glutil.MousePoles.*;
 import org.jgltut.LWJGLWindow;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.MousePole;
-import org.jglsdk.glutil.MousePoles.*;
 import org.joml.*;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;

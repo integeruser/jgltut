@@ -2,7 +2,6 @@ package org.jgltut.tut06;
 
 import org.jgltut.LWJGLWindow;
 import org.jgltut.framework.Framework;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Vector3f;

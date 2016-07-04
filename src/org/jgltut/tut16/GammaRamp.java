@@ -1,14 +1,14 @@
 package org.jgltut.tut16;
 
-import org.jgltut.LWJGLWindow;
-import org.jgltut.commons.ProjectionBlock;
-import org.jgltut.framework.Framework;
 import org.jglsdk.glimg.ImageSet;
 import org.jglsdk.glimg.ImageSet.Dimensions;
 import org.jglsdk.glimg.ImageSet.SingleImage;
 import org.jglsdk.glimg.StbLoader;
 import org.jglsdk.glimg.TextureGenerator;
 import org.jglsdk.glimg.TextureGenerator.OpenGLPixelTransferParams;
+import org.jgltut.LWJGLWindow;
+import org.jgltut.commons.ProjectionBlock;
+import org.jgltut.framework.Framework;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;

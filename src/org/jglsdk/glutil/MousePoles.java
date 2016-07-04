@@ -1,6 +1,5 @@
 package org.jglsdk.glutil;
 
-import org.jglsdk.glm.Glm;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2i;

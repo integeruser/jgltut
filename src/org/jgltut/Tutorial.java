@@ -175,7 +175,7 @@ public abstract class Tutorial {
     protected abstract void update();
 
     ////////////////////////////////
-    
+
     protected final boolean isKeyPressed(int key) {
         return glfwGetKey(window, key) == 1;
     }

@@ -5,8 +5,7 @@ import org.jgltut.framework.Interpolators.ConstVelLinearInterpolatorVec3;
 import org.jgltut.framework.Interpolators.WeightedLinearInterpolatorFloat;
 import org.jgltut.framework.Interpolators.WeightedLinearInterpolatorVec4;
 import org.jgltut.framework.Timer;
-import org.jglsdk.BufferableData;
-import org.jglsdk.glm.Glm;
+import org.jgltut.Bufferable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -138,14 +137,14 @@ class LightEnv {
     private ArrayList<Timer> lightTimers = new ArrayList<>();
 
     ////////////////////////////////
-    class PerLight extends BufferableData<FloatBuffer> {
+    class PerLight implements Bufferable<FloatBuffer> {
         Vector4f cameraSpaceLightPos;
         Vector4f lightIntensity;
 
         static final int SIZE = 4*4 + 4*4;
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(cameraSpaceLightPos.x);
             buffer.put(cameraSpaceLightPos.y);
             buffer.put(cameraSpaceLightPos.z);
@@ -158,7 +157,7 @@ class LightEnv {
         }
     }
 
-    class LightBlock extends BufferableData<FloatBuffer> {
+    class LightBlock implements Bufferable<FloatBuffer> {
         Vector4f ambientIntensity;
         float lightAttenuation;
         float maxIntensity;
@@ -168,7 +167,7 @@ class LightEnv {
         static final int SIZE = 4*4 + ((1 + 1 + 2) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(ambientIntensity.x);
             buffer.put(ambientIntensity.y);
             buffer.put(ambientIntensity.z);
@@ -178,7 +177,7 @@ class LightEnv {
             buffer.put(padding);
             for (PerLight light : lights) {
                 if (light == null) break;
-                light.fillBuffer(buffer);
+                light.get(buffer);
             }
             return buffer;
         }

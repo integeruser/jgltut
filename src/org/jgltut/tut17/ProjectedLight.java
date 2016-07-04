@@ -6,11 +6,10 @@ import org.jgltut.framework.Scene.SceneNode;
 import org.jgltut.framework.SceneBinders.UniformIntBinder;
 import org.jgltut.framework.SceneBinders.UniformMat4Binder;
 import org.jgltut.framework.SceneBinders.UniformVec3Binder;
-import org.jglsdk.BufferableData;
+import org.jgltut.Bufferable;
 import org.jglsdk.glimg.DdsLoader;
 import org.jglsdk.glimg.ImageSet;
 import org.jglsdk.glimg.TextureGenerator;
-import org.jglsdk.glm.Glm;
 import org.jglsdk.glutil.MousePoles.MouseButtons;
 import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;
@@ -234,7 +233,7 @@ public class ProjectedLight extends LWJGLWindow {
             projData.cameraToClipMatrix = persMatrix;
 
             glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-            glBufferData(GL_UNIFORM_BUFFER, projData.fillBuffer(mat4Buffer), GL_STREAM_DRAW);
+            glBufferData(GL_UNIFORM_BUFFER, projData.get(mat4Buffer), GL_STREAM_DRAW);
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
         }
 
@@ -549,13 +548,13 @@ public class ProjectedLight extends LWJGLWindow {
 
     private int projectionUniformBuffer;
 
-    private class ProjectionBlock extends BufferableData<FloatBuffer> {
+    private class ProjectionBlock implements Bufferable<FloatBuffer> {
         Matrix4f cameraToClipMatrix;
 
         static final int SIZE = 16*4;
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             return cameraToClipMatrix.get(buffer);
         }
     }
@@ -567,14 +566,14 @@ public class ProjectedLight extends LWJGLWindow {
     private int lightUniformBuffer;
     private UniformIntBinder lightNumBinder;
 
-    private class PerLight extends BufferableData<FloatBuffer> {
+    private class PerLight implements Bufferable<FloatBuffer> {
         static final int SIZE = 4 * (4 + 4);
 
         Vector4f cameraSpaceLightPos;
         Vector4f lightIntensity;
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(cameraSpaceLightPos.x);
             buffer.put(cameraSpaceLightPos.y);
             buffer.put(cameraSpaceLightPos.z);
@@ -587,7 +586,7 @@ public class ProjectedLight extends LWJGLWindow {
         }
     }
 
-    private class LightBlock extends BufferableData<FloatBuffer> {
+    private class LightBlock implements Bufferable<FloatBuffer> {
         static final int MAX_NUMBER_OF_LIGHTS = 4;
         static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
 
@@ -598,7 +597,7 @@ public class ProjectedLight extends LWJGLWindow {
         PerLight lights[] = new PerLight[MAX_NUMBER_OF_LIGHTS];
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(ambientIntensity.x);
             buffer.put(ambientIntensity.y);
             buffer.put(ambientIntensity.z);
@@ -608,7 +607,7 @@ public class ProjectedLight extends LWJGLWindow {
             buffer.put(padding);
             for (PerLight light : lights) {
                 if (light == null) break;
-                light.fillBuffer(buffer);
+                light.get(buffer);
             }
             return buffer;
         }
@@ -636,6 +635,6 @@ public class ProjectedLight extends LWJGLWindow {
         }
 
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
-        glBufferData(GL_UNIFORM_BUFFER, lightData.fillAndFlipBuffer(lightBlockBuffer), GL_STREAM_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, lightData.getAndFlip(lightBlockBuffer), GL_STREAM_DRAW);
     }
 }

@@ -4,12 +4,11 @@ import org.jgltut.LWJGLWindow;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.Timer;
-import org.jglsdk.BufferableData;
+import org.jgltut.Bufferable;
 import org.jglsdk.glimg.DdsLoader;
 import org.jglsdk.glimg.ImageSet;
 import org.jglsdk.glimg.ImageSet.Dimensions;
 import org.jglsdk.glimg.ImageSet.SingleImage;
-import org.jglsdk.glm.Glm;
 import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Vector3f;
@@ -197,7 +196,7 @@ public class GammaCheckers extends LWJGLWindow {
         projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.get(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -335,13 +334,13 @@ public class GammaCheckers extends LWJGLWindow {
 
     private int projectionUniformBuffer;
 
-    private class ProjectionBlock extends BufferableData<FloatBuffer> {
+    private class ProjectionBlock implements Bufferable<FloatBuffer> {
         Matrix4f cameraToClipMatrix;
 
         static final int SIZE = 16*4;
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             return cameraToClipMatrix.get(buffer);
         }
     }

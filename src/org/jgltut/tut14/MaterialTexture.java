@@ -2,7 +2,7 @@ package org.jgltut.tut14;
 
 import org.jgltut.LWJGLWindow;
 import org.jgltut.framework.*;
-import org.jglsdk.BufferableData;
+import org.jgltut.Bufferable;
 import org.jglsdk.glimg.DdsLoader;
 import org.jglsdk.glimg.ImageSet;
 import org.jglsdk.glimg.ImageSet.Dimensions;
@@ -232,7 +232,7 @@ public class MaterialTexture extends LWJGLWindow {
         lightData.lights[1].lightIntensity = new Vector4f(0.4f, 0.4f, 0.4f, 1.0f);
 
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillAndFlipBuffer(lightBlockBuffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.getAndFlip(lightBlockBuffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         {
@@ -336,7 +336,7 @@ public class MaterialTexture extends LWJGLWindow {
         projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.get(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -598,13 +598,13 @@ public class MaterialTexture extends LWJGLWindow {
 
     private int projectionUniformBuffer;
 
-    private class ProjectionBlock extends BufferableData<FloatBuffer> {
+    private class ProjectionBlock implements Bufferable<FloatBuffer> {
         Matrix4f cameraToClipMatrix;
 
         static final int SIZE = 16*4;
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             return cameraToClipMatrix.get(buffer);
         }
     }
@@ -614,14 +614,14 @@ public class MaterialTexture extends LWJGLWindow {
 
     private int lightUniformBuffer;
 
-    private class PerLight extends BufferableData<FloatBuffer> {
+    private class PerLight implements Bufferable<FloatBuffer> {
         static final int SIZE = 4 * (4 + 4);
 
         Vector4f cameraSpaceLightPos;
         Vector4f lightIntensity;
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(cameraSpaceLightPos.x);
             buffer.put(cameraSpaceLightPos.y);
             buffer.put(cameraSpaceLightPos.z);
@@ -634,7 +634,7 @@ public class MaterialTexture extends LWJGLWindow {
         }
     }
 
-    private class LightBlock extends BufferableData<FloatBuffer> {
+    private class LightBlock implements Bufferable<FloatBuffer> {
         static final int MAX_NUMBER_OF_LIGHTS = 4;
         static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
 
@@ -645,7 +645,7 @@ public class MaterialTexture extends LWJGLWindow {
         PerLight lights[] = new PerLight[MAX_NUMBER_OF_LIGHTS];
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(ambientIntensity.x);
             buffer.put(ambientIntensity.y);
             buffer.put(ambientIntensity.z);
@@ -655,7 +655,7 @@ public class MaterialTexture extends LWJGLWindow {
             buffer.put(padding);
             for (PerLight light : lights) {
                 if (light == null) break;
-                light.fillBuffer(buffer);
+                light.get(buffer);
             }
             return buffer;
         }
@@ -668,7 +668,7 @@ public class MaterialTexture extends LWJGLWindow {
 
     private int materialUniformBuffer;
 
-    private class MaterialBlock extends BufferableData<ByteBuffer> {
+    private class MaterialBlock implements Bufferable<ByteBuffer> {
         Vector4f diffuseColor;
         Vector4f specularColor;
         float specularShininess;
@@ -677,7 +677,7 @@ public class MaterialTexture extends LWJGLWindow {
         static final int SIZE = 4*4 + 4*4 + ((1 + 3) * FLOAT_SIZE);
 
         @Override
-        public ByteBuffer fillBuffer(ByteBuffer buffer) {
+        public ByteBuffer get(ByteBuffer buffer) {
             buffer.putFloat(diffuseColor.x);
             buffer.putFloat(diffuseColor.y);
             buffer.putFloat(diffuseColor.z);

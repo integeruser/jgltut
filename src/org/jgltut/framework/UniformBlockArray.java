@@ -1,6 +1,6 @@
 package org.jgltut.framework;
 
-import org.jglsdk.BufferableData;
+import org.jgltut.Bufferable;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
@@ -14,7 +14,7 @@ import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  */
-public class UniformBlockArray<T extends BufferableData<ByteBuffer>> {
+public class UniformBlockArray<T extends Bufferable<ByteBuffer>> {
     public UniformBlockArray(int blockSize, int arrayCount) {
         this.arrayCount = arrayCount;
         this.blockSize = blockSize;
@@ -48,7 +48,7 @@ public class UniformBlockArray<T extends BufferableData<ByteBuffer>> {
      */
     public void set(int index, T data) {
         ByteBuffer tempByteBuffer = BufferUtils.createByteBuffer(blockSize);
-        data.fillAndFlipBuffer(tempByteBuffer);
+        data.getAndFlip(tempByteBuffer);
 
         byte temp[] = new byte[blockSize];
         for (int i = 0; i < temp.length; i++) {

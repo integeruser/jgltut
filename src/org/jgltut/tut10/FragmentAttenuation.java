@@ -5,7 +5,7 @@ import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.MousePole;
 import org.jgltut.framework.Timer;
-import org.jglsdk.BufferableData;
+import org.jgltut.Bufferable;
 import org.jglsdk.glutil.MousePoles.*;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
@@ -305,9 +305,9 @@ public class FragmentAttenuation extends LWJGLWindow {
         unprojData.windowSize = new Vector2i(w, h);
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.get(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, unprojectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, unprojData.fillAndFlipBuffer(BufferUtils.createByteBuffer(18 * FLOAT_SIZE)));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, unprojData.getAndFlip(BufferUtils.createByteBuffer(18 * FLOAT_SIZE)));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -492,25 +492,25 @@ public class FragmentAttenuation extends LWJGLWindow {
     private int projectionUniformBuffer;
     private int unprojectionUniformBuffer;
 
-    private class ProjectionBlock extends BufferableData<FloatBuffer> {
+    private class ProjectionBlock implements Bufferable<FloatBuffer> {
         Matrix4f cameraToClipMatrix;
 
         static final int SIZE = 16*4;
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             return cameraToClipMatrix.get(buffer);
         }
     }
 
-    private class UnProjectionBlock extends BufferableData<ByteBuffer> {
+    private class UnProjectionBlock implements Bufferable<ByteBuffer> {
         Matrix4f clipToCameraMatrix;
         Vector2i windowSize;
 
         static final int SIZE = 16*4 + 2*4;
 
         @Override
-        public ByteBuffer fillBuffer(ByteBuffer buffer) {
+        public ByteBuffer get(ByteBuffer buffer) {
             float[] matrix = new float[16];
             clipToCameraMatrix.get(matrix);
             for (float f : matrix) {

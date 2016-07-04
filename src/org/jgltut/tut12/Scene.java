@@ -1,8 +1,7 @@
 package org.jgltut.tut12;
 
-import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
-import org.jglsdk.BufferableData;
+import org.jgltut.Bufferable;
 import org.joml.Matrix3f;
 import org.joml.MatrixStackf;
 import org.joml.Vector3f;
@@ -48,7 +47,7 @@ abstract class Scene {
         final float[] padding = new float[(sizeMaterialBlock - MaterialBlock.SIZE) / (Float.SIZE / Byte.SIZE)];
 
         for (MaterialBlock materialBlock : materials) {
-            materialBlock.fillBuffer(materialsBuffer);
+            materialBlock.get(materialsBuffer);
             materialsBuffer.put(padding);  // The buffer size must be sizeMaterialUniformBuffer
         }
 
@@ -226,7 +225,7 @@ abstract class Scene {
     }
 
 
-    private class MaterialBlock extends BufferableData<FloatBuffer> {
+    private class MaterialBlock implements Bufferable<FloatBuffer> {
         Vector4f diffuseColor;
         Vector4f specularColor;
         float specularShininess;
@@ -235,7 +234,7 @@ abstract class Scene {
         static final int SIZE = 4*4 + 4*4 + ((1 + 3) * 4);
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(diffuseColor.x);
             buffer.put(diffuseColor.y);
             buffer.put(diffuseColor.z);

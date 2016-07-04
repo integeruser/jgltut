@@ -4,8 +4,7 @@ import org.jgltut.framework.Interpolators.ConstVelLinearInterpolatorVec3;
 import org.jgltut.framework.Interpolators.WeightedLinearInterpolatorFloat;
 import org.jgltut.framework.Interpolators.WeightedLinearInterpolatorVec4;
 import org.jgltut.framework.Timer;
-import org.jglsdk.BufferableData;
-import org.jglsdk.glm.Glm;
+import org.jgltut.Bufferable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -204,14 +203,14 @@ class LightManager {
     private static final int NUMBER_OF_LIGHTS = 4;
     private static final int NUMBER_OF_POINT_LIGHTS = NUMBER_OF_LIGHTS - 1;
 
-    class PerLight extends BufferableData<FloatBuffer> {
+    class PerLight implements Bufferable<FloatBuffer> {
         static final int SIZE = 4 * (4 + 4);
 
         Vector4f cameraSpaceLightPos;
         Vector4f lightIntensity;
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(cameraSpaceLightPos.x);
             buffer.put(cameraSpaceLightPos.y);
             buffer.put(cameraSpaceLightPos.z);
@@ -224,7 +223,7 @@ class LightManager {
         }
     }
 
-    class LightBlock extends BufferableData<FloatBuffer> {
+    class LightBlock implements Bufferable<FloatBuffer> {
         static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * NUMBER_OF_LIGHTS;
 
         Vector4f ambientIntensity;
@@ -234,7 +233,7 @@ class LightManager {
         PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(ambientIntensity.x);
             buffer.put(ambientIntensity.y);
             buffer.put(ambientIntensity.z);
@@ -244,13 +243,13 @@ class LightManager {
             buffer.put(padding);
             for (PerLight light : lights) {
                 if (light == null) break;
-                light.fillBuffer(buffer);
+                light.get(buffer);
             }
             return buffer;
         }
     }
 
-    class LightBlockHDR extends BufferableData<FloatBuffer> {
+    class LightBlockHDR implements Bufferable<FloatBuffer> {
         static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * NUMBER_OF_LIGHTS;
 
         Vector4f ambientIntensity;
@@ -260,7 +259,7 @@ class LightManager {
         PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(ambientIntensity.x);
             buffer.put(ambientIntensity.y);
             buffer.put(ambientIntensity.z);
@@ -270,13 +269,13 @@ class LightManager {
             buffer.put(padding);
             for (PerLight light : lights) {
                 if (light == null) break;
-                light.fillBuffer(buffer);
+                light.get(buffer);
             }
             return buffer;
         }
     }
 
-    class LightBlockGamma extends BufferableData<FloatBuffer> {
+    class LightBlockGamma implements Bufferable<FloatBuffer> {
         static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * NUMBER_OF_LIGHTS;
 
         Vector4f ambientIntensity;
@@ -287,7 +286,7 @@ class LightManager {
         PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(ambientIntensity.x);
             buffer.put(ambientIntensity.y);
             buffer.put(ambientIntensity.z);
@@ -298,7 +297,7 @@ class LightManager {
             buffer.put(padding);
             for (PerLight light : lights) {
                 if (light == null) break;
-                light.fillBuffer(buffer);
+                light.get(buffer);
             }
             return buffer;
         }

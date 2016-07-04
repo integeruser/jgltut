@@ -5,7 +5,7 @@ import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.MousePole;
 import org.jgltut.framework.Timer;
-import org.jglsdk.BufferableData;
+import org.jgltut.Bufferable;
 import org.jglsdk.glutil.MousePoles.MouseButtons;
 import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;
@@ -204,7 +204,7 @@ public class GeomImpostor extends LWJGLWindow {
         lightData.lights[1].lightIntensity = new Vector4f(0.4f, 0.4f, 0.4f, 1.0f);
 
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillAndFlipBuffer(lightBlockBuffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.getAndFlip(lightBlockBuffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         {
@@ -252,7 +252,7 @@ public class GeomImpostor extends LWJGLWindow {
                 FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(NUMBER_OF_SPHERES * VertexData.SIZE / FLOAT_SIZE);
 
                 for (VertexData vertexData : posSizeArray) {
-                    vertexData.fillBuffer(vertexDataBuffer);
+                    vertexData.get(vertexDataBuffer);
                 }
 
                 vertexDataBuffer.flip();
@@ -324,7 +324,7 @@ public class GeomImpostor extends LWJGLWindow {
         projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.get(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -522,14 +522,14 @@ public class GeomImpostor extends LWJGLWindow {
     private ViewPole viewPole = new ViewPole(initialViewData, viewScale, MouseButtons.MB_LEFT_BTN);
 
     ////////////////////////////////
-    private class VertexData extends BufferableData<FloatBuffer> {
+    private class VertexData implements Bufferable<FloatBuffer> {
         Vector3f cameraPosition;
         float sphereRadius;
 
         static final int SIZE = 3*4 + (1 * FLOAT_SIZE);
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(cameraPosition.x);
             buffer.put(cameraPosition.y);
             buffer.put(cameraPosition.z);
@@ -544,13 +544,13 @@ public class GeomImpostor extends LWJGLWindow {
 
     private int projectionUniformBuffer;
 
-    private class ProjectionBlock extends BufferableData<FloatBuffer> {
+    private class ProjectionBlock implements Bufferable<FloatBuffer> {
         Matrix4f cameraToClipMatrix;
 
         static final int SIZE = 16*4;
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             return cameraToClipMatrix.get(buffer);
         }
     }
@@ -560,14 +560,14 @@ public class GeomImpostor extends LWJGLWindow {
 
     private int lightUniformBuffer;
 
-    private class PerLight extends BufferableData<FloatBuffer> {
+    private class PerLight implements Bufferable<FloatBuffer> {
         static final int SIZE = 4 * (4 + 4);
 
         Vector4f cameraSpaceLightPos;
         Vector4f lightIntensity;
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(cameraSpaceLightPos.x);
             buffer.put(cameraSpaceLightPos.y);
             buffer.put(cameraSpaceLightPos.z);
@@ -580,7 +580,7 @@ public class GeomImpostor extends LWJGLWindow {
         }
     }
 
-    private class LightBlock extends BufferableData<FloatBuffer> {
+    private class LightBlock implements Bufferable<FloatBuffer> {
         static final int MAX_NUMBER_OF_LIGHTS = 4;
         static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
 
@@ -591,7 +591,7 @@ public class GeomImpostor extends LWJGLWindow {
         PerLight lights[] = new PerLight[MAX_NUMBER_OF_LIGHTS];
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(ambientIntensity.x);
             buffer.put(ambientIntensity.y);
             buffer.put(ambientIntensity.z);
@@ -601,7 +601,7 @@ public class GeomImpostor extends LWJGLWindow {
             buffer.put(padding);
             for (PerLight light : lights) {
                 if (light == null) break;
-                light.fillBuffer(buffer);
+                light.get(buffer);
             }
             return buffer;
         }
@@ -613,7 +613,7 @@ public class GeomImpostor extends LWJGLWindow {
     private int materialArrayUniformBuffer;
     private int materialTerrainUniformBuffer;
 
-    private class MaterialEntry extends BufferableData<FloatBuffer> {
+    private class MaterialEntry implements Bufferable<FloatBuffer> {
         Vector4f diffuseColor;
         Vector4f specularColor;
         float specularShininess;
@@ -622,7 +622,7 @@ public class GeomImpostor extends LWJGLWindow {
         static final int SIZE = 4*4 + 4*4 + ((1 + 3) * FLOAT_SIZE);
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             buffer.put(diffuseColor.x);
             buffer.put(diffuseColor.y);
             buffer.put(diffuseColor.z);
@@ -673,7 +673,7 @@ public class GeomImpostor extends LWJGLWindow {
             FloatBuffer ubArrayBuffer = BufferUtils.createFloatBuffer(ubArray.size() * MaterialEntry.SIZE / FLOAT_SIZE);
 
             for (MaterialEntry anUbArray : ubArray) {
-                anUbArray.fillBuffer(ubArrayBuffer);
+                anUbArray.get(ubArrayBuffer);
             }
 
             ubArrayBuffer.flip();
@@ -689,7 +689,7 @@ public class GeomImpostor extends LWJGLWindow {
             matEntry.specularColor = new Vector4f(0.5f, 0.5f, 0.5f, 1.0f);
             matEntry.specularShininess = 0.6f;
 
-            glBufferData(GL_UNIFORM_BUFFER, matEntry.fillAndFlipBuffer(BufferUtils.createFloatBuffer(MaterialEntry.SIZE / FLOAT_SIZE)),
+            glBufferData(GL_UNIFORM_BUFFER, matEntry.getAndFlip(BufferUtils.createFloatBuffer(MaterialEntry.SIZE / FLOAT_SIZE)),
                     GL_STATIC_DRAW);
         }
 

@@ -4,7 +4,7 @@ import org.jgltut.LWJGLWindow;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.MousePole;
 import org.jgltut.framework.Timer;
-import org.jglsdk.BufferableData;
+import org.jgltut.Bufferable;
 import org.jglsdk.glutil.MousePoles.MouseButtons;
 import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;
@@ -220,7 +220,7 @@ public class SceneLighting extends LWJGLWindow {
         LightBlock lightData = lights.getLightInformation(worldToCamMat);
 
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.fillAndFlipBuffer(lightBlockBuffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, lightData.getAndFlip(lightBlockBuffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         {
@@ -306,7 +306,7 @@ public class SceneLighting extends LWJGLWindow {
         projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.fillBuffer(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.get(mat4Buffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -557,13 +557,13 @@ public class SceneLighting extends LWJGLWindow {
 
     private int projectionUniformBuffer;
 
-    private class ProjectionBlock extends BufferableData<FloatBuffer> {
+    private class ProjectionBlock implements Bufferable<FloatBuffer> {
         Matrix4f cameraToClipMatrix;
 
         static final int SIZE = 16*4;
 
         @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+        public FloatBuffer get(FloatBuffer buffer) {
             return cameraToClipMatrix.get(buffer);
         }
     }

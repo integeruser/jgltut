@@ -1,4 +1,4 @@
-package org.jglsdk;
+package org.jgltut;
 
 import java.nio.Buffer;
 
@@ -6,12 +6,12 @@ import java.nio.Buffer;
 /**
  * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
  */
-public abstract class BufferableData<T extends Buffer> {
-    public abstract T fillBuffer(T buffer);
+public interface Bufferable<T extends Buffer> {
+    T get(T buffer);
 
-    public T fillAndFlipBuffer(T buffer) {
+    default T getAndFlip(T buffer) {
         buffer.clear();
-        fillBuffer(buffer);
+        get(buffer);
         buffer.flip();
         return buffer;
     }

@@ -1,11 +1,5 @@
 package org.jgltut.tut17;
 
-import org.jgltut.LWJGLWindow;
-import org.jgltut.framework.*;
-import org.jgltut.framework.Scene.SceneNode;
-import org.jgltut.framework.SceneBinders.UniformIntBinder;
-import org.jgltut.framework.SceneBinders.UniformMat4Binder;
-import org.jgltut.framework.SceneBinders.UniformVec3Binder;
 import org.jglsdk.BufferableData;
 import org.jglsdk.glimg.DdsLoader;
 import org.jglsdk.glimg.ImageSet;
@@ -13,6 +7,12 @@ import org.jglsdk.glimg.ImageSet.Dimensions;
 import org.jglsdk.glimg.ImageSet.SingleImage;
 import org.jglsdk.glimg.TextureGenerator;
 import org.jglsdk.glutil.MousePoles.*;
+import org.jgltut.LWJGLWindow;
+import org.jgltut.framework.*;
+import org.jgltut.framework.Scene.SceneNode;
+import org.jgltut.framework.SceneBinders.UniformIntBinder;
+import org.jgltut.framework.SceneBinders.UniformMat4Binder;
+import org.jgltut.framework.SceneBinders.UniformVec3Binder;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
@@ -492,8 +492,6 @@ public class CubePointLight extends LWJGLWindow {
     }
 
     ////////////////////////////////
-    private static final int MAX_NUMBER_OF_LIGHTS = 4;
-
     private final int lightBlockIndex = 1;
     private final int lightProjTexUnit = 3;
 
@@ -501,10 +499,10 @@ public class CubePointLight extends LWJGLWindow {
     private UniformIntBinder lightNumBinder;
 
     private class PerLight extends BufferableData<FloatBuffer> {
+        static final int SIZE = 4 * (4 + 4);
+
         Vector4f cameraSpaceLightPos;
         Vector4f lightIntensity;
-
-        static final int SIZE = 4*4 + 4*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -521,13 +519,14 @@ public class CubePointLight extends LWJGLWindow {
     }
 
     private class LightBlock extends BufferableData<FloatBuffer> {
+        static final int MAX_NUMBER_OF_LIGHTS = 4;
+        static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
+
         Vector4f ambientIntensity;
         float lightAttenuation;
         float maxIntensity;
         float padding[] = new float[2];
         PerLight lights[] = new PerLight[MAX_NUMBER_OF_LIGHTS];
-
-        static final int SIZE = 4*4 + ((1 + 1 + 2) * 4) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {

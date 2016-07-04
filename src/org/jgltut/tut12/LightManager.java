@@ -205,10 +205,10 @@ class LightManager {
     private static final int NUMBER_OF_POINT_LIGHTS = NUMBER_OF_LIGHTS - 1;
 
     class PerLight extends BufferableData<FloatBuffer> {
+        static final int SIZE = 4 * (4 + 4);
+
         Vector4f cameraSpaceLightPos;
         Vector4f lightIntensity;
-
-        static final int SIZE = 4*4 + 4*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -225,36 +225,13 @@ class LightManager {
     }
 
     class LightBlock extends BufferableData<FloatBuffer> {
-        Vector4f ambientIntensity;
-        float lightAttenuation;
-        float padding[] = new float[3];
-        PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
+        static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * NUMBER_OF_LIGHTS;
 
-        static final int SIZE = 4*4 + ((1 + 3) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * NUMBER_OF_LIGHTS;
-
-        @Override
-        public FloatBuffer fillBuffer(FloatBuffer buffer) {
-            buffer.put(ambientIntensity.x);
-            buffer.put(ambientIntensity.y);
-            buffer.put(ambientIntensity.z);
-            buffer.put(ambientIntensity.w);
-            buffer.put(lightAttenuation);
-            buffer.put(padding);
-            for (PerLight light : lights) {
-                light.fillBuffer(buffer);
-            }
-            return buffer;
-        }
-    }
-
-    class LightBlockHDR extends BufferableData<FloatBuffer> {
         Vector4f ambientIntensity;
         float lightAttenuation;
         float maxIntensity;
         float padding[] = new float[2];
         PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
-
-        static final int SIZE = 4*4 + ((1 + 1 + 2) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * NUMBER_OF_LIGHTS;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -266,6 +243,33 @@ class LightManager {
             buffer.put(maxIntensity);
             buffer.put(padding);
             for (PerLight light : lights) {
+                if (light == null) break;
+                light.fillBuffer(buffer);
+            }
+            return buffer;
+        }
+    }
+
+    class LightBlockHDR extends BufferableData<FloatBuffer> {
+        static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * NUMBER_OF_LIGHTS;
+
+        Vector4f ambientIntensity;
+        float lightAttenuation;
+        float maxIntensity;
+        float padding[] = new float[2];
+        PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
+
+        @Override
+        public FloatBuffer fillBuffer(FloatBuffer buffer) {
+            buffer.put(ambientIntensity.x);
+            buffer.put(ambientIntensity.y);
+            buffer.put(ambientIntensity.z);
+            buffer.put(ambientIntensity.w);
+            buffer.put(lightAttenuation);
+            buffer.put(maxIntensity);
+            buffer.put(padding);
+            for (PerLight light : lights) {
+                if (light == null) break;
                 light.fillBuffer(buffer);
             }
             return buffer;
@@ -273,14 +277,14 @@ class LightManager {
     }
 
     class LightBlockGamma extends BufferableData<FloatBuffer> {
+        static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * NUMBER_OF_LIGHTS;
+
         Vector4f ambientIntensity;
         float lightAttenuation;
         float maxIntensity;
         float gamma;
         float padding;
         PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
-
-        static final int SIZE = 4*4 + ((1 + 1 + 1 + 1) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * NUMBER_OF_LIGHTS;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -293,6 +297,7 @@ class LightManager {
             buffer.put(gamma);
             buffer.put(padding);
             for (PerLight light : lights) {
+                if (light == null) break;
                 light.fillBuffer(buffer);
             }
             return buffer;

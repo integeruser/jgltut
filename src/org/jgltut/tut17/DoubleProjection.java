@@ -384,18 +384,16 @@ public class DoubleProjection extends LWJGLWindow {
     }
 
     ////////////////////////////////
-    private static final int MAX_NUMBER_OF_LIGHTS = 4;
-
     private final int lightBlockIndex = 1;
 
     private int lightUniformBuffer;
     private UniformIntBinder lightNumBinder;
 
     private class PerLight extends BufferableData<FloatBuffer> {
+        static final int SIZE = 4 * (4 + 4);
+
         Vector4f cameraSpaceLightPos;
         Vector4f lightIntensity;
-
-        static final int SIZE = 4*4 + 4*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -412,13 +410,14 @@ public class DoubleProjection extends LWJGLWindow {
     }
 
     private class LightBlock extends BufferableData<FloatBuffer> {
+        static final int MAX_NUMBER_OF_LIGHTS = 4;
+        static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
+
         Vector4f ambientIntensity;
         float lightAttenuation;
         float maxIntensity;
         float padding[] = new float[2];
         PerLight lights[] = new PerLight[MAX_NUMBER_OF_LIGHTS];
-
-        static final int SIZE = 4*4 + ((1 + 1 + 2) * (Float.SIZE / Byte.SIZE)) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {

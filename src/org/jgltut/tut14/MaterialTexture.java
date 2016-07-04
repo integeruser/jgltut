@@ -610,17 +610,15 @@ public class MaterialTexture extends LWJGLWindow {
     }
 
     ////////////////////////////////
-    private static final int NUMBER_OF_LIGHTS = 2;
-
     private final int lightBlockIndex = 1;
 
     private int lightUniformBuffer;
 
-    class PerLight extends BufferableData<FloatBuffer> {
+    private class PerLight extends BufferableData<FloatBuffer> {
+        static final int SIZE = 4 * (4 + 4);
+
         Vector4f cameraSpaceLightPos;
         Vector4f lightIntensity;
-
-        static final int SIZE = 4*4 + 4*4;
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -636,13 +634,15 @@ public class MaterialTexture extends LWJGLWindow {
         }
     }
 
-    class LightBlock extends BufferableData<FloatBuffer> {
+    private class LightBlock extends BufferableData<FloatBuffer> {
+        static final int MAX_NUMBER_OF_LIGHTS = 4;
+        static final int SIZE = 4 * (4 + 1 + 1 + 2) + PerLight.SIZE * MAX_NUMBER_OF_LIGHTS;
+
         Vector4f ambientIntensity;
         float lightAttenuation;
-        float padding[] = new float[3];
-        PerLight lights[] = new PerLight[NUMBER_OF_LIGHTS];
-
-        static final int SIZE = 4*4 + ((1 + 3) * FLOAT_SIZE) + PerLight.SIZE * NUMBER_OF_LIGHTS;
+        float maxIntensity;
+        float padding[] = new float[2];
+        PerLight lights[] = new PerLight[MAX_NUMBER_OF_LIGHTS];
 
         @Override
         public FloatBuffer fillBuffer(FloatBuffer buffer) {
@@ -651,8 +651,10 @@ public class MaterialTexture extends LWJGLWindow {
             buffer.put(ambientIntensity.z);
             buffer.put(ambientIntensity.w);
             buffer.put(lightAttenuation);
+            buffer.put(maxIntensity);
             buffer.put(padding);
             for (PerLight light : lights) {
+                if (light == null) break;
                 light.fillBuffer(buffer);
             }
             return buffer;

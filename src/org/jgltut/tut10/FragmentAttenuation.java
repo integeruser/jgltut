@@ -1,12 +1,14 @@
 package org.jgltut.tut10;
 
+import org.jglsdk.glutil.MousePoles.*;
+import org.jgltut.Bufferable;
 import org.jgltut.LWJGLWindow;
+import org.jgltut.commons.ProjectionBlock;
+import org.jgltut.commons.UnProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.MousePole;
 import org.jgltut.framework.Timer;
-import org.jgltut.Bufferable;
-import org.jglsdk.glutil.MousePoles.*;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
@@ -305,9 +307,9 @@ public class FragmentAttenuation extends LWJGLWindow {
         unprojData.windowSize = new Vector2i(w, h);
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.get(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.getAndFlip(projBuffer));
         glBindBuffer(GL_UNIFORM_BUFFER, unprojectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, unprojData.getAndFlip(BufferUtils.createByteBuffer(18 * FLOAT_SIZE)));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, unprojData.getAndFlip(unprojBuffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -385,6 +387,8 @@ public class FragmentAttenuation extends LWJGLWindow {
     private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
     private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
+    private FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE);
+    private ByteBuffer unprojBuffer = BufferUtils.createByteBuffer(UnProjectionBlock.SIZE);
 
 
     private void initializePrograms() {
@@ -491,35 +495,4 @@ public class FragmentAttenuation extends LWJGLWindow {
 
     private int projectionUniformBuffer;
     private int unprojectionUniformBuffer;
-
-    private class ProjectionBlock implements Bufferable<FloatBuffer> {
-        Matrix4f cameraToClipMatrix;
-
-        static final int SIZE = 16*4;
-
-        @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            return cameraToClipMatrix.get(buffer);
-        }
-    }
-
-    private class UnProjectionBlock implements Bufferable<ByteBuffer> {
-        Matrix4f clipToCameraMatrix;
-        Vector2i windowSize;
-
-        static final int SIZE = 16*4 + 2*4;
-
-        @Override
-        public ByteBuffer get(ByteBuffer buffer) {
-            float[] matrix = new float[16];
-            clipToCameraMatrix.get(matrix);
-            for (float f : matrix) {
-                buffer.putFloat(f);
-            }
-            // The shader uses an int vector
-            buffer.putInt((int) windowSize.x);
-            buffer.putInt((int) windowSize.y);
-            return buffer;
-        }
-    }
 }

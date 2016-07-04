@@ -1,6 +1,7 @@
 package org.jgltut.tut11;
 
 import org.jgltut.LWJGLWindow;
+import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.MousePole;
@@ -314,7 +315,7 @@ public class BlinnVsPhongLighting extends LWJGLWindow {
         projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.get(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.getAndFlip(projBuffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -411,6 +412,7 @@ public class BlinnVsPhongLighting extends LWJGLWindow {
     private FloatBuffer mat3Buffer = BufferUtils.createFloatBuffer(9);
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
     private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
+    private FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE);
 
 
     private void initializePrograms() {
@@ -528,17 +530,6 @@ public class BlinnVsPhongLighting extends LWJGLWindow {
     private final int projectionBlockIndex = 2;
 
     private int projectionUniformBuffer;
-
-    private class ProjectionBlock implements Bufferable<FloatBuffer> {
-        Matrix4f cameraToClipMatrix;
-
-        static final int SIZE = 16*4;
-
-        @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            return cameraToClipMatrix.get(buffer);
-        }
-    }
 
     ////////////////////////////////
     private LightingModel lightModel = LightingModel.BLINN_SPECULAR;

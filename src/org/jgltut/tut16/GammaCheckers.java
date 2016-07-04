@@ -1,6 +1,7 @@
 package org.jgltut.tut16;
 
 import org.jgltut.LWJGLWindow;
+import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.Timer;
@@ -196,7 +197,7 @@ public class GammaCheckers extends LWJGLWindow {
         projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.get(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.getAndFlip(projBuffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -218,6 +219,7 @@ public class GammaCheckers extends LWJGLWindow {
 
 
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
+    private FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE);
 
 
     private void initializePrograms() {
@@ -333,15 +335,4 @@ public class GammaCheckers extends LWJGLWindow {
     private final int projectionBlockIndex = 0;
 
     private int projectionUniformBuffer;
-
-    private class ProjectionBlock implements Bufferable<FloatBuffer> {
-        Matrix4f cameraToClipMatrix;
-
-        static final int SIZE = 16*4;
-
-        @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            return cameraToClipMatrix.get(buffer);
-        }
-    }
 }

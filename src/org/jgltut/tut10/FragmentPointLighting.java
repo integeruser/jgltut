@@ -1,6 +1,7 @@
 package org.jgltut.tut10;
 
 import org.jgltut.LWJGLWindow;
+import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.MousePole;
@@ -270,7 +271,7 @@ public class FragmentPointLighting extends LWJGLWindow {
         projData.cameraToClipMatrix = persMatrix;
 
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.get(mat4Buffer));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, projData.getAndFlip(projBuffer));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glViewport(0, 0, w, h);
@@ -341,6 +342,7 @@ public class FragmentPointLighting extends LWJGLWindow {
 
     private FloatBuffer vec4Buffer = BufferUtils.createFloatBuffer(4);
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
+    private FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE);
 
 
     private void initializePrograms() {
@@ -439,15 +441,4 @@ public class FragmentPointLighting extends LWJGLWindow {
     private final int projectionBlockIndex = 2;
 
     private int projectionUniformBuffer;
-
-    private class ProjectionBlock implements Bufferable<FloatBuffer> {
-        Matrix4f cameraToClipMatrix;
-
-        static final int SIZE = 16*4;
-
-        @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            return cameraToClipMatrix.get(buffer);
-        }
-    }
 }

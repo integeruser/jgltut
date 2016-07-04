@@ -1,6 +1,7 @@
 package org.jgltut.tut17;
 
 import org.jgltut.LWJGLWindow;
+import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.*;
 import org.jgltut.framework.Scene.SceneNode;
 import org.jgltut.framework.SceneBinders.UniformIntBinder;
@@ -233,7 +234,7 @@ public class ProjectedLight extends LWJGLWindow {
             projData.cameraToClipMatrix = persMatrix;
 
             glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-            glBufferData(GL_UNIFORM_BUFFER, projData.get(mat4Buffer), GL_STREAM_DRAW);
+            glBufferData(GL_UNIFORM_BUFFER, projData.getAndFlip(projBuffer), GL_STREAM_DRAW);
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
         }
 
@@ -376,6 +377,7 @@ public class ProjectedLight extends LWJGLWindow {
 
 
     private FloatBuffer mat4Buffer = BufferUtils.createFloatBuffer(16);
+    private FloatBuffer projBuffer = BufferUtils.createFloatBuffer(ProjectionBlock.SIZE);
     private final FloatBuffer lightBlockBuffer = BufferUtils.createFloatBuffer(LightBlock.SIZE);
 
 
@@ -547,17 +549,6 @@ public class ProjectedLight extends LWJGLWindow {
     private final int projectionBlockIndex = 0;
 
     private int projectionUniformBuffer;
-
-    private class ProjectionBlock implements Bufferable<FloatBuffer> {
-        Matrix4f cameraToClipMatrix;
-
-        static final int SIZE = 16*4;
-
-        @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            return cameraToClipMatrix.get(buffer);
-        }
-    }
 
     ////////////////////////////////
     private final int lightBlockIndex = 1;

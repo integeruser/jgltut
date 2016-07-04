@@ -169,7 +169,7 @@ public class ManyImages extends LWJGLWindow {
     protected void reshape(int w, int h) {
         float zNear = 1.0f;
         float zFar = 1000.0f;
-        MatrixStackf persMatrix = new MatrixStackf();
+        Matrix4f persMatrix = new Matrix4f();
         persMatrix.perspective(90.0f, (w / (float) h), zNear, zFar);
 
         ProjectionBlock projData = new ProjectionBlock();

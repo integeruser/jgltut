@@ -124,7 +124,7 @@ public class GammaRamp extends LWJGLWindow {
 
     @Override
     protected void reshape(int w, int h) {
-        MatrixStackf persMatrix = new MatrixStackf();
+        Matrix4f persMatrix = new Matrix4f();
         persMatrix.translate(-1.0f, 1.0f, 0.0f);
         persMatrix.scale(2.0f / w, -2.0f / h, 1.0f);
 

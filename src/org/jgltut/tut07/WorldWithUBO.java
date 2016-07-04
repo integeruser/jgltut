@@ -159,7 +159,7 @@ public class WorldWithUBO extends LWJGLWindow {
     protected void reshape(int w, int h) {
         float zNear = 1.0f;
         float zFar = 1000.0f;
-        MatrixStackf persMatrix = new MatrixStackf();
+        Matrix4f persMatrix = new Matrix4f();
         persMatrix.perspective((float) Math.toRadians(45.0f), (w / (float) h), zNear, zFar);
 
         glBindBuffer(GL_UNIFORM_BUFFER, globalMatricesUBO);

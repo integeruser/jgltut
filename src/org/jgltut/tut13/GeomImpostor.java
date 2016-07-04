@@ -5,10 +5,7 @@ import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;
 import org.jglsdk.glutil.MousePoles.ViewScale;
 import org.jgltut.Tutorial;
-import org.jgltut.commons.Bufferable;
-import org.jgltut.commons.LightBlock;
-import org.jgltut.commons.PerLight;
-import org.jgltut.commons.ProjectionBlock;
+import org.jgltut.commons.*;
 import org.jgltut.framework.Framework;
 import org.jgltut.framework.Mesh;
 import org.jgltut.framework.MousePole;
@@ -20,6 +17,7 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -211,7 +209,7 @@ public class GeomImpostor extends Tutorial {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         {
-            glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialTerrainUniformBuffer, 0, MaterialEntry.SIZE);
+            glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialTerrainUniformBuffer, 0, MaterialBlock.SIZE_IN_BYTES);
 
             Matrix3f normMatrix = new Matrix3f(modelMatrix);
             normMatrix.invert().transpose();
@@ -267,7 +265,7 @@ public class GeomImpostor extends Tutorial {
         }
 
         {
-            glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialArrayUniformBuffer, 0, MaterialEntry.SIZE * NUMBER_OF_SPHERES);
+            glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialArrayUniformBuffer, 0, MaterialBlock.SIZE_IN_BYTES * NUMBER_OF_SPHERES);
 
             glUseProgram(litImpProg.theProgram);
             glBindVertexArray(imposterVAO);
@@ -552,53 +550,29 @@ public class GeomImpostor extends Tutorial {
     private int materialArrayUniformBuffer;
     private int materialTerrainUniformBuffer;
 
-    private class MaterialEntry implements Bufferable<FloatBuffer> {
-        Vector4f diffuseColor;
-        Vector4f specularColor;
-        float specularShininess;
-        float padding[] = new float[3];
-
-        static final int SIZE = 4 * 4 + 4 * 4 + ((1 + 3) * FLOAT_SIZE);
-
-        @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            buffer.put(diffuseColor.x);
-            buffer.put(diffuseColor.y);
-            buffer.put(diffuseColor.z);
-            buffer.put(diffuseColor.w);
-            buffer.put(specularColor.x);
-            buffer.put(specularColor.y);
-            buffer.put(specularColor.z);
-            buffer.put(specularColor.w);
-            buffer.put(specularShininess);
-            buffer.put(padding);
-            return buffer;
-        }
-    }
-
 
     private void createMaterials() {
-        ArrayList<MaterialEntry> ubArray = new ArrayList<>();
+        ArrayList<MaterialBlock> ubArray = new ArrayList<>();
 
-        MaterialEntry matEntry = new MaterialEntry();
+        MaterialBlock matEntry = new MaterialBlock();
         matEntry.diffuseColor = new Vector4f(0.1f, 0.1f, 0.8f, 1.0f);
         matEntry.specularColor = new Vector4f(0.8f, 0.8f, 0.8f, 1.0f);
         matEntry.specularShininess = 0.1f;
         ubArray.add(matEntry);
 
-        matEntry = new MaterialEntry();
+        matEntry = new MaterialBlock();
         matEntry.diffuseColor = new Vector4f(0.4f, 0.4f, 0.4f, 1.0f);
         matEntry.specularColor = new Vector4f(0.1f, 0.1f, 0.1f, 1.0f);
         matEntry.specularShininess = 0.8f;
         ubArray.add(matEntry);
 
-        matEntry = new MaterialEntry();
+        matEntry = new MaterialBlock();
         matEntry.diffuseColor = new Vector4f(0.05f, 0.05f, 0.05f, 1.0f);
         matEntry.specularColor = new Vector4f(0.95f, 0.95f, 0.95f, 1.0f);
         matEntry.specularShininess = 0.3f;
         ubArray.add(matEntry);
 
-        matEntry = new MaterialEntry();
+        matEntry = new MaterialBlock();
         matEntry.diffuseColor = new Vector4f(0.803f, 0.709f, 0.15f, 1.0f);
         matEntry.specularColor = new Vector4f(0.803f, 0.709f, 0.15f, 1.0f).mul(0.75f);
         matEntry.specularShininess = 0.18f;
@@ -609,9 +583,9 @@ public class GeomImpostor extends Tutorial {
         glBindBuffer(GL_UNIFORM_BUFFER, materialArrayUniformBuffer);
 
         {
-            FloatBuffer ubArrayBuffer = BufferUtils.createFloatBuffer(ubArray.size() * MaterialEntry.SIZE / FLOAT_SIZE);
+            ByteBuffer ubArrayBuffer = BufferUtils.createByteBuffer(ubArray.size() * MaterialBlock.SIZE_IN_BYTES);
 
-            for (MaterialEntry anUbArray : ubArray) {
+            for (MaterialBlock anUbArray : ubArray) {
                 anUbArray.get(ubArrayBuffer);
             }
 
@@ -623,12 +597,12 @@ public class GeomImpostor extends Tutorial {
         glBindBuffer(GL_UNIFORM_BUFFER, materialTerrainUniformBuffer);
 
         {
-            matEntry = new MaterialEntry();
+            matEntry = new MaterialBlock();
             matEntry.diffuseColor = new Vector4f(0.5f, 0.5f, 0.5f, 1.0f);
             matEntry.specularColor = new Vector4f(0.5f, 0.5f, 0.5f, 1.0f);
             matEntry.specularShininess = 0.6f;
 
-            glBufferData(GL_UNIFORM_BUFFER, matEntry.getAndFlip(BufferUtils.createFloatBuffer(MaterialEntry.SIZE / FLOAT_SIZE)),
+            glBufferData(GL_UNIFORM_BUFFER, matEntry.getAndFlip(BufferUtils.createByteBuffer(MaterialBlock.SIZE_IN_BYTES)),
                     GL_STATIC_DRAW);
         }
 

@@ -6,8 +6,8 @@ import org.jglsdk.glimg.ImageSet.Dimensions;
 import org.jglsdk.glimg.ImageSet.SingleImage;
 import org.jglsdk.glutil.MousePoles.*;
 import org.jgltut.Tutorial;
-import org.jgltut.commons.Bufferable;
 import org.jgltut.commons.LightBlock;
+import org.jgltut.commons.MaterialBlock;
 import org.jgltut.commons.PerLight;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.*;
@@ -109,7 +109,7 @@ public class MaterialTexture extends Tutorial {
 
         glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE_IN_BYTES);
 
-        glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, 0, MaterialBlock.SIZE);
+        glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, 0, MaterialBlock.SIZE_IN_BYTES);
 
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -241,7 +241,7 @@ public class MaterialTexture extends Tutorial {
             Mesh mesh = useInfinity ? objectMesh : planeMesh;
 
             glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, currMaterial * materialOffset,
-                    MaterialBlock.SIZE);
+                    MaterialBlock.SIZE_IN_BYTES);
 
             modelMatrix.pushMatrix();
 
@@ -606,35 +606,9 @@ public class MaterialTexture extends Tutorial {
 
     private int materialUniformBuffer;
 
-    private class MaterialBlock implements Bufferable<ByteBuffer> {
-        Vector4f diffuseColor;
-        Vector4f specularColor;
-        float specularShininess;
-        float padding[] = new float[3];
-
-        static final int SIZE = 4 * 4 + 4 * 4 + ((1 + 3) * FLOAT_SIZE);
-
-        @Override
-        public ByteBuffer get(ByteBuffer buffer) {
-            buffer.putFloat(diffuseColor.x);
-            buffer.putFloat(diffuseColor.y);
-            buffer.putFloat(diffuseColor.z);
-            buffer.putFloat(diffuseColor.w);
-            buffer.putFloat(specularColor.x);
-            buffer.putFloat(specularColor.y);
-            buffer.putFloat(specularColor.z);
-            buffer.putFloat(specularColor.w);
-            buffer.putFloat(specularShininess);
-            for (int i = 0; i < 3; i++) {
-                buffer.putFloat(padding[i]);
-            }
-            return buffer;
-        }
-    }
-
 
     private void setupMaterials() {
-        UniformBlockArray<MaterialBlock> ubArray = new UniformBlockArray<>(MaterialBlock.SIZE, NUM_MATERIALS);
+        UniformBlockArray<MaterialBlock> ubArray = new UniformBlockArray<>(MaterialBlock.SIZE_IN_BYTES, NUM_MATERIALS);
         MaterialBlock matBlock;
 
         matBlock = new MaterialBlock();

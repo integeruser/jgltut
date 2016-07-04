@@ -2,8 +2,8 @@ package org.jgltut.tut14;
 
 import org.jglsdk.glutil.MousePoles.*;
 import org.jgltut.Tutorial;
-import org.jgltut.commons.Bufferable;
 import org.jgltut.commons.LightBlock;
+import org.jgltut.commons.MaterialBlock;
 import org.jgltut.commons.PerLight;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.Framework;
@@ -18,7 +18,6 @@ import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -97,7 +96,7 @@ public class BasicTexture extends Tutorial {
 
         materialUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, materialUniformBuffer);
-        glBufferData(GL_UNIFORM_BUFFER, matBlock.getAndFlip(BufferUtils.createFloatBuffer(12)), GL_STATIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, matBlock.getAndFlip(BufferUtils.createByteBuffer(12 * 4)), GL_STATIC_DRAW);
 
         lightUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
@@ -112,7 +111,7 @@ public class BasicTexture extends Tutorial {
 
         glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE_IN_BYTES);
 
-        glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, 0, MaterialBlock.SIZE);
+        glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, 0, MaterialBlock.SIZE_IN_BYTES);
 
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -225,7 +224,7 @@ public class BasicTexture extends Tutorial {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         {
-            glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, 0, MaterialBlock.SIZE);
+            glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, 0, MaterialBlock.SIZE_IN_BYTES);
 
             modelMatrix.pushMatrix();
 
@@ -514,28 +513,4 @@ public class BasicTexture extends Tutorial {
     private final int materialBlockIndex = 0;
 
     private int materialUniformBuffer;
-
-    private class MaterialBlock implements Bufferable<FloatBuffer> {
-        Vector4f diffuseColor;
-        Vector4f specularColor;
-        float specularShininess;
-        float padding[] = new float[3];
-
-        static final int SIZE = 4 * 4 + 4 * 4 + ((1 + 3) * FLOAT_SIZE);
-
-        @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            buffer.put(diffuseColor.x);
-            buffer.put(diffuseColor.y);
-            buffer.put(diffuseColor.z);
-            buffer.put(diffuseColor.w);
-            buffer.put(specularColor.x);
-            buffer.put(specularColor.y);
-            buffer.put(specularColor.z);
-            buffer.put(specularColor.w);
-            buffer.put(specularShininess);
-            buffer.put(padding);
-            return buffer;
-        }
-    }
 }

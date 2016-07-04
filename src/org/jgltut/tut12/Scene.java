@@ -1,6 +1,6 @@
 package org.jgltut.tut12;
 
-import org.jgltut.commons.Bufferable;
+import org.jgltut.commons.MaterialBlock;
 import org.jgltut.framework.Mesh;
 import org.joml.Matrix3f;
 import org.joml.MatrixStackf;
@@ -8,6 +8,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -34,7 +35,7 @@ abstract class Scene {
         // Align the size of each MaterialBlock to the uniform buffer alignment.
         int uniformBufferAlignSize = glGetInteger(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT);
 
-        sizeMaterialBlock = MaterialBlock.SIZE;
+        sizeMaterialBlock = MaterialBlock.SIZE_IN_BYTES;
         sizeMaterialBlock += uniformBufferAlignSize - (sizeMaterialBlock % uniformBufferAlignSize);
 
         int MATERIAL_COUNT = 6;
@@ -43,12 +44,13 @@ abstract class Scene {
         ArrayList<MaterialBlock> materials = new ArrayList<>(MATERIAL_COUNT);
         getMaterials(materials);
 
-        FloatBuffer materialsBuffer = BufferUtils.createFloatBuffer(sizeMaterialUniformBuffer);
-        final float[] padding = new float[(sizeMaterialBlock - MaterialBlock.SIZE) / (Float.SIZE / Byte.SIZE)];
+        ByteBuffer materialsBuffer = BufferUtils.createByteBuffer(sizeMaterialUniformBuffer);
+        final float[] padding = new float[(sizeMaterialBlock - MaterialBlock.SIZE_IN_BYTES) / (Float.SIZE / Byte.SIZE)];
 
         for (MaterialBlock materialBlock : materials) {
             materialBlock.get(materialsBuffer);
-            materialsBuffer.put(padding);  // The buffer size must be sizeMaterialUniformBuffer
+            for (float f : padding)
+                materialsBuffer.putFloat(f);  // The buffer size must be sizeMaterialUniformBuffer
         }
 
         materialsBuffer.flip();
@@ -162,7 +164,7 @@ abstract class Scene {
 
     void drawObject(Mesh mesh, ProgramData progData, int materialBlockIndex, int materialIndex, MatrixStackf modelMatrix) {
         glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                materialIndex * sizeMaterialBlock, MaterialBlock.SIZE);
+                materialIndex * sizeMaterialBlock, MaterialBlock.SIZE_IN_BYTES);
 
         Matrix3f normMatrix = new Matrix3f(modelMatrix);
         normMatrix.invert().transpose();
@@ -179,7 +181,7 @@ abstract class Scene {
 
     void drawObject(Mesh mesh, String meshName, ProgramData progData, int materialBlockIndex, int materialIndex, MatrixStackf modelMatrix) {
         glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                materialIndex * sizeMaterialBlock, MaterialBlock.SIZE);
+                materialIndex * sizeMaterialBlock, MaterialBlock.SIZE_IN_BYTES);
 
         Matrix3f normMatrix = new Matrix3f(modelMatrix);
         normMatrix.invert().transpose();
@@ -222,31 +224,6 @@ abstract class Scene {
         MTL_COLOR_DIFFUSE,
 
         MAX_LIGHTING_PROGRAM_TYPES
-    }
-
-
-    private class MaterialBlock implements Bufferable<FloatBuffer> {
-        Vector4f diffuseColor;
-        Vector4f specularColor;
-        float specularShininess;
-        float padding[] = new float[3];
-
-        static final int SIZE = 4 * 4 + 4 * 4 + ((1 + 3) * 4);
-
-        @Override
-        public FloatBuffer get(FloatBuffer buffer) {
-            buffer.put(diffuseColor.x);
-            buffer.put(diffuseColor.y);
-            buffer.put(diffuseColor.z);
-            buffer.put(diffuseColor.w);
-            buffer.put(specularColor.x);
-            buffer.put(specularColor.y);
-            buffer.put(specularColor.z);
-            buffer.put(specularColor.w);
-            buffer.put(specularShininess);
-            buffer.put(padding);
-            return buffer;
-        }
     }
 
 

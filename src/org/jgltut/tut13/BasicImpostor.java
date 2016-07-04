@@ -5,8 +5,8 @@ import org.jglsdk.glutil.MousePoles.ViewData;
 import org.jglsdk.glutil.MousePoles.ViewPole;
 import org.jglsdk.glutil.MousePoles.ViewScale;
 import org.jgltut.Tutorial;
-import org.jgltut.commons.Bufferable;
 import org.jgltut.commons.LightBlock;
+import org.jgltut.commons.MaterialBlock;
 import org.jgltut.commons.PerLight;
 import org.jgltut.commons.ProjectionBlock;
 import org.jgltut.framework.*;
@@ -16,7 +16,6 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -230,7 +229,7 @@ public class BasicImpostor extends Tutorial {
 
         {
             glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                    MaterialNames.TERRAIN.ordinal() * materialBlockOffset, MaterialBlock.SIZE);
+                    MaterialNames.TERRAIN.ordinal() * materialBlockOffset, MaterialBlock.SIZE_IN_BYTES);
 
             Matrix3f normMatrix = new Matrix3f(modelMatrix);
             normMatrix.invert().transpose();
@@ -497,7 +496,7 @@ public class BasicImpostor extends Tutorial {
 
     private void drawSphere(MatrixStackf modelMatrix, Vector3f position, float radius, MaterialNames material, boolean drawImposter) {
         glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                material.ordinal() * materialBlockOffset, MaterialBlock.SIZE);
+                material.ordinal() * materialBlockOffset, MaterialBlock.SIZE_IN_BYTES);
 
         if (drawImposter) {
             Vector4f cameraSpherePos = new Matrix4f(modelMatrix).transform(new Vector4f(position, 1.0f));
@@ -574,32 +573,6 @@ public class BasicImpostor extends Tutorial {
     private int materialUniformBuffer;
     private int materialBlockOffset;
 
-    private class MaterialBlock implements Bufferable<ByteBuffer> {
-        Vector4f diffuseColor;
-        Vector4f specularColor;
-        float specularShininess;
-        float padding[] = new float[3];
-
-        static final int SIZE = 4 * 4 + 4 * 4 + ((1 + 3) * FLOAT_SIZE);
-
-        @Override
-        public ByteBuffer get(ByteBuffer buffer) {
-            buffer.putFloat(diffuseColor.x);
-            buffer.putFloat(diffuseColor.y);
-            buffer.putFloat(diffuseColor.z);
-            buffer.putFloat(diffuseColor.w);
-            buffer.putFloat(specularColor.x);
-            buffer.putFloat(specularColor.y);
-            buffer.putFloat(specularColor.z);
-            buffer.putFloat(specularColor.w);
-            buffer.putFloat(specularShininess);
-            for (int i = 0; i < 3; i++) {
-                buffer.putFloat(padding[i]);
-            }
-            return buffer;
-        }
-    }
-
     private enum MaterialNames {
         TERRAIN,
         BLUE_SHINY,
@@ -612,7 +585,7 @@ public class BasicImpostor extends Tutorial {
 
 
     private void createMaterials() {
-        UniformBlockArray<MaterialBlock> ubArray = new UniformBlockArray<>(MaterialBlock.SIZE, MaterialNames.NUM_MATERIALS.ordinal());
+        UniformBlockArray<MaterialBlock> ubArray = new UniformBlockArray<>(MaterialBlock.SIZE_IN_BYTES, MaterialNames.NUM_MATERIALS.ordinal());
         materialBlockOffset = ubArray.getArrayOffset();
 
         MaterialBlock matBlock = new MaterialBlock();

@@ -86,7 +86,7 @@ public class CameraRelative extends Tutorial {
                             break;
 
                         case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, GL_TRUE);
+                            glfwSetWindowShouldClose(window, true);
                             break;
                     }
                 }

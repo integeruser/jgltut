@@ -5,10 +5,10 @@ import integeruser.jglsdk.glimg.ImageFormat.ComponentOrder;
 import integeruser.jglsdk.glimg.ImageFormat.PixelComponents;
 import integeruser.jglsdk.glimg.ImageFormat.PixelDataType;
 import integeruser.jglsdk.glimg.ImageSet.Dimensions;
-import org.lwjgl.LWJGLUtil;
 import org.lwjgl.opengl.EXTTextureSnorm;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL32;
+import org.lwjgl.system.Platform;
 
 import java.nio.ByteBuffer;
 
@@ -516,7 +516,7 @@ public class TextureGenerator {
     private static void throwIfEXT_SRGBNotSupported() {
         if (!GL.getCapabilities().GL_EXT_texture_sRGB) {
             // TODO temporary "fix" for OS X, needs rework
-            if (LWJGLUtil.getPlatform() != LWJGLUtil.Platform.MACOSX) {
+            if (Platform.get() != Platform.MACOSX) {
                 throw new ImageFormatUnsupportedException("sRGB and S3TC textures not supported.");
             }
         }

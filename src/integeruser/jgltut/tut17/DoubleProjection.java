@@ -15,6 +15,7 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
+import java.lang.Math;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;

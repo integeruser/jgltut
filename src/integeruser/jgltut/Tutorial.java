@@ -80,7 +80,7 @@ public abstract class Tutorial {
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         }
 
-        window = glfwCreateWindow(width, height, "Hello World!", NULL, NULL);
+        window = glfwCreateWindow(width, height, "jgltut", NULL, NULL);
         if (window == NULL) throw new RuntimeException("Failed to create the GLFW window");
 
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {

@@ -51,17 +51,19 @@ public abstract class Tutorial {
 
     public final void start(int width, int height) {
         try {
+            GLFWErrorCallback.createPrint(System.err).set();
+
+            initGLFW();
             initWindow(width, height);
-            printInfo();
+
+            glfwSwapInterval(1);
+            GL.createCapabilities();
 
             init();
+            initViewport();
+            initCallbacks();
 
-            // From http://www.glfw.org/faq.html#why-is-my-output-in-the-lower-left-corner-of-the-window:
-            // "On OS X with a Retina display, and possibly on other platforms in the future, screen coordinates and
-            // pixels do not map 1:1. Use the framebuffer size, which is in pixels, instead of the window size."
-            int[] w = new int[1], h = new int[1];
-            glfwGetFramebufferSize(window, w, h);
-            reshape(w[0], h[0]);
+            printInfo();
 
             loop();
 
@@ -74,9 +76,7 @@ public abstract class Tutorial {
     }
 
 
-    private void initWindow(int width, int height) {
-        GLFWErrorCallback.createPrint(System.err).set();
-
+    private void initGLFW() {
         if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
 
         glfwDefaultWindowHints();
@@ -88,10 +88,29 @@ public abstract class Tutorial {
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         }
+    }
 
+    private void initWindow(int width, int height) {
         window = glfwCreateWindow(width, height, "jgltut", NULL, NULL);
         if (window == NULL) throw new RuntimeException("Failed to create the GLFW window");
 
+        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
+
+        glfwMakeContextCurrent(window);
+        glfwShowWindow(window);
+    }
+
+    private void initViewport() {
+        // From http://www.glfw.org/faq.html#why-is-my-output-in-the-lower-left-corner-of-the-window:
+        // "On OS X with a Retina display, and possibly on other platforms in the future, screen coordinates and
+        // pixels do not map 1:1. Use the framebuffer size, which is in pixels, instead of the window size."
+        int[] w = new int[1], h = new int[1];
+        glfwGetFramebufferSize(window, w, h);
+        reshape(w[0], h[0]);
+    }
+
+    private void initCallbacks() {
         glfwSetFramebufferSizeCallback(window, (framebufferSizeCallback = new GLFWFramebufferSizeCallback() {
             @Override
             public void invoke(long window, int width, int height) {
@@ -102,15 +121,6 @@ public abstract class Tutorial {
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) glfwSetWindowShouldClose(window, true);
         });
-
-        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
-
-        glfwMakeContextCurrent(window);
-        glfwSwapInterval(1);
-
-        GL.createCapabilities();
-        glfwShowWindow(window);
     }
 
     private void printInfo() {

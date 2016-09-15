@@ -13,7 +13,7 @@ Francesco
 To compile and run the code, you will need:
 
 - Java SE Development Kit 8
-- LWJGL 3 (tested with [3.0.0b build 35](https://www.lwjgl.org/download)) (will port to latest version when [#205](https://github.com/LWJGL/lwjgl3/issues/205) gets fixed)
+- [LWJGL 3.0.0 (build 90)](https://www.lwjgl.org/download)
 - [JOML 1.8.3](https://github.com/JOML-CI/JOML/releases/tag/1.8.3)
 
 Working with different versions of LJWGL 3 or JOML may require adjustments to the code. If you are stuck with LWJGL 2, check the release [v0.9.1](https://github.com/integeruser/jgltut/releases/tag/v0.9.1) of this repository.

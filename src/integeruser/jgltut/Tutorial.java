@@ -25,6 +25,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public abstract class Tutorial {
     protected long window;
 
+    protected GLFWFramebufferSizeCallback framebufferSizeCallback;
     protected GLFWKeyCallback keyCallback;
     protected GLFWMouseButtonCallback mouseCallback;
     protected GLFWCursorPosCallback mousePosCallback;
@@ -54,6 +55,14 @@ public abstract class Tutorial {
             printInfo();
 
             init();
+
+            // From http://www.glfw.org/faq.html#why-is-my-output-in-the-lower-left-corner-of-the-window:
+            // "On OS X with a Retina display, and possibly on other platforms in the future, screen coordinates and
+            // pixels do not map 1:1. Use the framebuffer size, which is in pixels, instead of the window size."
+            int[] w = new int[1], h = new int[1];
+            glfwGetFramebufferSize(window, w, h);
+            reshape(w[0], h[0]);
+
             loop();
 
             glfwFreeCallbacks(window);
@@ -82,6 +91,13 @@ public abstract class Tutorial {
 
         window = glfwCreateWindow(width, height, "jgltut", NULL, NULL);
         if (window == NULL) throw new RuntimeException("Failed to create the GLFW window");
+
+        glfwSetFramebufferSizeCallback(window, (framebufferSizeCallback = new GLFWFramebufferSizeCallback() {
+            @Override
+            public void invoke(long window, int width, int height) {
+                reshape(width, height);
+            }
+        }));
 
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) glfwSetWindowShouldClose(window, true);

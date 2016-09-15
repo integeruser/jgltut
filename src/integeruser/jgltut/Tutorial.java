@@ -53,6 +53,7 @@ public abstract class Tutorial {
             initWindow(width, height);
             printInfo();
 
+            init();
             loop();
 
             glfwFreeCallbacks(window);

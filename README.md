@@ -78,7 +78,3 @@ Attributed to p0ss, of OpenGameArt.org:
 * data/dsc_1621_small.dds
 * data/rough645_small.dds
 ```
-
-
-## License
-This project is licensed under the [Attribution 4.0 International license](http://creativecommons.org/licenses/by/4.0/): you can do what you want with my code, but if you want to publish some derived work I kindly ask you to simply provide a link to this repository.

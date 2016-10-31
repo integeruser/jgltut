@@ -1,9 +1,9 @@
 # Learning Modern 3D Graphics Programming with LWJGL 3 and JOML
-This project is a port of *[Learning Modern 3D Graphics Programming](https://web.archive.org/web/20150225192611/http://www.arcsynthesis.org/gltut/index.html)* tutorials to Java using [LWJGL](https://www.lwjgl.org/) and [JOML](http://joml-ci.github.io/JOML/), distributed in the hope that it will be useful. The original project, named `gltut`, can be found [here](https://bitbucket.org/alfonse/gltut/wiki/Home). Since it is needed by the tutorials, this repository also includes a partial port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)*, named `glsdk`, which contains a DDS texture loader and other useful stuff.
+This project is a port of *[Learning Modern 3D Graphics Programming](http://alfonse.bitbucket.org/oldtut/)* tutorials to Java using [LWJGL](https://www.lwjgl.org/) and [JOML](http://joml-ci.github.io/JOML/), distributed in the hope that it will be useful. The original project, named `gltut`, can be found [here](https://bitbucket.org/alfonse/gltut/wiki/Home). Since it is needed by the tutorials, this repository also includes a partial port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)*, named `glsdk`, which contains a DDS texture loader and other useful stuff.
 
 To try the tutorials without building the source code, you can download the runnable JAR included in the [Releases](https://github.com/integeruser/jgltut/releases) section. Many tutorials print messages to console: run the JAR from the command line with `java -jar jgltut.jar` to view the output (also useful in case of errors).
 
-I can't dedicate much time to this project anymore, but I will keep it updated to work with recent versions of LWJGL and JOML. I will also keep refactoring code I don't like. To suggest a feature, report bugs or general discussion use the [issue tracker](https://github.com/integeruser/jgltut/issues).
+I can't dedicate much time to this project anymore, but I will keep it updated to work with recent versions of LWJGL and JOML. To suggest a feature, report bugs or general discussion use the [issue tracker](https://github.com/integeruser/jgltut/issues).
 
 Happy coding! :smile:  
 Francesco
@@ -25,6 +25,8 @@ Create a new Java project using your favorite IDE, then:
 3. Download `joml-1.8.3.jar` from the link above, then add it to the classpath as in the previous step.
 
 Finally, run the `main` method of the first tutorial `integeruser.jgltut.tut01.Tut1.java` and check the output in the console window. If your graphics card does not meet the minimum requirements (checked using the LWJGL helper `GL.getCapabilities().OpenGL33`), the message `You must have at least OpenGL 3.3 to run this tutorial.` will appear; otherwise, if no other errors show up, you can start playing with the other tutorials by running the `main` method of `integeruser.jgltut.TutorialChooser.java`. To quit any tutorial simply press `ESC`.
+
+**Note for OS X users**: to run SWT applications on OS X it is *necessary* to use the JVM option `XstartOnFirstThread`. Because of this, `TutorialChooser.java` can not work correctly on OS X.
 
 
 ## Notes

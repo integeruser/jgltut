@@ -8,7 +8,6 @@ import integeruser.jgltut.commons.ProjectionBlock;
 import integeruser.jgltut.framework.Framework;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.opengl.GL15;
 
 import java.nio.ShortBuffer;
@@ -59,33 +58,30 @@ public class GammaRamp extends Tutorial {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_1:
-                            useGammaCorrect[0] = !useGammaCorrect[0];
-                            if (useGammaCorrect[0]) {
-                                System.out.printf("Top:\tsRGB texture.\n");
-                            } else {
-                                System.out.printf("Top:\tlinear texture.\n");
-                            }
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_1:
+                        useGammaCorrect[0] = !useGammaCorrect[0];
+                        if (useGammaCorrect[0]) {
+                            System.out.printf("Top:\tsRGB texture.\n");
+                        } else {
+                            System.out.printf("Top:\tlinear texture.\n");
+                        }
+                        break;
 
-                        case GLFW_KEY_2:
-                            useGammaCorrect[1] = !useGammaCorrect[1];
-                            if (useGammaCorrect[1]) {
-                                System.out.printf("Bottom:\tsRGB texture.\n");
-                            } else {
-                                System.out.printf("Bottom:\tlinear texture.\n");
-                            }
-                            break;
+                    case GLFW_KEY_2:
+                        useGammaCorrect[1] = !useGammaCorrect[1];
+                        if (useGammaCorrect[1]) {
+                            System.out.printf("Bottom:\tsRGB texture.\n");
+                        } else {
+                            System.out.printf("Bottom:\tlinear texture.\n");
+                        }
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

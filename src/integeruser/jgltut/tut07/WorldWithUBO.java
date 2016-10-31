@@ -7,7 +7,6 @@ import integeruser.jgltut.framework.Mesh;
 import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.util.ArrayList;
 
@@ -71,21 +70,18 @@ public class WorldWithUBO extends Tutorial {
         glEnable(GL_DEPTH_CLAMP);
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_SPACE:
-                            drawLookatPoint = !drawLookatPoint;
-                            System.out.printf("Target: %f, %f, %f\n", camTarget.x, camTarget.y, camTarget.z);
-                            System.out.printf("Position: %f, %f, %f\n", sphereCamRelPos.x, sphereCamRelPos.y, sphereCamRelPos.z);
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_SPACE:
+                        drawLookatPoint = !drawLookatPoint;
+                        System.out.printf("Target: %f, %f, %f\n", camTarget.x, camTarget.y, camTarget.z);
+                        System.out.printf("Position: %f, %f, %f\n", sphereCamRelPos.x, sphereCamRelPos.y, sphereCamRelPos.z);
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

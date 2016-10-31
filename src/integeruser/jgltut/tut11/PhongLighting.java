@@ -9,7 +9,6 @@ import integeruser.jgltut.framework.MousePole;
 import integeruser.jgltut.framework.Timer;
 import org.joml.*;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
@@ -95,81 +94,78 @@ public class PhongLighting extends Tutorial {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_SPACE:
-                            drawColoredCyl = !drawColoredCyl;
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_SPACE:
+                        drawColoredCyl = !drawColoredCyl;
+                        break;
 
-                        case GLFW_KEY_O:
-                            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                                shininessFactor += 0.1f;
-                            } else {
-                                shininessFactor += 0.5f;
+                    case GLFW_KEY_O:
+                        if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
+                            shininessFactor += 0.1f;
+                        } else {
+                            shininessFactor += 0.5f;
+                        }
+
+                        System.out.printf("Shiny: %f\n", shininessFactor);
+                        break;
+
+                    case GLFW_KEY_U:
+                        if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
+                            shininessFactor -= 0.1f;
+                        } else {
+                            shininessFactor -= 0.5f;
+                        }
+
+                        System.out.printf("Shiny: %f\n", shininessFactor);
+                        break;
+
+                    case GLFW_KEY_Y:
+                        drawLightSource = !drawLightSource;
+                        break;
+
+                    case GLFW_KEY_T:
+                        scaleCyl = !scaleCyl;
+                        break;
+
+                    case GLFW_KEY_B:
+                        lightTimer.togglePause();
+                        break;
+
+                    case GLFW_KEY_G:
+                        drawDark = !drawDark;
+                        break;
+
+                    case GLFW_KEY_H:
+                        if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
+                            switch (lightModel) {
+                                case DIFFUSE_AND_SPECULAR:
+                                    lightModel = LightingModel.PURE_DIFFUSE;
+                                    break;
+
+                                case PURE_DIFFUSE:
+                                    lightModel = LightingModel.DIFFUSE_AND_SPECULAR;
+                                    break;
+
+                                case SPECULAR_ONLY:
+                                    lightModel = LightingModel.PURE_DIFFUSE;
+                                    break;
+                                default:
+                                    break;
                             }
+                        } else {
+                            int index = lightModel.ordinal() + 1;
+                            index %= LightingModel.MAX_LIGHTING_MODEL.ordinal();
+                            lightModel = LightingModel.values()[index];
+                        }
 
-                            System.out.printf("Shiny: %f\n", shininessFactor);
-                            break;
+                        System.out.printf("%s\n", lightModelNames[lightModel.ordinal()]);
+                        break;
 
-                        case GLFW_KEY_U:
-                            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                                shininessFactor -= 0.1f;
-                            } else {
-                                shininessFactor -= 0.5f;
-                            }
-
-                            System.out.printf("Shiny: %f\n", shininessFactor);
-                            break;
-
-                        case GLFW_KEY_Y:
-                            drawLightSource = !drawLightSource;
-                            break;
-
-                        case GLFW_KEY_T:
-                            scaleCyl = !scaleCyl;
-                            break;
-
-                        case GLFW_KEY_B:
-                            lightTimer.togglePause();
-                            break;
-
-                        case GLFW_KEY_G:
-                            drawDark = !drawDark;
-                            break;
-
-                        case GLFW_KEY_H:
-                            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                                switch (lightModel) {
-                                    case DIFFUSE_AND_SPECULAR:
-                                        lightModel = LightingModel.PURE_DIFFUSE;
-                                        break;
-
-                                    case PURE_DIFFUSE:
-                                        lightModel = LightingModel.DIFFUSE_AND_SPECULAR;
-                                        break;
-
-                                    case SPECULAR_ONLY:
-                                        lightModel = LightingModel.PURE_DIFFUSE;
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            } else {
-                                int index = lightModel.ordinal() + 1;
-                                index %= LightingModel.MAX_LIGHTING_MODEL.ordinal();
-                                lightModel = LightingModel.values()[index];
-                            }
-
-                            System.out.printf("%s\n", lightModelNames[lightModel.ordinal()]);
-                            break;
-
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

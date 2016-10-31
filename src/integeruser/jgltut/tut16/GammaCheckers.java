@@ -12,7 +12,6 @@ import integeruser.jgltut.framework.Timer;
 import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.util.ArrayList;
 
@@ -90,52 +89,49 @@ public class GammaCheckers extends Tutorial {
         createSamplers();
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    boolean particularKeyPressed = false;
-                    switch (key) {
-                        case GLFW_KEY_A:
-                            drawGammaProgram = !drawGammaProgram;
-                            particularKeyPressed = true;
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                boolean particularKeyPressed = false;
+                switch (key) {
+                    case GLFW_KEY_A:
+                        drawGammaProgram = !drawGammaProgram;
+                        particularKeyPressed = true;
+                        break;
 
-                        case GLFW_KEY_G:
-                            drawGammaTexture = !drawGammaTexture;
-                            particularKeyPressed = true;
-                            break;
+                    case GLFW_KEY_G:
+                        drawGammaTexture = !drawGammaTexture;
+                        particularKeyPressed = true;
+                        break;
 
-                        case GLFW_KEY_SPACE:
-                            drawGammaProgram = !drawGammaProgram;
-                            drawGammaTexture = !drawGammaTexture;
-                            particularKeyPressed = true;
-                            break;
+                    case GLFW_KEY_SPACE:
+                        drawGammaProgram = !drawGammaProgram;
+                        drawGammaTexture = !drawGammaTexture;
+                        particularKeyPressed = true;
+                        break;
 
-                        case GLFW_KEY_Y:
-                            drawCorridor = !drawCorridor;
-                            break;
+                    case GLFW_KEY_Y:
+                        drawCorridor = !drawCorridor;
+                        break;
 
-                        case GLFW_KEY_P:
-                            camTimer.togglePause();
-                            break;
+                    case GLFW_KEY_P:
+                        camTimer.togglePause();
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
+                }
 
-                    if (particularKeyPressed) {
-                        System.out.printf("----\n");
-                        System.out.printf("Rendering:\t\t%s\n", drawGammaProgram ? "Gamma" : "Linear");
-                        System.out.printf("Mipmap Generation:\t%s\n", drawGammaTexture ? "Gamma" : "Linear");
-                    }
+                if (particularKeyPressed) {
+                    System.out.printf("----\n");
+                    System.out.printf("Rendering:\t\t%s\n", drawGammaProgram ? "Gamma" : "Linear");
+                    System.out.printf("Mipmap Generation:\t%s\n", drawGammaTexture ? "Gamma" : "Linear");
+                }
 
-                    if (GLFW_KEY_1 <= key && key <= GLFW_KEY_9) {
-                        int number = key - GLFW_KEY_1;
-                        if (number < NUM_SAMPLERS) {
-                            currSampler = number;
-                        }
+                if (GLFW_KEY_1 <= key && key <= GLFW_KEY_9) {
+                    int number = key - GLFW_KEY_1;
+                    if (number < NUM_SAMPLERS) {
+                        currSampler = number;
                     }
                 }
             }

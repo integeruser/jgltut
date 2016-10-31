@@ -14,7 +14,6 @@ import integeruser.jgltut.framework.*;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
@@ -118,58 +117,55 @@ public class MaterialTexture extends Tutorial {
         createShininessTexture();
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_P:
-                            lightTimer.togglePause();
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_P:
+                        lightTimer.togglePause();
+                        break;
 
-                        case GLFW_KEY_MINUS:
-                            lightTimer.rewind(0.5f);
-                            break;
+                    case GLFW_KEY_MINUS:
+                        lightTimer.rewind(0.5f);
+                        break;
 
-                        case GLFW_KEY_EQUAL:
-                            lightTimer.fastForward(0.5f);
-                            break;
+                    case GLFW_KEY_EQUAL:
+                        lightTimer.fastForward(0.5f);
+                        break;
 
-                        case GLFW_KEY_T:
-                            drawCameraPos = !drawCameraPos;
-                            break;
+                    case GLFW_KEY_T:
+                        drawCameraPos = !drawCameraPos;
+                        break;
 
-                        case GLFW_KEY_G:
-                            drawLights = !drawLights;
-                            break;
+                    case GLFW_KEY_G:
+                        drawLights = !drawLights;
+                        break;
 
-                        case GLFW_KEY_Y:
-                            useInfinity = !useInfinity;
-                            break;
+                    case GLFW_KEY_Y:
+                        useInfinity = !useInfinity;
+                        break;
 
-                        case GLFW_KEY_SPACE:
-                            int index = (shaderMode.ordinal() + 1) % ShaderMode.NUM_SHADER_MODES.ordinal();
-                            shaderMode = ShaderMode.values()[index];
-                            System.out.printf("%s\n", shaderModeNames[shaderMode.ordinal()]);
-                            break;
+                    case GLFW_KEY_SPACE:
+                        int index = (shaderMode.ordinal() + 1) % ShaderMode.NUM_SHADER_MODES.ordinal();
+                        shaderMode = ShaderMode.values()[index];
+                        System.out.printf("%s\n", shaderModeNames[shaderMode.ordinal()]);
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
+                }
+
+                if (GLFW_KEY_1 <= key && key <= GLFW_KEY_9) {
+                    int number = key - GLFW_KEY_1;
+                    if (number < NUM_GAUSS_TEXTURES) {
+                        System.out.printf("Angle Resolution: %d\n", calcCosAngResolution(number));
+                        currTexture = number;
                     }
 
-                    if (GLFW_KEY_1 <= key && key <= GLFW_KEY_9) {
-                        int number = key - GLFW_KEY_1;
-                        if (number < NUM_GAUSS_TEXTURES) {
-                            System.out.printf("Angle Resolution: %d\n", calcCosAngResolution(number));
-                            currTexture = number;
-                        }
-
-                        if (number >= (9 - NUM_MATERIALS)) {
-                            number = number - (9 - NUM_MATERIALS);
-                            System.out.printf("Material number %d\n", number);
-                            currMaterial = number;
-                        }
+                    if (number >= (9 - NUM_MATERIALS)) {
+                        number = number - (9 - NUM_MATERIALS);
+                        System.out.printf("Material number %d\n", number);
+                        currMaterial = number;
                     }
                 }
             }

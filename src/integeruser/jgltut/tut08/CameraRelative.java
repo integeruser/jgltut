@@ -8,7 +8,6 @@ import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.util.ArrayList;
 
@@ -62,33 +61,30 @@ public class CameraRelative extends Tutorial {
         glDepthRange(0.0f, 1.0f);
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_SPACE:
-                            int ordinal = (offsetRelative.ordinal() + 1) % OffsetRelative.NUM_RELATIVES.ordinal();
-                            offsetRelative = OffsetRelative.values()[ordinal];
-                            switch (offsetRelative) {
-                                case MODEL_RELATIVE:
-                                    System.out.printf("Model Relative\n");
-                                    break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_SPACE:
+                        int ordinal = (offsetRelative.ordinal() + 1) % OffsetRelative.NUM_RELATIVES.ordinal();
+                        offsetRelative = OffsetRelative.values()[ordinal];
+                        switch (offsetRelative) {
+                            case MODEL_RELATIVE:
+                                System.out.printf("Model Relative\n");
+                                break;
 
-                                case WORLD_RELATIVE:
-                                    System.out.printf("World Relative\n");
-                                    break;
+                            case WORLD_RELATIVE:
+                                System.out.printf("World Relative\n");
+                                break;
 
-                                case CAMERA_RELATIVE:
-                                    System.out.printf("Camera Relative\n");
-                                    break;
-                            }
-                            break;
+                            case CAMERA_RELATIVE:
+                                System.out.printf("Camera Relative\n");
+                                break;
+                        }
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

@@ -11,7 +11,6 @@ import integeruser.jgltut.commons.ProjectionBlock;
 import integeruser.jgltut.framework.*;
 import org.joml.*;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 import org.lwjgl.opengl.GL15;
@@ -107,37 +106,34 @@ public class CubePointLight extends Tutorial {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_SPACE:
-                            lightPole.reset();
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_SPACE:
+                        lightPole.reset();
+                        break;
 
-                        case GLFW_KEY_T:
-                            drawCameraPos = !drawCameraPos;
-                            break;
+                    case GLFW_KEY_T:
+                        drawCameraPos = !drawCameraPos;
+                        break;
 
-                        case GLFW_KEY_G:
-                            showOtherLights = !showOtherLights;
-                            break;
+                    case GLFW_KEY_G:
+                        showOtherLights = !showOtherLights;
+                        break;
 
-                        case GLFW_KEY_P:
-                            timer.togglePause();
-                            break;
+                    case GLFW_KEY_P:
+                        timer.togglePause();
+                        break;
 
-                        case GLFW_KEY_1:
-                        case GLFW_KEY_2:
-                            currTextureIndex = key - GLFW_KEY_1;
-                            System.out.printf("%s\n", texDefs[currTextureIndex].name);
-                            break;
+                    case GLFW_KEY_1:
+                    case GLFW_KEY_2:
+                        currTextureIndex = key - GLFW_KEY_1;
+                        System.out.printf("%s\n", texDefs[currTextureIndex].name);
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

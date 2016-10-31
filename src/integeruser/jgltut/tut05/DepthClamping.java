@@ -3,7 +3,6 @@ package integeruser.jgltut.tut05;
 import integeruser.jgltut.Tutorial;
 import integeruser.jgltut.framework.Framework;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -62,25 +61,22 @@ public class DepthClamping extends Tutorial {
         glDepthRange(0.0f, 1.0f);
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_SPACE:
-                            if (depthClampingActive) {
-                                glDisable(GL_DEPTH_CLAMP);
-                            } else {
-                                glEnable(GL_DEPTH_CLAMP);
-                            }
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_SPACE:
+                        if (depthClampingActive) {
+                            glDisable(GL_DEPTH_CLAMP);
+                        } else {
+                            glEnable(GL_DEPTH_CLAMP);
+                        }
 
-                            depthClampingActive = !depthClampingActive;
-                            break;
+                        depthClampingActive = !depthClampingActive;
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

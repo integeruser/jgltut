@@ -13,7 +13,7 @@ Francesco
 To compile and run the code, you will need:
 
 - Java SE Development Kit 8
-- [LWJGL 3.0.0 (build 90)](https://www.lwjgl.org/download)
+- [LWJGL 3.1.0 build 40](https://www.lwjgl.org/download)
 - [JOML 1.8.3](https://github.com/JOML-CI/JOML/releases/tag/1.8.3)
 
 Working with different versions of LJWGL 3 or JOML may require adjustments to the code. If you are stuck with LWJGL 2, check the release [v0.9.1](https://github.com/integeruser/jgltut/releases/tag/v0.9.1) of this repository.
@@ -21,7 +21,7 @@ Working with different versions of LJWGL 3 or JOML may require adjustments to th
 Create a new Java project using your favorite IDE, then:
 
 1. Import the source code of this repository;
-2. Download LWJGL from the link above, then add `lwjgl.jar` to the classpath and link the native libraries, as explained [here](https://www.lwjgl.org/guide);
+2. Download LWJGL from the link above, then add `lwjgl.jar` and the other JARs to the classpath and link the native libraries, as explained in the [official guide](https://www.lwjgl.org/guide);
 3. Download `joml-1.8.3.jar` from the link above, then add it to the classpath as in the previous step.
 
 Finally, run the `main` method of the first tutorial `integeruser.jgltut.tut01.Tut1.java` and check the output in the console window. If your graphics card does not meet the minimum requirements (checked using the LWJGL helper `GL.getCapabilities().OpenGL33`), the message `You must have at least OpenGL 3.3 to run this tutorial.` will appear; otherwise, if no other errors show up, you can start playing with the other tutorials by running the `main` method of `integeruser.jgltut.TutorialChooser.java`. To quit any tutorial simply press `ESC`.

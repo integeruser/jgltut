@@ -13,7 +13,6 @@ import integeruser.jgltut.framework.Timer;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
@@ -119,44 +118,41 @@ public class BasicTexture extends Tutorial {
         createGaussianTextures();
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_P:
-                            lightTimer.togglePause();
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_P:
+                        lightTimer.togglePause();
+                        break;
 
-                        case GLFW_KEY_MINUS:
-                            lightTimer.rewind(0.5f);
-                            break;
+                    case GLFW_KEY_MINUS:
+                        lightTimer.rewind(0.5f);
+                        break;
 
-                        case GLFW_KEY_EQUAL:
-                            lightTimer.fastForward(0.5f);
-                            break;
+                    case GLFW_KEY_EQUAL:
+                        lightTimer.fastForward(0.5f);
+                        break;
 
-                        case GLFW_KEY_T:
-                            drawCameraPos = !drawCameraPos;
-                            break;
+                    case GLFW_KEY_T:
+                        drawCameraPos = !drawCameraPos;
+                        break;
 
-                        case GLFW_KEY_G:
-                            drawLights = !drawLights;
-                            break;
+                    case GLFW_KEY_G:
+                        drawLights = !drawLights;
+                        break;
 
-                        case GLFW_KEY_SPACE:
-                            useTexture = !useTexture;
-                            if (useTexture) {
-                                System.out.printf("Texture\n");
-                            } else {
-                                System.out.printf("Shader\n");
-                            }
-                            break;
+                    case GLFW_KEY_SPACE:
+                        useTexture = !useTexture;
+                        if (useTexture) {
+                            System.out.printf("Texture\n");
+                        } else {
+                            System.out.printf("Shader\n");
+                        }
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

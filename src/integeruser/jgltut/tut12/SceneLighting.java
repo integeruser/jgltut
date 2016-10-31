@@ -12,7 +12,6 @@ import integeruser.jgltut.framework.MousePole;
 import integeruser.jgltut.framework.Timer;
 import org.joml.*;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 import org.lwjgl.opengl.GL15;
@@ -109,64 +108,61 @@ public class SceneLighting extends Tutorial {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_P:
-                            lights.togglePause(timerMode);
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_P:
+                        lights.togglePause(timerMode);
+                        break;
 
-                        case GLFW_KEY_MINUS:
-                            lights.rewindTime(timerMode, 1.0f);
-                            break;
+                    case GLFW_KEY_MINUS:
+                        lights.rewindTime(timerMode, 1.0f);
+                        break;
 
-                        case GLFW_KEY_EQUAL:
-                            lights.fastForwardTime(timerMode, 1.0f);
-                            break;
+                    case GLFW_KEY_EQUAL:
+                        lights.fastForwardTime(timerMode, 1.0f);
+                        break;
 
-                        case GLFW_KEY_T:
-                            drawCameraPos = !drawCameraPos;
-                            break;
+                    case GLFW_KEY_T:
+                        drawCameraPos = !drawCameraPos;
+                        break;
 
-                        case GLFW_KEY_1:
-                            timerMode = LightManager.TimerTypes.ALL;
-                            System.out.printf("All\n");
-                            break;
+                    case GLFW_KEY_1:
+                        timerMode = LightManager.TimerTypes.ALL;
+                        System.out.printf("All\n");
+                        break;
 
-                        case GLFW_KEY_2:
-                            timerMode = LightManager.TimerTypes.SUN;
-                            System.out.printf("Sun\n");
-                            break;
+                    case GLFW_KEY_2:
+                        timerMode = LightManager.TimerTypes.SUN;
+                        System.out.printf("Sun\n");
+                        break;
 
-                        case GLFW_KEY_3:
-                            timerMode = LightManager.TimerTypes.LIGHTS;
-                            System.out.printf("Lights\n");
-                            break;
+                    case GLFW_KEY_3:
+                        timerMode = LightManager.TimerTypes.LIGHTS;
+                        System.out.printf("Lights\n");
+                        break;
 
-                        case GLFW_KEY_L:
-                            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                                setupNighttimeLighting();
-                            } else {
-                                setupDaytimeLighting();
-                            }
-                            break;
+                    case GLFW_KEY_L:
+                        if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
+                            setupNighttimeLighting();
+                        } else {
+                            setupDaytimeLighting();
+                        }
+                        break;
 
-                        case GLFW_KEY_SPACE:
-                            float sunAlpha = lights.getSunTime();
-                            float sunTimeHours = sunAlpha * 24.0f + 12.0f;
-                            sunTimeHours = sunTimeHours > 24.0f ? sunTimeHours - 24.0f : sunTimeHours;
-                            int sunHours = (int) sunTimeHours;
-                            float sunTimeMinutes = (sunTimeHours - sunHours) * 60.0f;
-                            int sunMinutes = (int) sunTimeMinutes;
-                            System.out.printf("%02d:%02d\n", sunHours, sunMinutes);
-                            break;
+                    case GLFW_KEY_SPACE:
+                        float sunAlpha = lights.getSunTime();
+                        float sunTimeHours = sunAlpha * 24.0f + 12.0f;
+                        sunTimeHours = sunTimeHours > 24.0f ? sunTimeHours - 24.0f : sunTimeHours;
+                        int sunHours = (int) sunTimeHours;
+                        float sunTimeMinutes = (sunTimeHours - sunHours) * 60.0f;
+                        int sunMinutes = (int) sunTimeMinutes;
+                        System.out.printf("%02d:%02d\n", sunHours, sunMinutes);
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

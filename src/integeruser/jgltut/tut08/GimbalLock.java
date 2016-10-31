@@ -6,7 +6,6 @@ import integeruser.jgltut.framework.Mesh;
 import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Vector4f;
-import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.util.ArrayList;
 
@@ -58,19 +57,16 @@ public class GimbalLock extends Tutorial {
         glDepthRange(0.0f, 1.0f);
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_SPACE:
-                            drawGimbals = !drawGimbals;
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_SPACE:
+                        drawGimbals = !drawGimbals;
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

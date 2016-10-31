@@ -19,7 +19,6 @@ import integeruser.jgltut.framework.SceneBinders.UniformVec3Binder;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
@@ -120,52 +119,49 @@ public class ProjectedLight extends Tutorial {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_SPACE:
-                            lightViewPole.reset();
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_SPACE:
+                        lightViewPole.reset();
+                        break;
 
-                        case GLFW_KEY_T:
-                            drawCameraPos = !drawCameraPos;
-                            break;
+                    case GLFW_KEY_T:
+                        drawCameraPos = !drawCameraPos;
+                        break;
 
-                        case GLFW_KEY_G:
-                            showOtherLights = !showOtherLights;
-                            break;
+                    case GLFW_KEY_G:
+                        showOtherLights = !showOtherLights;
+                        break;
 
-                        case GLFW_KEY_H:
-                            currSampler = (currSampler + 1) % NUM_SAMPLERS;
-                            break;
+                    case GLFW_KEY_H:
+                        currSampler = (currSampler + 1) % NUM_SAMPLERS;
+                        break;
 
-                        case GLFW_KEY_P:
-                            timer.togglePause();
-                            break;
+                    case GLFW_KEY_P:
+                        timer.togglePause();
+                        break;
 
-                        case GLFW_KEY_Y:
-                            currFOVIndex = Math.min(currFOVIndex + 1, lightFOVs.length - 1);
-                            System.out.printf("Curr FOV: %f\n", lightFOVs[currFOVIndex]);
-                            break;
+                    case GLFW_KEY_Y:
+                        currFOVIndex = Math.min(currFOVIndex + 1, lightFOVs.length - 1);
+                        System.out.printf("Curr FOV: %f\n", lightFOVs[currFOVIndex]);
+                        break;
 
-                        case GLFW_KEY_N:
-                            currFOVIndex = Math.max(currFOVIndex - 1, 0);
-                            System.out.printf("Curr FOV: %f\n", lightFOVs[currFOVIndex]);
-                            break;
+                    case GLFW_KEY_N:
+                        currFOVIndex = Math.max(currFOVIndex - 1, 0);
+                        System.out.printf("Curr FOV: %f\n", lightFOVs[currFOVIndex]);
+                        break;
 
-                        case GLFW_KEY_1:
-                        case GLFW_KEY_2:
-                        case GLFW_KEY_3:
-                            currTextureIndex = key - GLFW_KEY_1;
-                            System.out.printf("%s\n", texDefs[currTextureIndex].name);
-                            break;
+                    case GLFW_KEY_1:
+                    case GLFW_KEY_2:
+                    case GLFW_KEY_3:
+                        currTextureIndex = key - GLFW_KEY_1;
+                        System.out.printf("%s\n", texDefs[currTextureIndex].name);
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

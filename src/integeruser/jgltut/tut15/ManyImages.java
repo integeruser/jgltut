@@ -11,7 +11,6 @@ import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -88,34 +87,31 @@ public class ManyImages extends Tutorial {
         createSamplers();
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_SPACE:
-                            useMipmapTexture = !useMipmapTexture;
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_SPACE:
+                        useMipmapTexture = !useMipmapTexture;
+                        break;
 
-                        case GLFW_KEY_Y:
-                            drawCorridor = !drawCorridor;
-                            break;
+                    case GLFW_KEY_Y:
+                        drawCorridor = !drawCorridor;
+                        break;
 
-                        case GLFW_KEY_P:
-                            camTimer.togglePause();
-                            break;
+                    case GLFW_KEY_P:
+                        camTimer.togglePause();
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
+                }
 
-                    if (GLFW_KEY_1 <= key && key <= GLFW_KEY_9) {
-                        int number = key - GLFW_KEY_1;
-                        if (number < NUM_SAMPLERS) {
-                            System.out.printf("Sampler: %s\n", samplerNames[number]);
-                            currSampler = number;
-                        }
+                if (GLFW_KEY_1 <= key && key <= GLFW_KEY_9) {
+                    int number = key - GLFW_KEY_1;
+                    if (number < NUM_SAMPLERS) {
+                        System.out.printf("Sampler: %s\n", samplerNames[number]);
+                        currSampler = number;
                     }
                 }
             }

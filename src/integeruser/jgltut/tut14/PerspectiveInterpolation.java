@@ -4,7 +4,6 @@ import integeruser.jgltut.Tutorial;
 import integeruser.jgltut.framework.Framework;
 import integeruser.jgltut.framework.Mesh;
 import org.joml.MatrixStackf;
-import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.util.ArrayList;
 
@@ -42,33 +41,30 @@ public class PerspectiveInterpolation extends Tutorial {
         }
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_S:
-                            useFakeHallway = !useFakeHallway;
-                            if (useFakeHallway) {
-                                System.out.printf("Fake Hallway.\n");
-                            } else {
-                                System.out.printf("Real Hallway.\n");
-                            }
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_S:
+                        useFakeHallway = !useFakeHallway;
+                        if (useFakeHallway) {
+                            System.out.printf("Fake Hallway.\n");
+                        } else {
+                            System.out.printf("Real Hallway.\n");
+                        }
+                        break;
 
-                        case GLFW_KEY_P:
-                            useSmoothInterpolation = !useSmoothInterpolation;
-                            if (useSmoothInterpolation) {
-                                System.out.printf("Perspective correct interpolation.\n");
-                            } else {
-                                System.out.printf("Just linear interpolation.\n");
-                            }
-                            break;
+                    case GLFW_KEY_P:
+                        useSmoothInterpolation = !useSmoothInterpolation;
+                        if (useSmoothInterpolation) {
+                            System.out.printf("Perspective correct interpolation.\n");
+                        } else {
+                            System.out.printf("Just linear interpolation.\n");
+                        }
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

@@ -9,7 +9,6 @@ import integeruser.jgltut.commons.ProjectionBlock;
 import integeruser.jgltut.framework.*;
 import org.joml.*;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 import org.lwjgl.opengl.GL15;
@@ -107,63 +106,60 @@ public class BasicImpostor extends Tutorial {
         createMaterials();
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_P:
-                            sphereTimer.togglePause();
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_P:
+                        sphereTimer.togglePause();
+                        break;
 
-                        case GLFW_KEY_MINUS:
-                            sphereTimer.rewind(0.5f);
-                            break;
+                    case GLFW_KEY_MINUS:
+                        sphereTimer.rewind(0.5f);
+                        break;
 
-                        case GLFW_KEY_EQUAL:
-                            sphereTimer.fastForward(0.5f);
-                            break;
+                    case GLFW_KEY_EQUAL:
+                        sphereTimer.fastForward(0.5f);
+                        break;
 
-                        case GLFW_KEY_T:
-                            drawCameraPos = !drawCameraPos;
-                            break;
+                    case GLFW_KEY_T:
+                        drawCameraPos = !drawCameraPos;
+                        break;
 
-                        case GLFW_KEY_G:
-                            drawLights = !drawLights;
-                            break;
+                    case GLFW_KEY_G:
+                        drawLights = !drawLights;
+                        break;
 
-                        case GLFW_KEY_1:
-                            drawImposter[0] = !drawImposter[0];
-                            break;
+                    case GLFW_KEY_1:
+                        drawImposter[0] = !drawImposter[0];
+                        break;
 
-                        case GLFW_KEY_2:
-                            drawImposter[1] = !drawImposter[1];
-                            break;
+                    case GLFW_KEY_2:
+                        drawImposter[1] = !drawImposter[1];
+                        break;
 
-                        case GLFW_KEY_3:
-                            drawImposter[2] = !drawImposter[2];
-                            break;
+                    case GLFW_KEY_3:
+                        drawImposter[2] = !drawImposter[2];
+                        break;
 
-                        case GLFW_KEY_4:
-                            drawImposter[3] = !drawImposter[3];
-                            break;
+                    case GLFW_KEY_4:
+                        drawImposter[3] = !drawImposter[3];
+                        break;
 
-                        case GLFW_KEY_L:
-                            currImpostor = Impostors.BASIC;
-                            break;
+                    case GLFW_KEY_L:
+                        currImpostor = Impostors.BASIC;
+                        break;
 
-                        case GLFW_KEY_J:
-                            currImpostor = Impostors.PERSPECTIVE;
-                            break;
+                    case GLFW_KEY_J:
+                        currImpostor = Impostors.PERSPECTIVE;
+                        break;
 
-                        case GLFW_KEY_H:
-                            currImpostor = Impostors.DEPTH;
-                            break;
+                    case GLFW_KEY_H:
+                        currImpostor = Impostors.DEPTH;
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

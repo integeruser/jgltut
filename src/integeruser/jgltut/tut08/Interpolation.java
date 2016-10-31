@@ -9,7 +9,6 @@ import org.joml.Matrix4f;
 import org.joml.MatrixStackf;
 import org.joml.Quaternionf;
 import org.joml.Vector4f;
-import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.util.ArrayList;
 
@@ -55,27 +54,24 @@ public class Interpolation extends Tutorial {
         glDepthRange(0.0f, 1.0f);
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    for (int orientIndex = 0; orientIndex < orientKeys.length; orientIndex++) {
-                        if (key == orientKeys[orientIndex]) {
-                            applyOrientation(orientIndex);
-                            break;
-                        }
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                for (int orientIndex = 0; orientIndex < orientKeys.length; orientIndex++) {
+                    if (key == orientKeys[orientIndex]) {
+                        applyOrientation(orientIndex);
+                        break;
                     }
+                }
 
-                    switch (key) {
-                        case GLFW_KEY_SPACE:
-                            boolean slerp = orient.toggleSlerp();
-                            System.out.printf(slerp ? "Slerp\n" : "Lerp\n");
-                            break;
+                switch (key) {
+                    case GLFW_KEY_SPACE:
+                        boolean slerp = orient.toggleSlerp();
+                        System.out.printf(slerp ? "Slerp\n" : "Lerp\n");
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

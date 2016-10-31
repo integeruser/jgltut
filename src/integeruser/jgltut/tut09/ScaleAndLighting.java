@@ -8,7 +8,6 @@ import integeruser.jgltut.framework.Mesh;
 import integeruser.jgltut.framework.MousePole;
 import org.joml.*;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
@@ -82,28 +81,25 @@ public class ScaleAndLighting extends Tutorial {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_SPACE:
-                            scaleCyl = !scaleCyl;
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_SPACE:
+                        scaleCyl = !scaleCyl;
+                        break;
 
-                        case GLFW_KEY_T:
-                            doInvTranspose = !doInvTranspose;
-                            if (doInvTranspose) {
-                                System.out.printf("Doing Inverse Transpose.\n");
-                            } else {
-                                System.out.printf("Bad lighting.\n");
-                            }
-                            break;
+                    case GLFW_KEY_T:
+                        doInvTranspose = !doInvTranspose;
+                        if (doInvTranspose) {
+                            System.out.printf("Doing Inverse Transpose.\n");
+                        } else {
+                            System.out.printf("Bad lighting.\n");
+                        }
+                        break;
 
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

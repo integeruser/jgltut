@@ -9,7 +9,6 @@ import integeruser.jgltut.framework.MousePole;
 import integeruser.jgltut.framework.Timer;
 import org.joml.*;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
@@ -95,74 +94,71 @@ public class GaussianSpecularLighting extends Tutorial {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (action == GLFW_PRESS) {
-                    switch (key) {
-                        case GLFW_KEY_SPACE:
-                            drawColoredCyl = !drawColoredCyl;
-                            break;
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                switch (key) {
+                    case GLFW_KEY_SPACE:
+                        drawColoredCyl = !drawColoredCyl;
+                        break;
 
-                        case GLFW_KEY_O:
-                            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                                matParams.increment(false);
+                    case GLFW_KEY_O:
+                        if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
+                            matParams.increment(false);
+                        } else {
+                            matParams.increment(true);
+                        }
+
+                        System.out.printf("Shiny: %f\n", (float) matParams.getSpecularValue());
+                        break;
+
+                    case GLFW_KEY_U:
+                        if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
+                            matParams.decrement(false);
+                        } else {
+                            matParams.decrement(true);
+                        }
+
+                        System.out.printf("Shiny: %f\n", (float) matParams.getSpecularValue());
+                        break;
+
+                    case GLFW_KEY_Y:
+                        drawLightSource = !drawLightSource;
+                        break;
+
+                    case GLFW_KEY_T:
+                        scaleCyl = !scaleCyl;
+                        break;
+
+                    case GLFW_KEY_B:
+                        lightTimer.togglePause();
+                        break;
+
+                    case GLFW_KEY_G:
+                        drawDark = !drawDark;
+                        break;
+
+                    case GLFW_KEY_H:
+                        if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
+                            int index;
+                            if (lightModel.ordinal() % 2 != 0) {
+                                index = lightModel.ordinal() - 1;
                             } else {
-                                matParams.increment(true);
+                                index = lightModel.ordinal() + 1;
                             }
+                            index %= LightingModel.MAX_LIGHTING_MODEL.ordinal();
+                            lightModel = LightingModel.values()[index];
+                        } else {
+                            int index = lightModel.ordinal() + 2;
+                            index %= LightingModel.MAX_LIGHTING_MODEL.ordinal();
+                            lightModel = LightingModel.values()[index];
+                        }
 
-                            System.out.printf("Shiny: %f\n", (float) matParams.getSpecularValue());
-                            break;
+                        System.out.printf("%s\n", lightModelNames[lightModel.ordinal()]);
+                        break;
 
-                        case GLFW_KEY_U:
-                            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                                matParams.decrement(false);
-                            } else {
-                                matParams.decrement(true);
-                            }
-
-                            System.out.printf("Shiny: %f\n", (float) matParams.getSpecularValue());
-                            break;
-
-                        case GLFW_KEY_Y:
-                            drawLightSource = !drawLightSource;
-                            break;
-
-                        case GLFW_KEY_T:
-                            scaleCyl = !scaleCyl;
-                            break;
-
-                        case GLFW_KEY_B:
-                            lightTimer.togglePause();
-                            break;
-
-                        case GLFW_KEY_G:
-                            drawDark = !drawDark;
-                            break;
-
-                        case GLFW_KEY_H:
-                            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT) || isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
-                                int index;
-                                if (lightModel.ordinal() % 2 != 0) {
-                                    index = lightModel.ordinal() - 1;
-                                } else {
-                                    index = lightModel.ordinal() + 1;
-                                }
-                                index %= LightingModel.MAX_LIGHTING_MODEL.ordinal();
-                                lightModel = LightingModel.values()[index];
-                            } else {
-                                int index = lightModel.ordinal() + 2;
-                                index %= LightingModel.MAX_LIGHTING_MODEL.ordinal();
-                                lightModel = LightingModel.values()[index];
-                            }
-
-                            System.out.printf("%s\n", lightModelNames[lightModel.ordinal()]);
-                            break;
-
-                        case GLFW_KEY_ESCAPE:
-                            glfwSetWindowShouldClose(window, true);
-                            break;
-                    }
+                    case GLFW_KEY_ESCAPE:
+                        glfwSetWindowShouldClose(window, true);
+                        break;
                 }
             }
         });

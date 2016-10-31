@@ -59,9 +59,9 @@ public abstract class Tutorial {
             glfwSwapInterval(1);
             GL.createCapabilities();
 
+            initCallbacks();
             init();
             initViewport();
-            initCallbacks();
 
             printInfo();
 

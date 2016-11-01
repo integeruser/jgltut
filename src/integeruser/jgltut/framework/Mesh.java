@@ -19,7 +19,8 @@ import static org.lwjgl.opengl.GL30.*;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/framework/Mesh.cpp
  */
 public class Mesh {
     public Mesh(String filename) {
@@ -285,12 +286,15 @@ public class Mesh {
                     isIntegral = false;
                 } else {
                     String strIntegral = integralNode.getNodeValue();
-                    if (strIntegral.equals("true")) {
-                        isIntegral = true;
-                    } else if (strIntegral.equals("false")) {
-                        isIntegral = false;
-                    } else {
-                        throw new RuntimeException("Incorrect 'integral' value for the 'attribute'.");
+                    switch (strIntegral) {
+                        case "true":
+                            isIntegral = true;
+                            break;
+                        case "false":
+                            isIntegral = false;
+                            break;
+                        default:
+                            throw new RuntimeException("Incorrect 'integral' value for the 'attribute'.");
                     }
 
                     if (attribType.normalized) {

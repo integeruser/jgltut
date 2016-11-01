@@ -34,7 +34,8 @@ import static org.lwjgl.opengl.GL33.*;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2014%20Textures%20Are%20Not%20Pictures/Basic%20Texture.cpp
  * <p>
  * Part IV. Texturing
  * Chapter 14. Textures are not Pictures

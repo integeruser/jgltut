@@ -31,7 +31,8 @@ import static org.lwjgl.opengl.GL33.*;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2015%20Many%20Images/Many%20Images.cpp
  * <p>
  * Part IV. Texturing
  * Chapter 15. Many Images

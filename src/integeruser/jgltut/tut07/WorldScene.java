@@ -1,6 +1,5 @@
 package integeruser.jgltut.tut07;
 
-import integeruser.jglsdk.glm.Glm;
 import integeruser.jgltut.Tutorial;
 import integeruser.jgltut.framework.Framework;
 import integeruser.jgltut.framework.Mesh;
@@ -17,7 +16,8 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2007%20World%20in%20Motion/World%20Scene.cpp
  * <p>
  * Part II. Positioning
  * Chapter 7. World in Motion
@@ -264,7 +264,7 @@ public class WorldScene extends Tutorial {
         }
 
 
-        sphereCamRelPos.y = Glm.clamp(sphereCamRelPos.y, -78.75f, -1.0f);
+        sphereCamRelPos.y = Math.min(Math.max(sphereCamRelPos.y, -78.75f), -1.0f);
         camTarget.y = camTarget.y > 0.0f ? camTarget.y : 0.0f;
         sphereCamRelPos.z = sphereCamRelPos.z > 5.0f ? sphereCamRelPos.z : 5.0f;
     }
@@ -521,11 +521,10 @@ public class WorldScene extends Tutorial {
     }
 
     ////////////////////////////////
-    private final float columnBaseHeight = 0.25f;
-
-
     // Columns are 1x1 in the X/Z, and height units in the Y.
     private void drawColumn(MatrixStackf modelMatrix, float height) {
+        final float columnBaseHeight = 0.25f;
+
         // Draw the bottom of the column.
         {
             modelMatrix.pushMatrix();
@@ -575,14 +574,13 @@ public class WorldScene extends Tutorial {
     }
 
     ////////////////////////////////
-    private final float parthenonWidth = 14.0f;
-    private final float parthenonLength = 20.0f;
-    private final float parthenonColumnHeight = 5.0f;
-    private final float parthenonBaseHeight = 1.0f;
-    private final float parthenonTopHeight = 2.0f;
-
-
     private void drawParthenon(MatrixStackf modelMatrix) {
+        final float parthenonWidth = 14.0f;
+        final float parthenonLength = 20.0f;
+        final float parthenonColumnHeight = 5.0f;
+        final float parthenonBaseHeight = 1.0f;
+        final float parthenonTopHeight = 2.0f;
+
         // Draw base.
         {
             modelMatrix.pushMatrix();

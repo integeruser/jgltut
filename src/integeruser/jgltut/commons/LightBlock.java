@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
  */
 public class LightBlock implements Bufferable {
     public static final int MAX_NUMBER_OF_LIGHTS = 5;

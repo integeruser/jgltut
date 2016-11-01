@@ -12,7 +12,8 @@ import static org.lwjgl.opengl.GL20.glDeleteShader;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/framework/framework.cpp
  */
 public class Framework {
     public static String COMMON_DATAPATH = "/integeruser/jgltut/data/";

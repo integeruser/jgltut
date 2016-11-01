@@ -35,7 +35,8 @@ import static org.lwjgl.opengl.GL33.*;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/framework/Scene.cpp
  */
 public class Scene {
     public Scene(String filename) {

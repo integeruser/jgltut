@@ -31,7 +31,8 @@ import static org.lwjgl.opengl.GL40.GL_TEXTURE_CUBE_MAP_ARRAY;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/unofficial-opengl-sdk/src/default/glimg/source/TextureGenerator.cpp
  */
 public class TextureGenerator {
     public static class ForcedConvertFlags {
@@ -462,9 +463,7 @@ public class TextureGenerator {
     private static boolean isArrayTexture(ImageSet imageSet, int forceConvertBits) {
         // No such thing as 3D array textures.
         if (imageSet.getDimensions().numDimensions == 3) return false;
-        if ((forceConvertBits & ForcedConvertFlags.FORCE_ARRAY_TEXTURE) != 0 || imageSet.getArrayCount() > 1)
-            return true;
-        return false;
+        return (forceConvertBits & ForcedConvertFlags.FORCE_ARRAY_TEXTURE) != 0 || imageSet.getArrayCount() > 1;
     }
 
     ////////////////////////////////
@@ -914,8 +913,7 @@ public class TextureGenerator {
 
         // Unsigned normalized integers. Check for RGB or RGBA components.
         PixelComponents convertableFormats[] = {PixelComponents.COLOR_RGB, PixelComponents.COLOR_RGBX, PixelComponents.COLOR_RGBA};
-        if (Util.isOneOfThese(imageFormat.getPixelComponents(), convertableFormats)) return true;
-        return false;
+        return Util.isOneOfThese(imageFormat.getPixelComponents(), convertableFormats);
     }
 
     private static int perComponentSize(ImageFormat imageFormat, int forceConvertBits) {
@@ -1078,15 +1076,11 @@ public class TextureGenerator {
 
 
     private static boolean isTextureStorageSupported() {
-        if (!GL.getCapabilities().OpenGL42) {
-            if (!GL.getCapabilities().GL_ARB_texture_storage) return false;
-        }
-        return true;
+        return GL.getCapabilities().OpenGL42 && GL.getCapabilities().GL_ARB_texture_storage;
     }
 
     private static boolean isDirectStateAccessSupported() {
-        if (!GL.getCapabilities().GL_EXT_direct_state_access) return false;
-        return true;
+        return GL.getCapabilities().GL_EXT_direct_state_access;
     }
 
 

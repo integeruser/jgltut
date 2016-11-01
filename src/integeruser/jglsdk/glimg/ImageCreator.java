@@ -9,7 +9,8 @@ import java.util.Arrays;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/unofficial-opengl-sdk/src/default/glimg/source/ImageCreator.cpp
  */
 class ImageCreator {
     ImageCreator(ImageFormat ddsFormat, Dimensions ddsDimensions, int mipmapCount, int arrayCount, int faceCount) {
@@ -200,9 +201,7 @@ class ImageCreator {
         assert sourceData.length == 8;
 
         // First 4 bytes are 2 16-bit colors. Keep them the same.
-        for (int i = 0; i < 4; i++) {
-            imageData[imageDataOffset + i] = sourceData[i];
-        }
+        System.arraycopy(sourceData, 0, imageData, imageDataOffset, 4);
 
         // Next four bytes are 16 2-bit values, in row-major, top-to-bottom order,
         // representing the 4x4 pixel data for the block. So copy the bytes in reverse order.

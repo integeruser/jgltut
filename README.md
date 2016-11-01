@@ -6,7 +6,6 @@ To try the tutorials without building the source code, you can download the runn
 I can't dedicate much time to this project anymore, but I will keep it updated to work with recent versions of LWJGL and JOML. To suggest a feature, report bugs or general discussion use the [issue tracker](https://github.com/integeruser/jgltut/issues).
 
 Contributions are welcome! :smile:  
-Francesco
 
 
 ## Usage

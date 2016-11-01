@@ -1,6 +1,5 @@
 package integeruser.jgltut.tut08;
 
-import integeruser.jglsdk.glm.Glm;
 import integeruser.jgltut.Tutorial;
 import integeruser.jgltut.framework.Framework;
 import integeruser.jgltut.framework.Mesh;
@@ -17,7 +16,8 @@ import static org.lwjgl.opengl.GL20.*;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2008%20Getting%20Oriented/CameraRelative.cpp
  * <p>
  * Part II. Positioning
  * Chapter 8. Getting Oriented
@@ -197,7 +197,7 @@ public class CameraRelative extends Tutorial {
         }
 
 
-        sphereCamRelPos.y = Glm.clamp(sphereCamRelPos.y, -78.75f, 10.0f);
+        sphereCamRelPos.y = Math.min(Math.max(sphereCamRelPos.y, -78.75f), 10.0f);
     }
 
     ////////////////////////////////

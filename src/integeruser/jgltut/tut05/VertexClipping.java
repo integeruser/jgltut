@@ -17,7 +17,8 @@ import static org.lwjgl.opengl.GL32.glDrawElementsBaseVertex;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2005%20Objects%20in%20Depth/VertexClipping.cpp
  * <p>
  * Part II. Positioning
  * Chapter 5. Objects in Depth

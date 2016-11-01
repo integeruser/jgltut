@@ -7,7 +7,8 @@ import java.util.ArrayList;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/framework/Interpolators.h
  */
 public class Interpolators {
     public static class WeightedLinearInterpolatorFloat {

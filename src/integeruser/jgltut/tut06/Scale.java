@@ -1,6 +1,5 @@
 package integeruser.jgltut.tut06;
 
-import integeruser.jglsdk.glm.Glm;
 import integeruser.jgltut.Tutorial;
 import integeruser.jgltut.framework.Framework;
 import org.joml.Matrix4f;
@@ -19,7 +18,8 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2006%20Objects%20in%20Motion/Scale.cpp
  * <p>
  * Part II. Positioning
  * Chapter 6. Objects in Motion
@@ -267,7 +267,7 @@ public class Scale extends Tutorial {
         @Override
         Vector3f calcScale(float elapsedTime) {
             final float loopDuration = 3.0f;
-            return new Vector3f(Glm.mix(1.0f, 4.0f, calcLerpFactor(elapsedTime, loopDuration)));
+            return new Vector3f(mix(1.0f, 4.0f, calcLerpFactor(elapsedTime, loopDuration)));
         }
     }
 
@@ -281,9 +281,9 @@ public class Scale extends Tutorial {
             final float xLoopDuration = 3.0f;
             final float zLoopDuration = 5.0f;
             return new Vector3f(
-                    Glm.mix(1.0f, 0.5f, calcLerpFactor(elapsedTime, xLoopDuration)),
+                    mix(1.0f, 0.5f, calcLerpFactor(elapsedTime, xLoopDuration)),
                     1.0f,
-                    Glm.mix(1.0f, 10.0f, calcLerpFactor(elapsedTime, zLoopDuration))
+                    mix(1.0f, 10.0f, calcLerpFactor(elapsedTime, zLoopDuration))
             );
         }
     }
@@ -295,5 +295,10 @@ public class Scale extends Tutorial {
             value = 1.0f - value;
         }
         return value * 2.0f;
+    }
+
+
+    private float mix(float x, float y, float a) {
+        return x + a * (y - x);
     }
 }

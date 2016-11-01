@@ -28,7 +28,8 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2017%20Spotlight%20on%20Textures/Double%20Projection.cpp
  * <p>
  * Part IV. Texturing
  * Chapter 17. Spotlight on Textures
@@ -195,7 +196,7 @@ public class DoubleProjection extends Tutorial {
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
         }
 
-        glViewport(0, 0, (int) displaySize.x, (int) displaySize.y);
+        glViewport(0, 0, displaySize.x, displaySize.y);
         scene.render(modelMatrix);
 
         if (drawCameraPos) {
@@ -239,7 +240,7 @@ public class DoubleProjection extends Tutorial {
             glDisable(GL_DEPTH_CLAMP);
         }
 
-        glViewport((int) displaySize.x + (displayWidth % 2), 0, (int) displaySize.x, (int) displaySize.y);
+        glViewport(displaySize.x + (displayWidth % 2), 0, displaySize.x, displaySize.y);
         scene.render(modelMatrix);
         glEnable(GL_DEPTH_CLAMP);
     }

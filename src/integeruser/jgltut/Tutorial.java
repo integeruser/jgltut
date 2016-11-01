@@ -20,7 +20,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
  */
 public abstract class Tutorial {
     protected long window;

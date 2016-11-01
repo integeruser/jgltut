@@ -10,7 +10,8 @@ import java.io.InputStream;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/unofficial-opengl-sdk/src/default/glimg/source/StbLoader.cpp
  */
 public class StbLoader {
     private static ImageSet buildImageSetFromIntegerData(BufferedImage bufferedImage, int width, int height, int numComponents) {
@@ -61,7 +62,6 @@ public class StbLoader {
         int height = bufferedImage.getHeight();
         int numComponents = bufferedImage.getColorModel().getNumComponents();
 
-        ImageSet imageSet = buildImageSetFromIntegerData(bufferedImage, width, height, numComponents);
-        return imageSet;
+        return buildImageSetFromIntegerData(bufferedImage, width, height, numComponents);
     }
 }

@@ -25,7 +25,8 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2011%20Shinies/Blinn%20vs%20Phong%20Lighting.cpp
  * <p>
  * Part III. Illumination
  * Chapter 11. Shinies

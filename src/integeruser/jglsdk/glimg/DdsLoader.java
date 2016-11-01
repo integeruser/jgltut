@@ -7,7 +7,8 @@ import java.util.Arrays;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/unofficial-opengl-sdk/src/default/glimg/source/DdsLoader.cpp
  */
 public class DdsLoader {
     public static ImageSet loadFromFile(String ddsFilepath) throws IOException {
@@ -306,9 +307,9 @@ public class DdsLoader {
             Util.throwNotYetPortedException();
         }
 
-        for (int convIx = 0; convIx < oldFormatConvert.length; convIx++) {
-            if (doesMatchFormat(oldFormatConvert[convIx].ddsFmt, ddsHeader)) {
-                return oldFormatConvert[convIx].uncheckedImageFormat;
+        for (OldDdsFormatConv oldFormatConvert : DdsLoader.oldFormatConvert) {
+            if (doesMatchFormat(oldFormatConvert.ddsFmt, ddsHeader)) {
+                return oldFormatConvert.uncheckedImageFormat;
             }
         }
 

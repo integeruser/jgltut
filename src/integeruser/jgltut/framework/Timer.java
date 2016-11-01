@@ -1,10 +1,9 @@
 package integeruser.jgltut.framework;
 
-import integeruser.jglsdk.glm.Glm;
-
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/framework/Timer.cpp
  */
 public class Timer {
     public enum Type {
@@ -103,7 +102,7 @@ public class Timer {
                 return (secAccumTime % secDuration) / secDuration;
 
             case SINGLE:
-                return Glm.clamp(secAccumTime / secDuration, 0.0f, 1.0f);
+                return Math.min(Math.max(secAccumTime / secDuration, 0.0f), 1.0f);
 
             default:
                 break;

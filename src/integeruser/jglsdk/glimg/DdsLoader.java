@@ -306,9 +306,9 @@ public class DdsLoader {
             Util.throwNotYetPortedException();
         }
 
-        for (int convIx = 0; convIx < oldFormatConvert.length; convIx++) {
-            if (doesMatchFormat(oldFormatConvert[convIx].ddsFmt, ddsHeader)) {
-                return oldFormatConvert[convIx].uncheckedImageFormat;
+        for (OldDdsFormatConv oldFormatConvert : DdsLoader.oldFormatConvert) {
+            if (doesMatchFormat(oldFormatConvert.ddsFmt, ddsHeader)) {
+                return oldFormatConvert.uncheckedImageFormat;
             }
         }
 

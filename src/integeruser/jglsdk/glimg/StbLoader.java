@@ -61,7 +61,6 @@ public class StbLoader {
         int height = bufferedImage.getHeight();
         int numComponents = bufferedImage.getColorModel().getNumComponents();
 
-        ImageSet imageSet = buildImageSetFromIntegerData(bufferedImage, width, height, numComponents);
-        return imageSet;
+        return buildImageSetFromIntegerData(bufferedImage, width, height, numComponents);
     }
 }

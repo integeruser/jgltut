@@ -16,7 +16,6 @@ import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
  */
 public class UniformBlockArray<T extends Bufferable> {
     public UniformBlockArray(int blockSize, int arrayCount) {
-        this.arrayCount = arrayCount;
         this.blockSize = blockSize;
 
         int uniformBufferAlignSize = glGetInteger(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT);
@@ -66,6 +65,5 @@ public class UniformBlockArray<T extends Bufferable> {
     ////////////////////////////////
     private byte[] storage;
     private int blockOffset;
-    private int arrayCount;
     private int blockSize;
 }

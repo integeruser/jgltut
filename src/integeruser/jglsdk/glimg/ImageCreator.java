@@ -200,9 +200,7 @@ class ImageCreator {
         assert sourceData.length == 8;
 
         // First 4 bytes are 2 16-bit colors. Keep them the same.
-        for (int i = 0; i < 4; i++) {
-            imageData[imageDataOffset + i] = sourceData[i];
-        }
+        System.arraycopy(sourceData, 0, imageData, imageDataOffset, 4);
 
         // Next four bytes are 16 2-bit values, in row-major, top-to-bottom order,
         // representing the 4x4 pixel data for the block. So copy the bytes in reverse order.

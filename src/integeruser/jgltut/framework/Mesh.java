@@ -285,12 +285,15 @@ public class Mesh {
                     isIntegral = false;
                 } else {
                     String strIntegral = integralNode.getNodeValue();
-                    if (strIntegral.equals("true")) {
-                        isIntegral = true;
-                    } else if (strIntegral.equals("false")) {
-                        isIntegral = false;
-                    } else {
-                        throw new RuntimeException("Incorrect 'integral' value for the 'attribute'.");
+                    switch (strIntegral) {
+                        case "true":
+                            isIntegral = true;
+                            break;
+                        case "false":
+                            isIntegral = false;
+                            break;
+                        default:
+                            throw new RuntimeException("Incorrect 'integral' value for the 'attribute'.");
                     }
 
                     if (attribType.normalized) {

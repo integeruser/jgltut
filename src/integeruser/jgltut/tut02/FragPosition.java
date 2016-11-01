@@ -16,6 +16,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2002%20Playing%20with%20Colors/FragPosition.cpp
  * <p>
  * Part I. The Basics
  * Chapter 2. Playing with Colors

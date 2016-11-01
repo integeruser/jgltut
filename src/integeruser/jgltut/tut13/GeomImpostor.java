@@ -32,6 +32,7 @@ import static org.lwjgl.opengl.GL32.*;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2013%20Impostors/GeomImpostor.cpp
  * <p>
  * Part III. Illumination
  * Chapter 13. Lies and Impostors

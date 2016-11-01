@@ -8,6 +8,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/unofficial-opengl-sdk/src/default/glutil/source/Shader.cpp
  */
 public class Shader {
     private static class CompileLinkShaderException extends RuntimeException {

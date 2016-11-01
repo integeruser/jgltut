@@ -13,6 +13,7 @@ import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/framework/UniformBlockArray.h
  */
 public class UniformBlockArray<T extends Bufferable> {
     public UniformBlockArray(int blockSize, int arrayCount) {

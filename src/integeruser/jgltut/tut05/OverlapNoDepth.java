@@ -17,6 +17,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2005%20Objects%20in%20Depth/OverlapNoDepth.cpp
  * <p>
  * Part II. Positioning
  * Chapter 5. Objects in Depth

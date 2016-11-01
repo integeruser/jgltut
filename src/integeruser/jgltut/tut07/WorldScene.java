@@ -18,6 +18,7 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2007%20World%20in%20Motion/World%20Scene.cpp
  * <p>
  * Part II. Positioning
  * Chapter 7. World in Motion

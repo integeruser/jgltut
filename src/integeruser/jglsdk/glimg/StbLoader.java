@@ -11,6 +11,7 @@ import java.io.InputStream;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/unofficial-opengl-sdk/src/default/glimg/source/StbLoader.cpp
  */
 public class StbLoader {
     private static ImageSet buildImageSetFromIntegerData(BufferedImage bufferedImage, int width, int height, int numComponents) {

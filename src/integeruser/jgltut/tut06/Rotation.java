@@ -20,6 +20,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2006%20Objects%20in%20Motion/Rotations.cpp
  * <p>
  * Part II. Positioning
  * Chapter 6. Objects in Motion

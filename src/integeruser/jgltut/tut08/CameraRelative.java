@@ -18,6 +18,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2008%20Getting%20Oriented/CameraRelative.cpp
  * <p>
  * Part II. Positioning
  * Chapter 8. Getting Oriented

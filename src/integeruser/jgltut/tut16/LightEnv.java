@@ -25,6 +25,7 @@ import java.util.Scanner;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2016%20Gamma%20and%20Textures/LightEnv.cpp
  */
 class LightEnv {
     LightEnv(String envFileName) {

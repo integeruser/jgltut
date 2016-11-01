@@ -3,6 +3,7 @@ package integeruser.jglsdk.glimg;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/unofficial-opengl-sdk/src/default/glimg/source/ImageFormat.cpp
  */
 class ImageFormat {
     enum PixelDataType {

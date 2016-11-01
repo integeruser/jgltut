@@ -16,6 +16,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2003%20OpenGLs%20Moving%20Triangle/vertCalcOffset.cpp
  * <p>
  * Part II. Positioning
  * Chapter 3. OpenGL's Moving Triangle

@@ -16,6 +16,7 @@ import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2001%20Hello%20Triangle/tut1.cpp
  * <p>
  * Part I. The Basics
  * Chapter 1. Hello, Triangle!

@@ -14,6 +14,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2014%20Textures%20Are%20Not%20Pictures/Perspective%20Interpolation.cpp
  * <p>
  * Part IV. Texturing
  * Chapter 14. Textures are not Pictures

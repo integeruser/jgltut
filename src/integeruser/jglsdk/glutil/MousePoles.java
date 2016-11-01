@@ -10,6 +10,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/unofficial-opengl-sdk/src/default/glutil/source/MousePoles.cpp
  */
 public class MousePoles {
     public enum MouseButtons {

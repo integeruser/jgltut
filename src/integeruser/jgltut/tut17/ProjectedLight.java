@@ -41,6 +41,7 @@ import static org.lwjgl.opengl.GL33.*;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2017%20Spotlight%20on%20Textures/Projected%20Light.cpp
  * <p>
  * Part IV. Texturing
  * Chapter 17. Spotlight on Textures

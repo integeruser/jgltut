@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/unofficial-opengl-sdk/src/default/glimg/source/ImageCreator.cpp
  */
 class ImageCreator {
     ImageCreator(ImageFormat ddsFormat, Dimensions ddsDimensions, int mipmapCount, int arrayCount, int faceCount) {

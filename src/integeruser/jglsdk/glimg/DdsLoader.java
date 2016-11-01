@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/unofficial-opengl-sdk/src/default/glimg/source/DdsLoader.cpp
  */
 public class DdsLoader {
     public static ImageSet loadFromFile(String ddsFilepath) throws IOException {

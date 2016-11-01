@@ -20,6 +20,7 @@ import static org.lwjgl.opengl.GL30.*;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/framework/Mesh.cpp
  */
 public class Mesh {
     public Mesh(String filename) {

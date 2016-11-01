@@ -18,6 +18,7 @@ import java.util.HashMap;
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
+ * Original: https://bitbucket.org/alfonse/gltut/src/default/Tut%2012%20Dynamic%20Range/Lights.cpp
  */
 class LightManager {
     LightManager() {

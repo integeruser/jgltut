@@ -24,7 +24,7 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
  * <p>
  * Part III. Illumination
  * Chapter 9. Lights On

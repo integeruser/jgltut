@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
  */
 public class UnprojectionBlock implements Bufferable {
     public static final int SIZE_IN_BYTES = Float.BYTES * (16) + Integer.BYTES * (2);

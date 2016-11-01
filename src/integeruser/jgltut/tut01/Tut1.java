@@ -15,7 +15,7 @@ import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
  * <p>
  * Part I. The Basics
  * Chapter 1. Hello, Triangle!

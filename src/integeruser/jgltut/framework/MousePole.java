@@ -9,7 +9,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
  */
 public class MousePole {
     public static void forwardMouseMotion(Pole forward, int x, int y) {

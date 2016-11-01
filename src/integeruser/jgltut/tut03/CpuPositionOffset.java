@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
  * <p>
  * Part II. Positioning
  * Chapter 3. OpenGL's Moving Triangle

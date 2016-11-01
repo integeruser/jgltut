@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
  */
 public class DdsLoader {
     public static ImageSet loadFromFile(String ddsFilepath) throws IOException {

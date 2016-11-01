@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
  */
 public class MaterialBlock implements Bufferable {
     public static final int SIZE_IN_BYTES = Float.BYTES * (4 + 4 + 1 + 3);

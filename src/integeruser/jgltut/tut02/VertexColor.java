@@ -15,7 +15,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
  * <p>
  * Part I. The Basics
  * Chapter 2. Playing with Colors

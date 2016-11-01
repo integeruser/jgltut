@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 
 /**
- * Visit https://github.com/integeruser/jgltut for info, updates and license terms.
+ * Visit https://github.com/integeruser/jgltut for info and updates.
  */
 class ImageCreator {
     ImageCreator(ImageFormat ddsFormat, Dimensions ddsDimensions, int mipmapCount, int arrayCount, int faceCount) {

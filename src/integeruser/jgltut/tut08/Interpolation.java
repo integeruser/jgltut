@@ -272,7 +272,7 @@ public class Interpolation extends Tutorial {
         float dot = v0.dot(v1);
         if (dot > DOT_THRESHOLD) return lerp(v0, v1, alpha);
 
-        Glm.clamp(dot, -1.0f, 1.0f);
+        dot = Glm.clamp(dot, -1.0f, 1.0f);
         float theta_0 = (float) Math.acos(dot);
         float theta = theta_0 * alpha;
 

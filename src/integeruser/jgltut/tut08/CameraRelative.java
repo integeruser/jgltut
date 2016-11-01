@@ -1,6 +1,5 @@
 package integeruser.jgltut.tut08;
 
-import integeruser.jglsdk.glm.Glm;
 import integeruser.jgltut.Tutorial;
 import integeruser.jgltut.framework.Framework;
 import integeruser.jgltut.framework.Mesh;
@@ -198,7 +197,7 @@ public class CameraRelative extends Tutorial {
         }
 
 
-        sphereCamRelPos.y = Glm.clamp(sphereCamRelPos.y, -78.75f, 10.0f);
+        sphereCamRelPos.y = Math.min(Math.max(sphereCamRelPos.y, -78.75f), 10.0f);
     }
 
     ////////////////////////////////

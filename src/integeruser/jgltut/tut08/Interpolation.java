@@ -1,6 +1,5 @@
 package integeruser.jgltut.tut08;
 
-import integeruser.jglsdk.glm.Glm;
 import integeruser.jgltut.Tutorial;
 import integeruser.jgltut.framework.Framework;
 import integeruser.jgltut.framework.Mesh;
@@ -272,7 +271,7 @@ public class Interpolation extends Tutorial {
         float dot = v0.dot(v1);
         if (dot > DOT_THRESHOLD) return lerp(v0, v1, alpha);
 
-        dot = Glm.clamp(dot, -1.0f, 1.0f);
+        dot = Math.min(Math.max(dot, -1.0f), 1.0f);
         float theta_0 = (float) Math.acos(dot);
         float theta = theta_0 * alpha;
 

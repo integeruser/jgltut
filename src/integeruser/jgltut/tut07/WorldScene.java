@@ -1,6 +1,5 @@
 package integeruser.jgltut.tut07;
 
-import integeruser.jglsdk.glm.Glm;
 import integeruser.jgltut.Tutorial;
 import integeruser.jgltut.framework.Framework;
 import integeruser.jgltut.framework.Mesh;
@@ -265,7 +264,7 @@ public class WorldScene extends Tutorial {
         }
 
 
-        sphereCamRelPos.y = Glm.clamp(sphereCamRelPos.y, -78.75f, -1.0f);
+        sphereCamRelPos.y = Math.min(Math.max(sphereCamRelPos.y, -78.75f), -1.0f);
         camTarget.y = camTarget.y > 0.0f ? camTarget.y : 0.0f;
         sphereCamRelPos.z = sphereCamRelPos.z > 5.0f ? sphereCamRelPos.z : 5.0f;
     }

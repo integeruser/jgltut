@@ -8,17 +8,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Links to original source files (6740859d4a97a5b5cfae5c3b44eb0edf20d1809d)
-- `CHANGELOG.md`
+- `CHANGELOG.md` (303a987d2f63a5abb5c272b1cbabf712fafcb9f8)
 
 ### Changed
-- Add note on `XstartOnFirstThread` in `README.md` (5ed37f34389f8703a8bfd41810888cb3efde5cbc)
-- Switch to MIT license (57f20622f1be542544714066bac816fc98459b34)
-- Test on LWJGL 3.1.0 build 40
+- Switched to MIT license (57f20622f1be542544714066bac816fc98459b34)
+- Tested on LWJGL 3.1.0 build 40 and JOML 1.8.3
 
 ### Fixed
-- Update link to LM3DGP in `README.md` (e67ddda9f06dbb3bc9c62cec44b83490e40f63cb)
-- Initialize key callbacks before `init()` in `Tutorial.java` (e0553fad7d85af711fe55ae2bb077d4d96f7bb48)
-- Clamp dot product in `Interpolation.java`(9f9dde49faf4f6732761a82ecfeea9fbbc9c438f)
+- Updated link to LM3DGP in `README.md` (e67ddda9f06dbb3bc9c62cec44b83490e40f63cb)
+- Initialized key callbacks before `init()` in `Tutorial.java` (e0553fad7d85af711fe55ae2bb077d4d96f7bb48)
+- Clamped dot product in `Interpolation.java`(9f9dde49faf4f6732761a82ecfeea9fbbc9c438f)
 
 ### Removed
 - `glm` package (0f6630e8d52a10c1e68bb624802fc9c6269db1ee, ee480cb66e83ea3f4c27548caa39643a422f14aa)
@@ -30,7 +29,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Ported to LWJGL 3
-- Replaced math library with to JOML
+- Replaced math classes with JOML
+- Replaced `Framework.degToRad()` with the same function in the Java `Math` class (b9520d3b75e533badec53b9604f2131ef0c4039a)
+- Tested on LWJGL 3.0.0 build 90 and JOML 1.8.3
 
 ### Fixed
 - Colors name in `BaseVertexOverlap.java` (2e83f9363a86a54586dd14cdc55efe2498565823)
@@ -38,9 +39,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Missing call to `init()` in `Tutorial.java` (4f906d12ce413ebd0f8bd49fd1f50c52a0a05259)
 
 ### Removed
-- `MatrixStack.java` and most of the math classes, replaced by their JOML counterparts
-- `Framework.degToRad()`, replaced by the same function in the Java `Math` class (b9520d3b75e533badec53b9604f2131ef0c4039a)
+- `MatrixStack.java` and almost all the math classes, replaced by their JOML counterparts
 
 
-[Unreleased]: https://github.com/integeruser/jgltut/compare/v2.0.0...develop
+[Unreleased]: https://github.com/integeruser/jgltut/compare/v2.0.0...HEAD
 [2.0.0]: https://github.com/integeruser/jgltut/compare/v1.0.2...v2.0.0

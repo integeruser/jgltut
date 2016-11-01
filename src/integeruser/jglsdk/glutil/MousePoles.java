@@ -526,8 +526,8 @@ public class MousePoles {
 
         private void onDragRotate(Vector2i ptCurr) {
             Vector2i diff = new Vector2i(ptCurr).sub(startDragMouseLoc);
-            int diffX = (int) diff.x;
-            int diffY = (int) diff.y;
+            int diffX = diff.x;
+            int diffY = diff.y;
 
             switch (rotateMode) {
                 case RM_DUAL_AXIS_ROTATE:

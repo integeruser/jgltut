@@ -521,11 +521,10 @@ public class WorldWithUBO extends Tutorial {
     }
 
     ////////////////////////////////
-    private final float columnBaseHeight = 0.25f;
-
-
     // Columns are 1x1 in the X/Z, and height units in the Y.
     private void drawColumn(MatrixStackf modelMatrix, float height) {
+        final float columnBaseHeight = 0.25f;
+
         // Draw the bottom of the column.
         {
             modelMatrix.pushMatrix();
@@ -575,14 +574,13 @@ public class WorldWithUBO extends Tutorial {
     }
 
     ////////////////////////////////
-    private final float parthenonWidth = 14.0f;
-    private final float parthenonLength = 20.0f;
-    private final float parthenonColumnHeight = 5.0f;
-    private final float parthenonBaseHeight = 1.0f;
-    private final float parthenonTopHeight = 2.0f;
-
-
     private void drawParthenon(MatrixStackf modelMatrix) {
+        final float parthenonWidth = 14.0f;
+        final float parthenonLength = 20.0f;
+        final float parthenonColumnHeight = 5.0f;
+        final float parthenonBaseHeight = 1.0f;
+        final float parthenonTopHeight = 2.0f;
+
         // Draw base.
         {
             modelMatrix.pushMatrix();

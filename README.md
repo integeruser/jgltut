@@ -64,6 +64,7 @@ At first, the code may appear difficult to read, but after a bit of reading you 
 
 ## Credits
 The LWJGL license can be found [here](http://lwjgl.org/license.php).  
+The JOML license can be found [here](https://github.com/JOML-CI/JOML/blob/master/LICENSE).
 Licenses of the projects `gltut` and `glsdk` can be found [here](https://bitbucket.org/alfonse/gltut/raw/3ee6f3dd04a7/License.txt) and
 [here](https://bitbucket.org/alfonse/unofficial-opengl-sdk/raw/1893b6e851b9/License.txt).
 

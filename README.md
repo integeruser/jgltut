@@ -69,14 +69,12 @@ Licenses of the projects `gltut` and `glsdk` can be found [here](https://bitbuck
 [here](https://bitbucket.org/alfonse/unofficial-opengl-sdk/raw/1893b6e851b9/License.txt).
 
 Extract from the `gltut` license:
-```
-The following files are copywritten and distributed under the Creative Commons Attribution 3.0 Unported (CC BY 3.0) license, as described in the "./CC BY 3.0 legalcode.txt" file. Attribution for these works is presented here:
-
-Attributed to Etory, of OpenGameArt.org:
-* data/seamless_rock1_small.dds
-
-Attributed to p0ss, of OpenGameArt.org:
-* data/concrete649_small.dds
-* data/dsc_1621_small.dds
-* data/rough645_small.dds
-```
+> The following files are copywritten and distributed under the Creative Commons Attribution 3.0 Unported (CC BY 3.0) license, as described in the "./CC BY 3.0 legalcode.txt" file. Attribution for these works is presented here:
+>
+> Attributed to Etory, of OpenGameArt.org:
+> * data/seamless_rock1_small.dds
+>
+> Attributed to p0ss, of OpenGameArt.org:
+> * data/concrete649_small.dds
+> * data/dsc_1621_small.dds
+> * data/rough645_small.dds

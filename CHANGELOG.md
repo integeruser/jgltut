@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Switched to MIT license (57f20622f1be542544714066bac816fc98459b34)
-- Tested on LWJGL 3.1.0 build 40 and JOML 1.8.3
+- Tested on LWJGL 3.1.0 build 40 and JOML 1.9.0
 
 ### Fixed
 - Updated link to LM3DGP in `README.md` (e67ddda9f06dbb3bc9c62cec44b83490e40f63cb)

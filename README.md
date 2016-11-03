@@ -54,7 +54,6 @@ jgltut/
 
 jglsdk/
 |-- glimg/
-|-- glm/
 |-- glutil/
 ```
 Each tutorial loads the files it needs from the global `integeruser.jgltut.data` folder or from its own `data` folder. The `integeruser.jgltut.framework` package contains utility code needed by multiple tutorials.
@@ -64,18 +63,17 @@ At first, the code may appear difficult to read, but after a bit of reading you 
 
 ## Credits
 The LWJGL license can be found [here](http://lwjgl.org/license.php).  
+The JOML license can be found [here](https://github.com/JOML-CI/JOML/blob/master/LICENSE).  
 Licenses of the projects `gltut` and `glsdk` can be found [here](https://bitbucket.org/alfonse/gltut/raw/3ee6f3dd04a7/License.txt) and
 [here](https://bitbucket.org/alfonse/unofficial-opengl-sdk/raw/1893b6e851b9/License.txt).
 
 Extract from the `gltut` license:
-```
-The following files are copywritten and distributed under the Creative Commons Attribution 3.0 Unported (CC BY 3.0) license, as described in the "./CC BY 3.0 legalcode.txt" file. Attribution for these works is presented here:
-
-Attributed to Etory, of OpenGameArt.org:
-* data/seamless_rock1_small.dds
-
-Attributed to p0ss, of OpenGameArt.org:
-* data/concrete649_small.dds
-* data/dsc_1621_small.dds
-* data/rough645_small.dds
-```
+> The following files are copywritten and distributed under the Creative Commons Attribution 3.0 Unported (CC BY 3.0) license, as described in the "./CC BY 3.0 legalcode.txt" file. Attribution for these works is presented here:
+>
+> Attributed to Etory, of OpenGameArt.org:
+> * data/seamless_rock1_small.dds
+>
+> Attributed to p0ss, of OpenGameArt.org:
+> * data/concrete649_small.dds
+> * data/dsc_1621_small.dds
+> * data/rough645_small.dds

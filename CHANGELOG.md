@@ -6,13 +6,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [Unreleased]
+
+
+## [2.1.0] - 2016-11-03
 ### Added
 - Links to original source files (6740859d4a97a5b5cfae5c3b44eb0edf20d1809d)
-- `CHANGELOG.md` (303a987d2f63a5abb5c272b1cbabf712fafcb9f8)
+- `CHANGELOG.md`
+- Maven `pom.xml` and common `.gitignore` (thanks to @httpdigest)
 
 ### Changed
-- Switched to MIT license (57f20622f1be542544714066bac816fc98459b34)
-- Tested on LWJGL 3.1.0 build 40 and JOML 1.9.0
+- Switched to MIT license
+- Replaced usages of ImageIO with STBImage (c3723ffb238476cc7702527ce4fc26904f723a5c)
 
 ### Fixed
 - Updated link to LM3DGP in `README.md` (e67ddda9f06dbb3bc9c62cec44b83490e40f63cb)
@@ -42,5 +46,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `MatrixStack.java` and almost all the math classes, replaced by their JOML counterparts
 
 
-[Unreleased]: https://github.com/integeruser/jgltut/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/integeruser/jgltut/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/integeruser/jgltut/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/integeruser/jgltut/compare/v1.0.2...v2.0.0

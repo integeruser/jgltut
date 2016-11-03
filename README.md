@@ -54,7 +54,6 @@ jgltut/
 
 jglsdk/
 |-- glimg/
-|-- glm/
 |-- glutil/
 ```
 Each tutorial loads the files it needs from the global `integeruser.jgltut.data` folder or from its own `data` folder. The `integeruser.jgltut.framework` package contains utility code needed by multiple tutorials.

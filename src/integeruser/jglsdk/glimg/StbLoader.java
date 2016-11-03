@@ -3,10 +3,12 @@ package integeruser.jglsdk.glimg;
 import integeruser.jglsdk.glimg.ImageFormat.*;
 import integeruser.jglsdk.glimg.ImageSet.Dimensions;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
+import java.nio.file.Paths;
+
+import static org.lwjgl.stb.STBImage.stbi_load;
 
 
 /**
@@ -14,7 +16,7 @@ import java.io.InputStream;
  * Original: https://bitbucket.org/alfonse/unofficial-opengl-sdk/src/default/glimg/source/StbLoader.cpp
  */
 public class StbLoader {
-    private static ImageSet buildImageSetFromIntegerData(BufferedImage bufferedImage, int width, int height, int numComponents) {
+    private static ImageSet buildImageSetFromIntegerData(ByteBuffer image, int width, int height, int numComponents) {
         Dimensions imageDimensions = new Dimensions();
         imageDimensions.numDimensions = 2;
         imageDimensions.depth = 0;
@@ -47,21 +49,20 @@ public class StbLoader {
         uncheckedImageFormat.lineAlignment = 1;
 
         byte[] imageData = new byte[width * height * numComponents];
-        bufferedImage.getRaster().getDataElements(0, 0, width, height, imageData);
+        image.get(imageData);
 
         ImageCreator imgCreator = new ImageCreator(new ImageFormat(uncheckedImageFormat), imageDimensions, 1, 1, 1);
         imgCreator.setImageData(imageData, true, 0, 0, 0);
         return imgCreator.createImage();
     }
 
-    public static ImageSet loadFromFile(String imagePath) throws IOException {
-        InputStream imageInputStream = ClassLoader.class.getResourceAsStream(imagePath);
-        BufferedImage bufferedImage = ImageIO.read(imageInputStream);
+    public static ImageSet loadFromFile(String imagePath) throws IOException, URISyntaxException {
+        String path = Paths.get(ClassLoader.class.getResource(imagePath).toURI()).toString();
+        int[] x = new int[1];
+        int[] y = new int[1];
+        int[] comp = new int[1];
+        ByteBuffer image = stbi_load(path, x, y, comp, 0);
 
-        int width = bufferedImage.getWidth();
-        int height = bufferedImage.getHeight();
-        int numComponents = bufferedImage.getColorModel().getNumComponents();
-
-        return buildImageSetFromIntegerData(bufferedImage, width, height, numComponents);
+        return buildImageSetFromIntegerData(image, x[0], y[0], comp[0]);
     }
 }

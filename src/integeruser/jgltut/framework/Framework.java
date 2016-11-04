@@ -22,11 +22,11 @@ public class Framework {
 
     public static String findFileOrThrow(String fileName) {
         // search the file in '/jgltut/tut##/data/'
-        InputStream fileStream = ClassLoader.class.getResourceAsStream(CURRENT_TUTORIAL_DATAPATH + fileName);
+        InputStream fileStream = Framework.class.getResourceAsStream(CURRENT_TUTORIAL_DATAPATH + fileName);
         if (fileStream != null) return CURRENT_TUTORIAL_DATAPATH + fileName;
 
         // search the file in '/jgltut/data/'
-        fileStream = ClassLoader.class.getResourceAsStream(COMMON_DATAPATH + fileName);
+        fileStream = Framework.class.getResourceAsStream(COMMON_DATAPATH + fileName);
         if (fileStream != null) return COMMON_DATAPATH + fileName;
 
         throw new RuntimeException("Could not find the file " + fileName);
@@ -43,7 +43,7 @@ public class Framework {
         StringBuilder text = new StringBuilder();
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(ClassLoader.class.getResourceAsStream(shaderFilePath)));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(Framework.class.getResourceAsStream(shaderFilePath)));
 
             String line;
             while ((line = reader.readLine()) != null) {

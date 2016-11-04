@@ -381,7 +381,7 @@ public class Scene {
                 DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
                 String xmlPath = Framework.findFileOrThrow(filename);
-                InputStream xmlInputStream = ClassLoader.class.getResourceAsStream(xmlPath);
+                InputStream xmlInputStream = Scene.class.getResourceAsStream(xmlPath);
                 document = documentBuilder.parse(xmlInputStream);
             } catch (SAXException | ParserConfigurationException | IOException e) {
                 e.printStackTrace();

@@ -57,7 +57,7 @@ public class StbLoader {
     }
 
     public static ImageSet loadFromFile(String imagePath) throws IOException, URISyntaxException {
-        String path = Paths.get(ClassLoader.class.getResource(imagePath).toURI()).toString();
+        String path = Paths.get(StbLoader.class.getResource(imagePath).toURI()).toString();
         int[] x = new int[1];
         int[] y = new int[1];
         int[] comp = new int[1];

@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
-## [2.1.0] - 2016-11-03
+## [2.1.0] - 2016-11-04
 ### Added
 - Links to original source files (6740859d4a97a5b5cfae5c3b44eb0edf20d1809d)
 - `CHANGELOG.md`

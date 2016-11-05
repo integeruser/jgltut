@@ -12,7 +12,7 @@ import java.util.Arrays;
  */
 public class DdsLoader {
     public static ImageSet loadFromFile(String ddsFilepath) throws IOException {
-        InputStream ddsInputStream = ClassLoader.class.getResourceAsStream(ddsFilepath);
+        InputStream ddsInputStream = DdsLoader.class.getResourceAsStream(ddsFilepath);
         byte[] ddsFile = readDdsFile(ddsInputStream);
 
         // Check the first 4 bytes.

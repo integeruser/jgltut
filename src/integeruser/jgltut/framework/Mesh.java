@@ -34,7 +34,7 @@ public class Mesh {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
             String meshPath = Framework.findFileOrThrow(filename);
-            doc = dBuilder.parse(ClassLoader.class.getResourceAsStream(meshPath));
+            doc = dBuilder.parse(Mesh.class.getResourceAsStream(meshPath));
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
             System.exit(-1);

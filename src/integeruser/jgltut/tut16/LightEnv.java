@@ -36,7 +36,7 @@ class LightEnv {
 
             String filePath = Framework.findFileOrThrow(envFileName);
 
-            doc = dBuilder.parse(ClassLoader.class.getResourceAsStream(filePath));
+            doc = dBuilder.parse(LightEnv.class.getResourceAsStream(filePath));
         } catch (SAXException | ParserConfigurationException | IOException e) {
             e.printStackTrace();
             System.exit(-1);

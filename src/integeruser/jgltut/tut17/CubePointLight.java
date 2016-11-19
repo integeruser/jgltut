@@ -147,13 +147,10 @@ public class CubePointLight extends Tutorial {
             MousePole.forwardMouseButton(window, viewPole, button, pressed, x, y);
             MousePole.forwardMouseButton(window, lightPole, button, pressed, x, y);
         });
-        glfwSetCursorPosCallback(window, mousePosCallback = new GLFWCursorPosCallback() {
-            @Override
-            public void invoke(long window, double xpos, double ypos) {
-                if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) || isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-                    MousePole.forwardMouseMotion(viewPole, (int) xpos, (int) ypos);
-                    MousePole.forwardMouseMotion(lightPole, (int) xpos, (int) ypos);
-                }
+        glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
+            if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) || isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+                MousePole.forwardMouseMotion(viewPole, (int) xpos, (int) ypos);
+                MousePole.forwardMouseMotion(lightPole, (int) xpos, (int) ypos);
             }
         });
         glfwSetScrollCallback(window, mouseScrollCallback = new GLFWScrollCallback() {

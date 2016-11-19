@@ -20,10 +20,10 @@ class ImageCreator {
         this.arrayCount = arrayCount;
         this.faceCount = faceCount;
 
-        if (faceCount != 6 && faceCount != 1) throw new BadFaceCountException();
-        if (faceCount == 6 && ddsDimensions.numDimensions != 2) throw new CubemapsMustBe2DException();
-        if (ddsDimensions.numDimensions == 3 && arrayCount != 1) throw new No3DTextureArrayException();
-        if (mipmapCount <= 0 || arrayCount <= 0) throw new NoImagesSpecifiedException();
+        if (faceCount != 6 && faceCount != 1) throw new RuntimeException("Bad face count.");
+        if (faceCount == 6 && ddsDimensions.numDimensions != 2) throw new RuntimeException("Cubemaps must be 2D.");
+        if (ddsDimensions.numDimensions == 3 && arrayCount != 1) throw new RuntimeException("No 3D texture array.");
+        if (mipmapCount <= 0 || arrayCount <= 0) throw new RuntimeException("No images specified.");
 
         imageData = new ArrayList<>(mipmapCount);
         imageSizes = new int[mipmapCount];
@@ -43,18 +43,18 @@ class ImageCreator {
 
     ////////////////////////////////
     void setImageData(byte sourceData[], boolean isTopLeft, int mipmapLevel, int arrayIx, int faceIx) {
-        if (imageData.isEmpty()) throw new ImageSetAlreadyCreatedException();
+        if (imageData.isEmpty()) throw new RuntimeException("ImageSet already created.");
 
         // Check inputs.
         if ((arrayIx < 0) || (arrayCount <= arrayIx)) throw new ArrayIndexOutOfBoundsException();
-        if ((faceIx < 0) || (faceCount <= faceIx)) throw new FaceIndexOutOfBoundsException();
-        if ((mipmapLevel < 0) || (mipmapCount <= mipmapLevel)) throw new MipmapLayerOutOfBoundsException();
+        if ((faceIx < 0) || (faceCount <= faceIx)) throw new RuntimeException("Face index out of bounds.");
+        if ((mipmapLevel < 0) || (mipmapCount <= mipmapLevel)) throw new RuntimeException("Mipmap layer out of bounds.");
 
         // Get the image relative to mipmapLevel
         byte[] imageData = this.imageData.get(mipmapLevel);
 
         if (!isTopLeft) {
-            Util.throwNotYetPortedException();
+            throw new RuntimeException("Not implemented.");
         } else {
             int imageDataOffset = ((arrayIx * faceCount) + faceIx) * imageSizes[mipmapLevel];
             copyImageFlipped(sourceData, imageData, imageDataOffset, mipmapLevel);
@@ -63,7 +63,7 @@ class ImageCreator {
 
 
     ImageSet createImage() {
-        if (imageData.isEmpty()) throw new ImageSetAlreadyCreatedException();
+        if (imageData.isEmpty()) throw new RuntimeException("ImageSet already created.");
         return new ImageSet(imageFormat, imageDimensions, mipmapCount, arrayCount, faceCount, imageData, imageSizes);
     }
 
@@ -77,28 +77,6 @@ class ImageCreator {
 
     private ArrayList<byte[]> imageData;
     private int[] imageSizes;
-
-
-    private static class BadFaceCountException extends RuntimeException {
-    }
-
-    private static class CubemapsMustBe2DException extends RuntimeException {
-    }
-
-    private static class No3DTextureArrayException extends RuntimeException {
-    }
-
-    private static class NoImagesSpecifiedException extends RuntimeException {
-    }
-
-    private static class ImageSetAlreadyCreatedException extends RuntimeException {
-    }
-
-    private static class MipmapLayerOutOfBoundsException extends RuntimeException {
-    }
-
-    private static class FaceIndexOutOfBoundsException extends RuntimeException {
-    }
 
     ////////////////////////////////
     private void copyImageFlipped(byte[] sourceData, byte[] imageData, int imageDataOffset, int mipmapLevel) {
@@ -122,8 +100,7 @@ class ImageCreator {
                     break;
 
                 default:
-                    Util.throwNotYetPortedException();
-                    break;
+                    throw new RuntimeException("Not implemented.");
             }
         }
     }
@@ -192,8 +169,7 @@ class ImageCreator {
                 break;
 
             default:
-                Util.throwNotYetPortedException();
-                break;
+                throw new RuntimeException("Not implemented.");
         }
     }
 

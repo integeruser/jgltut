@@ -118,35 +118,26 @@ public class FragmentPointLighting extends Tutorial {
             }
         });
 
-        glfwSetMouseButtonCallback(window, mouseCallback = new GLFWMouseButtonCallback() {
-            @Override
-            public void invoke(long window, int button, int action, int mods) {
-                boolean pressed = action == GLFW_PRESS;
-                glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
-                int x = (int) mouseBuffer1.get(0);
-                int y = (int) mouseBuffer2.get(0);
-                MousePole.forwardMouseButton(window, viewPole, button, pressed, x, y);
-                MousePole.forwardMouseButton(window, objtPole, button, pressed, x, y);
+        glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+            boolean pressed = action == GLFW_PRESS;
+            glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
+            int x = (int) mouseBuffer1.get(0);
+            int y = (int) mouseBuffer2.get(0);
+            MousePole.forwardMouseButton(window, viewPole, button, pressed, x, y);
+            MousePole.forwardMouseButton(window, objtPole, button, pressed, x, y);
+        });
+        glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
+            if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) || isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+                MousePole.forwardMouseMotion(viewPole, (int) xpos, (int) ypos);
+                MousePole.forwardMouseMotion(objtPole, (int) xpos, (int) ypos);
             }
         });
-        glfwSetCursorPosCallback(window, mousePosCallback = new GLFWCursorPosCallback() {
-            @Override
-            public void invoke(long window, double xpos, double ypos) {
-                if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) || isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-                    MousePole.forwardMouseMotion(viewPole, (int) xpos, (int) ypos);
-                    MousePole.forwardMouseMotion(objtPole, (int) xpos, (int) ypos);
-                }
-            }
-        });
-        glfwSetScrollCallback(window, mouseScrollCallback = new GLFWScrollCallback() {
-            @Override
-            public void invoke(long window, double xoffset, double yoffset) {
-                glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
-                int x = (int) mouseBuffer1.get(0);
-                int y = (int) mouseBuffer2.get(0);
-                MousePole.forwardMouseWheel(window, viewPole, (int) yoffset, x, y);
-                MousePole.forwardMouseWheel(window, objtPole, (int) yoffset, x, y);
-            }
+        glfwSetScrollCallback(window, (window, xoffset, yoffset) -> {
+            glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
+            int x = (int) mouseBuffer1.get(0);
+            int y = (int) mouseBuffer2.get(0);
+            MousePole.forwardMouseWheel(window, viewPole, (int) yoffset, x, y);
+            MousePole.forwardMouseWheel(window, objtPole, (int) yoffset, x, y);
         });
     }
 

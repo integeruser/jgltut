@@ -5,22 +5,14 @@ import integeruser.jglsdk.glimg.ImageFormat.PixelComponents;
 import integeruser.jglsdk.glimg.ImageFormat.PixelDataType;
 import integeruser.jglsdk.glimg.ImageSet.Dimensions;
 
+import java.util.Arrays;
+
 
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
  * Original: https://bitbucket.org/alfonse/unofficial-opengl-sdk/src/default/glimg/source/Util.cpp
  */
 class Util {
-    static <T> boolean isOneOfThese(T testValue, T[] testArray) {
-        for (T arrayElement : testArray) {
-            if (arrayElement.equals(testValue)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
     static Dimensions calcMipmapLevelDimensions(Dimensions ddsDimensions, int mipmapLevel) {
         Dimensions mipmapLevelDimensions = new Dimensions(ddsDimensions);
         for (int i = 0; i < mipmapLevel; i++) {
@@ -115,9 +107,9 @@ class Util {
         PixelComponents[] threeCompFormats = {PixelComponents.COLOR_RGB, PixelComponents.COLOR_RGB_SRGB};
         PixelComponents[] fourCompFormats = {PixelComponents.COLOR_RGBX, PixelComponents.COLOR_RGBA, PixelComponents.COLOR_RGBX_SRGB, PixelComponents.COLOR_RGBA_SRGB};
 
-        if (isOneOfThese(component, twoCompFormats)) return 2;
-        if (isOneOfThese(component, threeCompFormats)) return 3;
-        if (isOneOfThese(component, fourCompFormats)) return 4;
+        if (Arrays.asList(twoCompFormats).contains(component)) return 2;
+        if (Arrays.asList(threeCompFormats).contains(component)) return 3;
+        if (Arrays.asList(fourCompFormats).contains(component)) return 4;
         return 1;
     }
 

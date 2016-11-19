@@ -1,6 +1,8 @@
 package integeruser.jglsdk.glimg;
 
 
+import java.util.Arrays;
+
 /**
  * Visit https://github.com/integeruser/jgltut for info and updates.
  * Original: https://bitbucket.org/alfonse/unofficial-opengl-sdk/src/default/glimg/source/ImageFormat.cpp
@@ -112,7 +114,7 @@ class ImageFormat {
             if (type.ordinal() < PixelDataType.NUM_UNCOMPRESSED_TYPES.ordinal()) {
                 Integer[] tests = {1, 2, 4, 8};
 
-                if (!Util.isOneOfThese(lineAlignment, tests)) {
+                if (!Arrays.asList(tests).contains(lineAlignment)) {
                     return "Alignment must be 1, 2, 4, or 8 bytes.";
                 }
 
@@ -136,12 +138,12 @@ class ImageFormat {
                 if (type == PixelDataType.COMPRESSED_BC2
                         || type == PixelDataType.COMPRESSED_BC3
                         || type == PixelDataType.COMPRESSED_BC7) {
-                    if (!Util.isOneOfThese(format, alphaFormats)) {
+                    if (!Arrays.asList(alphaFormats).contains(format)) {
                         return "BC2, 3, and 7 compression must use an RGBA format.";
                     }
                 } else if (type == PixelDataType.COMPRESSED_BC1) {
-                    if (!Util.isOneOfThese(format, rgbFormats) &&
-                            !Util.isOneOfThese(format, alphaFormats)) {
+                    if (!Arrays.asList(rgbFormats).contains(format) &&
+                            !Arrays.asList(alphaFormats).contains(format)) {
                         return "BC1 compression must use an RGB or RGBA format";
                     }
                 }
@@ -230,13 +232,13 @@ class ImageFormat {
 
             // Floats must be at least 16-bits per component, or 101111.
             if (type == PixelDataType.FLOAT) {
-                if (!Util.isOneOfThese(bitDepth, floatBitdepths)) {
+                if (!Arrays.asList(floatBitdepths).contains(bitDepth)) {
                     return "Floating-point types must use 16 or 32-bit bitdepths, or the Bitdepth.PACKED_32_BIT_101111_REV";
                 }
             }
 
             // Only normalized unsigned integers can be sRGB.
-            if (Util.isOneOfThese(format, srgbFormats)) {
+            if (Arrays.asList(srgbFormats).contains(format)) {
                 if (type != PixelDataType.NORM_UNSIGNED_INTEGER) {
                     return "Only normalized, unsigned integers can be in the sRGB colorspace.";
                 }
@@ -272,12 +274,12 @@ class ImageFormat {
                         return "Non-depth two-component formats cannot work with packed bitdepths.";
 
                     case 3:
-                        if (!Util.isOneOfThese(bitDepth, threeCompBitdepths)) {
+                        if (!Arrays.asList(threeCompBitdepths).contains(bitDepth)) {
                             return "The only packed formats available to 3-component formats are 565 or 565_REV.";
                         }
 
                     case 4:
-                        if (Util.isOneOfThese(bitDepth, threeCompBitdepths)) {
+                        if (Arrays.asList(threeCompBitdepths).contains(bitDepth)) {
                             return "Cannot use 565 or 565_REV with 4-component formats.";
                         }
                 }

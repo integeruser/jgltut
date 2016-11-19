@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL32;
 import org.lwjgl.system.Platform;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import static org.lwjgl.opengl.ARBTextureCompressionBPTC.*;
 import static org.lwjgl.opengl.ARBTextureFloat.*;
@@ -427,12 +428,12 @@ public class TextureGenerator {
 
     private static boolean isTypeSigned(PixelDataType pixelDataType) {
         PixelDataType[] signedIntegerFormats = {PixelDataType.SIGNED_INTEGRAL, PixelDataType.NORM_SIGNED_INTEGER};
-        return Util.isOneOfThese(pixelDataType, signedIntegerFormats);
+        return Arrays.asList(signedIntegerFormats).contains(pixelDataType);
     }
 
     private static boolean isTypeIntegral(PixelDataType pixelDataType) {
         PixelDataType[] integralIntegerFormats = {PixelDataType.SIGNED_INTEGRAL, PixelDataType.UNSIGNED_INTEGRAL};
-        return Util.isOneOfThese(pixelDataType, integralIntegerFormats);
+        return Arrays.asList(integralIntegerFormats).contains(pixelDataType);
     }
 
 
@@ -443,9 +444,9 @@ public class TextureGenerator {
         PixelComponents[] fourCompFormats = {PixelComponents.COLOR_RGBX, PixelComponents.COLOR_RGBA,
                 PixelComponents.COLOR_RGBX_SRGB, PixelComponents.COLOR_RGBA_SRGB};
 
-        if (Util.isOneOfThese(imageFormat.getPixelComponents(), twoCompFormats)) return 2;
-        if (Util.isOneOfThese(imageFormat.getPixelComponents(), threeCompFormats)) return 3;
-        if (Util.isOneOfThese(imageFormat.getPixelComponents(), fourCompFormats)) return 4;
+        if (Arrays.asList(twoCompFormats).contains(imageFormat.getPixelComponents())) return 2;
+        if (Arrays.asList(threeCompFormats).contains(imageFormat.getPixelComponents())) return 3;
+        if (Arrays.asList(fourCompFormats).contains(imageFormat.getPixelComponents())) return 4;
         return 1;
     }
 
@@ -899,13 +900,13 @@ public class TextureGenerator {
     private static boolean isSRGBFormat(ImageFormat imageFormat, int forceConvertBits) {
         PixelComponents[] srgbFormats = {PixelComponents.COLOR_RGB_SRGB, PixelComponents.COLOR_RGBX_SRGB, PixelComponents.COLOR_RGBA_SRGB};
 
-        if (Util.isOneOfThese(imageFormat.getPixelComponents(), srgbFormats)) return true;
+        if (Arrays.asList(srgbFormats).contains(imageFormat.getPixelComponents())) return true;
         if ((forceConvertBits & ForcedConvertFlags.FORCE_SRGB_COLORSPACE_FMT) == 0) return false;
 
         PixelDataType[] srgbTypes = {PixelDataType.NORM_UNSIGNED_INTEGER, PixelDataType.COMPRESSED_BC1,
                 PixelDataType.COMPRESSED_BC2, PixelDataType.COMPRESSED_BC3, PixelDataType.COMPRESSED_BC7};
 
-        if (Util.isOneOfThese(imageFormat.getPixelDataType(), srgbTypes)) {
+        if (Arrays.asList(srgbTypes).contains(imageFormat.getPixelDataType())) {
             if (imageFormat.getPixelDataType() != PixelDataType.NORM_UNSIGNED_INTEGER) return true;
         } else {
             return false;
@@ -913,7 +914,7 @@ public class TextureGenerator {
 
         // Unsigned normalized integers. Check for RGB or RGBA components.
         PixelComponents convertableFormats[] = {PixelComponents.COLOR_RGB, PixelComponents.COLOR_RGBX, PixelComponents.COLOR_RGBA};
-        return Util.isOneOfThese(imageFormat.getPixelComponents(), convertableFormats);
+        return Arrays.asList(convertableFormats).contains(imageFormat.getPixelComponents());
     }
 
     private static int perComponentSize(ImageFormat imageFormat, int forceConvertBits) {

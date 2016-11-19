@@ -1051,8 +1051,7 @@ public class TextureGenerator {
                 break;
 
             default:
-                Util.throwNotYetPortedException();
-                break;
+                throw new RuntimeException("Not implemented.");
         }
     }
 
@@ -1104,7 +1103,7 @@ public class TextureGenerator {
     private static void texStorageBase(int textureTarget, int forceConvertBits, Dimensions imageDimensions, int numMipmaps,
                                        int internalFormat, OpenGLPixelTransferParams upload, int textureName) {
         if ((forceConvertBits & ForcedConvertFlags.USE_TEXTURE_STORAGE) != 0) {
-            Util.throwNotYetPortedException();
+            throw new RuntimeException("Not implemented.");
         } else {
             manTexStorageBase(textureName, textureTarget, imageDimensions, numMipmaps, internalFormat, upload);
         }
@@ -1119,7 +1118,7 @@ public class TextureGenerator {
             manTexStorageBase(textureTarget, imageDimensions, numMipmaps, internalFormat, upload);
             return;
         }
-        Util.throwNotYetPortedException();
+        throw new RuntimeException("Not implemented.");
     }
 
     private static void manTexStorageBase(int textureTarget, Dimensions imageDimensions, int numMipmaps,
@@ -1128,8 +1127,7 @@ public class TextureGenerator {
             Dimensions levelDims = Util.calcMipmapLevelDimensions(imageDimensions, mipmap);
             switch (imageDimensions.numDimensions) {
                 case 1:
-                    Util.throwNotYetPortedException();
-                    break;
+                    throw new RuntimeException("Not implemented.");
 
                 case 2:
                     glTexImage2D(textureTarget, mipmap, internalFormat, levelDims.width, levelDims.height, 0,
@@ -1137,8 +1135,7 @@ public class TextureGenerator {
                     break;
 
                 case 3:
-                    Util.throwNotYetPortedException();
-                    break;
+                    throw new RuntimeException("Not implemented.");
             }
         }
     }
@@ -1151,7 +1148,7 @@ public class TextureGenerator {
             texSubImage(textureTarget, mipmapLevel, internalFormat, imageDimensions, upload, imageData, imageSize);
             return;
         }
-        Util.throwNotYetPortedException();
+        throw new RuntimeException("Not implemented.");
     }
 
     private static void texSubImage(int textureTarget, int mipmapLevel, int internalFormat, Dimensions imageDimensions,
@@ -1194,7 +1191,7 @@ public class TextureGenerator {
             finalizeTexture(textureTarget, imageSet);
             return;
         }
-        Util.throwNotYetPortedException();
+        throw new RuntimeException("Not implemented.");
     }
 
     // Texture must be bound to the target.

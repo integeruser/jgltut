@@ -54,7 +54,7 @@ class ImageCreator {
         byte[] imageData = this.imageData.get(mipmapLevel);
 
         if (!isTopLeft) {
-            Util.throwNotYetPortedException();
+            throw new RuntimeException("Not implemented.");
         } else {
             int imageDataOffset = ((arrayIx * faceCount) + faceIx) * imageSizes[mipmapLevel];
             copyImageFlipped(sourceData, imageData, imageDataOffset, mipmapLevel);
@@ -100,8 +100,7 @@ class ImageCreator {
                     break;
 
                 default:
-                    Util.throwNotYetPortedException();
-                    break;
+                    throw new RuntimeException("Not implemented.");
             }
         }
     }
@@ -170,8 +169,7 @@ class ImageCreator {
                 break;
 
             default:
-                Util.throwNotYetPortedException();
-                break;
+                throw new RuntimeException("Not implemented.");
         }
     }
 

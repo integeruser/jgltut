@@ -304,7 +304,7 @@ public class DdsLoader {
 
     private static ImageFormat.UncheckedImageFormat getFormat(DdsHeader ddsHeader, Dds10Header dds10Header) throws DdsFileUnsupportedException {
         if (dds10Header.dxgiFormat != DxgiFormat.UNKNOWN) {
-            Util.throwNotYetPortedException();
+            throw new RuntimeException("Not implemented.");
         }
 
         for (OldDdsFormatConv oldFormatConvert : DdsLoader.oldFormatConvert) {

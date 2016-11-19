@@ -177,10 +177,4 @@ class Util {
             return lineSize;
         }
     }
-
-    ////////////////////////////////
-    public static void throwNotYetPortedException() {
-        throw new RuntimeException("The feature requested isn't supported at the moment. " +
-                "If you want ask me to implement it in the project official page.");
-    }
 }

@@ -160,14 +160,11 @@ public class GeomImpostor extends Tutorial {
                 MousePole.forwardMouseMotion(viewPole, (int) xpos, (int) ypos);
             }
         });
-        glfwSetScrollCallback(window, mouseScrollCallback = new GLFWScrollCallback() {
-            @Override
-            public void invoke(long window, double xoffset, double yoffset) {
-                glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
-                int x = (int) mouseBuffer1.get(0);
-                int y = (int) mouseBuffer2.get(0);
-                MousePole.forwardMouseWheel(window, viewPole, (int) yoffset, x, y);
-            }
+        glfwSetScrollCallback(window, (window, xoffset, yoffset) -> {
+            glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
+            int x = (int) mouseBuffer1.get(0);
+            int y = (int) mouseBuffer2.get(0);
+            MousePole.forwardMouseWheel(window, viewPole, (int) yoffset, x, y);
         });
     }
 

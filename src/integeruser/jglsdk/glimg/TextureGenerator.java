@@ -15,8 +15,7 @@ import java.util.Arrays;
 
 import static org.lwjgl.opengl.ARBTextureCompressionBPTC.*;
 import static org.lwjgl.opengl.ARBTextureFloat.*;
-import static org.lwjgl.opengl.EXTTextureCompressionLATC.GL_COMPRESSED_LUMINANCE_LATC1_EXT;
-import static org.lwjgl.opengl.EXTTextureCompressionLATC.GL_COMPRESSED_SIGNED_LUMINANCE_LATC1_EXT;
+import static org.lwjgl.opengl.EXTTextureCompressionLATC.*;
 import static org.lwjgl.opengl.EXTTextureCompressionS3TC.*;
 import static org.lwjgl.opengl.EXTTextureInteger.*;
 import static org.lwjgl.opengl.EXTTextureSRGB.*;
@@ -85,10 +84,10 @@ public class TextureGenerator {
                 return LARG_COMPRESSED_CONV(convertToLA, internalFormat, GL_COMPRESSED_LUMINANCE_LATC1_EXT);
             case GL_COMPRESSED_SIGNED_RED_RGTC1:
                 return LARG_COMPRESSED_CONV(convertToLA, internalFormat, GL_COMPRESSED_SIGNED_LUMINANCE_LATC1_EXT);
-            //case GL_COMPRESSED_RG_RGTC2:
-            //return LARG_COMPRESSED_CONV(convertToLA, internalFormat, GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT);
-            //case GL_COMPRESSED_SIGNED_RG_RGTC2:
-            //return LARG_COMPRESSED_CONV(convertToLA, internalFormat, GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2_EXT);
+            case GL_COMPRESSED_RG_RGTC2:
+                return LARG_COMPRESSED_CONV(convertToLA, internalFormat, GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT);
+            case GL_COMPRESSED_SIGNED_RG_RGTC2:
+                return LARG_COMPRESSED_CONV(convertToLA, internalFormat, GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2_EXT);
 
             case GL_R8I:
                 return LARG_INTEGRAL_CONV(convertToLA, internalFormat, GL_LUMINANCE8I_EXT);

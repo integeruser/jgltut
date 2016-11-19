@@ -95,16 +95,13 @@ public class BasicLighting extends Tutorial {
             }
         });
 
-        glfwSetMouseButtonCallback(window, mouseCallback = new GLFWMouseButtonCallback() {
-            @Override
-            public void invoke(long window, int button, int action, int mods) {
-                boolean pressed = action == GLFW_PRESS;
-                glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
-                int x = (int) mouseBuffer1.get(0);
-                int y = (int) mouseBuffer2.get(0);
-                MousePole.forwardMouseButton(window, viewPole, button, pressed, x, y);
-                MousePole.forwardMouseButton(window, objtPole, button, pressed, x, y);
-            }
+        glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+            boolean pressed = action == GLFW_PRESS;
+            glfwGetCursorPos(window, mouseBuffer1, mouseBuffer2);
+            int x = (int) mouseBuffer1.get(0);
+            int y = (int) mouseBuffer2.get(0);
+            MousePole.forwardMouseButton(window, viewPole, button, pressed, x, y);
+            MousePole.forwardMouseButton(window, objtPole, button, pressed, x, y);
         });
         glfwSetCursorPosCallback(window, mousePosCallback = new GLFWCursorPosCallback() {
             @Override

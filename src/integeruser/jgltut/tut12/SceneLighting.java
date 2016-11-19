@@ -63,17 +63,12 @@ public class SceneLighting extends Tutorial {
     protected void init() {
         initializePrograms();
 
-        try {
-            scene = new Scene() {
+        scene = new Scene() {
                 @Override
                 ProgramData getProgram(LightingProgramTypes lightingProgramType) {
                     return programs[lightingProgramType.ordinal()];
                 }
             };
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
 
         setupDaytimeLighting();
 

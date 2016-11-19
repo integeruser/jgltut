@@ -53,13 +53,8 @@ public class BasicLighting extends Tutorial {
     protected void init() {
         initializeProgram();
 
-        try {
-            cylinderMesh = new Mesh("UnitCylinder.xml");
-            planeMesh = new Mesh("LargePlane.xml");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
+        cylinderMesh = new Mesh("UnitCylinder.xml");
+        planeMesh = new Mesh("LargePlane.xml");
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);

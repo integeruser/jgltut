@@ -91,12 +91,7 @@ public class CubePointLight extends Tutorial {
         createSamplers();
         loadTextures();
 
-        try {
-            loadAndSetupScene();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
+        loadAndSetupScene();
 
         lightUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);

@@ -85,12 +85,7 @@ public class DoubleProjection extends Tutorial {
 
         glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE_IN_BYTES);
 
-        try {
-            loadAndSetupScene();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
+        loadAndSetupScene();
 
         lightUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);

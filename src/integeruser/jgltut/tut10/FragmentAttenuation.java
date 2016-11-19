@@ -62,14 +62,9 @@ public class FragmentAttenuation extends Tutorial {
     protected void init() {
         initializePrograms();
 
-        try {
-            cylinderMesh = new Mesh("UnitCylinder.xml");
-            planeMesh = new Mesh("LargePlane.xml");
-            cubeMesh = new Mesh("UnitCube.xml");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
+        cylinderMesh = new Mesh("UnitCylinder.xml");
+        planeMesh = new Mesh("LargePlane.xml");
+        cubeMesh = new Mesh("UnitCube.xml");
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);

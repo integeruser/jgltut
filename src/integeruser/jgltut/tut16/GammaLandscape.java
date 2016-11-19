@@ -71,17 +71,12 @@ public class GammaLandscape extends Tutorial {
 
     @Override
     protected void init() {
-        try {
-            lightEnv = new LightEnv("LightEnv.xml");
+        lightEnv = new LightEnv("LightEnv.xml");
 
-            initializePrograms();
+        initializePrograms();
 
-            terrain = new Mesh("terrain.xml");
-            sphere = new Mesh("UnitSphere.xml");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
+        terrain = new Mesh("terrain.xml");
+        sphere = new Mesh("UnitSphere.xml");
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);

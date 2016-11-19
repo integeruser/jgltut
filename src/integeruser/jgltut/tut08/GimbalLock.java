@@ -37,16 +37,11 @@ public class GimbalLock extends Tutorial {
     protected void init() {
         initializeProgram();
 
-        try {
-            for (int gimbalIndex = 0; gimbalIndex < 3; gimbalIndex++) {
-                gimbals[gimbalIndex] = new Mesh(gimbalNames[gimbalIndex]);
-            }
-
-            object = new Mesh("Ship.xml");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
+        for (int gimbalIndex = 0; gimbalIndex < 3; gimbalIndex++) {
+            gimbals[gimbalIndex] = new Mesh(gimbalNames[gimbalIndex]);
         }
+
+        object = new Mesh("Ship.xml");
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);

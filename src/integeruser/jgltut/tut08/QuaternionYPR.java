@@ -38,12 +38,7 @@ public class QuaternionYPR extends Tutorial {
     protected void init() {
         initializeProgram();
 
-        try {
-            ship = new Mesh("Ship.xml");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
+        ship = new Mesh("Ship.xml");
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);

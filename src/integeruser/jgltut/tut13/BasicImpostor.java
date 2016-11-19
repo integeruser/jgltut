@@ -62,14 +62,9 @@ public class BasicImpostor extends Tutorial {
     protected void init() {
         initializePrograms();
 
-        try {
-            planeMesh = new Mesh("LargePlane.xml");
-            sphereMesh = new Mesh("UnitSphere.xml");
-            cubeMesh = new Mesh("UnitCube.xml");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
+        planeMesh = new Mesh("LargePlane.xml");
+        sphereMesh = new Mesh("UnitSphere.xml");
+        cubeMesh = new Mesh("UnitCube.xml");
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);

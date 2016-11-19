@@ -72,14 +72,9 @@ public class MaterialTexture extends Tutorial {
     protected void init() {
         initializePrograms();
 
-        try {
-            objectMesh = new Mesh("Infinity.xml");
-            cubeMesh = new Mesh("UnitCube.xml");
-            planeMesh = new Mesh("UnitPlane.xml");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
+        objectMesh = new Mesh("Infinity.xml");
+        cubeMesh = new Mesh("UnitCube.xml");
+        planeMesh = new Mesh("UnitPlane.xml");
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);

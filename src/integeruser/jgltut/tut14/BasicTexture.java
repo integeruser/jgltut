@@ -68,13 +68,8 @@ public class BasicTexture extends Tutorial {
     protected void init() {
         initializePrograms();
 
-        try {
-            objectMesh = new Mesh("Infinity.xml");
-            cubeMesh = new Mesh("UnitCube.xml");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
+        objectMesh = new Mesh("Infinity.xml");
+        cubeMesh = new Mesh("UnitCube.xml");
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);

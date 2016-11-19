@@ -43,13 +43,8 @@ public class CameraRelative extends Tutorial {
     protected void init() {
         initializeProgram();
 
-        try {
-            ship = new Mesh("Ship.xml");
-            plane = new Mesh("UnitPlane.xml");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
+        ship = new Mesh("Ship.xml");
+        plane = new Mesh("UnitPlane.xml");
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);

@@ -48,16 +48,11 @@ public class WorldWithUBO extends Tutorial {
     protected void init() {
         initializeProgram();
 
-        try {
-            coneMesh = new Mesh("UnitConeTint.xml");
-            cylinderMesh = new Mesh("UnitCylinderTint.xml");
-            cubeTintMesh = new Mesh("UnitCubeTint.xml");
-            cubeColorMesh = new Mesh("UnitCubeColor.xml");
-            planeMesh = new Mesh("UnitPlane.xml");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
+        coneMesh = new Mesh("UnitConeTint.xml");
+        cylinderMesh = new Mesh("UnitCylinderTint.xml");
+        cubeTintMesh = new Mesh("UnitCubeTint.xml");
+        cubeColorMesh = new Mesh("UnitCubeColor.xml");
+        planeMesh = new Mesh("UnitPlane.xml");
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);

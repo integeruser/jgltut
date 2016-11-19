@@ -33,13 +33,8 @@ public class PerspectiveInterpolation extends Tutorial {
     protected void init() {
         initializePrograms();
 
-        try {
-            realHallway = new Mesh("RealHallway.xml");
-            fauxHallway = new Mesh("FauxHallway.xml");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
+        realHallway = new Mesh("RealHallway.xml");
+        fauxHallway = new Mesh("FauxHallway.xml");
 
 
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {

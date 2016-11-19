@@ -56,13 +56,8 @@ public class GammaCheckers extends Tutorial {
     protected void init() {
         initializePrograms();
 
-        try {
-            corridor = new Mesh("Corridor.xml");
-            plane = new Mesh("BigPlane.xml");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.exit(-1);
-        }
+        corridor = new Mesh("Corridor.xml");
+        plane = new Mesh("BigPlane.xml");
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);

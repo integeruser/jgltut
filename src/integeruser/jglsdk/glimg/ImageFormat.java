@@ -308,7 +308,7 @@ class ImageFormat {
         this.uncheckedImageFormat = uncheckedImageFormat;
 
         String message = this.uncheckedImageFormat.validateFormatText();
-        if (!message.equals("")) throw new InvalidFormatException(message);
+        if (!message.equals("")) throw new RuntimeException(message);
     }
 
 
@@ -349,11 +349,4 @@ class ImageFormat {
 
 
     private UncheckedImageFormat uncheckedImageFormat;
-
-
-    private static class InvalidFormatException extends RuntimeException {
-        InvalidFormatException(String message) {
-            super(message);
-        }
-    }
 }

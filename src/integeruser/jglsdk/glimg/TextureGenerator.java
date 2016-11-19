@@ -615,7 +615,7 @@ public class TextureGenerator {
 
     private static void throwIfForceRendertarget(int forceConvertBits) {
         if ((forceConvertBits & ForcedConvertFlags.FORCE_COLOR_RENDERABLE_FMT) != 0) {
-            throw new CannotForceRenderTargetException();
+            throw new RuntimeException("The image format cannot be forced to be a renderable format without compromising the data.");
         }
     }
 
@@ -1012,29 +1012,10 @@ public class TextureGenerator {
     }
 
 
-    private static class CannotForceTextureStorage extends RuntimeException {
-        private CannotForceTextureStorage() {
-            super("The current OpenGL implementation does not support ARB_texture_storage or GL 4.2 or above.");
-        }
-    }
-
-    private static class CannotForceDSAUsage extends RuntimeException {
-        private CannotForceDSAUsage() {
-            super("The current OpenGL implementation does not support EXT_direct_state_access.");
-        }
-    }
-
-    private static class CannotForceRenderTargetException extends RuntimeException {
-        private CannotForceRenderTargetException() {
-            super("The image format cannot be forced to be a renderable format without compromising the data.");
-        }
-    }
-
-
     private static void createTexture(int textureName, ImageSet imageSet, int forceConvertBits) {
         if ((forceConvertBits & ForcedConvertFlags.FORCE_TEXTURE_STORAGE) != 0) {
             if (!isTextureStorageSupported()) {
-                throw new CannotForceTextureStorage();
+                throw new RuntimeException("The current OpenGL implementation does not support ARB_texture_storage or GL 4.2 or above.");
             }
 
             forceConvertBits |= ForcedConvertFlags.USE_TEXTURE_STORAGE;
@@ -1048,7 +1029,7 @@ public class TextureGenerator {
 
         if ((forceConvertBits & ForcedConvertFlags.FORCE_DSA) != 0) {
             if (!isDirectStateAccessSupported()) {
-                throw new CannotForceDSAUsage();
+                throw new RuntimeException("The current OpenGL implementation does not support EXT_direct_state_access.");
             }
 
             forceConvertBits |= ForcedConvertFlags.USE_DSA;

@@ -40,7 +40,6 @@ class ImageCreator {
         }
     }
 
-
     ////////////////////////////////
     void setImageData(byte sourceData[], boolean isTopLeft, int mipmapLevel, int arrayIx, int faceIx) {
         if (imageData.isEmpty()) throw new RuntimeException("ImageSet already created.");
@@ -48,7 +47,8 @@ class ImageCreator {
         // Check inputs.
         if ((arrayIx < 0) || (arrayCount <= arrayIx)) throw new ArrayIndexOutOfBoundsException();
         if ((faceIx < 0) || (faceCount <= faceIx)) throw new RuntimeException("Face index out of bounds.");
-        if ((mipmapLevel < 0) || (mipmapCount <= mipmapLevel)) throw new RuntimeException("Mipmap layer out of bounds.");
+        if ((mipmapLevel < 0) || (mipmapCount <= mipmapLevel))
+            throw new RuntimeException("Mipmap layer out of bounds.");
 
         // Get the image relative to mipmapLevel
         byte[] imageData = this.imageData.get(mipmapLevel);
@@ -90,13 +90,7 @@ class ImageCreator {
             // Have to decode the pixel data and flip it manually.
             switch (imageFormat.getPixelDataType()) {
                 case COMPRESSED_BC1:
-                case COMPRESSED_BC2:
-                case COMPRESSED_BC3:
-                case COMPRESSED_UNSIGNED_BC4:
-                case COMPRESSED_SIGNED_BC4:
-                case COMPRESSED_UNSIGNED_BC5:
-                case COMPRESSED_SIGNED_BC5:
-                    copyBCFlipped(imageFormat, sourceData, imageData, imageDataOffset, imageSizes[mipmapLevel], mipmapImageDimensions, mipmapLevel);
+                    copyBCFlipped(imageFormat, sourceData, imageData, imageDataOffset, imageSizes[mipmapLevel], mipmapImageDimensions, ImageCreator::copyBlockBC1Flipped);
                     break;
 
                 default:
@@ -104,7 +98,6 @@ class ImageCreator {
             }
         }
     }
-
 
     private void copyPixelsFlipped(ImageFormat imageFormat, byte[] sourceData, byte[] imageData, int imageDataOffset,
                                    int imageSize, Dimensions imageDimensions) {
@@ -128,9 +121,8 @@ class ImageCreator {
         }
     }
 
-
     private void copyBCFlipped(ImageFormat imageFormat, byte[] sourceData, byte[] imageData, int imageDataOffset,
-                               int imageSize, Dimensions imageDimensions, int mipmapLevel) {
+                               int imageSize, Dimensions imageDimensions, FlippingFunc flippingFunc) {
         // No support for 3D compressed formats.
         assert imageDimensions.numDimensions != 3 : "No support for 3D compressed formats.";
 
@@ -144,36 +136,25 @@ class ImageCreator {
         // Copy each block.
         int sourceBlockOffset = imageSize - blockLineSize;  // start from last block
         int imageDataBlockOffset = imageDataOffset;         // start from imageDataOffset
-
         for (int line = 0; line < numLines; ++line) {
             for (int block = 0; block < blocksPerLine; ++block) {
                 byte[] sourceBlock = Arrays.copyOfRange(sourceData, sourceBlockOffset, sourceBlockOffset + blockData.byteCount);
-
-                flippingFunc(imageFormat, sourceBlock, imageData, imageDataBlockOffset);
-
+                flippingFunc.call(sourceBlock, imageData, imageDataBlockOffset);
                 sourceBlockOffset += blockData.byteCount;
                 imageDataBlockOffset += blockData.byteCount;
             }
-
             // First goes back to beginning, second goes back one row.
             sourceBlockOffset -= blockLineSize;
             sourceBlockOffset -= blockLineSize;
         }
     }
 
-    // TODO
-    private void flippingFunc(ImageFormat imageFormat, byte[] sourceData, byte[] imageData, int imageDataOffset) {
-        switch (this.imageFormat.getPixelDataType()) {
-            case COMPRESSED_BC1:
-                copyBlockBC1Flipped(sourceData, imageData, imageDataOffset);
-                break;
-
-            default:
-                throw new RuntimeException("Not implemented.");
-        }
+    ////////////////////////////////
+    private interface FlippingFunc {
+        void call(byte[] sourceData, byte[] imageData, int imageDataOffset);
     }
 
-    private void copyBlockBC1Flipped(byte[] sourceData, byte[] imageData, int imageDataOffset) {
+    private static void copyBlockBC1Flipped(byte[] sourceData, byte[] imageData, int imageDataOffset) {
         assert sourceData.length == 8;
 
         // First 4 bytes are 2 16-bit colors. Keep them the same.

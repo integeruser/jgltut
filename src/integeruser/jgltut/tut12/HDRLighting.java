@@ -10,9 +10,6 @@ import integeruser.jgltut.framework.Framework;
 import integeruser.jgltut.framework.MousePole;
 import integeruser.jgltut.framework.Timer;
 import org.joml.*;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
-import org.lwjgl.glfw.GLFWScrollCallback;
 import org.lwjgl.opengl.GL15;
 
 import java.lang.Math;

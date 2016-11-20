@@ -7,9 +7,6 @@ import integeruser.jgltut.framework.Framework;
 import integeruser.jgltut.framework.Mesh;
 import integeruser.jgltut.framework.MousePole;
 import org.joml.*;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
-import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.lang.Math;
 import java.util.ArrayList;

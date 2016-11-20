@@ -8,9 +8,6 @@ import integeruser.jgltut.commons.PerLight;
 import integeruser.jgltut.commons.ProjectionBlock;
 import integeruser.jgltut.framework.*;
 import org.joml.*;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
-import org.lwjgl.glfw.GLFWScrollCallback;
 import org.lwjgl.opengl.GL15;
 
 import java.lang.Math;

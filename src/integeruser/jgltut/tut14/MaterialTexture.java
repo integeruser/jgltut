@@ -13,9 +13,6 @@ import integeruser.jgltut.commons.ProjectionBlock;
 import integeruser.jgltut.framework.*;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
-import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.lang.Math;
 import java.nio.ByteBuffer;

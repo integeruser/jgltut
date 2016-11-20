@@ -18,9 +18,6 @@ import integeruser.jgltut.framework.SceneBinders.UniformMat4Binder;
 import integeruser.jgltut.framework.SceneBinders.UniformVec3Binder;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
-import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.lang.Math;
 import java.nio.FloatBuffer;

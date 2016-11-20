@@ -60,11 +60,11 @@ public class HDRLighting extends Tutorial {
         initializePrograms();
 
         scene = new Scene() {
-                @Override
-                ProgramData getProgram(LightingProgramTypes lightingProgramType) {
-                    return programs[lightingProgramType.ordinal()];
-                }
-            };
+            @Override
+            ProgramData getProgram(LightingProgramTypes lightingProgramType) {
+                return programs[lightingProgramType.ordinal()];
+            }
+        };
 
         setupDaytimeLighting();
 

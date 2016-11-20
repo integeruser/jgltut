@@ -5,7 +5,8 @@ import integeruser.jgltut.commons.MaterialBlock;
 import integeruser.jgltut.commons.ProjectionBlock;
 import integeruser.jgltut.commons.UnprojectionBlock;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.*;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.Platform;
 
@@ -25,11 +26,6 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public abstract class Tutorial {
     protected long window;
 
-    protected GLFWFramebufferSizeCallback framebufferSizeCallback;
-    protected GLFWKeyCallback keyCallback;
-    protected GLFWMouseButtonCallback mouseCallback;
-    protected GLFWCursorPosCallback mousePosCallback;
-    protected GLFWScrollCallback mouseScrollCallback;
     protected DoubleBuffer mouseBuffer1 = BufferUtils.createDoubleBuffer(1);
     protected DoubleBuffer mouseBuffer2 = BufferUtils.createDoubleBuffer(1);
 
@@ -111,12 +107,9 @@ public abstract class Tutorial {
     }
 
     private void initCallbacks() {
-        glfwSetFramebufferSizeCallback(window, (framebufferSizeCallback = new GLFWFramebufferSizeCallback() {
-            @Override
-            public void invoke(long window, int width, int height) {
-                reshape(width, height);
-            }
-        }));
+        glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
+            reshape(width, height);
+        });
 
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) glfwSetWindowShouldClose(window, true);

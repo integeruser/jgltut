@@ -3,7 +3,6 @@ package integeruser.jglsdk.glimg;
 import integeruser.jglsdk.glimg.ImageFormat.*;
 import integeruser.jglsdk.glimg.ImageSet.Dimensions;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.file.Paths;
@@ -56,7 +55,7 @@ public class StbLoader {
         return imgCreator.createImage();
     }
 
-    public static ImageSet loadFromFile(String imagePath) throws IOException, URISyntaxException {
+    public static ImageSet loadFromFile(String imagePath) throws URISyntaxException {
         String path = Paths.get(StbLoader.class.getResource(imagePath).toURI()).toString();
         int[] x = new int[1];
         int[] y = new int[1];

@@ -499,10 +499,10 @@ public class GeomImpostor extends Tutorial {
 
     ////////////////////////////////
     private class VertexData implements Bufferable {
+        static final int SIZE = Float.BYTES * (3 + 1);
+
         Vector3f cameraPosition;
         float sphereRadius;
-
-        static final int SIZE = 3 * 4 + (1 * Float.BYTES);
 
         @Override
         public ByteBuffer get(ByteBuffer buffer) {

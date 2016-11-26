@@ -149,7 +149,7 @@ public class DdsLoader {
 
 
     private static class DdsHeader {
-        static final int SIZE = (7 + 11 + 8 + 5) * (Integer.SIZE / 8);
+        static final int SIZE = Integer.BYTES * (7 + 11 + 8 + 5);
 
         int size;
         int flags;
@@ -201,7 +201,7 @@ public class DdsLoader {
     }
 
     private static class Dds10Header {
-        static final int SIZE = 5 * (Integer.SIZE / 8);
+        static final int SIZE = Integer.BYTES * (5);
 
         int dxgiFormat;
         int resourceDimension;

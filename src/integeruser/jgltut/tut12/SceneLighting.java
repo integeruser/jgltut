@@ -87,16 +87,16 @@ public class SceneLighting extends Tutorial {
         // Setup our Uniform Buffers
         lightUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
-        GL15.glBufferData(GL_UNIFORM_BUFFER, LightBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
+        GL15.glBufferData(GL_UNIFORM_BUFFER, LightBlock.BYTES, GL_DYNAMIC_DRAW);
 
         projectionUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.BYTES, GL_DYNAMIC_DRAW);
 
         // Bind the static buffers.
-        glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.BYTES);
 
-        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.BYTES);
 
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 

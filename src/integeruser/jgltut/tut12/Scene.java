@@ -36,7 +36,7 @@ abstract class Scene {
         // Align the size of each MaterialBlock to the uniform buffer alignment.
         int uniformBufferAlignSize = glGetInteger(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT);
 
-        sizeMaterialBlock = MaterialBlock.SIZE_IN_BYTES;
+        sizeMaterialBlock = MaterialBlock.BYTES;
         sizeMaterialBlock += uniformBufferAlignSize - (sizeMaterialBlock % uniformBufferAlignSize);
 
         int MATERIAL_COUNT = 6;
@@ -46,7 +46,7 @@ abstract class Scene {
         getMaterials(materials);
 
         ByteBuffer materialsBuffer = BufferUtils.createByteBuffer(sizeMaterialUniformBuffer);
-        final float[] padding = new float[(sizeMaterialBlock - MaterialBlock.SIZE_IN_BYTES) / (Float.SIZE / Byte.SIZE)];
+        final float[] padding = new float[(sizeMaterialBlock - MaterialBlock.BYTES) / (Float.SIZE / Byte.SIZE)];
 
         for (MaterialBlock materialBlock : materials) {
             materialBlock.get(materialsBuffer);
@@ -165,7 +165,7 @@ abstract class Scene {
 
     void drawObject(Mesh mesh, ProgramData progData, int materialBlockIndex, int materialIndex, MatrixStackf modelMatrix) {
         glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                materialIndex * sizeMaterialBlock, MaterialBlock.SIZE_IN_BYTES);
+                materialIndex * sizeMaterialBlock, MaterialBlock.BYTES);
 
         Matrix3f normMatrix = new Matrix3f(modelMatrix);
         normMatrix.invert().transpose();
@@ -182,7 +182,7 @@ abstract class Scene {
 
     void drawObject(Mesh mesh, String meshName, ProgramData progData, int materialBlockIndex, int materialIndex, MatrixStackf modelMatrix) {
         glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                materialIndex * sizeMaterialBlock, MaterialBlock.SIZE_IN_BYTES);
+                materialIndex * sizeMaterialBlock, MaterialBlock.BYTES);
 
         Matrix3f normMatrix = new Matrix3f(modelMatrix);
         normMatrix.invert().transpose();

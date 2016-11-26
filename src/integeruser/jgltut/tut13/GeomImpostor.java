@@ -78,16 +78,16 @@ public class GeomImpostor extends Tutorial {
         // Setup our Uniform Buffers
         lightUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
-        GL15.glBufferData(GL_UNIFORM_BUFFER, LightBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
+        GL15.glBufferData(GL_UNIFORM_BUFFER, LightBlock.BYTES, GL_DYNAMIC_DRAW);
 
         projectionUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.BYTES, GL_DYNAMIC_DRAW);
 
         // Bind the static buffers.
-        glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.BYTES);
 
-        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.BYTES);
 
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -190,7 +190,7 @@ public class GeomImpostor extends Tutorial {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         {
-            glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialTerrainUniformBuffer, 0, MaterialBlock.SIZE_IN_BYTES);
+            glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialTerrainUniformBuffer, 0, MaterialBlock.BYTES);
 
             Matrix3f normMatrix = new Matrix3f(modelMatrix);
             normMatrix.invert().transpose();
@@ -231,7 +231,7 @@ public class GeomImpostor extends Tutorial {
             glBindBuffer(GL_ARRAY_BUFFER, imposterVBO);
 
             {
-                ByteBuffer vertexDataBuffer = BufferUtils.createByteBuffer(NUMBER_OF_SPHERES * VertexData.SIZE);
+                ByteBuffer vertexDataBuffer = BufferUtils.createByteBuffer(NUMBER_OF_SPHERES * VertexData.BYTES);
 
                 for (VertexData vertexData : posSizeArray) {
                     vertexData.get(vertexDataBuffer);
@@ -246,7 +246,7 @@ public class GeomImpostor extends Tutorial {
         }
 
         {
-            glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialArrayUniformBuffer, 0, MaterialBlock.SIZE_IN_BYTES * NUMBER_OF_SPHERES);
+            glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialArrayUniformBuffer, 0, MaterialBlock.BYTES * NUMBER_OF_SPHERES);
 
             glUseProgram(litImpProg.theProgram);
             glBindVertexArray(imposterVAO);
@@ -499,7 +499,7 @@ public class GeomImpostor extends Tutorial {
 
     ////////////////////////////////
     private class VertexData implements Bufferable {
-        static final int SIZE = Float.BYTES * (3 + 1);
+        static final int BYTES = Float.BYTES * (3 + 1);
 
         Vector3f cameraPosition;
         float sphereRadius;
@@ -563,7 +563,7 @@ public class GeomImpostor extends Tutorial {
         glBindBuffer(GL_UNIFORM_BUFFER, materialArrayUniformBuffer);
 
         {
-            ByteBuffer ubArrayBuffer = BufferUtils.createByteBuffer(ubArray.size() * MaterialBlock.SIZE_IN_BYTES);
+            ByteBuffer ubArrayBuffer = BufferUtils.createByteBuffer(ubArray.size() * MaterialBlock.BYTES);
 
             for (MaterialBlock anUbArray : ubArray) {
                 anUbArray.get(ubArrayBuffer);
@@ -582,7 +582,7 @@ public class GeomImpostor extends Tutorial {
             matEntry.specularColor = new Vector4f(0.5f, 0.5f, 0.5f, 1.0f);
             matEntry.specularShininess = 0.6f;
 
-            glBufferData(GL_UNIFORM_BUFFER, matEntry.getAndFlip(BufferUtils.createByteBuffer(MaterialBlock.SIZE_IN_BYTES)),
+            glBufferData(GL_UNIFORM_BUFFER, matEntry.getAndFlip(BufferUtils.createByteBuffer(MaterialBlock.BYTES)),
                     GL_STATIC_DRAW);
         }
 

@@ -91,18 +91,18 @@ public class MaterialTexture extends Tutorial {
 
         lightUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
-        glBufferData(GL_UNIFORM_BUFFER, LightBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, LightBlock.BYTES, GL_DYNAMIC_DRAW);
 
         projectionUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.BYTES, GL_DYNAMIC_DRAW);
 
         // Bind the static buffers.
-        glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.BYTES);
 
-        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.BYTES);
 
-        glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, 0, MaterialBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, 0, MaterialBlock.BYTES);
 
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -222,7 +222,7 @@ public class MaterialTexture extends Tutorial {
             Mesh mesh = useInfinity ? objectMesh : planeMesh;
 
             glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer, currMaterial * materialOffset,
-                    MaterialBlock.SIZE_IN_BYTES);
+                    MaterialBlock.BYTES);
 
             modelMatrix.pushMatrix();
 
@@ -589,7 +589,7 @@ public class MaterialTexture extends Tutorial {
 
 
     private void setupMaterials() {
-        UniformBlockArray<MaterialBlock> ubArray = new UniformBlockArray<>(MaterialBlock.SIZE_IN_BYTES, NUM_MATERIALS);
+        UniformBlockArray<MaterialBlock> ubArray = new UniformBlockArray<>(MaterialBlock.BYTES, NUM_MATERIALS);
         MaterialBlock matBlock;
 
         matBlock = new MaterialBlock();

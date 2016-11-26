@@ -78,17 +78,17 @@ public class FragmentAttenuation extends Tutorial {
 
         projectionUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.BYTES, GL_DYNAMIC_DRAW);
 
         unprojectionUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, unprojectionUniformBuffer);
-        GL15.glBufferData(GL_UNIFORM_BUFFER, UnprojectionBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
+        GL15.glBufferData(GL_UNIFORM_BUFFER, UnprojectionBlock.BYTES, GL_DYNAMIC_DRAW);
 
         // Bind the static buffers.
-        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.BYTES);
 
         // Bind the static buffers.
-        glBindBufferRange(GL_UNIFORM_BUFFER, unprojectionBlockIndex, unprojectionUniformBuffer, 0, UnprojectionBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, unprojectionBlockIndex, unprojectionUniformBuffer, 0, UnprojectionBlock.BYTES);
 
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 

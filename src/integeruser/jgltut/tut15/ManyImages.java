@@ -72,9 +72,9 @@ public class ManyImages extends Tutorial {
         // Setup our Uniform Buffers
         projectionUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.BYTES, GL_DYNAMIC_DRAW);
 
-        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.BYTES);
 
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 

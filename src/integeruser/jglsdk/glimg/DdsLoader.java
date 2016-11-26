@@ -21,7 +21,7 @@ public class DdsLoader {
             throw new DdsFileMalformedException(ddsFilepath, "The Magic number is missing from the file.");
         }
 
-        if (ddsFile.length < DdsHeader.SIZE + 4) {
+        if (ddsFile.length < DdsHeader.BYTES + 4) {
             throw new DdsFileMalformedException(ddsFilepath, "The data is way too small to store actual information.");
         }
 
@@ -128,6 +128,8 @@ public class DdsLoader {
 
 
     private static class DdsPixelFormat {
+        static final int BYTES = Integer.BYTES * (8);
+
         int size;
         int flags;
         int fourCC;
@@ -149,7 +151,7 @@ public class DdsLoader {
 
 
     private static class DdsHeader {
-        static final int SIZE = Integer.BYTES * (7 + 11 + 8 + 5);
+        static final int BYTES = Integer.BYTES * (7 + 11) + DdsPixelFormat.BYTES + Integer.BYTES * (5);
 
         int size;
         int flags;
@@ -242,7 +244,7 @@ public class DdsLoader {
     private static Dds10Header getDds10Header(byte[] ddsFile, DdsHeader ddsHeader) {
         if (ddsHeader.ddsPixelFormat.fourCC == MagicNumbers.DDS10_FOUR_CC) {
             Dds10Header dds10Header = new Dds10Header();
-            int offsetToNewHeader = DdsHeader.SIZE + 4;
+            int offsetToNewHeader = DdsHeader.BYTES + 4;
 
             dds10Header.dxgiFormat = readDoubleWord(ddsFile, offsetToNewHeader);
             dds10Header.resourceDimension = readDoubleWord(ddsFile, offsetToNewHeader + 4);
@@ -317,7 +319,7 @@ public class DdsLoader {
     }
 
     private static int getOffsetToData(DdsHeader ddsHeader) {
-        int byteOffset = DdsHeader.SIZE + 4;
+        int byteOffset = DdsHeader.BYTES + 4;
         if (ddsHeader.ddsPixelFormat.fourCC == MagicNumbers.DDS10_FOUR_CC) {
             byteOffset += Dds10Header.SIZE;
         }

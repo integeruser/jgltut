@@ -79,16 +79,16 @@ public class BasicImpostor extends Tutorial {
         // Setup our Uniform Buffers
         lightUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
-        GL15.glBufferData(GL_UNIFORM_BUFFER, LightBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
+        GL15.glBufferData(GL_UNIFORM_BUFFER, LightBlock.BYTES, GL_DYNAMIC_DRAW);
 
         projectionUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        GL15.glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
+        GL15.glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.BYTES, GL_DYNAMIC_DRAW);
 
         // Bind the static buffers.
-        glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightBlock.BYTES);
 
-        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.BYTES);
 
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -208,7 +208,7 @@ public class BasicImpostor extends Tutorial {
 
         {
             glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                    MaterialNames.TERRAIN.ordinal() * materialBlockOffset, MaterialBlock.SIZE_IN_BYTES);
+                    MaterialNames.TERRAIN.ordinal() * materialBlockOffset, MaterialBlock.BYTES);
 
             Matrix3f normMatrix = new Matrix3f(modelMatrix);
             normMatrix.invert().transpose();
@@ -475,7 +475,7 @@ public class BasicImpostor extends Tutorial {
 
     private void drawSphere(MatrixStackf modelMatrix, Vector3f position, float radius, MaterialNames material, boolean drawImposter) {
         glBindBufferRange(GL_UNIFORM_BUFFER, materialBlockIndex, materialUniformBuffer,
-                material.ordinal() * materialBlockOffset, MaterialBlock.SIZE_IN_BYTES);
+                material.ordinal() * materialBlockOffset, MaterialBlock.BYTES);
 
         if (drawImposter) {
             Vector4f cameraSpherePos = new Matrix4f(modelMatrix).transform(new Vector4f(position, 1.0f));
@@ -564,7 +564,7 @@ public class BasicImpostor extends Tutorial {
 
 
     private void createMaterials() {
-        UniformBlockArray<MaterialBlock> ubArray = new UniformBlockArray<>(MaterialBlock.SIZE_IN_BYTES, MaterialNames.NUM_MATERIALS.ordinal());
+        UniformBlockArray<MaterialBlock> ubArray = new UniformBlockArray<>(MaterialBlock.BYTES, MaterialNames.NUM_MATERIALS.ordinal());
         materialBlockOffset = ubArray.getArrayOffset();
 
         MaterialBlock matBlock = new MaterialBlock();

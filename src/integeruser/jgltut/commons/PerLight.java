@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
  * Visit https://github.com/integeruser/jgltut for info and updates.
  */
 public class PerLight implements Bufferable {
-    public static final int SIZE_IN_BYTES = Float.BYTES * (4 + 4);
+    public static final int BYTES = Float.BYTES * (4 + 4);
 
     public Vector4f cameraSpaceLightPos;
     public Vector4f lightIntensity;

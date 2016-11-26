@@ -86,16 +86,16 @@ public class HDRLighting extends Tutorial {
         // Setup our Uniform Buffers
         lightUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, lightUniformBuffer);
-        GL15.glBufferData(GL_UNIFORM_BUFFER, LightManager.LightBlockHDR.SIZE, GL_DYNAMIC_DRAW);
+        GL15.glBufferData(GL_UNIFORM_BUFFER, LightManager.LightBlockHDR.BYTES, GL_DYNAMIC_DRAW);
 
         projectionUniformBuffer = glGenBuffers();
         glBindBuffer(GL_UNIFORM_BUFFER, projectionUniformBuffer);
-        GL15.glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.SIZE_IN_BYTES, GL_DYNAMIC_DRAW);
+        GL15.glBufferData(GL_UNIFORM_BUFFER, ProjectionBlock.BYTES, GL_DYNAMIC_DRAW);
 
         // Bind the static buffers.
-        glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightManager.LightBlockHDR.SIZE);
+        glBindBufferRange(GL_UNIFORM_BUFFER, lightBlockIndex, lightUniformBuffer, 0, LightManager.LightBlockHDR.BYTES);
 
-        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.SIZE_IN_BYTES);
+        glBindBufferRange(GL_UNIFORM_BUFFER, projectionBlockIndex, projectionUniformBuffer, 0, ProjectionBlock.BYTES);
 
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 

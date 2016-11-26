@@ -207,7 +207,7 @@ class LightManager {
     private static final int NUMBER_OF_POINT_LIGHTS = NUMBER_OF_LIGHTS - 1;
 
     class LightBlockHDR implements Bufferable {
-        static final int SIZE = Float.BYTES * (4 + 1 + 1 + 2) + PerLight.SIZE_IN_BYTES * NUMBER_OF_LIGHTS;
+        static final int BYTES = Float.BYTES * (4 + 1 + 1 + 2) + PerLight.BYTES * NUMBER_OF_LIGHTS;
 
         Vector4f ambientIntensity;
         float lightAttenuation;
@@ -234,7 +234,7 @@ class LightManager {
     }
 
     class LightBlockGamma implements Bufferable {
-        static final int SIZE = Float.BYTES * (4 + 1 + 1 + 2) + PerLight.SIZE_IN_BYTES * NUMBER_OF_LIGHTS;
+        static final int BYTES = Float.BYTES * (4 + 1 + 1 + 1 + 1) + PerLight.BYTES * NUMBER_OF_LIGHTS;
 
         Vector4f ambientIntensity;
         float lightAttenuation;

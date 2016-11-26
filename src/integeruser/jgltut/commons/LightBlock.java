@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
  */
 public class LightBlock implements Bufferable {
     public static final int MAX_NUMBER_OF_LIGHTS = 5;
-    public static final int SIZE_IN_BYTES = Float.BYTES * (4 + 1 + 1 + 2) + PerLight.SIZE_IN_BYTES * MAX_NUMBER_OF_LIGHTS;
+    public static final int BYTES = Float.BYTES * (4 + 1 + 1 + 2) + PerLight.BYTES * MAX_NUMBER_OF_LIGHTS;
 
     public Vector4f ambientIntensity;
     public float lightAttenuation;

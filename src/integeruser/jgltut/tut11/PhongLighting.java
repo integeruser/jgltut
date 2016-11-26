@@ -144,8 +144,6 @@ public class PhongLighting extends Tutorial {
                                 case SPECULAR_ONLY:
                                     lightModel = LightingModel.PURE_DIFFUSE;
                                     break;
-                                default:
-                                    break;
                             }
                         } else {
                             int index = lightModel.ordinal() + 1;
@@ -218,11 +216,9 @@ public class PhongLighting extends Tutorial {
                 whiteProg = whitePhongOnly;
                 colorProg = colorPhongOnly;
                 break;
-
-            default:
-                break;
         }
 
+        assert whiteProg != null;
         glUseProgram(whiteProg.theProgram);
         glUniform4f(whiteProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
         glUniform4f(whiteProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);
@@ -232,6 +228,7 @@ public class PhongLighting extends Tutorial {
         glUniform1f(whiteProg.shininessFactorUnif, shininessFactor);
         glUniform4fv(whiteProg.baseDiffuseColorUnif, drawDark ? darkColor.get(vec4Buffer) : lightColor.get(vec4Buffer));
 
+        assert colorProg != null;
         glUseProgram(colorProg.theProgram);
         glUniform4f(colorProg.lightIntensityUnif, 0.8f, 0.8f, 0.8f, 1.0f);
         glUniform4f(colorProg.ambientIntensityUnif, 0.2f, 0.2f, 0.2f, 1.0f);

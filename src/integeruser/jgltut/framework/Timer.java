@@ -42,11 +42,7 @@ public class Timer {
         secAccumTime += deltaTime;
 
         absPrevTime = absCurrTime;
-        if (type == Type.SINGLE) {
-            return secAccumTime > secDuration;
-        }
-
-        return false;
+        return type == Type.SINGLE && secAccumTime > secDuration;
     }
 
 

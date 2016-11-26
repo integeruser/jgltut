@@ -148,10 +148,10 @@ public class TextureGenerator {
 
 
     public static OpenGLPixelTransferParams getUploadFormatType(ImageFormat imageFormat, int forceConvertBits) {
-        OpenGLPixelTransferParams upload = new OpenGLPixelTransferParams();
-        upload.type = 0xFFFFFFFF;
-        upload.format = 0xFFFFFFFF;
-        upload.blockByteCount = 0;
+        OpenGLPixelTransferParams params = new OpenGLPixelTransferParams();
+        params.type = 0xFFFFFFFF;
+        params.format = 0xFFFFFFFF;
+        params.blockByteCount = 0;
 
         PixelDataType pixelDataType = getDataType(imageFormat, forceConvertBits);
         if (pixelDataType.ordinal() >= PixelDataType.NUM_UNCOMPRESSED_TYPES.ordinal()) {
@@ -159,30 +159,23 @@ public class TextureGenerator {
                 case COMPRESSED_BC1:
                 case COMPRESSED_UNSIGNED_BC4:
                 case COMPRESSED_SIGNED_BC4:
-                    upload.blockByteCount = 8;
+                    params.blockByteCount = 8;
                     break;
 
                 default:
-                    upload.blockByteCount = 16;
+                    params.blockByteCount = 16;
                     break;
             }
 
             // Provide reasonable parameters.
-            upload.format = GL_RGBA;
-
-            // TODO
-            if (pixelDataType != PixelDataType.COMPRESSED_UNSIGNED_BC6H || pixelDataType != PixelDataType.COMPRESSED_SIGNED_BC6H) {
-                upload.type = GL_FLOAT;
-            } else {
-                upload.type = GL_UNSIGNED_BYTE;
-            }
-
-            return upload;
+            params.format = GL_RGBA;
+            params.type = GL_FLOAT;
+            return params;
         }
 
-        upload.type = getOpenGLType(imageFormat, pixelDataType, forceConvertBits);
-        upload.format = getOpenGLFormat(imageFormat, pixelDataType, forceConvertBits);
-        return upload;
+        params.type = getOpenGLType(imageFormat, pixelDataType, forceConvertBits);
+        params.format = getOpenGLFormat(imageFormat, pixelDataType, forceConvertBits);
+        return params;
     }
 
 
@@ -291,9 +284,8 @@ public class TextureGenerator {
                         return PixelDataType.UNSIGNED_INTEGRAL;
                     }
                 } else {
-                    if (forceSigned) return PixelDataType.NORM_SIGNED_INTEGER;
+                    return PixelDataType.NORM_SIGNED_INTEGER;
                 }
-                break;
 
             case NORM_SIGNED_INTEGER:
                 if (forceIntegral) return PixelDataType.SIGNED_INTEGRAL;
@@ -462,8 +454,7 @@ public class TextureGenerator {
 
     private static boolean isArrayTexture(ImageSet imageSet, int forceConvertBits) {
         // No such thing as 3D array textures.
-        if (imageSet.getDimensions().numDimensions == 3) return false;
-        return (forceConvertBits & ForcedConvertFlags.FORCE_ARRAY_TEXTURE) != 0 || imageSet.getArrayCount() > 1;
+        return imageSet.getDimensions().numDimensions != 3 && ((forceConvertBits & ForcedConvertFlags.FORCE_ARRAY_TEXTURE) != 0 || imageSet.getArrayCount() > 1);
     }
 
     ////////////////////////////////

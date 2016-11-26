@@ -46,14 +46,10 @@ abstract class Scene {
         getMaterials(materials);
 
         ByteBuffer materialsBuffer = BufferUtils.createByteBuffer(sizeMaterialUniformBuffer);
-        final float[] padding = new float[(sizeMaterialBlock - MaterialBlock.BYTES) / (Float.SIZE / Byte.SIZE)];
-
         for (MaterialBlock materialBlock : materials) {
             materialBlock.get(materialsBuffer);
-            for (float f : padding)
-                materialsBuffer.putFloat(f);  // The buffer size must be sizeMaterialUniformBuffer
+            materialsBuffer.position(materialsBuffer.position() + (sizeMaterialBlock - MaterialBlock.BYTES));
         }
-
         materialsBuffer.flip();
 
         materialUniformBuffer = glGenBuffers();

@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [Unreleased]
+### Added
+- FlippingFunc in `ImageCreator.java` (ffd6fc3)
+- BYTES field for class size (9dbd36f, 2991a98)
+
+### Changed
+- Configure exec:java to run TutorialChooser in `pom.xml` (bc25bc4) (thanks to @Spasi)
+
+### Fixed
+- Resource loading (d96b706) (thanks to @Spasi)
+
+### Removed
+- Custom exceptions (92ad15a, 11ffffc, f7a3a5b)
 
 
 ## [2.1.0] - 2016-11-04

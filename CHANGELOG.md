@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [Unreleased]
+
+
+## [2.1.1] - 2016-12-01
 ### Added
 - FlippingFunc in `ImageCreator.java` (ffd6fc3)
 - BYTES field for class size (9dbd36f, 2991a98)

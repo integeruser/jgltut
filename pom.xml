@@ -4,7 +4,7 @@
 
 	<groupId>integeruser.jgltut</groupId>
 	<artifactId>jgltut</artifactId>
-	<version>2.1.1-SNAPSHOT</version>
+	<version>2.1.1</version>
 
 	<name>jgltut</name>
 	<description>Learning Modern 3D Graphics Programming with LWJGL 3 and JOML</description>

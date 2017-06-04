@@ -4,10 +4,10 @@ This project is a port of *[Learning Modern 3D Graphics Programming](http://alfo
 To suggest a feature, report bugs or general discussion use the [issue tracker](https://github.com/integeruser/jgltut/issues). Contributions are welcome! :smile:
 
 ## Usage
-To set up the project, just import the supplied Maven POM into your favorite IDE and you are done. The code depends on:
+To set up the project, just import the supplied Maven POM into your favorite IDE and you are done. The code was last tested on:
 - Java SE Development Kit 8
 - [LWJGL 3.1.0 build 40](https://www.lwjgl.org/download)
-- [JOML 1.9.0](https://github.com/JOML-CI/JOML/releases/tag/1.9.0)
+- [JOML 1.9.3](https://github.com/JOML-CI/JOML/releases/tag/1.9.3)
 
 To play with the tutorials, run the `main` method of `integeruser.jgltut.TutorialChooser.java` and select the tutorial to run. To quit any tutorial simply press `ESC`.
 

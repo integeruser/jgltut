@@ -23,7 +23,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <main.class>integeruser.jgltut.TutorialChooser</main.class>
         <lwjgl.version>3.1.0</lwjgl.version>
-        <joml.version>1.9.0</joml.version>
+        <joml.version>1.9.3</joml.version>
     </properties>
 
     <profiles>

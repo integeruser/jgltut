@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [Unreleased]
+### Changed
+- Bump LWJGL to v3.1.2 and JOML to v1.9.3 (e40246c, d71b37f)
+
+### Removed
+- Finalizers (d71b37f)
 
 
 ## [2.1.1] - 2016-12-01

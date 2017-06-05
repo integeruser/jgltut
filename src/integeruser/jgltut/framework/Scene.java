@@ -110,12 +110,6 @@ public class Scene {
             textureType = TextureGenerator.getTextureType(imageSet, creationFlags);
         }
 
-        @Override
-        protected void finalize() throws Throwable {
-            super.finalize();
-            glDeleteTextures(textureObj);
-        }
-
 
         int getTexture() {
             return textureObj;
@@ -135,12 +129,6 @@ public class Scene {
             this.programObj = programObj;
             this.matrixLoc = matrixLoc;
             this.normalMatLoc = normalMatLoc;
-        }
-
-        @Override
-        protected void finalize() throws Throwable {
-            super.finalize();
-            glDeleteProgram(programObj);
         }
 
 
@@ -395,15 +383,6 @@ public class Scene {
             readNodes(sceneXmlNode);
 
             makeSamplerObjects(samplers);
-        }
-
-        @Override
-        protected void finalize() throws Throwable {
-            super.finalize();
-
-            for (int sampler : samplers) {
-                glDeleteSamplers(sampler);
-            }
         }
 
         ////////////////////////////////

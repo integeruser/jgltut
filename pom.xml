@@ -1,7 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>integeruser.jgltut</groupId>
@@ -24,7 +21,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <main.class>integeruser.jgltut.TutorialChooser</main.class>
-        <lwjgl.version>3.1.0</lwjgl.version>
+        <lwjgl.version>3.1.2</lwjgl.version>
         <joml.version>1.9.3</joml.version>
     </properties>
 
@@ -96,7 +93,6 @@
     </build>
 
     <dependencies>
-        <!-- LWJGL modules -->
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
@@ -104,9 +100,23 @@
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl</artifactId>
+            <version>${lwjgl.version}</version>
+            <classifier>natives-${platform}</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-glfw</artifactId>
             <version>${lwjgl.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-glfw</artifactId>
+            <version>${lwjgl.version}</version>
+            <classifier>natives-${platform}</classifier>
+        </dependency>
+
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-opengl</artifactId>
@@ -114,22 +124,15 @@
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-stb</artifactId>
+            <artifactId>lwjgl-opengl</artifactId>
             <version>${lwjgl.version}</version>
+            <classifier>natives-${platform}</classifier>
         </dependency>
 
-        <!-- LWJGL natives -->
         <dependency>
             <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl</artifactId>
+            <artifactId>lwjgl-stb</artifactId>
             <version>${lwjgl.version}</version>
-            <classifier>natives-${platform}</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-glfw</artifactId>
-            <version>${lwjgl.version}</version>
-            <classifier>natives-${platform}</classifier>
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
@@ -138,7 +141,6 @@
             <classifier>natives-${platform}</classifier>
         </dependency>
 
-        <!-- JOML -->
         <dependency>
             <groupId>org.joml</groupId>
             <artifactId>joml</artifactId>

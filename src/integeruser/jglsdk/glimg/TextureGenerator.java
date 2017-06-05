@@ -970,15 +970,6 @@ public class TextureGenerator {
 
     ////////////////////////////////
     private static class TextureBinder {
-        @Override
-        protected void finalize() throws Throwable {
-            super.finalize();
-            if (texture != 0) {
-                glBindTexture(texTarget, 0);
-            }
-        }
-
-
         void bind(int textureTarget, int texture) {
             this.texture = texture;
             texTarget = textureTarget;

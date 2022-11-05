@@ -1,5 +1,5 @@
 # Learning Modern 3D Graphics Programming with LWJGL 3 and JOML
-This project is a port of *[Learning Modern 3D Graphics Programming](http://alfonse.bitbucket.org/oldtut/)* tutorials to Java using [LWJGL](https://www.lwjgl.org/) and [JOML](http://joml-ci.github.io/JOML/). The original project, named `gltut`, can be found [here](https://bitbucket.org/alfonse/gltut/wiki/Home). Since it is needed by the tutorials, this repository also includes a partial port of the *[Unofficial OpenGL SDK](https://bitbucket.org/alfonse/unofficial-opengl-sdk/wiki/Home)*, named `glsdk`, which contains a DDS texture loader and other useful stuff.
+This project is a port of *[Learning Modern 3D Graphics Programming](https://paroj.github.io/gltut/)* tutorials to Java using [LWJGL](https://www.lwjgl.org/) and [JOML](http://joml-ci.github.io/JOML/). The original project, named `gltut`, can be found [here](https://github.com/paroj/gltut). Since it is needed by the tutorials, this repository also includes a partial port of the *[Unofficial OpenGL SDK](https://glsdk.sourceforge.net/docs/html/index.html)*, named `glsdk`, which contains a DDS texture loader and other useful stuff.
 
 To suggest a feature, report bugs or general discussion use the [issue tracker](https://github.com/integeruser/jgltut/issues). Contributions are welcome! :smile:
 
@@ -45,8 +45,7 @@ jgltut/
 ## Credits
 The LWJGL license can be found [here](http://lwjgl.org/license.php).  
 The JOML license can be found [here](https://github.com/JOML-CI/JOML/blob/master/LICENSE).  
-Licenses of the projects `gltut` and `glsdk` can be found [here](https://bitbucket.org/alfonse/gltut/raw/3ee6f3dd04a7/License.txt) and
-[here](https://bitbucket.org/alfonse/unofficial-opengl-sdk/raw/1893b6e851b9/License.txt). Extract from the `gltut` license:
+Extract from the `gltut` license:
 > The following files are copywritten and distributed under the Creative Commons Attribution 3.0 Unported (CC BY 3.0) license, as described in the "./CC BY 3.0 legalcode.txt" file. Attribution for these works is presented here:
 >
 > Attributed to Etory, of OpenGameArt.org:
